@@ -20,4 +20,4 @@ jobs:
         # '.' means it will upload everything in your repo root
         local-dir: ./ 
         # Usually public_html/ or public_html/colorsmagic/
-        server-dir: ./public_html/
+        server-dir: ./colormagic/
