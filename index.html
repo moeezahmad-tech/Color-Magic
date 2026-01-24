@@ -354,59 +354,33 @@
                                     class="scheme-btn px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-all hover:scale-105"
                                     data-scheme="analogic">Analogic</button>
                             </div>
+
+                            <!-- Generate Button -->
+                            <button id="generatePaletteBtn"
+                                class="w-full mt-6 px-6 py-4 bg-gradient-to-r from-primary to-blue-500 text-white font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25">
+                                <span class="material-symbols-outlined text-xl">auto_awesome</span>
+                                <span>Generate Palette</span>
+                            </button>
+                            <p id="paletteErrorMessage" class="text-red-500 text-sm mt-2 hidden"></p>
                         </div>
 
-                        <!-- Variation Selector -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2">Variation</label>
-                            <div class="grid grid-cols-3 gap-2">
-                                <button
-                                    class="variation-btn variation-active px-3 py-2 rounded-lg bg-primary text-white font-medium text-xs transition-all"
-                                    data-variation="default">Default</button>
-                                <button
-                                    class="variation-btn px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-all"
-                                    data-variation="pastel">Pastel</button>
-                                <button
-                                    class="variation-btn px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-all"
-                                    data-variation="soft">Soft</button>
-                                <button
-                                    class="variation-btn px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-all"
-                                    data-variation="light">Light</button>
-                                <button
-                                    class="variation-btn px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-all"
-                                    data-variation="hard">Hard</button>
-                                <button
-                                    class="variation-btn px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-all"
-                                    data-variation="pale">Pale</button>
+                        <!-- Palette Results Area -->
+                        <div class="space-y-6 w-full">
+                            <!-- Placeholder when empty -->
+                            <div id="palettePlaceholder"
+                                class="flex flex-col items-center justify-center h-full min-h-[460px] text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
+                                <span class="material-symbols-outlined text-6xl mb-4 opacity-20">palette</span>
+                                <p class="text-lg font-medium opacity-50">Enter a color and click Generate</p>
+                                <p class="text-sm opacity-40">Create stunning color combinations instantly</p>
                             </div>
-                        </div>
 
-                        <!-- Generate Button -->
-                        <button id="generatePaletteBtn"
-                            class="w-full px-6 py-4 bg-gradient-to-r from-primary to-blue-500 text-white font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25">
-                            <span class="material-symbols-outlined text-xl">auto_awesome</span>
-                            <span>Generate Palette</span>
-                        </button>
-                        <p id="paletteErrorMessage" class="text-red-500 text-sm mt-2 hidden"></p>
-                    </div>
-
-                    <!-- Palette Results Area -->
-                    <div class="space-y-6 w-full">
-                        <!-- Placeholder when empty -->
-                        <div id="palettePlaceholder"
-                            class="flex flex-col items-center justify-center h-full min-h-[460px] text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
-                            <span class="material-symbols-outlined text-6xl mb-4 opacity-20">palette</span>
-                            <p class="text-lg font-medium opacity-50">Enter a color and click Generate</p>
-                            <p class="text-sm opacity-40">Create stunning color combinations instantly</p>
-                        </div>
-
-                        <!-- Results Container -->
-                        <div id="paletteResults" class="space-y-6 hidden">
-                            <!-- Generated palettes will appear here -->
+                            <!-- Results Container -->
+                            <div id="paletteResults" class="space-y-6 hidden">
+                                <!-- Generated palettes will appear here -->
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </main>
     </div>
 
