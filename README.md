@@ -4,7 +4,7 @@
 
 A beautiful, fully-featured web application for designers and developers to explore color palettes, find color names from hex codes, and generate professional color schemes using color theory.
 
-![Color Magic](images/full-logo.png)
+![Color Magic](images/roundlogo.png)
 
 ## ✨ Features
 
@@ -42,39 +42,22 @@ Visit: [colormagic.techkreative.com](https://colormagic.techkreative.com)
 
 ```
 colorCodeFinder/
-├── .github/workflows/   # CI/CD deployment
-├── data/                # JSON data files
-│   ├── color-names.json # 300+ color name mappings
-│   └── colors.json      # Curated palette collection
-├── images/              # Logo and assets
-├── index.html           # Main application
-├── manifest.json        # PWA manifest
-├── robots.txt           # SEO
-└── sitemap.xml          # SEO
+├── .github/workflows/   
+├── data/                
+│   ├── color-names.json 
+│   └── colors.json      
+├── images/              
+├── index.html           
+├── manifest.json        
+├── robots.txt           
+└── sitemap.xml          
 ```
 
 ## 🏃 Getting Started
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/colorCodeFinder.git
-   ```
-
-2. Open `index.html` in your browser - no build step required!
-
-## 🚀 Deployment
-
-This project uses GitHub Actions for automated deployment. Push to `main` branch to trigger deployment.
-
-### Setup Secrets
-Add these secrets in your GitHub repository settings:
-- `FTP_SERVER` - Your FTP hostname
-- `FTP_USERNAME` - Your FTP username
-- `FTP_PASSWORD` - Your FTP password
-
-## 📝 License
-
-MIT License - feel free to use this project for your own purposes.
+```bash
+   git clone https://github.com/moeezahmad-tech/Color-Magic.git
+```
 
 ## 🤝 Contributing
 
