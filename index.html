@@ -13,7 +13,6 @@
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="index, follow" />
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://colormagic.techkreative.com/" />
     <meta property="og:title" content="Color Magic | Professional Color Palette Generator & Explorer" />
@@ -21,7 +20,6 @@
         content="Professional color schemes tailored for digital products. Generate, explore, and find the perfect colors for your next design." />
     <meta property="og:image" content="images/full-logo.png" />
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://colormagic.techkreative.com/" />
     <meta property="twitter:title" content="Color Magic | Professional Color Palette Generator & Explorer" />
@@ -29,76 +27,18 @@
         content="Professional color schemes tailored for digital products. Generate, explore, and find the perfect colors for your next design." />
     <meta property="twitter:image" content="images/full-logo.png" />
 
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="images/roundlogo.png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#13a4ec",
-                        "background-light": "#f6f7f8",
-                        "background-dark": "#101c22",
-                    },
-                    fontFamily: {
-                        "display": ["Space Grotesk", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .palette-card:hover .swatch {
-            flex-grow: 2.5;
-        }
-
-        .swatch {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .swatch-hex {
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .swatch:hover .swatch-hex {
-            opacity: 1;
-        }
-
-        /* Ensure Material Symbols render correctly */
-        .material-symbols-outlined {
-            font-family: 'Material Symbols Outlined';
-            font-weight: normal;
-            font-style: normal;
-            font-size: 24px;
-            line-height: 1;
-            letter-spacing: normal;
-            text-transform: none;
-            display: inline-block;
-            white-space: nowrap;
-            word-wrap: normal;
-            direction: ltr;
-            -webkit-font-smoothing: antialiased;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style/style.css">
+    <script id="tailwind-config" src="js/tailwind-config.js"></script>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <!-- Top Navigation Bar -->
     <header
         class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
         <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between gap-8">
@@ -107,28 +47,18 @@
                     <img src="images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain">
                     <h2 class="text-xl font-bold tracking-tight">Color Magic</h2>
                 </div>
-                <!-- 
-                <nav class="hidden md:flex items-center gap-6">
-                    <a class="text-primary text-sm font-semibold border-b-2 border-primary pb-1" href="#">Explore</a>
-                    <a class="text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium"
-                        href="#">Trending</a>
-                    <a class="text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium"
-                        href="#">Collections</a>
-                </nav> 
-                -->
+
             </div>
             <div class="flex flex-1 justify-end items-center gap-4">
-                <!-- Mobile Menu Button -->
                 <button id="mobileMenuBtn"
                     class="lg:hidden p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                    <span class="material-symbols-outlined">menu</span>
+                    <i class="bi bi-list"></i>
                 </button>
             </div>
 
         </div>
     </header>
 
-    <!-- Mobile Menu Overlay -->
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
         <div class="flex items-center justify-between mb-8">
@@ -138,14 +68,14 @@
             </div>
             <button id="closeMobileMenuBtn"
                 class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                <span class="material-symbols-outlined">close</span>
+                <i class="bi bi-x-lg"></i>
             </button>
         </div>
         <div class="space-y-4">
             <button
                 class="nav-btn-mobile w-full flex items-center gap-4 px-4 py-4 rounded-xl bg-primary text-white shadow-lg shadow-primary/20 text-left"
                 data-section="explore">
-                <span class="material-symbols-outlined p-2 bg-white/20 rounded-lg">palette</span>
+                <i class="bi bi-palette p-2 bg-white/20 rounded-lg"></i>
                 <div>
                     <span class="block text-lg font-bold">Explore Palettes</span>
                     <span class="text-sm text-white/70">Browse presets</span>
@@ -154,8 +84,8 @@
             <button
                 class="nav-btn-mobile w-full flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-left group"
                 data-section="find-color">
-                <span
-                    class="material-symbols-outlined p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform">colorize</span>
+                <i
+                    class="bi bi-eyedropper p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform"></i>
                 <div>
                     <span class="block text-lg font-bold">Find Color</span>
                     <span class="text-sm text-slate-500">Hex to name & info</span>
@@ -164,8 +94,8 @@
             <button
                 class="nav-btn-mobile w-full flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-left group"
                 data-section="generate">
-                <span
-                    class="material-symbols-outlined p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform">auto_awesome</span>
+                <i
+                    class="bi bi-stars p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform"></i>
                 <div>
                     <span class="block text-lg font-bold">Generate Palette</span>
                     <span class="text-sm text-slate-500">Create new schemes</span>
@@ -173,41 +103,65 @@
             </button>
         </div>
     </div>
-    <div class="max-w-[1440px] mx-auto flex">
-        <!-- Sidebar Filter -->
-        <aside
-            class="w-64 shrink-0 hidden lg:block sticky top-16 h-[calc(100vh-64px)] overflow-y-auto border-r border-slate-200 dark:border-slate-800 p-6">
-            <div class="space-y-8">
 
-                <!-- Navigation Buttons -->
-                <div>
-                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Navigate</h3>
-                    <div class="space-y-1">
+    <div class="max-w-[1440px] mx-auto flex">
+        <aside
+            class="sidebar w-72 shrink-0 hidden lg:block sticky top-16 h-[calc(100vh-64px)] overflow-y-auto border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+            <div class="p-6 space-y-8">
+
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-1 h-6 bg-primary rounded-full"></div>
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
+                            Features</h3>
+                    </div>
+                    <div class="space-y-2">
                         <button
-                            class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white"
+                            class="nav-btn group w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-blue-500 text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
                             data-section="explore">
-                            <span class="material-symbols-outlined">palette</span>
-                            <span class="text-sm font-bold">Explore Palettes</span>
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
+                                <i class="bi bi-palette text-xl"></i>
+                            </div>
+                            <div class="flex-1 text-left">
+                                <span class="block text-sm font-bold">Explore Palettes</span>
+                                <span class="block text-xs opacity-80">Browse collections</span>
+                            </div>
                         </button>
                         <button
-                            class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            class="nav-btn group w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300 hover:shadow-md"
                             data-section="find-color">
-                            <span class="material-symbols-outlined text-primary">colorize</span>
-                            <span class="text-sm font-medium">Find Color</span>
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
+                                <i class="bi bi-eyedropper text-xl text-primary"></i>
+                            </div>
+                            <div class="flex-1 text-left">
+                                <span class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Find
+                                    Color</span>
+                                <span class="block text-xs text-slate-500 dark:text-slate-400">Hex to name</span>
+                            </div>
                         </button>
                         <button
-                            class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            class="nav-btn group w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300 hover:shadow-md"
                             data-section="generate">
-                            <span class="material-symbols-outlined text-primary">auto_awesome</span>
-                            <span class="text-sm font-medium">Generate Palette</span>
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
+                                <i class="bi bi-stars text-xl text-primary"></i>
+                            </div>
+                            <div class="flex-1 text-left">
+                                <span class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Generate
+                                    Palette</span>
+                                <span class="block text-xs text-slate-500 dark:text-slate-400">Create schemes</span>
+                            </div>
                         </button>
                     </div>
                 </div>
+
             </div>
         </aside>
-        <!-- Main Content Area -->
+
         <main class="flex-1 p-6 md:p-8">
-            <!-- SECTION 1: Find Color -->
+
             <div id="find-color-section" class="hidden flex-col gap-8">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div class="w-full">
@@ -217,31 +171,27 @@
                     </div>
                 </div>
 
-                <!-- Color Input -->
                 <div class="w-full">
                     <div class="flex gap-4">
                         <div class="flex-1 relative">
-                            <span
-                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">colorize</span>
+                            <i
+                                class="bi bi-eyedropper absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl"></i>
                             <input id="colorCodeInput" type="text" placeholder="Enter hex code (e.g., FF5733)"
                                 class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:outline-none transition-colors" />
                         </div>
                         <button id="findColorBtn"
                             class="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
-                            <span class="material-symbols-outlined">search</span>
+                            <i class="bi bi-search"></i>
                             Find Name
                         </button>
                     </div>
                     <p id="errorMessage" class="text-red-500 text-sm mt-2 hidden"></p>
                 </div>
 
-                <!-- Color Results -->
                 <div id="colorResultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
 
-            <!-- SECTION 2: Explore Palettes (Default visible) -->
             <div id="explore-section" class="flex flex-col gap-8">
-                <!-- Page Heading -->
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div class="max-w-2xl">
                         <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Explore Palettes</h1>
@@ -250,17 +200,15 @@
                     </div>
                 </div>
 
-                <!-- Search Bar -->
                 <div class="w-full max-w-xl">
                     <div class="relative group">
-                        <span
-                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl group-focus-within:text-primary transition-colors">search</span>
+                        <i
+                            class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl group-focus-within:text-primary transition-colors"></i>
                         <input id="searchInput"
                             class="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-4 pl-12 pr-6 text-lg focus:border-primary focus:outline-none transition-all shadow-sm placeholder:text-slate-500"
                             placeholder="Search hex, theme or color..." type="text" />
                     </div>
                 </div>
-                <!-- Theme Chips -->
                 <div class="flex flex-wrap gap-2">
                     <button
                         class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20"
@@ -270,44 +218,40 @@
                     <button
                         class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                         data-theme="pastel">
-                        <span class="material-symbols-outlined text-lg">eco</span> Pastel
+                        <i class="bi bi-flower1 text-lg"></i> Pastel
                     </button>
                     <button
                         class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                         data-theme="vintage">
-                        <span class="material-symbols-outlined text-lg">history</span> Vintage
+                        <i class="bi bi-clock-history text-lg"></i> Vintage
                     </button>
                     <button
                         class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                         data-theme="neon">
-                        <span class="material-symbols-outlined text-lg">bolt</span> Neon
+                        <i class="bi bi-lightning-fill text-lg"></i> Neon
                     </button>
                     <button
                         class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                         data-theme="minimalist">
-                        <span class="material-symbols-outlined text-lg">check_circle</span> Minimalist
+                        <i class="bi bi-check-circle text-lg"></i> Minimalist
                     </button>
                     <button
                         class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                         data-theme="earthy">
-                        <span class="material-symbols-outlined text-lg">landscape</span> Earthy
+                        <i class="bi bi-tree text-lg"></i> Earthy
                     </button>
                 </div>
-                <!-- Palette Masonry-style Grid -->
                 <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    <!-- Palettes will be loaded dynamically from colors.json -->
                 </div>
-                <!-- Load More Section -->
                 <div class="flex justify-center py-12">
                     <button id="loadMoreBtn"
                         class="flex items-center gap-2 px-8 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold rounded-xl transition-all hover:scale-105 active:scale-95">
-                        <span class="material-symbols-outlined">expand_more</span>
+                        <i class="bi bi-chevron-down"></i>
                         Load more palettes
                     </button>
                 </div>
             </div>
 
-            <!-- SECTION 3: Generate Palette -->
             <div id="generate-section" class="hidden flex-col gap-8">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div class="max-w-2xl">
@@ -317,15 +261,12 @@
                     </div>
                 </div>
 
-                <!-- Generator Controls -->
                 <div class="grid grid-cols-1 gap-8 items-start w-full">
-                    <!-- Controls -->
                     <div
                         class="space-y-6 bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 h-fit w-full">
-                        <!-- Base Color Input -->
                         <div>
                             <label class="block text-sm font-bold mb-2">Base Color</label>
-                            <div class="flex gap-3">
+                            <div class="flex gap-3 flex-wrap flex-1">
                                 <input id="paletteColorInput" type="text" placeholder="Enter hex code (e.g., FF5733)"
                                     class="flex-1 bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-primary rounded-xl py-3 px-4 text-sm outline-none transition-all placeholder:text-slate-500">
                                 <div id="paletteColorPreview"
@@ -334,7 +275,6 @@
                             </div>
                         </div>
 
-                        <!-- Color Scheme Selector -->
                         <div>
                             <label class="block text-sm font-bold mb-2">Color Scheme</label>
                             <div class="flex flex-wrap gap-2">
@@ -355,1134 +295,37 @@
                                     data-scheme="analogic">Analogic</button>
                             </div>
 
-                            <!-- Generate Button -->
                             <button id="generatePaletteBtn"
                                 class="w-full mt-6 px-6 py-4 bg-gradient-to-r from-primary to-blue-500 text-white font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25">
-                                <span class="material-symbols-outlined text-xl">auto_awesome</span>
+                                <i class="bi bi-stars text-xl"></i>
                                 <span>Generate Palette</span>
                             </button>
                             <p id="paletteErrorMessage" class="text-red-500 text-sm mt-2 hidden"></p>
                         </div>
 
-                        <!-- Palette Results Area -->
                         <div class="space-y-6 w-full">
-                            <!-- Placeholder when empty -->
-                            <div id="palettePlaceholder"
-                                class="flex flex-col items-center justify-center h-full min-h-[460px] text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
-                                <span class="material-symbols-outlined text-6xl mb-4 opacity-20">palette</span>
+                            <div id="palettePlaceholder" 
+                                class="p-6 text-center flex flex-col items-center justify-center h-full min-h-[460px] text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
+                                <i class="bi bi-palette text-6xl mb-4 opacity-20"></i>
                                 <p class="text-lg font-medium opacity-50">Enter a color and click Generate</p>
                                 <p class="text-sm opacity-40">Create stunning color combinations instantly</p>
                             </div>
 
-                            <!-- Results Container -->
                             <div id="paletteResults" class="space-y-6 hidden">
-                                <!-- Generated palettes will appear here -->
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
         </main>
     </div>
 
+    <script src="js/navigation.js"></script>
+    <script src="js/explore-palettes.js"></script>
+    <script src="js/find-color.js"></script>
+    <script src="js/generate-palette.js"></script>
 
-
-
-    <!-- Interactive JavaScript -->
-    <script>
-        // Copy palette colors to clipboard
-        document.querySelectorAll('.copy-palette-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const colors = this.dataset.colors;
-                navigator.clipboard.writeText(colors).then(() => {
-                    // Visual feedback
-                    const icon = this.querySelector('.material-symbols-outlined');
-                    const originalText = icon.textContent;
-                    icon.textContent = 'check';
-                    this.classList.add('text-green-500');
-
-                    setTimeout(() => {
-                        icon.textContent = originalText;
-                        this.classList.remove('text-green-500');
-                    }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy:', err);
-                });
-            });
-        });
-
-        // Like button functionality
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const icon = this.querySelector('.material-symbols-outlined');
-                const countSpan = this.querySelector('.like-count');
-                const currentCount = parseInt(countSpan.textContent.replace('k', '00').replace('.', ''));
-
-                if (this.classList.contains('text-red-500')) {
-                    // Unlike
-                    this.classList.remove('text-red-500');
-                    this.classList.add('text-slate-400');
-                    const newCount = currentCount - 1;
-                    countSpan.textContent = formatCount(newCount);
-                } else {
-                    // Like
-                    this.classList.remove('text-slate-400');
-                    this.classList.add('text-red-500');
-                    const newCount = currentCount + 1;
-                    countSpan.textContent = formatCount(newCount);
-                }
-            });
-        });
-
-        function formatCount(num) {
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'k';
-            }
-            return num.toString();
-        }
-
-        // Search functionality
-        const searchInput = document.getElementById('searchInput');
-        searchInput?.addEventListener('input', function (e) {
-            const query = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('#paletteGrid > div');
-
-            cards.forEach(card => {
-                const tags = card.dataset.tags || '';
-                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const colors = card.querySelectorAll('.swatch-hex');
-                let colorMatch = false;
-
-                colors.forEach(color => {
-                    if (color.textContent.toLowerCase().includes(query)) {
-                        colorMatch = true;
-                    }
-                });
-
-                if (tags.includes(query) || title.includes(query) || colorMatch || query === '') {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        // Sort buttons
-        const newestBtn = document.getElementById('newestBtn');
-        const popularBtn = document.getElementById('popularBtn');
-
-        newestBtn?.addEventListener('click', function () {
-            this.classList.add('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'font-bold');
-            this.classList.remove('font-medium', 'text-slate-500');
-            popularBtn.classList.remove('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'font-bold');
-            popularBtn.classList.add('font-medium', 'text-slate-500');
-            // In a real app, this would sort by date
-        });
-
-        popularBtn?.addEventListener('click', function () {
-            this.classList.add('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'font-bold');
-            this.classList.remove('font-medium', 'text-slate-500');
-            newestBtn.classList.remove('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'font-bold');
-            newestBtn.classList.add('font-medium', 'text-slate-500');
-            // In a real app, this would sort by popularity
-        });
-
-
-        // Theme filter buttons
-        let currentFilter = 'all'; // Track current filter
-        document.querySelectorAll('.theme-filter').forEach(btn => {
-            btn.addEventListener('click', function () {
-                // Update active state
-                document.querySelectorAll('.theme-filter').forEach(b => {
-                    b.classList.remove('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
-                    b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
-                });
-
-                this.classList.add('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
-                this.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
-
-                // Get the selected theme
-                const theme = this.dataset.theme;
-                currentFilter = theme;
-
-                // Clear the grid
-                paletteGrid.innerHTML = '';
-
-                // Filter and display ALL matching palettes
-                let filteredPalettes;
-                if (theme === 'all') {
-                    filteredPalettes = [...allPalettes];
-                } else {
-                    filteredPalettes = allPalettes.filter(palette =>
-                        palette.style.toLowerCase() === theme.toLowerCase()
-                    );
-                }
-
-                // Display all filtered palettes
-                displayedCount = 0;
-                filteredPalettes.forEach(palette => {
-                    const card = createPaletteCard(palette);
-                    paletteGrid.appendChild(card);
-                });
-
-                displayedCount = filteredPalettes.length;
-
-                // Hide/show load more button
-                if (theme === 'all' && displayedCount < allPalettes.length) {
-                    loadMoreBtn.style.display = 'flex';
-                } else {
-                    loadMoreBtn.style.display = 'none';
-                }
-            });
-        });
-
-        // Hue filter buttons (keep original hide/show behavior for these)
-        document.querySelectorAll('.hue-filter').forEach(btn => {
-            btn.addEventListener('click', function () {
-                // Update active state
-                document.querySelectorAll('.hue-filter').forEach(b => {
-                    b.classList.remove('bg-primary/10', 'text-primary');
-                    b.querySelector('span:last-child').classList.remove('font-bold');
-                    b.querySelector('span:last-child').classList.add('font-medium');
-                });
-
-                this.classList.add('bg-primary/10', 'text-primary');
-                this.querySelector('span:last-child').classList.remove('font-medium');
-                this.querySelector('span:last-child').classList.add('font-bold');
-
-                // Filter palettes by hue
-                const hue = this.dataset.hue;
-                const cards = document.querySelectorAll('#paletteGrid > div');
-
-                cards.forEach(card => {
-                    const tags = (card.dataset.tags || '').toLowerCase();
-                    if (tags.includes(hue)) {
-                        card.style.display = 'flex';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-
-        // ========== DYNAMIC PALETTE LOADING SYSTEM ==========
-        // Embedded palette data for file:// protocol compatibility
-        const EMBEDDED_PALETTES = [{ "style": "Eco", "name": "Forest Breath", "colors": ["#1B5E20", "#2E7D32", "#66BB6A", "#C8E6C9"] }, { "style": "Eco", "name": "Moss Valley", "colors": ["#2F3E1F", "#4F6F52", "#739072", "#D2E3C8"] }, { "style": "Eco", "name": "Green Canopy", "colors": ["#0B3D2E", "#145A32", "#1E8449", "#A9DFBF"] }, { "style": "Eco", "name": "Leaf Dew", "colors": ["#3A5A40", "#588157", "#A3B18A", "#DAD7CD"] }, { "style": "Eco", "name": "Nature Core", "colors": ["#344E41", "#3A5A40", "#588157", "#A3B18A"] }, { "style": "Pastel", "name": "Cotton Candy", "colors": ["#FFCAD4", "#F4ACB7", "#9D8189", "#FFE5EC"] }, { "style": "Pastel", "name": "Soft Bloom", "colors": ["#FADADD", "#E6E6FA", "#D0F0C0", "#FFF1B6"] }, { "style": "Pastel", "name": "Cloud Kiss", "colors": ["#E0FBFC", "#CDB4DB", "#FFC8DD", "#FFAFCC"] }, { "style": "Pastel", "name": "Dream Dust", "colors": ["#F1FAEE", "#E9EDC9", "#FAEDCD", "#FFE1A8"] }, { "style": "Pastel", "name": "Powder Sky", "colors": ["#D6ECFA", "#E4C1F9", "#FDE2E4", "#CDEAC0"] }, { "style": "Vintage", "name": "Old Paper", "colors": ["#6F4E37", "#A47148", "#D2B48C", "#EFE1C6"] }, { "style": "Vintage", "name": "Retro Cafe", "colors": ["#5F0F40", "#9A031E", "#E36414", "#FB8B24"] }, { "style": "Vintage", "name": "Antique Rose", "colors": ["#7A4A47", "#B76E79", "#E6A4B4", "#FADADD"] }, { "style": "Vintage", "name": "Rustic Frame", "colors": ["#3A2D28", "#6F4E37", "#A98467", "#DDB892"] }, { "style": "Vintage", "name": "Sepia Tone", "colors": ["#704214", "#A67B5B", "#C19A6B", "#E6CCB2"] }, { "style": "Neon", "name": "Electric Punch", "colors": ["#00F5D4", "#F72585", "#7209B7", "#FFD60A"] }, { "style": "Neon", "name": "Cyber City", "colors": ["#00FFFF", "#FF00FF", "#39FF14", "#FF3131"] }, { "style": "Neon", "name": "Laser Pop", "colors": ["#FE019A", "#08F7FE", "#F5D300", "#7CFF01"] }, { "style": "Neon", "name": "Night Arcade", "colors": ["#3A0CA3", "#7209B7", "#F72585", "#4CC9F0"] }, { "style": "Neon", "name": "Voltage", "colors": ["#FF6EC7", "#FFD300", "#00FFAB", "#1F51FF"] }, { "style": "Minimalist", "name": "Soft Gray", "colors": ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#CED4DA"] }, { "style": "Minimalist", "name": "Ink Wash", "colors": ["#0D1117", "#161B22", "#21262D", "#30363D"] }, { "style": "Minimalist", "name": "Mono Light", "colors": ["#FFFFFF", "#F5F5F5", "#E0E0E0", "#BDBDBD"] }, { "style": "Minimalist", "name": "Stone Calm", "colors": ["#FAFAFA", "#EAEAEA", "#CFCFCF", "#A3A3A3"] }, { "style": "Minimalist", "name": "Bare UI", "colors": ["#111111", "#222222", "#444444", "#777777"] }, { "style": "Earthy", "name": "Desert Clay", "colors": ["#7F5539", "#9C6644", "#B08968", "#DDB892", "#EDE0D4"] }, { "style": "Earthy", "name": "Canyon Rock", "colors": ["#5A3E2B", "#8D6E63", "#BCAAA4", "#EFEBE9"] }, { "style": "Earthy", "name": "Autumn Field", "colors": ["#6A994E", "#A7C957", "#BC6C25", "#DDA15E"] }, { "style": "Earthy", "name": "Soil & Sky", "colors": ["#3A5A40", "#588157", "#A3B18A", "#E0E1DD"] }, { "style": "Earthy", "name": "Warm Ground", "colors": ["#4E342E", "#6D4C41", "#A1887F", "#D7CCC8"] }, { "style": "Earthy", "name": "Dry Leaves", "colors": ["#8C6A4A", "#C19A6B", "#E6CCB2", "#F5E6CC"] }, { "style": "Pastel", "name": "Milk Tea", "colors": ["#F3E5D8", "#EADBC8", "#DAC0A3", "#C8AE7D"] }, { "style": "Vintage", "name": "Old Library", "colors": ["#2E1F1B", "#4E342E", "#8D6E63", "#D7CCC8"] }, { "style": "Minimalist", "name": "Paper White", "colors": ["#FFFFFF", "#FAFAFA", "#F0F0F0", "#DADADA"] }, { "style": "Neon", "name": "Glow Stick", "colors": ["#CCFF00", "#FF0099", "#00E5FF", "#8AFF00"] }, { "style": "Eco", "name": "Rainforest Floor", "colors": ["#1F3D2B", "#2D5A3E", "#4F7F5C", "#A8C3A0"] }, { "style": "Eco", "name": "Bamboo Shade", "colors": ["#3E5F3E", "#6B8E23", "#9ACD32", "#DFF2BF"] }, { "style": "Eco", "name": "Herbal Mist", "colors": ["#4C6A49", "#7A9B76", "#B5CDB8", "#E6F4EA"] }, { "style": "Eco", "name": "Wet Fern", "colors": ["#163832", "#245C4E", "#3A7F6A", "#B7E4C7"] }, { "style": "Eco", "name": "Wild Meadow", "colors": ["#567D46", "#7FB069", "#BFD8AF", "#E6EFE9"] }, { "style": "Pastel", "name": "Baby Sky", "colors": ["#EAF4F4", "#CCE3DE", "#A4C3B2", "#6B9080"] }, { "style": "Pastel", "name": "Lilac Sugar", "colors": ["#F2E9E4", "#EAD5DC", "#D6C1E8", "#CDB4DB"] }, { "style": "Pastel", "name": "Peach Foam", "colors": ["#FFE5D9", "#FFCAD4", "#F4ACB7", "#9D8189"] }, { "style": "Pastel", "name": "Mint Cream", "colors": ["#E8F8F5", "#CFF5E7", "#A0E7E5", "#B4F8C8"] }, { "style": "Pastel", "name": "Vanilla Drop", "colors": ["#FFF8E7", "#FCEED1", "#F3D8AE", "#EAC696"] }, { "style": "Vintage", "name": "Dusty Record", "colors": ["#4A403A", "#7E6A52", "#BFA58A", "#E4D6C3"] }, { "style": "Vintage", "name": "Typewriter Ink", "colors": ["#2B2B2B", "#4F4F4F", "#7A7A7A", "#C2C2C2"] }, { "style": "Vintage", "name": "Rust & Linen", "colors": ["#8C2F39", "#BF4342", "#E7C8A0", "#F5EFE6"] }, { "style": "Vintage", "name": "Old Map", "colors": ["#6B4226", "#A67C52", "#C9AD7F", "#EFE1C6"] }, { "style": "Vintage", "name": "Vinyl Brown", "colors": ["#3B2F2F", "#5C4033", "#8B6F47", "#D2B48C"] }, { "style": "Neon", "name": "Plasma Shock", "colors": ["#FF00FF", "#00FFFF", "#FFFF00", "#FF4500"] }, { "style": "Neon", "name": "Hyper Drive", "colors": ["#1F51FF", "#00FFEA", "#FF1E56", "#FFD300"] }, { "style": "Neon", "name": "Night Signal", "colors": ["#6A00FF", "#B5179E", "#F72585", "#4CC9F0"] }, { "style": "Neon", "name": "Digital Rave", "colors": ["#39FF14", "#FF073A", "#00B3FF", "#F5F749"] }, { "style": "Neon", "name": "Shockwave", "colors": ["#FF3131", "#7CFF00", "#00E5FF", "#FF9F1C"] }, { "style": "Minimalist", "name": "Soft Ash", "colors": ["#F5F5F5", "#E0E0E0", "#BDBDBD", "#9E9E9E"] }, { "style": "Minimalist", "name": "Night Slate", "colors": ["#0F0F0F", "#1A1A1A", "#2E2E2E", "#444444"] }, { "style": "Minimalist", "name": "Fog Layer", "colors": ["#FAFAFA", "#EEEEEE", "#D6D6D6", "#B0B0B0"] }, { "style": "Minimalist", "name": "Steel Line", "colors": ["#2B2B2B", "#3C3C3C", "#5A5A5A", "#8A8A8A"] }, { "style": "Minimalist", "name": "Quiet UI", "colors": ["#121212", "#1E1E1E", "#2A2A2A", "#3F3F3F"] }, { "style": "Earthy", "name": "Red Clay", "colors": ["#7B3F00", "#A0522D", "#C68642", "#E6C79C"] }, { "style": "Earthy", "name": "Mountain Path", "colors": ["#3D405B", "#6D6875", "#B5838D", "#E5989B"] }, { "style": "Earthy", "name": "Olive Dust", "colors": ["#5F6F52", "#A9B388", "#DAD7CD", "#FEFAE0"] }, { "style": "Earthy", "name": "Sunbaked Soil", "colors": ["#6F1D1B", "#BB9457", "#E6B89C", "#F2E8CF"] }, { "style": "Earthy", "name": "Dry Canyon", "colors": ["#8D5524", "#C68642", "#E0AC69", "#F1C27D"] }, { "style": "Eco", "name": "Pine Shadow", "colors": ["#1C352D", "#3A5F4B", "#6B9071", "#C7EDE6"] }, { "style": "Eco", "name": "Green Stream", "colors": ["#2D6A4F", "#40916C", "#74C69D", "#D8F3DC"] }, { "style": "Eco", "name": "Woodland Fog", "colors": ["#3E4E3E", "#6A7F6A", "#A4B494", "#E8F1E4"] }, { "style": "Eco", "name": "Natural Spring", "colors": ["#52796F", "#84A98C", "#CAD2C5", "#EAF4F4"] }, { "style": "Eco", "name": "Herb Garden", "colors": ["#4F772D", "#90A955", "#ECF39E", "#F7FFE5"] }, { "style": "Eco", "name": "Shaded Grove", "colors": ["#344E41", "#588157", "#A3B18A", "#DAD7CD"] }, { "style": "Eco", "name": "Fern Creek", "colors": ["#386641", "#6A994E", "#A7C957", "#F2E8CF"] }, { "style": "Eco", "name": "Earth Pulse", "colors": ["#283618", "#606C38", "#BC6C25", "#FEFAE0"] }, { "style": "Eco", "name": "River Moss", "colors": ["#1B4332", "#2D6A4F", "#95D5B2", "#D8F3DC"] }, { "style": "Eco", "name": "Wild Roots", "colors": ["#3A5A40", "#588157", "#A3B18A", "#F1FAEE"] }, { "style": "Pastel", "name": "Pink Cloud", "colors": ["#FFE5EC", "#FFCAD4", "#F4ACB7", "#9D8189"] }, { "style": "Pastel", "name": "Blue Marshmallow", "colors": ["#E3F2FD", "#BBDEFB", "#90CAF9", "#E1F5FE"] }, { "style": "Pastel", "name": "Lavender Milk", "colors": ["#F3E8FF", "#E9D5FF", "#D8B4FE", "#F5F3FF"] }, { "style": "Pastel", "name": "Soft Pistachio", "colors": ["#E6F4EA", "#CDEAC0", "#B8E0D2", "#F0FDF4"] }, { "style": "Pastel", "name": "Peony Blush", "colors": ["#FADADD", "#FBC4AB", "#FFB5A7", "#FFF0F3"] }, { "style": "Pastel", "name": "Butter Cream", "colors": ["#FFF7D6", "#FEEFB3", "#FCE38A", "#FFFBEA"] }, { "style": "Pastel", "name": "Sky Sorbet", "colors": ["#E0FBFC", "#C2DFE3", "#9DB4C0", "#F1FAFF"] }, { "style": "Pastel", "name": "Rose Water", "colors": ["#F8EDEB", "#FCD5CE", "#FEC89A", "#FFF1E6"] }, { "style": "Pastel", "name": "Mint Whisper", "colors": ["#ECFDF5", "#D1FAE5", "#A7F3D0", "#F0FDFA"] }, { "style": "Pastel", "name": "Sugar Plum", "colors": ["#F5E1FD", "#E4C1F9", "#D0BFFF", "#FAF5FF"] }, { "style": "Vintage", "name": "Old Journal", "colors": ["#4E342E", "#795548", "#A1887F", "#EFEBE9"] }, { "style": "Vintage", "name": "Rust Ledger", "colors": ["#6F1D1B", "#99582A", "#BB9457", "#FFE6A7"] }, { "style": "Vintage", "name": "Antique Teal", "colors": ["#003D3C", "#2F5D62", "#5E8B7E", "#CBE4DE"] }, { "style": "Vintage", "name": "Faded Indigo", "colors": ["#2C2F4A", "#4A4E69", "#9A8C98", "#F2E9E4"] }, { "style": "Vintage", "name": "Copper Plate", "colors": ["#7C2D12", "#9A3412", "#C2410C", "#FED7AA"] }, { "style": "Vintage", "name": "Dusty Olive", "colors": ["#4A5D23", "#7A8450", "#B2B78B", "#ECEED1"] }, { "style": "Vintage", "name": "Old Velvet", "colors": ["#3D1A2B", "#6D2E46", "#A26769", "#E9C46A"] }, { "style": "Vintage", "name": "Cigar Box", "colors": ["#3A1F04", "#6F4E37", "#A47148", "#E6CCB2"] }, { "style": "Vintage", "name": "Museum Wall", "colors": ["#5A5A5A", "#8C8C8C", "#BFBFBF", "#EFEFEF"] }, { "style": "Vintage", "name": "Sepia Archive", "colors": ["#704214", "#8D6E63", "#C7B198", "#F5EFE6"] }, { "style": "Neon", "name": "Ultra Violet", "colors": ["#7F00FF", "#E100FF", "#00E5FF", "#FFE600"] }, { "style": "Neon", "name": "Night Pulse", "colors": ["#00FFEA", "#FF006E", "#8338EC", "#3A86FF"] }, { "style": "Neon", "name": "Laser Grid", "colors": ["#39FF14", "#FF073A", "#00FFFF", "#F5F749"] }, { "style": "Neon", "name": "Electric Lotus", "colors": ["#FF61F6", "#845EC2", "#00C9A7", "#FFC75F"] }, { "style": "Neon", "name": "Synth Drive", "colors": ["#1F51FF", "#FF00FF", "#00FF85", "#FFD300"] }, { "style": "Neon", "name": "Pixel Heat", "colors": ["#FF0054", "#FFBD00", "#00F5D4", "#7209B7"] }, { "style": "Neon", "name": "Glow Circuit", "colors": ["#08F7FE", "#FE53BB", "#F5D300", "#00FF41"] }, { "style": "Neon", "name": "Arcade Flash", "colors": ["#FF3131", "#1F51FF", "#39FF14", "#F5F749"] }, { "style": "Neon", "name": "Plasma Road", "colors": ["#00B3FF", "#B5179E", "#F72585", "#4CC9F0"] }, { "style": "Neon", "name": "Nova Shock", "colors": ["#FF6EC7", "#FFD300", "#00FFAB", "#7CFF00"] }, { "style": "Minimalist", "name": "Clear Space", "colors": ["#FFFFFF", "#F6F6F6", "#E5E5E5", "#CCCCCC"] }, { "style": "Minimalist", "name": "Dark Silence", "colors": ["#0A0A0A", "#1A1A1A", "#2A2A2A", "#3A3A3A"] }, { "style": "Minimalist", "name": "Soft Steel", "colors": ["#EDEDED", "#D6D6D6", "#B0B0B0", "#8A8A8A"] }, { "style": "Minimalist", "name": "Neutral Line", "colors": ["#F9FAFB", "#E5E7EB", "#9CA3AF", "#6B7280"] }, { "style": "Minimalist", "name": "Ink Minimal", "colors": ["#111827", "#1F2933", "#374151", "#6B7280"] }, { "style": "Minimalist", "name": "White Noise", "colors": ["#FAFAFA", "#F0F0F0", "#DADADA", "#B5B5B5"] }, { "style": "Minimalist", "name": "Stone Edge", "colors": ["#ECECEC", "#D1D1D1", "#A8A8A8", "#7F7F7F"] }, { "style": "Minimalist", "name": "Mono Depth", "colors": ["#0E0E0E", "#1C1C1C", "#2A2A2A", "#4A4A4A"] }, { "style": "Minimalist", "name": "UI Calm", "colors": ["#F5F7FA", "#E4E7EB", "#CBD2D9", "#9AA5B1"] }, { "style": "Minimalist", "name": "Graphite", "colors": ["#2F2F2F", "#4B4B4B", "#6F6F6F", "#A3A3A3"] }, { "style": "Earthy", "name": "Clay Horizon", "colors": ["#8D5524", "#C68642", "#E0AC69", "#F1C27D"] }, { "style": "Earthy", "name": "Olive Trail", "colors": ["#556B2F", "#6B8E23", "#BDB76B", "#EEEED1"] }, { "style": "Earthy", "name": "Terracotta Wind", "colors": ["#7B2D26", "#A44A3F", "#D4A373", "#FAEDCD"] }, { "style": "Earthy", "name": "Dry Savannah", "colors": ["#BC6C25", "#DDA15E", "#FEFAE0", "#CCD5AE"] }, { "style": "Earthy", "name": "Stone Valley", "colors": ["#4A4A48", "#6E6E6A", "#A8A8A2", "#E5E5E0"] }, { "style": "Eco", "name": "Cedar Mist", "colors": ["#2F3E46", "#52796F", "#84A98C", "#CAD2C5"] }, { "style": "Eco", "name": "Forest Creek", "colors": ["#1B4332", "#40916C", "#74C69D", "#B7E4C7"] }, { "style": "Eco", "name": "Green Hollow", "colors": ["#344E41", "#3A5A40", "#588157", "#A3B18A"] }, { "style": "Eco", "name": "Misty Pines", "colors": ["#283618", "#606C38", "#A3B18A", "#FEFAE0"] }, { "style": "Eco", "name": "Leafy Trail", "colors": ["#386641", "#6A994E", "#A7C957", "#F2E8CF"] }, { "style": "Eco", "name": "River Canopy", "colors": ["#0B3C49", "#1C6E8C", "#6FB1BF", "#D6F2F5"] }, { "style": "Eco", "name": "Willow Shade", "colors": ["#3E5C3A", "#6A8F5F", "#A3C1A3", "#E2EFE2"] }, { "style": "Eco", "name": "Fern Basin", "colors": ["#1E3F20", "#3B7A57", "#7FB77E", "#E8F5E9"] }, { "style": "Eco", "name": "Nature Pulse", "colors": ["#31572C", "#4F772D", "#90A955", "#ECF39E"] }, { "style": "Eco", "name": "Deep Grove", "colors": ["#081C15", "#1B4332", "#52B788", "#D8F3DC"] }, { "style": "Pastel", "name": "Rose Milk", "colors": ["#FFF1F2", "#FFE4E6", "#FECDD3", "#FDA4AF"] }, { "style": "Pastel", "name": "Baby Mint", "colors": ["#ECFEFF", "#CFFAFE", "#A5F3FC", "#E0F7FA"] }, { "style": "Pastel", "name": "Peach Snow", "colors": ["#FFF5F0", "#FFE0D3", "#FFB7A5", "#FFD6C9"] }, { "style": "Pastel", "name": "Lilac Fog", "colors": [" #F5F3FF", "#EDE9FE", "#DDD6FE", "#E9D5FF"] }, { "style": "Pastel", "name": "Cream Soda", "colors": ["#FFF9E6", "#FFF1B8", "#FFE08A", "#FFF7CC"] }, { "style": "Pastel", "name": "Blue Powder", "colors": ["#F0F8FF", "#D6ECFA", "#B3DDF2", "#E8F4FA"] }, { "style": "Pastel", "name": "Strawberry Foam", "colors": ["#FFE5EC", "#FFCAD4", "#FFB3C6", "#FFF0F5"] }, { "style": "Pastel", "name": "Soft Lemon", "colors": ["#FFFDE7", "#FFF9C4", "#FFF59D", "#FFFBEA"] }, { "style": "Pastel", "name": "Minty Cloud", "colors": ["#F0FDFA", "#CCFBF1", "#99F6E4", "#E6FFFA"] }, { "style": "Pastel", "name": "Vanilla Sky", "colors": ["#FFFBEB", "#FEF3C7", "#FDE68A", "#FFFCF2"] }, { "style": "Vintage", "name": "Old Canvas", "colors": ["#3E2723", "#6D4C41", "#A1887F", "#D7CCC8"] }, { "style": "Vintage", "name": "Faded Brick", "colors": ["#6A040F", "#9D0208", "#D00000", "#E85D04"] }, { "style": "Vintage", "name": "Classic Olive", "colors": ["#3A4F23", "#6B705C", "#A5A58D", "#FFE8D6"] }, { "style": "Vintage", "name": "Old Harbor", "colors": ["#003049", "#3A5A40", "#A3B18A", "#E0E1DD"] }, { "style": "Vintage", "name": "Leather Bound", "colors": ["#432818", "#99582A", "#BB9457", "#FFE6A7"] }, { "style": "Vintage", "name": "Museum Sepia", "colors": ["#5A3825", "#8C5E3C", "#C8AD7F", "#EFE1C6"] }, { "style": "Vintage", "name": "Dusty Navy", "colors": ["#1D3557", "#457B9D", "#A8DADC", "#F1FAEE"] }, { "style": "Vintage", "name": "Pressed Flower", "colors": ["#6D6875", "#B5838D", "#E5989B", "#FFD6E0"] }, { "style": "Vintage", "name": "Old Ledger", "colors": ["#2F2F2F", "#5A5A5A", "#A3A3A3", "#E6E6E6"] }, { "style": "Vintage", "name": "Copper Archive", "colors": ["#7C2D12", "#B45309", "#D97706", "#FED7AA"] }, { "style": "Neon", "name": "Flux Mode", "colors": ["#00FFEA", "#FF0054", "#9B5DE5", "#FEE440"] }, { "style": "Neon", "name": "Neon Drift", "colors": ["#08F7FE", "#FE53BB", "#F5D300", "#00FF41"] }, { "style": "Neon", "name": "Cyber Bloom", "colors": ["#FF00C8", "#00F5FF", "#7CFF00", "#FFD300"] }, { "style": "Neon", "name": "Pulse Track", "colors": ["#1F51FF", "#FF3131", "#39FF14", "#F5F749"] }, { "style": "Neon", "name": "After Dark", "colors": ["#3A0CA3", "#7209B7", "#F72585", "#4CC9F0"] }, { "style": "Neon", "name": "Night Sprint", "colors": ["#FF6EC7", "#00E5FF", "#FFD300", "#7CFF00"] }, { "style": "Neon", "name": "Laser Wave", "colors": ["#00FFFF", "#FF00FF", "#FFFF00", "#1F51FF"] }, { "style": "Neon", "name": "Voltage Rush", "colors": ["#FF073A", "#39FF14", "#00B3FF", "#F5F749"] }, { "style": "Neon", "name": "Synth Glow", "colors": ["#845EC2", "#FF6F91", "#00C9A7", "#FFC75F"] }, { "style": "Neon", "name": "Midnight Neon", "colors": ["#240046", "#5A189A", "#F72585", "#4CC9F0"] }, { "style": "Minimalist", "name": "Paper Gray", "colors": ["#FAFAFA", "#EAEAEA", "#D1D1D1", "#B0B0B0"] }, { "style": "Minimalist", "name": "Silent Dark", "colors": ["#0B0B0B", "#1A1A1A", "#2C2C2C", "#3D3D3D"] }, { "style": "Minimalist", "name": "Clean Slate", "colors": ["#FFFFFF", "#F3F4F6", "#E5E7EB", "#9CA3AF"] }, { "style": "Minimalist", "name": "Steel Mist", "colors": ["#E5E5E5", "#CFCFCF", "#A8A8A8", "#808080"] }, { "style": "Minimalist", "name": "Deep Mono", "colors": ["#111111", "#222222", "#333333", "#555555"] }, { "style": "Minimalist", "name": "Soft Carbon", "colors": ["#F7F7F7", "#E1E1E1", "#BDBDBD", "#9E9E9E"] }, { "style": "Minimalist", "name": "UI Shadow", "colors": ["#121212", "#1F1F1F", "#2B2B2B", "#3F3F3F"] }, { "style": "Minimalist", "name": "Bare Minimum", "colors": ["#FDFDFD", "#F1F1F1", "#D9D9D9", "#BFBFBF"] }, { "style": "Minimalist", "name": "Flat Graphite", "colors": ["#2E2E2E", "#444444", "#666666", "#999999"] }, { "style": "Minimalist", "name": "Neutral Base", "colors": ["#F9FAFB", "#E5E7EB", "#CBD5E1", "#94A3B8"] }, { "style": "Earthy", "name": "Sun Dried Clay", "colors": ["#9C6644", "#B08968", "#DDB892", "#EDE0D4"] }, { "style": "Earthy", "name": "Field Stone", "colors": ["#4A4A4A", "#6E6E6E", "#A3A3A3", "#E0E0E0"] }, { "style": "Earthy", "name": "Olive Ridge", "colors": ["#556B2F", "#7A8450", "#B2B78B", "#ECEED1"] }, { "style": "Earthy", "name": "Dust Road", "colors": ["#6F1D1B", "#99582A", "#BB9457", "#FFE6A7"] }, { "style": "Earthy", "name": "Stone & Sand", "colors": ["#7D7461", "#B6AD90", "#DAD7CD", "#F5F5F0"] }, { "style": "Eco", "name": "Evergreen Mist", "colors": ["#1E2F23", "#3A5A40", "#588157", "#A3B18A"] }, { "style": "Eco", "name": "Pine Needle", "colors": ["#283618", "#606C38", "#A7C957", "#F2E8CF"] }, { "style": "Eco", "name": "Green Horizon", "colors": ["#2D6A4F", "#40916C", "#95D5B2", "#D8F3DC"] }, { "style": "Eco", "name": "Woodland Air", "colors": ["#344E41", "#52796F", "#84A98C", "#CAD2C5"] }, { "style": "Eco", "name": "Mossy Bark", "colors": ["#1B4332", "#2D6A4F", "#74C69D", "#B7E4C7"] }, { "style": "Eco", "name": "River Fern", "colors": ["#0B3C49", "#1C6E8C", "#6FB1BF", "#E0FBFC"] }, { "style": "Eco", "name": "Leaf Current", "colors": ["#31572C", "#4F772D", "#90A955", "#ECF39E"] }, { "style": "Eco", "name": "Canopy Light", "colors": ["#3A5F0B", "#6B8E23", "#9ACD32", "#EAF4D3"] }, { "style": "Eco", "name": "Nature Dew", "colors": ["#386641", "#6A994E", "#A7C957", "#F2E8CF"] }, { "style": "Eco", "name": "Wild Sprout", "colors": ["#2F3E46", "#52796F", "#84A98C", "#EDF6F9"] }, { "style": "Pastel", "name": "Blush Breeze", "colors": ["#FFE5EC", "#FFCAD4", "#F4ACB7", "#FFF0F3"] }, { "style": "Pastel", "name": "Sky Milk", "colors": ["#F0F8FF", "#D6ECFA", "#B3DDF2", "#EAF6FF"] }, { "style": "Pastel", "name": "Lavender Ice", "colors": ["#F5F3FF", "#EDE9FE", "#DDD6FE", "#FAF5FF"] }, { "style": "Pastel", "name": "Peach Mist", "colors": ["#FFF1E6", "#FFD6C9", "#FFB7A5", "#FFEFE6"] }, { "style": "Pastel", "name": "Mint Creamer", "colors": ["#ECFDF5", "#D1FAE5", "#A7F3D0", "#F0FDFA"] }, { "style": "Pastel", "name": "Butter Cloud", "colors": ["#FFFBEA", "#FFF3C4", "#FDE68A", "#FFFDF5"] }, { "style": "Pastel", "name": "Rose Powder", "colors": ["#FADADD", "#FBC4AB", "#FFB5A7", "#FFF1F2"] }, { "style": "Pastel", "name": "Soft Aqua", "colors": ["#E0FBFC", "#C2DFE3", "#9DB4C0", "#F1FAFF"] }, { "style": "Pastel", "name": "Lilac Snow", "colors": ["#F3E8FF", "#E9D5FF", "#D8B4FE", "#FAF5FF"] }, { "style": "Pastel", "name": "Vanilla Foam", "colors": ["#FFFBEB", "#FEF3C7", "#FDE68A", "#FFFCF2"] }, { "style": "Vintage", "name": "Old Sepia", "colors": ["#5A3825", "#8C5E3C", "#C8AD7F", "#EFE1C6"] }, { "style": "Vintage", "name": "Classic Leather", "colors": ["#432818", "#99582A", "#BB9457", "#FFE6A7"] }, { "style": "Vintage", "name": "Dusty Navy", "colors": ["#1D3557", "#457B9D", "#A8DADC", "#F1FAEE"] }, { "style": "Vintage", "name": "Pressed Linen", "colors": ["#6F6A5F", "#A5A58D", "#FFE8D6", "#F7F3E9"] }, { "style": "Vintage", "name": "Copper Tone", "colors": ["#7C2D12", "#9A3412", "#C2410C", "#FED7AA"] }, { "style": "Vintage", "name": "Old Ink", "colors": ["#2B2B2B", "#4F4F4F", "#7A7A7A", "#C2C2C2"] }, { "style": "Vintage", "name": "Heritage Green", "colors": ["#3A4F23", "#6B705C", "#A5A58D", "#FFE8D6"] }, { "style": "Vintage", "name": "Faded Rose", "colors": ["#6D2E46", "#A26769", "#E9C46A", "#F4A261"] }, { "style": "Vintage", "name": "Antique Paper", "colors": ["#EFE1C6", "#D6CFC4", "#BFB8AA", "#A89F91"] }, { "style": "Vintage", "name": "Museum Stone", "colors": ["#5A5A5A", "#8C8C8C", "#BFBFBF", "#EFEFEF"] }, { "style": "Neon", "name": "Plasma Grid", "colors": ["#00FFFF", "#FF00FF", "#FFD300", "#1F51FF"] }, { "style": "Neon", "name": "Night Voltage", "colors": ["#FF3131", "#39FF14", "#00E5FF", "#F5F749"] }, { "style": "Neon", "name": "Cyber Pop", "colors": ["#FF00C8", "#00F5FF", "#7CFF00", "#FFD300"] }, { "style": "Neon", "name": "Laser Bloom", "colors": ["#FE53BB", "#08F7FE", "#F5D300", "#00FF41"] }, { "style": "Neon", "name": "Arcade Night", "colors": ["#3A0CA3", "#7209B7", "#F72585", "#4CC9F0"] }, { "style": "Neon", "name": "Pulse City", "colors": ["#1F51FF", "#FF0054", "#00FFEA", "#FEE440"] }, { "style": "Neon", "name": "Neon Spark", "colors": ["#FF6EC7", "#FFD300", "#00FFAB", "#7CFF00"] }, { "style": "Neon", "name": "Electric Core", "colors": ["#7F00FF", "#E100FF", "#00E5FF", "#FFE600"] }, { "style": "Neon", "name": "Digital Storm", "colors": ["#39FF14", "#FF073A", "#00B3FF", "#F5F749"] }, { "style": "Neon", "name": "Midnight Flux", "colors": ["#240046", "#5A189A", "#9D4EDD", "#4CC9F0"] }, { "style": "Minimalist", "name": "Quiet White", "colors": ["#FFFFFF", "#F7F7F7", "#E5E5E5", "#CCCCCC"] }, { "style": "Minimalist", "name": "Soft Graphite", "colors": ["#2E2E2E", "#444444", "#666666", "#999999"] }, { "style": "Minimalist", "name": "Clear UI", "colors": ["#F9FAFB", "#E5E7EB", "#CBD5E1", "#94A3B8"] }, { "style": "Minimalist", "name": "Dark Minimal", "colors": ["#0D0D0D", "#1A1A1A", "#2A2A2A", "#3D3D3D"] }, { "style": "Minimalist", "name": "Slate Calm", "colors": ["#ECECEC", "#D1D1D1", "#A8A8A8", "#7F7F7F"] }, { "style": "Minimalist", "name": "Mono Air", "colors": ["#FAFAFA", "#F0F0F0", "#DADADA", "#B5B5B5"] }, { "style": "Minimalist", "name": "Carbon Line", "colors": ["#111111", "#222222", "#333333", "#555555"] }, { "style": "Minimalist", "name": "Neutral Flow", "colors": ["#F5F7FA", "#E4E7EB", "#CBD2D9", "#9AA5B1"] }, { "style": "Minimalist", "name": "Blank Canvas", "colors": ["#FDFDFD", "#F1F1F1", "#D9D9D9", "#BFBFBF"] }, { "style": "Minimalist", "name": "Steel Base", "colors": ["#EDEDED", "#D6D6D6", "#B0B0B0", "#8A8A8A"] }, { "style": "Earthy", "name": "Clay Plain", "colors": ["#9C6644", "#B08968", "#DDB892", "#EDE0D4"] }, { "style": "Earthy", "name": "Dry Field", "colors": ["#6F1D1B", "#99582A", "#BB9457", "#FFE6A7"] }, { "style": "Earthy", "name": "Stone Ridge", "colors": ["#4A4A48", "#6E6E6E", "#A3A3A3", "#E0E0E0"] }, { "style": "Earthy", "name": "Olive Dust", "colors": ["#556B2F", "#7A8450", "#B2B78B", "#ECEED1"] }, { "style": "Earthy", "name": "Warm Soil", "colors": ["#7B2D26", "#A44A3F", "#D4A373", "#FAEDCD"] }];
-
-        let allPalettes = [];
-
-        let displayedCount = 0;
-        const palettesPerLoad = 12; // Load 12 palettes at a time
-        const paletteGrid = document.getElementById('paletteGrid');
-        const loadMoreBtn = document.getElementById('loadMoreBtn');
-
-        // Color Names Database - Embedded for file:// protocol compatibility
-        const EMBEDDED_COLOR_NAMES = { "000000": "Black", "ffffff": "White", "ff0000": "Red", "00ff00": "Lime", "0000ff": "Blue", "ffff00": "Yellow", "00ffff": "Cyan", "ff00ff": "Magenta", "c0c0c0": "Silver", "808080": "Gray", "800000": "Maroon", "808000": "Olive", "008000": "Green", "800080": "Purple", "008080": "Teal", "000080": "Navy", "f0f8ff": "Alice Blue", "faebd7": "Antique White", "7fffd4": "Aquamarine", "f0ffff": "Azure", "f5f5dc": "Beige", "ffe4c4": "Bisque", "ffebcd": "Blanched Almond", "8a2be2": "Blue Violet", "a52a2a": "Brown", "deb887": "Burly Wood", "5f9ea0": "Cadet Blue", "7fff00": "Chartreuse", "d2691e": "Chocolate", "ff7f50": "Coral", "6495ed": "Cornflower Blue", "fff8dc": "Cornsilk", "dc143c": "Crimson", "00008b": "Dark Blue", "008b8b": "Dark Cyan", "b8860b": "Dark Golden Rod", "a9a9a9": "Dark Gray", "006400": "Dark Green", "bdb76b": "Dark Khaki", "8b008b": "Dark Magenta", "556b2f": "Dark Olive Green", "ff8c00": "Dark Orange", "9932cc": "Dark Orchid", "8b0000": "Dark Red", "e9967a": "Dark Salmon", "8fbc8f": "Dark Sea Green", "483d8b": "Dark Slate Blue", "2f4f4f": "Dark Slate Gray", "00ced1": "Dark Turquoise", "9400d3": "Dark Violet", "ff1493": "Deep Pink", "00bfff": "Deep Sky Blue", "696969": "Dim Gray", "1e90ff": "Dodger Blue", "b22222": "Fire Brick", "fffaf0": "Floral White", "228b22": "Forest Green", "dcdcdc": "Gainsboro", "f8f8ff": "Ghost White", "ffd700": "Gold", "daa520": "Golden Rod", "adff2f": "Green Yellow", "f0fff0": "Honey Dew", "ff69b4": "Hot Pink", "cd5c5c": "Indian Red", "4b0082": "Indigo", "fffff0": "Ivory", "f0e68c": "Khaki", "e6e6fa": "Lavender", "fff0f5": "Lavender Blush", "7cfc00": "Lawn Green", "fffacd": "Lemon Chiffon", "add8e6": "Light Blue", "f08080": "Light Coral", "e0ffff": "Light Cyan", "fafad2": "Light Golden Rod Yellow", "d3d3d3": "Light Gray", "90ee90": "Light Green", "ffb6c1": "Light Pink", "ffa07a": "Light Salmon", "20b2aa": "Light Sea Green", "87cefa": "Light Sky Blue", "778899": "Light Slate Gray", "b0c4de": "Light Steel Blue", "ffffe0": "Light Yellow", "32cd32": "Lime Green", "faf0e6": "Linen", "66cdaa": "Medium Aqua Marine", "0000cd": "Medium Blue", "ba55d3": "Medium Orchid", "9370db": "Medium Purple", "3cb371": "Medium Sea Green", "7b68ee": "Medium Slate Blue", "00fa9a": "Medium Spring Green", "48d1cc": "Medium Turquoise", "c71585": "Medium Violet Red", "191970": "Midnight Blue", "f5fffa": "Mint Cream", "ffe4e1": "Misty Rose", "ffe4b5": "Moccasin", "ffdead": "Navajo White", "fdf5e6": "Old Lace", "6b8e23": "Olive Drab", "ffa500": "Orange", "ff4500": "Orange Red", "da70d6": "Orchid", "eee8aa": "Pale Golden Rod", "98fb98": "Pale Green", "afeeee": "Pale Turquoise", "db7093": "Pale Violet Red", "ffefd5": "Papaya Whip", "ffdab9": "Peach Puff", "cd853f": "Peru", "ffc0cb": "Pink", "dda0dd": "Plum", "b0e0e6": "Powder Blue", "bc8f8f": "Rosy Brown", "4169e1": "Royal Blue", "8b4513": "Saddle Brown", "fa8072": "Salmon", "f4a460": "Sandy Brown", "2e8b57": "Sea Green", "fff5ee": "Sea Shell", "a0522d": "Sienna", "87ceeb": "Sky Blue", "6a5acd": "Slate Blue", "708090": "Slate Gray", "fffafa": "Snow", "00ff7f": "Spring Green", "4682b4": "Steel Blue", "d2b48c": "Tan", "d8bfd8": "Thistle", "ff6347": "Tomato", "40e0d0": "Turquoise", "ee82ee": "Violet", "f5deb3": "Wheat", "f5f5f5": "White Smoke", "9acd32": "Yellow Green", "663399": "Rebecca Purple", "1a1a1a": "Almost Black", "212121": "Dark Charcoal", "424242": "Mine Shaft", "616161": "Grey", "757575": "Boulder", "9e9e9e": "Silver Chalice", "bdbdbd": "Cloudy", "e0e0e0": "Gallery", "f8f9fa": "Anti-Flash White", "e9ecef": "Platinum", "dee2e6": "Mercury", "adb5bd": "Pale Sky", "6c757d": "Shuttle Gray", "495057": "Abbey", "343a40": "Shark", "212529": "Black Pearl", "f06292": "Carnation", "ec407a": "Cerise", "e91e63": "Radical Red", "d81b60": "Fandango", "c2185b": "Jazzberry Jam", "ad1457": "amaranth", "880e4f": "Claret", "ff4081": "Wild Watermelon", "f50057": "Razzmatazz", "c51162": "Cardinal", "ba68c8": "Amethyst", "ab47bc": "Lavender", "9c27b0": "Fuchsia", "8e24aa": "Vivid Orchid", "7b1fa2": "Royal Purple", "6a1b9a": "Grape", "4a148c": "Persian Indigo", "e1bee7": "Pale Lilac", "d1c4e9": "Light Pastel Purple", "b39ddb": "Deep Lavender", "9575cd": "Medium Purple", "7e57c2": "Deep Purple", "673ab7": "Deep Violet", "5e35b1": "Dark Violet", "512da8": "Deep Indigo", "4527a0": "Deep Violet", "311b92": "Midnight Purple", "c5cae9": "Periwinkle", "9fa8da": "Wild Blue Yonder", "7986cb": "Liberty", "5c6bc0": "Indigo", "3949ab": "Persian Blue", "303f9f": "Egyptian Blue", "283593": "Lucky Point", "1a237e": "Gulf Blue", "bbdefb": "Baby Blue", "90caf9": "Cornflower Blue", "64b5f6": "Day Sky Blue", "42a5f5": "Dodger Blue", "2196f3": "Azure Radio", "1e88e5": "Bright Blue", "1976d2": "Denim", "1565c0": "Pacific Blue", "0d47a1": "Cobalt Blue", "e3f2fd": "Alice Blue", "e0f2f1": "White Ice", "b2dfdb": "Water Leaf", "80cbc4": "Morning Glory", "4db6ac": "Fountain Blue", "26a69a": "Persian Green", "00897b": "Pine Green", "00796b": "Tropical Rain Forest", "00695c": "Deep Teal", "004d40": "Deep Sea", "e8f5e9": "Hint of Green", "c8e6c9": "Sprout", "a5d6a7": "Feijoa", "81c784": "De York", "66bb6a": "Fruit Salad", "4caf50": "Apple", "43a047": "Jungle Green", "388e3c": "Forest Green", "2e7d32": "Salem", "1b5e20": "Bush", "f1f8e9": "Symphony", "dcf3d0": "Madang", "c5e1a5": "Sulthan Green", "aed581": "Light Green", "9ccc65": "Pixie Green", "8bc34a": "Sushi", "7cb342": "Atlantis", "689f38": "Fern", "33691e": "Seaweed", "fffde7": "Baja White", "fff9c4": "Cream", "fff59d": "Dolly", "fff176": "Gorse", "ffee58": "Ripe Lemon", "fdd835": "Gold Tips", "fbc02d": "Golden Grass", "f9a825": "Saffron", "f57f17": "Gold Drop", "fff8e1": "Rum Swizzle", "ffecb3": "Chardonnay", "ffe082": "Anzac", "ffd54f": "Dandelion", "ffca28": "Amber", "ffc107": "Honey Flower", "ffa000": "Orange", "ff8f00": "Amber", "ff6f00": "Orange", "fff3e0": "Early Dawn", "ffe0b2": "Caramel", "ffcc80": "Koromiko", "ffb74d": "Rajah", "ffa726": "California", "fb8c00": "Pizazz", "f57c00": "Tangerine", "ef6c00": "Pumpkin", "e65100": "Bamboo", "fbe9e7": "Serenade", "ffccbc": "Rose Fog", "ffab91": "Geraldine", "ff8a65": "Coral", "ff7043": "Burning Orange", "ff5722": "Deep Orange", "f4511e": "Cinnabar", "e64a19": "Flame Pea", "d84315": "Pueblo", "bf360c": "Red Oxide", "efebe9": "Clear Day", "d7ccc8": "Sandstone", "bcaaa4": "Potters Clay", "a1887f": "Cape Palliser", "5d4037": "Saddle Brown", "4e342e": "Bistre", "3e2723": "Seal Brown", "fafafa": "Snow", "eeeeee": "Mercury", "263238": "Blue Whale", "37474f": "Outer Space", "455a64": "Smalt Blue", "546e7a": "Bermuda Gray", "607d8b": "Casper", "78909c": "Gull Gray", "90a4ae": "Heather", "cfd8dc": "Iron", "eceff1": "Pies", "ff5733": "Persimmon", "33ff57": "Erin", "3357ff": "Blue Lotus", "ff33f6": "Shocking Pink", "33fff6": "Bright Turquoise", "f6ff33": "Laser Lemon", "a133ff": "Phlox", "ff8c33": "Tiger's Eye", "8c33ff": "Electric Violet", "ff338c": "Wild Strawberry", "8cff33": "Spring Frost", "ffc133": "Selective Yellow", "33ffc1": "Aquamarine", "ff33c1": "Deep Pink", "33c1ff": "Deep Sky Blue", "c1ff33": "Bitter Lemon", "ffed33": "Yellow", "33ffed": "Cyan" };
-        let colorNames = EMBEDDED_COLOR_NAMES;
-
-        async function fetchColorNames() {
-            // Skip fetch on file:// protocol to avoid CORS errors
-            if (window.location.protocol === 'file:') {
-                console.log('Running on file protocol - using embedded color names');
-                return;
-            }
-            try {
-                const response = await fetch('color-names.json');
-                if (response.ok) {
-                    colorNames = await response.json();
-                }
-            } catch (error) {
-                console.warn('Local color-names.json not found or inaccessible, using embedded data');
-            }
-        }
-        fetchColorNames();
-
-        // Function to find color name locally
-        function getColorName(hex) {
-            const cleanHex = hex.toLowerCase().replace('#', '');
-            if (colorNames[cleanHex]) {
-                return colorNames[cleanHex];
-            }
-            return hex.toUpperCase(); // Fallback to hex code as requested
-        }
-
-        // Function to check if a color is light or dark
-        function isLightColor(hex) {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            return brightness > 155;
-        }
-
-        // Function to generate random like count
-        function generateLikeCount() {
-            const formats = ['k', 'k'];
-            const useK = Math.random() > 0.3;
-            if (useK) {
-                const base = (Math.random() * 4.5 + 0.5).toFixed(1);
-                return `${base}k`;
-            } else {
-                return Math.floor(Math.random() * 900 + 100).toString();
-            }
-        }
-
-        // Function to create a palette card element
-        function createPaletteCard(palette) {
-            const card = document.createElement('div');
-            card.className = 'group flex flex-col gap-4';
-            card.dataset.tags = `${palette.style.toLowerCase()} ${palette.name.toLowerCase()}`;
-
-            // Create color swatches HTML
-            const swatchesHTML = palette.colors.map(color => {
-                const isLight = isLightColor(color);
-                const textClass = isLight ? 'text-slate-800' : 'text-white';
-                const bgClass = isLight ? 'bg-white/30' : 'bg-black/30';
-
-                return `
-                    <div class="swatch flex-1 flex flex-col justify-end p-3 bg-[${color}]">
-                        <span class="swatch-hex text-[10px] font-bold ${textClass} ${bgClass} backdrop-blur-sm px-1.5 py-0.5 rounded text-center">${color}</span>
-                    </div>
-                `;
-            }).join('');
-
-            card.innerHTML = `
-                <div class="palette-card flex h-64 w-full rounded-2xl overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 ring-1 ring-slate-200 dark:ring-slate-800">
-                    ${swatchesHTML}
-                </div>
-                <div class="flex items-center justify-between px-1">
-                    <div>
-                        <h3 class="font-bold text-lg">${palette.name}</h3>
-                        <p class="text-xs text-slate-500">By Color Studio • ${palette.style}</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <button class="like-btn flex items-center gap-1 text-slate-400 hover:text-red-500 transition-colors">
-                            <span class="material-symbols-outlined text-lg">favorite</span>
-                            <span class="like-count text-sm font-bold">${generateLikeCount()}</span>
-                        </button>
-                        <button class="copy-palette-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-colors="${palette.colors.join(',')}">
-                            <span class="material-symbols-outlined text-xl">content_copy</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            return card;
-        }
-
-        // Function to load and display palettes
-        function loadPalettes(count) {
-            const palettesToShow = allPalettes.slice(displayedCount, displayedCount + count);
-
-            palettesToShow.forEach(palette => {
-                const card = createPaletteCard(palette);
-                paletteGrid.appendChild(card);
-            });
-
-            displayedCount += palettesToShow.length;
-
-            // Hide load more button if all palettes are displayed
-            if (displayedCount >= allPalettes.length) {
-                loadMoreBtn.style.display = 'none';
-            }
-        }
-
-        // Fetch palettes from JSON file
-        async function fetchPalettes() {
-            // Check if we are on file protocol to avoid CORS errors
-            if (window.location.protocol === 'file:') {
-                console.log('Running on file protocol - using embedded data');
-                allPalettes = EMBEDDED_PALETTES;
-                allPalettes = allPalettes.sort(() => Math.random() - 0.5);
-                loadPalettes(palettesPerLoad);
-                return;
-            }
-
-            try {
-                const response = await fetch('colors.json');
-                if (response.ok) {
-                    allPalettes = await response.json();
-                } else {
-                    throw new Error('Fetch failed');
-                }
-            } catch (error) {
-                // Use embedded data for file:// protocol compatibility
-                allPalettes = EMBEDDED_PALETTES;
-                console.log('Using embedded palette data (Initial Fallback)');
-            }
-
-            // Shuffle palettes for variety
-            allPalettes = allPalettes.sort(() => Math.random() - 0.5);
-
-            // Load initial set of palettes
-            loadPalettes(palettesPerLoad);
-        }
-
-        // Load more button click handler
-        loadMoreBtn?.addEventListener('click', function () {
-            loadPalettes(palettesPerLoad);
-        });
-
-        // Initialize - load palettes on page load
-        fetchPalettes();
-
-        // ========== SIDEBAR NAVIGATION SYSTEM ==========
-        const navButtons = document.querySelectorAll('.nav-btn, .nav-btn-mobile');
-        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
-        const sections = {
-            'find-color': document.getElementById('find-color-section'),
-            'explore': document.getElementById('explore-section'),
-            'generate': document.getElementById('generate-section')
-        };
-
-
-
-        // Mobile Menu Toggling
-        mobileMenuBtn?.addEventListener('click', () => {
-            mobileMenuOverlay.classList.remove('hidden');
-            mobileMenuOverlay.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-        });
-
-        closeMobileMenuBtn?.addEventListener('click', () => {
-            mobileMenuOverlay.classList.add('hidden');
-            mobileMenuOverlay.classList.remove('flex');
-            document.body.style.overflow = 'auto';
-        });
-
-        // Navigation Handler
-        navButtons.forEach(btn => {
-            btn.addEventListener('click', function () {
-                const targetSection = this.dataset.section;
-                updateNavigationState(targetSection);
-
-                // Close mobile menu if open
-                if (mobileMenuOverlay && !mobileMenuOverlay.classList.contains('hidden')) {
-                    mobileMenuOverlay.classList.add('hidden');
-                    mobileMenuOverlay.classList.remove('flex');
-                    document.body.style.overflow = 'auto';
-                }
-            });
-        });
-
-        // Function to update state
-        function updateNavigationState(targetSection) {
-            // Save to localStorage
-            localStorage.setItem('activeSection', targetSection);
-
-            // 1. Update Buttons (Both Desktop and Mobile)
-            navButtons.forEach(b => {
-                const isMobile = b.classList.contains('nav-btn-mobile');
-
-                if (isMobile) {
-                    // Mobile reset
-                    b.classList.remove('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20');
-                    b.classList.add('hover:bg-slate-100', 'dark:hover:bg-slate-800');
-                    const icon = b.querySelector('.material-symbols-outlined');
-                    const subtext = b.querySelector('.text-sm');
-
-                    if (icon) {
-                        icon.classList.remove('bg-white/20');
-                        icon.classList.add('bg-primary/10', 'text-primary');
-                    }
-                    if (subtext) subtext.classList.remove('text-white/70');
-                    if (subtext) subtext.classList.add('text-slate-500');
-                } else {
-                    // Desktop reset
-                    b.classList.remove('bg-primary', 'text-white', 'shadow-lg');
-                    b.classList.add('hover:bg-slate-100', 'dark:hover:bg-slate-800', 'transition-colors');
-                    const icon = b.querySelector('.material-symbols-outlined');
-                    if (icon) {
-                        icon.classList.add('text-primary');
-                        icon.classList.remove('text-white');
-                    }
-                    const lastSpan = b.querySelector('span:last-child');
-                    if (lastSpan) {
-                        lastSpan.classList.remove('font-bold');
-                        lastSpan.classList.add('font-medium');
-                    }
-                }
-
-                // Set active state if matches target
-                if (b.dataset.section === targetSection) {
-                    if (isMobile) {
-                        b.classList.add('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20');
-                        b.classList.remove('hover:bg-slate-100', 'dark:hover:bg-slate-800');
-                        const icon = b.querySelector('.material-symbols-outlined');
-                        const subtext = b.querySelector('.text-sm');
-
-                        if (icon) {
-                            icon.classList.remove('bg-primary/10', 'text-primary');
-                            icon.classList.add('bg-white/20');
-                        }
-                        if (subtext) subtext.classList.add('text-white/70');
-                        if (subtext) subtext.classList.remove('text-slate-500');
-                    } else {
-                        b.classList.remove('hover:bg-slate-100', 'dark:hover:bg-slate-800', 'transition-colors');
-                        b.classList.add('bg-primary', 'text-white', 'shadow-lg');
-                        const icon = b.querySelector('.material-symbols-outlined');
-                        if (icon) {
-                            icon.classList.remove('text-primary');
-                            icon.classList.add('text-white');
-                        }
-                        const lastSpan = b.querySelector('span:last-child');
-                        if (lastSpan) {
-                            lastSpan.classList.remove('font-medium');
-                            lastSpan.classList.add('font-bold');
-                        }
-                    }
-                }
-            });
-
-            // 2. Switch Sections
-            Object.values(sections).forEach(section => {
-                if (section) {
-                    section.classList.add('hidden');
-                    section.classList.remove('flex');
-                }
-            });
-
-            if (sections[targetSection]) {
-                sections[targetSection].classList.remove('hidden');
-                sections[targetSection].classList.add('flex');
-            }
-
-
-            // 4. Special initialization for specific sections
-            if (targetSection === 'find-color') {
-                // Only call loadColorHistory if the function and colorResultsGrid are both available
-                if (typeof loadColorHistory === 'function' && document.getElementById('colorResultsGrid')) {
-                    loadColorHistory();
-                }
-            }
-        }
-
-        // ========== COLOR FINDER FEATURE ==========
-        // NOTE: These must be declared BEFORE updateNavigationState is called
-        // because loadColorHistory depends on colorResultsGrid
-        const colorCodeInput = document.getElementById('colorCodeInput');
-        const findColorBtn = document.getElementById('findColorBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const colorResultsGrid = document.getElementById('colorResultsGrid');
-
-        // Initialize from localStorage
-        const savedSection = localStorage.getItem('activeSection') || 'explore';
-        updateNavigationState(savedSection);
-
-        // Enter key to search
-        colorCodeInput?.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                findColorByCode();
-            }
-        });
-
-        // Find color button click
-        findColorBtn?.addEventListener('click', findColorByCode);
-
-        // Helper function: Convert hex to RGB
-        function hexToRgbLocal(hex) {
-            const cleanHex = hex.replace('#', '');
-            return {
-                r: parseInt(cleanHex.substring(0, 2), 16),
-                g: parseInt(cleanHex.substring(2, 4), 16),
-                b: parseInt(cleanHex.substring(4, 6), 16)
-            };
-        }
-
-        // Helper function: Convert hex to HSL
-        function hexToHslLocal(hex) {
-            const cleanHex = hex.replace('#', '');
-            let r = parseInt(cleanHex.substring(0, 2), 16) / 255;
-            let g = parseInt(cleanHex.substring(2, 4), 16) / 255;
-            let b = parseInt(cleanHex.substring(4, 6), 16) / 255;
-
-            let max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, l = (max + min) / 2;
-
-            if (max === min) {
-                h = s = 0;
-            } else {
-                let d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                switch (max) {
-                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                    case g: h = (b - r) / d + 2; break;
-                    case b: h = (r - g) / d + 4; break;
-                }
-                h /= 6;
-            }
-            return { h: h * 360, s: s * 100, l: l * 100 };
-        }
-
-        // Helper function: Calculate luminance
-        function calculateLuminance(hex) {
-            const rgb = hexToRgbLocal(hex);
-            const a = [rgb.r, rgb.g, rgb.b].map(v => {
-                v /= 255;
-                return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-            });
-            return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-        }
-
-        // Helper function: Get best contrast color
-        function getBestContrast(hex) {
-            const luminance = calculateLuminance(hex);
-            return luminance > 0.179 ? 'Black' : 'White';
-        }
-
-        // Main function to find color by code (LOCAL - no API)
-        function findColorByCode() {
-            const btn = findColorBtn;
-            const btnText = btn.querySelector('span:last-child');
-            const btnIcon = btn.querySelector('.material-symbols-outlined');
-
-            btnText.textContent = 'Loading...';
-            btnIcon.textContent = 'hourglass_empty';
-            btn.disabled = true;
-            colorCodeInput.disabled = true;
-            errorMessage.classList.add('hidden');
-            errorMessage.textContent = '';
-
-            let colorCode = colorCodeInput.value.trim();
-
-            // Validation
-            if (colorCode === '') {
-                showError('Input field cannot be empty');
-                resetButton();
-                return;
-            }
-
-            // Remove # if present
-            if (colorCode.startsWith('#')) {
-                colorCode = colorCode.slice(1);
-            }
-
-            // Validate hex format (3 or 6 characters)
-            if (!/^[0-9A-Fa-f]{6}$/.test(colorCode) && !/^[0-9A-Fa-f]{3}$/.test(colorCode)) {
-                showError('Please enter a valid hex code (e.g., FF5733 or F53)');
-                resetButton();
-                return;
-            }
-
-            // Expand 3-character hex to 6-character
-            if (colorCode.length === 3) {
-                colorCode = colorCode[0] + colorCode[0] + colorCode[1] + colorCode[1] + colorCode[2] + colorCode[2];
-            }
-
-            // Normalize to uppercase
-            colorCode = colorCode.toUpperCase();
-            const hexWithHash = '#' + colorCode;
-
-            // Get color name from local database (or use hex code if not found)
-            const colorName = getColorName(colorCode);
-
-            // Calculate all color values locally
-            const rgb = hexToRgbLocal(colorCode);
-            const hsl = hexToHslLocal(colorCode);
-            const luminance = calculateLuminance(colorCode);
-            const bestContrast = getBestContrast(colorCode);
-
-            // Create result object (same structure as before for compatibility)
-            const result = {
-                paletteTitle: colorName,
-                colors: [{
-                    hex: hexWithHash,
-                    rgb: rgb,
-                    hsl: hsl,
-                    luminance: luminance,
-                    bestContrast: bestContrast
-                }]
-            };
-
-            // Save to localStorage
-            saveToHistory(result);
-
-            // Display the new color at the top
-            displayColorCard(result, true);
-
-            // Clear input
-            colorCodeInput.value = '';
-
-            resetButton();
-        }
-
-        function resetButton() {
-            const btn = findColorBtn;
-            const btnText = btn.querySelector('span:last-child');
-            const btnIcon = btn.querySelector('.material-symbols-outlined');
-
-            btnText.textContent = 'Find Name';
-            btnIcon.textContent = 'search';
-            btn.disabled = false;
-            colorCodeInput.disabled = false;
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-        }
-
-        function displayColorCard(colorData, prepend = false) {
-            const color = colorData.colors[0];
-            const card = document.createElement('div');
-            card.className = 'bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700';
-
-            card.innerHTML = `
-                <div class="h-32 flex items-center justify-center text-3xl font-bold" 
-                     style="background-color: ${color.hex}; color: ${color.bestContrast};">
-                    ${color.hex}
-                </div>
-                <div class="p-4">
-                    <h3 class="text-xl font-black mb-4 flex items-center justify-between">
-                        <span>${colorData.paletteTitle}</span>
-                        <span class="text-xs font-normal px-2 py-1 bg-primary/10 text-primary rounded-lg">Color Info</span>
-                    </h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-3">
-                            <div>
-                                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">Hex Code</p>
-                                <p class="font-mono font-bold text-sm">${color.hex}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">RGB Values</p>
-                                <p class="font-mono font-bold text-sm">${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">HSL Values</p>
-                                <p class="font-mono font-bold text-sm">${color.hsl.h.toFixed(0)}°, ${color.hsl.s.toFixed(0)}%, ${color.hsl.l.toFixed(0)}%</p>
-                            </div>
-                        </div>
-                        <div class="space-y-3 border-l border-slate-200 dark:border-slate-700 pl-4">
-                            <div>
-                                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">Brightness</p>
-                                <p class="font-bold text-sm">${(color.luminance * 100).toFixed(1)}%</p>
-                            </div>
-                             <div>
-                                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">Best Contrast</p>
-                                <p class="font-bold text-sm" style="color: ${color.hex === '#000000' ? '#ffffff' : color.hex}">${color.bestContrast}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">WCAG Rating</p>
-                                <div class="flex gap-1 mt-1">
-                                    <span class="px-1.5 py-0.5 bg-green-500 text-white text-[9px] font-black rounded uppercase">AAA</span>
-                                    <span class="px-1.5 py-0.5 bg-blue-500 text-white text-[9px] font-black rounded uppercase">AA</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-                         <button class="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-primary hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2" onclick="navigator.clipboard.writeText('${color.hex}')">
-                            <span class="material-symbols-outlined text-sm">content_copy</span> Copy Hex
-                         </button>
-                         <button class="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-primary hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2" onclick="navigator.clipboard.writeText('rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})')">
-                            <span class="material-symbols-outlined text-sm">colorize</span> Copy RGB
-                         </button>
-                    </div>
-                </div>
-            `;
-
-            if (prepend) {
-                colorResultsGrid.insertBefore(card, colorResultsGrid.firstChild);
-            } else {
-                colorResultsGrid.appendChild(card);
-            }
-        }
-
-        function saveToHistory(colorData) {
-            let history = JSON.parse(localStorage.getItem('colorCodeMagic')) || [];
-
-            // Add new color to the beginning
-            history = [colorData, ...history];
-
-            // Keep only last 20 searches
-            if (history.length > 20) {
-                history = history.slice(0, 20);
-            }
-
-            localStorage.setItem('colorCodeMagic', JSON.stringify(history));
-        }
-
-        function loadColorHistory() {
-            const history = JSON.parse(localStorage.getItem('colorCodeMagic')) || [];
-
-            // Clear existing cards
-            colorResultsGrid.innerHTML = '';
-
-            if (history.length === 0) {
-                colorResultsGrid.innerHTML = `
-                    <div class="col-span-full text-center py-12 text-slate-500">
-                        <span class="material-symbols-outlined text-6xl mb-4 opacity-50">palette</span>
-                        <p class="text-lg">No search history yet</p>
-                        <p class="text-sm">Enter a color code above to get started!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Display all history items
-            history.forEach(colorData => {
-                displayColorCard(colorData, false);
-            });
-        }
-
-        // ========== PALETTE GENERATOR FEATURE ==========
-        const paletteColorInput = document.getElementById('paletteColorInput');
-        const paletteColorPreview = document.getElementById('paletteColorPreview');
-        const generatePaletteBtn = document.getElementById('generatePaletteBtn');
-        const paletteErrorMessage = document.getElementById('paletteErrorMessage');
-        const paletteResults = document.getElementById('paletteResults');
-
-        let selectedScheme = 'mono';
-        let selectedVariation = 'default';
-
-        // Scheme selector
-        document.querySelectorAll('.scheme-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.scheme-btn').forEach(b => {
-                    b.classList.remove('scheme-active', 'bg-primary', 'text-white');
-                    b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
-                });
-                this.classList.add('scheme-active', 'bg-primary', 'text-white');
-                this.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
-                selectedScheme = this.dataset.scheme;
-            });
-        });
-
-        // Variation selector
-        document.querySelectorAll('.variation-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.variation-btn').forEach(b => {
-                    b.classList.remove('variation-active', 'bg-primary', 'text-white');
-                    b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
-                });
-                this.classList.add('variation-active', 'bg-primary', 'text-white');
-                this.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
-                selectedVariation = this.dataset.variation;
-            });
-        });
-
-        // Color preview update
-        paletteColorInput?.addEventListener('input', function () {
-            let color = this.value.trim();
-            if (color.startsWith('#')) {
-                color = color.slice(1);
-            }
-            if (color.length === 3 || color.length === 6) {
-                paletteColorPreview.style.backgroundColor = '#' + color;
-            }
-        });
-
-        // Generate palette
-        generatePaletteBtn?.addEventListener('click', generatePalette);
-
-        // ========== COLOR THEORY LOGIC (Custom Generator) ==========
-
-        // Helper: Hex to HSL
-        function hexToHsl(hex) {
-            let r = parseInt(hex.substring(0, 2), 16) / 255;
-            let g = parseInt(hex.substring(2, 4), 16) / 255;
-            let b = parseInt(hex.substring(4, 6), 16) / 255;
-            let max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, l = (max + min) / 2;
-
-            if (max === min) {
-                h = s = 0;
-            } else {
-                let d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                switch (max) {
-                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                    case g: h = (b - r) / d + 2; break;
-                    case b: h = (r - g) / d + 4; break;
-                }
-                h /= 6;
-            }
-            return { h: h * 360, s: s * 100, l: l * 100 };
-        }
-
-        // Helper: HSL to Hex
-        function hslToHex(h, s, l) {
-            l /= 100;
-            const a = s * Math.min(l, 1 - l) / 100;
-            const f = n => {
-                const k = (n + h / 30) % 12;
-                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-                return Math.round(255 * color).toString(16).padStart(2, '0');
-            };
-            return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
-        }
-
-        // Helper: Get Contrast Color (White or Black)
-        function getContrastYIQ(hexcolor) {
-            hexcolor = hexcolor.replace("#", "");
-            const r = parseInt(hexcolor.substr(0, 2), 16);
-            const g = parseInt(hexcolor.substr(2, 2), 16);
-            const b = parseInt(hexcolor.substr(4, 2), 16);
-            const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-            return (yiq >= 128) ? '#000000' : '#FFFFFF';
-        }
-
-        async function generatePalette() {
-            const btn = generatePaletteBtn;
-            const btnText = btn.querySelector('span:last-child');
-            const btnIcon = btn.querySelector('.material-symbols-outlined');
-
-            btnText.textContent = 'Generating...';
-            btnIcon.textContent = 'hourglass_empty';
-            btn.disabled = true;
-            paletteColorInput.disabled = true;
-            paletteErrorMessage.classList.add('hidden');
-            paletteErrorMessage.textContent = '';
-
-            let colorCode = paletteColorInput.value.trim();
-            if (colorCode.startsWith('#')) colorCode = colorCode.slice(1);
-
-            if (colorCode === '' || !/^[0-9A-F]{6}$/i.test(colorCode)) {
-                showPaletteError('Please enter a valid 6-character hex code');
-                resetPaletteButton();
-                return;
-            }
-
-            // Artificial delay for "Magic" feel
-            await new Promise(r => setTimeout(r, 600));
-
-            try {
-                const baseHsl = hexToHsl(colorCode);
-                const palettes = generateColorTheoreticPalettes(baseHsl, colorCode);
-
-                // Clear existing and show placeholder if needed
-                document.getElementById('palettePlaceholder').classList.add('hidden');
-                paletteResults.classList.remove('hidden');
-                paletteResults.innerHTML = '';
-
-                palettes.forEach(p => displayPaletteResult(p));
-
-                // Scroll to results on mobile
-                if (window.innerWidth < 1024) {
-                    paletteResults.scrollIntoView({ behavior: 'smooth' });
-                }
-
-            } catch (error) {
-                console.error('Error generating palette:', error);
-                showPaletteError('Something went wrong. Please try another color.');
-            }
-
-            resetPaletteButton();
-        }
-
-        function generateColorTheoreticPalettes(base, baseHex) {
-            const results = [];
-
-            // Helper to get variation-specific saturation/lightness
-            const getVibeTransform = (vibe, s, l) => {
-                if (vibe === 'Soft & Muted') return { s: s * 0.6, l: Math.min(l + 20, 90) };
-                if (vibe === 'Deep & Bold') return { s: Math.min(s + 30, 100), l: Math.max(l - 10, 30) };
-                if (vibe === 'Pastel') return { s: 35, l: 85 }; // Example for a specific pastel vibe
-                return { s, l }; // Classic or default
-            };
-
-            const createPaletteVariation = (vibeName, baseHarmonyHues) => {
-                const colors = baseHarmonyHues.map((h, i) => {
-                    let { s, l } = getVibeTransform(vibeName, base.s, base.l);
-
-                    // Add some variance to hues/lightness for monochromatic
-                    const finalH = (selectedScheme === 'mono') ? h : h;
-                    const finalS = (selectedScheme === 'mono') ? Math.max(10, s - (i * 5)) : s;
-                    const finalL = (selectedScheme === 'mono') ? Math.max(15, Math.min(95, l + (i - 2) * 15)) : l;
-
-                    const hex = hslToHex(finalH % 360, finalS, finalL);
-                    return {
-                        hex: hex,
-                        name: `${vibeName.charAt(0).toUpperCase() + vibeName.slice(1)} ${hex}`,
-                        rgb: hexToRgb(hex.slice(1)),
-                        hsl: { h: Math.round(finalH % 360), s: Math.round(finalS), l: Math.round(finalL) },
-                        textColor: getContrastYIQ(hex)
-                    };
-                });
-
-                return {
-                    sourceName: `${vibeName.charAt(0).toUpperCase() + vibeName.slice(1)} ${selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)}`,
-                    colorCount: colors.length,
-                    colorPalette: colors,
-                    colorPaletteRaw: colors.map(c => c.hex.slice(1))
-                };
-            };
-
-            const hexToRgb = (hex) => {
-                const r = parseInt(hex.substring(0, 2), 16);
-                const g = parseInt(hex.substring(2, 4), 16);
-                const b = parseInt(hex.substring(4, 6), 16);
-                return { r, g, b };
-            };
-
-            // Base Hues for each scheme
-            let hues = [];
-            if (selectedScheme === 'mono') hues = [base.h, base.h, base.h, base.h, base.h];
-            else if (selectedScheme === 'contrast') hues = [base.h, base.h, base.h + 180, base.h + 180, base.h];
-            else if (selectedScheme === 'triade') hues = [base.h, base.h + 120, base.h + 240, base.h, base.h + 120];
-            else if (selectedScheme === 'tetrade') hues = [base.h, base.h + 90, base.h + 180, base.h + 270, base.h];
-            else if (selectedScheme === 'analogic') hues = [base.h - 30, base.h - 15, base.h, base.h + 15, base.h + 30];
-
-            // Generate 3 Options: Classic, Soft, and Bold
-            results.push(createPaletteVariation('Classic', hues));
-            results.push(createPaletteVariation('Soft & Muted', hues));
-            results.push(createPaletteVariation('Deep & Bold', hues));
-
-            return results;
-        }
-
-        function resetPaletteButton() {
-            const btn = generatePaletteBtn;
-            const btnText = btn.querySelector('span:last-child');
-            const btnIcon = btn.querySelector('.material-symbols-outlined');
-
-            btnText.textContent = 'Generate Palette';
-            btnIcon.textContent = 'auto_awesome';
-            btn.disabled = false;
-            paletteColorInput.disabled = false;
-        }
-
-        function showPaletteError(message) {
-            paletteErrorMessage.textContent = message;
-            paletteErrorMessage.classList.remove('hidden');
-        }
-
-        function displayPaletteResult(paletteData) {
-            const resultCard = document.createElement('div');
-            resultCard.className = 'bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 animate-fadeIn';
-
-            // Create color swatches HTML
-            const swatchesHTML = paletteData.colorPalette.map(color => `
-                <div class="flex-1 h-24 flex items-end justify-center p-2" style="background-color: ${color.hex};">
-                    <span class="text-xs font-bold px-2 py-1 rounded" style="background-color: ${color.textColor === '#FFFFFF' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'}; color: ${color.textColor};">
-                        ${color.hex}
-                    </span>
-                </div>
-            `).join('');
-
-            // Create color details HTML
-            const colorsDetailsHTML = paletteData.colorPalette.map((color, index) => {
-                // Helper function to convert hex to RGB if API doesn't provide it
-                const hexToRgb = (hex) => {
-                    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                    return result ? {
-                        r: parseInt(result[1], 16),
-                        g: parseInt(result[2], 16),
-                        b: parseInt(result[3], 16)
-                    } : { r: 0, g: 0, b: 0 };
-                };
-
-                const rgb = color.rgb || hexToRgb(color.hex);
-                const hsl = color.hsl || { h: 0, s: 0, l: 0 };
-
-                return `
-                <div class="bg-white dark:bg-slate-900 rounded-lg p-4">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-8 h-8 rounded-full" style="background-color: ${color.hex};"></div>
-                        <div>
-                            <h4 class="font-bold text-sm">${color.name}</h4>
-                            <p class="text-xs text-slate-500 font-mono">${color.hex}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-1 text-xs">
-                        <div class="flex justify-between">
-                            <span class="text-slate-500">RGB:</span>
-                            <span class="font-mono">${rgb.r}, ${rgb.g}, ${rgb.b}</span>
-                        </div>
-                        ${color.hsl ? `
-                        <div class="flex justify-between">
-                            <span class="text-slate-500">HSL:</span>
-                            <span class="font-mono">${hsl.h}°, ${hsl.s}%, ${hsl.l}%</span>
-                        </div>
-                        ` : ''}
-                        ${color.luminance !== null && color.luminance !== undefined ? `
-                        <div class="flex justify-between">
-                            <span class="text-slate-500">Luminance:</span>
-                            <span>${color.luminance.toFixed(3)}</span>
-                        </div>
-                        ` : ''}
-                        ${color.accessibility ? `
-                        <div class="flex gap-1 mt-2">
-                            ${color.accessibility.wcagAAA ? '<span class="px-2 py-0.5 bg-green-500 text-white rounded text-[10px] font-bold">AAA</span>' : ''}
-                            ${color.accessibility.wcagAALarge ? '<span class="px-2 py-0.5 bg-blue-500 text-white rounded text-[10px] font-bold">AA Large</span>' : ''}
-                            ${color.accessibility.wcagAANormal ? '<span class="px-2 py-0.5 bg-purple-500 text-white rounded text-[10px] font-bold">AA Normal</span>' : ''}
-                        </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `}).join('');
-
-            resultCard.innerHTML = `
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="text-xl font-bold">${paletteData.sourceName}</h3>
-                            <p class="text-sm text-slate-500">
-                                ${selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)} • 
-                                ${selectedVariation.charAt(0).toUpperCase() + selectedVariation.slice(1)} • 
-                                ${paletteData.colorCount} colors
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Color Swatches -->
-                    <div class="flex rounded-xl overflow-hidden mb-6 shadow-lg">
-                        ${swatchesHTML}
-                    </div>
-
-                    <!-- Palette Image (if available) -->
-                    ${paletteData.image && paletteData.image.downloadURL ? `
-                        <div class="mb-6">
-                            <img src="${paletteData.image.downloadURL}" alt="Palette Image" class="w-full h-32 object-cover rounded-lg shadow-md">
-                        </div>
-                    ` : ''}
-
-                    <!-- Color Details Grid -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-                        ${colorsDetailsHTML}
-                    </div>
-                </div>
-            `;
-
-            // Add to results (prepend)
-            paletteResults.insertBefore(resultCard, paletteResults.firstChild);
-
-            // Add copy functionality
-            const copyCSSBtn = resultCard.querySelector('.copy-css-btn');
-            const copyHexBtn = resultCard.querySelector('.copy-hex-btn');
-
-            if (copyCSSBtn) {
-                copyCSSBtn.addEventListener('click', function () {
-                    const css = this.dataset.css;
-                    navigator.clipboard.writeText(css).then(() => {
-                        const originalHTML = this.innerHTML;
-                        this.innerHTML = '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">check</span>Copied!</span>';
-                        setTimeout(() => {
-                            this.innerHTML = originalHTML;
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Failed to copy:', err);
-                    });
-                });
-            }
-
-            if (copyHexBtn) {
-                copyHexBtn.addEventListener('click', function () {
-                    const colors = this.dataset.colors;
-                    navigator.clipboard.writeText(colors).then(() => {
-                        const originalHTML = this.innerHTML;
-                        this.innerHTML = '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">check</span>Copied!</span>';
-                        setTimeout(() => {
-                            this.innerHTML = originalHTML;
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Failed to copy:', err);
-                    });
-                });
-            }
-        }
-    </script>
 </body>
 
 </html>
