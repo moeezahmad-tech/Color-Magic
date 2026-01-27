@@ -133,37 +133,29 @@ async function generatePalette() {
 function generateColorTheoreticPalettes(base, baseHex) {
     const results = [];
 
-    const getVibeTransform = (vibe, s, l) => {
-        if (vibe === 'Soft & Muted') return { s: s * 0.6, l: Math.min(l + 20, 90) };
-        if (vibe === 'Deep & Bold') return { s: Math.min(s + 30, 100), l: Math.max(l - 10, 30) };
-        if (vibe === 'Pastel') return { s: 35, l: 85 };
-        return { s, l };
-    };
+    // Function to get color name based on hue
+    const getColorName = (h, s, l) => {
+        h = Math.round(h) % 360;
 
-    const createPaletteVariation = (vibeName, baseHarmonyHues) => {
-        const colors = baseHarmonyHues.map((h, i) => {
-            let { s, l } = getVibeTransform(vibeName, base.s, base.l);
+        // Achromatic colors (low saturation)
+        if (s < 10) {
+            if (l > 90) return 'White';
+            if (l > 70) return 'Light Gray';
+            if (l > 50) return 'Gray';
+            if (l > 30) return 'Dark Gray';
+            return 'Charcoal';
+        }
 
-            const finalH = (selectedScheme === 'mono') ? h : h;
-            const finalS = (selectedScheme === 'mono') ? Math.max(10, s - (i * 5)) : s;
-            const finalL = (selectedScheme === 'mono') ? Math.max(15, Math.min(95, l + (i - 2) * 15)) : l;
-
-            const hex = hslToHex(finalH % 360, finalS, finalL);
-            return {
-                hex: hex,
-                name: `${vibeName.charAt(0).toUpperCase() + vibeName.slice(1)} ${hex}`,
-                rgb: hexToRgb(hex.slice(1)),
-                hsl: { h: Math.round(finalH % 360), s: Math.round(finalS), l: Math.round(finalL) },
-                textColor: getContrastYIQ(hex)
-            };
-        });
-
-        return {
-            sourceName: `${vibeName.charAt(0).toUpperCase() + vibeName.slice(1)} ${selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)}`,
-            colorCount: colors.length,
-            colorPalette: colors,
-            colorPaletteRaw: colors.map(c => c.hex.slice(1))
-        };
+        // Chromatic colors based on hue
+        if (h >= 0 && h < 15) return l > 60 ? 'Light Red' : l > 40 ? 'Red' : 'Dark Red';
+        if (h >= 15 && h < 45) return l > 60 ? 'Peach' : l > 40 ? 'Orange' : 'Burnt Orange';
+        if (h >= 45 && h < 70) return l > 60 ? 'Light Yellow' : l > 40 ? 'Yellow' : 'Gold';
+        if (h >= 70 && h < 150) return l > 60 ? 'Light Green' : l > 40 ? 'Green' : 'Dark Green';
+        if (h >= 150 && h < 200) return l > 60 ? 'Mint' : l > 40 ? 'Cyan' : 'Teal';
+        if (h >= 200 && h < 250) return l > 60 ? 'Sky Blue' : l > 40 ? 'Blue' : 'Navy';
+        if (h >= 250 && h < 290) return l > 60 ? 'Lavender' : l > 40 ? 'Purple' : 'Deep Purple';
+        if (h >= 290 && h < 330) return l > 60 ? 'Pink' : l > 40 ? 'Magenta' : 'Maroon';
+        return l > 60 ? 'Rose' : l > 40 ? 'Crimson' : 'Burgundy';
     };
 
     const hexToRgb = (hex) => {
@@ -173,16 +165,63 @@ function generateColorTheoreticPalettes(base, baseHex) {
         return { r, g, b };
     };
 
+    // Generate hues based on selected scheme
     let hues = [];
-    if (selectedScheme === 'mono') hues = [base.h, base.h, base.h, base.h, base.h];
-    else if (selectedScheme === 'contrast') hues = [base.h, base.h, base.h + 180, base.h + 180, base.h];
-    else if (selectedScheme === 'triade') hues = [base.h, base.h + 120, base.h + 240, base.h, base.h + 120];
-    else if (selectedScheme === 'tetrade') hues = [base.h, base.h + 90, base.h + 180, base.h + 270, base.h];
-    else if (selectedScheme === 'analogic') hues = [base.h - 30, base.h - 15, base.h, base.h + 15, base.h + 30];
+    if (selectedScheme === 'mono') {
+        hues = [base.h, base.h, base.h, base.h, base.h];
+    } else if (selectedScheme === 'contrast') {
+        hues = [base.h, base.h + 60, base.h + 180, base.h + 240, base.h + 300];
+    } else if (selectedScheme === 'triade') {
+        hues = [base.h, base.h + 120, base.h + 240, base.h + 60, base.h + 180];
+    } else if (selectedScheme === 'tetrade') {
+        hues = [base.h, base.h + 90, base.h + 180, base.h + 270, base.h + 45];
+    } else if (selectedScheme === 'analogic') {
+        hues = [base.h - 30, base.h - 15, base.h, base.h + 15, base.h + 30];
+    }
 
-    results.push(createPaletteVariation('Classic', hues));
-    results.push(createPaletteVariation('Soft & Muted', hues));
-    results.push(createPaletteVariation('Deep & Bold', hues));
+    // Create ONE palette with varied lightness and saturation
+    const colors = hues.map((h, i) => {
+        let s = base.s;
+        let l = base.l;
+
+        // Vary saturation and lightness for visual interest
+        if (selectedScheme === 'mono') {
+            s = Math.max(10, base.s - (i * 8));
+            l = Math.max(15, Math.min(95, base.l + (i - 2) * 18));
+        } else {
+            // Subtle variations for non-mono schemes
+            s = Math.max(20, Math.min(100, s + (i % 2 === 0 ? 10 : -5)));
+            l = Math.max(25, Math.min(85, l + (i - 2) * 8));
+        }
+
+        const finalH = h % 360;
+        const hex = hslToHex(finalH, s, l);
+        const colorName = getColorName(finalH, s, l);
+
+        return {
+            hex: hex,
+            name: colorName,
+            rgb: hexToRgb(hex.slice(1)),
+            hsl: { h: Math.round(finalH), s: Math.round(s), l: Math.round(l) },
+            textColor: getContrastYIQ(hex)
+        };
+    });
+
+    // Get scheme name
+    const schemeNames = {
+        'mono': 'Monochromatic',
+        'contrast': 'Complementary',
+        'triade': 'Triadic',
+        'tetrade': 'Tetradic',
+        'analogic': 'Analogous'
+    };
+
+    results.push({
+        sourceName: `${schemeNames[selectedScheme]} Palette`,
+        colorCount: colors.length,
+        colorPalette: colors,
+        colorPaletteRaw: colors.map(c => c.hex.slice(1))
+    });
 
     return results;
 }
@@ -205,127 +244,63 @@ function showPaletteError(message) {
 
 function displayPaletteResult(paletteData) {
     const resultCard = document.createElement('div');
-    resultCard.className = 'bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 animate-fadeIn';
+    resultCard.className = 'bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700';
+    resultCard.style.fontFamily = "'Space Grotesk', sans-serif";
 
     const swatchesHTML = paletteData.colorPalette.map(color => `
-        <div class="flex-1 h-24 flex items-end justify-center p-2" style="background-color: ${color.hex};">
-            <span class="text-xs font-bold px-2 py-1 rounded" style="background-color: ${color.textColor === '#FFFFFF' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'}; color: ${color.textColor};">
+        <div class="flex-1 h-24 min-[700px]:h-32 flex items-end justify-center p-2 min-[700px]:p-3" style="background-color: ${color.hex};">
+            <span class="text-xs min-[700px]:text-sm font-bold px-2 min-[700px]:px-3 py-1 min-[700px]:py-1.5 rounded-lg" style="background-color: ${color.textColor === '#FFFFFF' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.4)'}; color: ${color.textColor}; backdrop-filter: blur(4px);">
                 ${color.hex}
             </span>
         </div>
     `).join('');
 
     const colorsDetailsHTML = paletteData.colorPalette.map((color, index) => {
-        const hexToRgb = (hex) => {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : { r: 0, g: 0, b: 0 };
-        };
-
-        const rgb = color.rgb || hexToRgb(color.hex);
-        const hsl = color.hsl || { h: 0, s: 0, l: 0 };
+        const rgb = color.rgb;
+        const hsl = color.hsl;
 
         return `
-        <div class="bg-white dark:bg-slate-900 rounded-lg p-4">
+        <div class="bg-slate-50 dark:bg-slate-800 rounded-lg min-[700px]:rounded-xl p-3 min-[700px]:p-4 border border-slate-200 dark:border-slate-700">
             <div class="flex items-center gap-3 mb-3">
-                <div class="w-8 h-8 rounded-full" style="background-color: ${color.hex};"></div>
-                <div>
-                    <h4 class="font-bold text-sm">${color.name}</h4>
-                    <p class="text-xs text-slate-500 font-mono">${color.hex}</p>
+                <div class="w-10 h-10 rounded-lg shadow-md" style="background-color: ${color.hex};"></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-base tracking-tight">${color.name}</h4>
+                    <p class="text-xs text-slate-500 font-mono mt-0.5">${color.hex}</p>
                 </div>
             </div>
-            <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                    <span class="text-slate-500">RGB:</span>
-                    <span class="font-mono">${rgb.r}, ${rgb.g}, ${rgb.b}</span>
+            <div class="space-y-1.5 text-xs">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500 font-medium">RGB</span>
+                    <span class="font-mono font-semibold">${rgb.r}, ${rgb.g}, ${rgb.b}</span>
                 </div>
-                ${color.hsl ? `
-                <div class="flex justify-between">
-                    <span class="text-slate-500">HSL:</span>
-                    <span class="font-mono">${hsl.h}°, ${hsl.s}%, ${hsl.l}%</span>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500 font-medium">HSL</span>
+                    <span class="font-mono font-semibold">${hsl.h}°, ${hsl.s}%, ${hsl.l}%</span>
                 </div>
-                ` : ''}
-                ${color.luminance !== null && color.luminance !== undefined ? `
-                <div class="flex justify-between">
-                    <span class="text-slate-500">Luminance:</span>
-                    <span>${color.luminance.toFixed(3)}</span>
-                </div>
-                ` : ''}
-                ${color.accessibility ? `
-                <div class="flex gap-1 mt-2">
-                    ${color.accessibility.wcagAAA ? '<span class="px-2 py-0.5 bg-green-500 text-white rounded text-[10px] font-bold">AAA</span>' : ''}
-                    ${color.accessibility.wcagAALarge ? '<span class="px-2 py-0.5 bg-blue-500 text-white rounded text-[10px] font-bold">AA Large</span>' : ''}
-                    ${color.accessibility.wcagAANormal ? '<span class="px-2 py-0.5 bg-purple-500 text-white rounded text-[10px] font-bold">AA Normal</span>' : ''}
-                </div>
-                ` : ''}
             </div>
         </div>
     `}).join('');
 
     resultCard.innerHTML = `
-        <div class="p-6">
-            <div class="flex items-center justify-between mb-4">
+        <div class="p-4 min-[700px]:p-6">
+            <div class="flex items-center justify-between mb-3 min-[700px]:mb-5">
                 <div>
-                    <h3 class="text-xl font-bold">${paletteData.sourceName}</h3>
+                    <h3 class="text-2xl font-bold tracking-tight mb-1">${paletteData.sourceName}</h3>
                     <p class="text-sm text-slate-500">
-                        ${selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)} • 
-                        ${selectedVariation.charAt(0).toUpperCase() + selectedVariation.slice(1)} • 
-                        ${paletteData.colorCount} colors
+                        ${paletteData.colorCount} colors • Professional color harmony
                     </p>
                 </div>
             </div>
 
-            <div class="flex rounded-xl overflow-hidden mb-6 shadow-lg">
+            <div class="flex flex-col min-[700px]:flex-row rounded-lg min-[700px]:rounded-xl overflow-hidden mb-4 min-[700px]:mb-6 shadow-lg border border-slate-200 dark:border-slate-700">
                 ${swatchesHTML}
             </div>
 
-            ${paletteData.image && paletteData.image.downloadURL ? `
-                <div class="mb-6">
-                    <img src="${paletteData.image.downloadURL}" alt="Palette Image" class="w-full h-32 object-cover rounded-lg shadow-md">
-                </div>
-            ` : ''}
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+            <div class="grid grid-cols-1 min-[700px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
                 ${colorsDetailsHTML}
             </div>
         </div>
     `;
 
     paletteResults.insertBefore(resultCard, paletteResults.firstChild);
-
-    const copyCSSBtn = resultCard.querySelector('.copy-css-btn');
-    const copyHexBtn = resultCard.querySelector('.copy-hex-btn');
-
-    if (copyCSSBtn) {
-        copyCSSBtn.addEventListener('click', function () {
-            const css = this.dataset.css;
-            navigator.clipboard.writeText(css).then(() => {
-                const originalHTML = this.innerHTML;
-                this.innerHTML = '<span class="flex items-center gap-1"><i class="bi bi-check text-sm"></i>Copied!</span>';
-                setTimeout(() => {
-                    this.innerHTML = originalHTML;
-                }, 2000);
-            }).catch(err => {
-                // Silent fail
-            });
-        });
-    }
-
-    if (copyHexBtn) {
-        copyHexBtn.addEventListener('click', function () {
-            const colors = this.dataset.colors;
-            navigator.clipboard.writeText(colors).then(() => {
-                const originalHTML = this.innerHTML;
-                this.innerHTML = '<span class="flex items-center gap-1"><i class="bi bi-check text-sm"></i>Copied!</span>';
-                setTimeout(() => {
-                    this.innerHTML = originalHTML;
-                }, 2000);
-            }).catch(err => {
-                // Silent fail
-            });
-        });
-    }
 }
