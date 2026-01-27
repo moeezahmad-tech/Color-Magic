@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Open Source | Color Magic - Professional Color Palette Generator</title>
+    <meta name="description"
+        content="Color Magic is an open-source color palette generator and explorer. Browse the code, contribute, and help make color selection easier for designers worldwide." />
+    <meta name="keywords"
+        content="open source, color palette, GitHub, color tool, design tool, contribute, color magic" />
+    <meta name="author" content="TechKreative" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://colormagic.techkreative.com/open-source.html" />
+    <meta property="og:title" content="Open Source | Color Magic" />
+    <meta property="og:description"
+        content="Color Magic is an open-source project. Explore the code and contribute to make color selection easier for designers." />
+    <meta property="og:image" content="images/full-logo.png" />
+
+    <link rel="canonical" href="https://colormagic.techkreative.com/open-source.html" />
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="images/roundlogo.png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style/style.css">
+    <script id="tailwind-config" src="js/tailwind-config.js"></script>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
+    <header
+        class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+        <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between gap-8">
+            <a href="index.html" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
+                <img src="images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain">
+                <h2 class="text-xl font-bold tracking-tight">Color Magic</h2>
+            </a>
+
+            <div class="flex items-center gap-4">
+                <a href="index.html"
+                    class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                    <i class="bi bi-house-door"></i>
+                    <span>Home</span>
+                </a>
+                <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
+                    class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-all hover:scale-105 active:scale-95 text-sm font-bold">
+                    <i class="bi bi-github text-xl"></i>
+                    <span class="hidden sm:inline">View on GitHub</span>
+                    <span class="sm:hidden">GitHub</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1200px] mx-auto px-6 py-12 md:py-20">
+        <!-- Hero Section -->
+        <div class="text-center mb-16 md:mb-24">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold mb-6">
+                <i class="bi bi-code-slash"></i>
+                <span>Open Source Project</span>
+            </div>
+            <h1
+                class="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+                Color Magic
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-4">
+                Professional Color Palette Generator & Explorer
+            </p>
+            <p class="text-lg text-slate-500 dark:text-slate-500">
+                Founded by <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
+                    class="text-primary hover:underline font-semibold">TechKreative</a>
+            </p>
+        </div>
+
+        <!-- Project Overview -->
+        <div class="mb-16 md:mb-20">
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-8 md:p-12 shadow-sm border border-slate-200 dark:border-slate-800">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 flex items-center gap-3">
+                    <i class="bi bi-palette text-primary"></i>
+                    About the Project
+                </h2>
+                <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                    Color Magic is a beautiful, fully-featured web application designed for designers and developers to
+                    explore color palettes,
+                    find color names from hex codes, and generate professional color schemes using color theory
+                    principles.
+                </p>
+                <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Built with vanilla JavaScript and modern web technologies, this project demonstrates how powerful
+                    web applications
+                    can be created without heavy frameworks, while maintaining excellent performance and user
+                    experience.
+                </p>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">✨ Features</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Find Color -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
+                        <i class="bi bi-eyedropper text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">🔍 Find Color</h3>
+                    <ul class="space-y-2 text-slate-600 dark:text-slate-400">
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Enter any hex code to discover color information</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Get color names from 300+ named colors</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>View RGB, HSL values, luminance, and contrast</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Copy hex and RGB values with one click</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Explore Palettes -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
+                        <i class="bi bi-palette text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">🎨 Explore Palettes</h3>
+                    <ul class="space-y-2 text-slate-600 dark:text-slate-400">
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Browse 150+ professionally curated palettes</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Filter by style: Pastel, Vintage, Neon, Minimalist</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Search palettes by name, theme, or hex code</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Copy entire palettes to clipboard</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Generate Palette -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
+                        <i class="bi bi-stars text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">⚡ Generate Palette</h3>
+                    <ul class="space-y-2 text-slate-600 dark:text-slate-400">
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Create 5-color palettes from any base color</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Choose from color theory schemes</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>Apply variations: Classic, Soft & Muted, Deep & Bold</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+                            <span>All calculations done locally - no API required</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">🛠️ Tech Stack</h2>
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-8 md:p-12 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-filetype-html text-xl text-orange-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">HTML5</p>
+                            <p class="text-sm text-slate-500">Semantic markup</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-filetype-css text-xl text-blue-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">CSS3</p>
+                            <p class="text-sm text-slate-500">Modern styling</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-yellow-500/10 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-filetype-js text-xl text-yellow-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">JavaScript</p>
+                            <p class="text-sm text-slate-500">Vanilla JS</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-cyan-500/10 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-wind text-xl text-cyan-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">Tailwind CSS</p>
+                            <p class="text-sm text-slate-500">Utility-first CSS</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-bootstrap text-xl text-purple-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">Bootstrap Icons</p>
+                            <p class="text-sm text-slate-500">Icon library</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-google text-xl text-green-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">Google Fonts</p>
+                            <p class="text-sm text-slate-500">Space Grotesk</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GitHub Repository -->
+        <div class="mb-16 md:mb-20">
+            <div class="bg-gradient-to-r from-primary to-blue-500 rounded-2xl p-8 md:p-12 text-white text-center">
+                <i class="bi bi-github text-6xl mb-6 inline-block"></i>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">View on GitHub</h2>
+                <p class="text-lg mb-8 opacity-90">
+                    Explore the source code, report issues, or contribute to the project
+                </p>
+                <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-bold rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg">
+                    <i class="bi bi-github text-2xl"></i>
+                    <span>moeezahmad-tech/Color-Magic</span>
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Getting Started -->
+        <div class="mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">🏃 Getting Started</h2>
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-8 md:p-12 shadow-sm border border-slate-200 dark:border-slate-800">
+                <p class="text-lg text-slate-600 dark:text-slate-400 mb-6">
+                    Clone the repository and start exploring the code:
+                </p>
+                <div class="bg-slate-100 dark:bg-slate-800 rounded-xl p-6 font-mono text-sm mb-6 overflow-x-auto">
+                    <code class="text-primary">git clone https://github.com/moeezahmad-tech/Color-Magic.git</code>
+                </div>
+                <p class="text-slate-600 dark:text-slate-400 mb-4">
+                    Then simply open <code
+                        class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-primary">index.html</code> in your
+                    browser to run the application locally.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400">
+                    No build process or dependencies required - it's pure vanilla JavaScript!
+                </p>
+            </div>
+        </div>
+
+        <!-- Top Contributors -->
+        <div class="mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">👥 Top Contributors</h2>
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-8 md:p-12 shadow-sm border border-slate-200 dark:border-slate-800">
+                <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 text-center">
+                    Meet the amazing people who have contributed to Color Magic
+                </p>
+                <div class="flex flex-wrap justify-center gap-8">
+                    <!-- Contributor: Moeez Ahmad -->
+                    <a href="https://github.com/moeezahmad-tech" target="_blank" rel="noopener noreferrer"
+                        class="group flex flex-col items-center gap-4 p-6 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:scale-105">
+                        <div class="relative">
+                            <img src="images/TopContributers/MoeezAhmad.webp" alt="Moeez Ahmad"
+                                class="w-24 h-24 rounded-full object-cover border-4 border-primary shadow-lg group-hover:shadow-xl transition-shadow">
+                            <div
+                                class="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900">
+                                <i class="bi bi-github text-white text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="font-bold text-lg group-hover:text-primary transition-colors">Moeez Ahmad</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">@moeezahmad-tech</p>
+                            <div class="mt-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold">
+                                Founder & Lead Developer
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Placeholder for future contributors -->
+                    <div
+                        class="flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 min-w-[200px]">
+                        <div
+                            class="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                            <i class="bi bi-person-plus text-4xl text-slate-400"></i>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="font-bold text-slate-600 dark:text-slate-400">Your Name Here</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-500 mt-1">Be a contributor!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <a href="https://github.com/moeezahmad-tech/Color-Magic/graphs/contributors" target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 text-primary hover:underline font-semibold">
+                        <i class="bi bi-people"></i>
+                        <span>View all contributors on GitHub</span>
+                        <i class="bi bi-arrow-up-right text-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contributing -->
+        <div class="mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">🤝 Contributing</h2>
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-8 md:p-12 shadow-sm border border-slate-200 dark:border-slate-800">
+                <p class="text-lg text-slate-600 dark:text-slate-400 mb-6">
+                    Contributions are welcome! Here's how you can help make Color Magic even better:
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-1">
+                            <span class="text-primary font-bold">1</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-1">Fork the Repository</h3>
+                            <p class="text-slate-600 dark:text-slate-400">Create your own fork of the project</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-1">
+                            <span class="text-primary font-bold">2</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-1">Create a Feature Branch</h3>
+                            <p class="text-slate-600 dark:text-slate-400">Work on your changes in a dedicated branch</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-1">
+                            <span class="text-primary font-bold">3</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-1">Make Your Changes</h3>
+                            <p class="text-slate-600 dark:text-slate-400">Add features, fix bugs, or improve
+                                documentation</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-1">
+                            <span class="text-primary font-bold">4</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-1">Submit a Pull Request</h3>
+                            <p class="text-slate-600 dark:text-slate-400">Open a PR with a clear description of your
+                                changes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-xl">
+                    <p class="text-slate-600 dark:text-slate-400">
+                        <i class="bi bi-info-circle text-primary mr-2"></i>
+                        Feel free to open issues for bug reports, feature requests, or questions about the project.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center pt-12 border-t border-slate-200 dark:border-slate-800">
+            <p class="text-slate-600 dark:text-slate-400 mb-4">
+                Made with ❤️ by <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
+                    class="text-primary hover:underline font-semibold">TechKreative</a>
+            </p>
+            <div class="flex items-center justify-center gap-6">
+                <a href="index.html" class="text-slate-500 hover:text-primary transition-colors">
+                    <i class="bi bi-house-door text-xl"></i>
+                </a>
+                <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-500 hover:text-primary transition-colors">
+                    <i class="bi bi-github text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
