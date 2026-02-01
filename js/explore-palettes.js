@@ -6,43 +6,68 @@ const palettesPerLoad = 12;
 const paletteGrid = document.getElementById('paletteGrid');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-document.querySelectorAll('.copy-palette-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const colors = this.dataset.colors;
+// Event delegation for copy palette button
+paletteGrid?.addEventListener('click', function (e) {
+    // Handle copy palette button
+    const copyBtn = e.target.closest('.copy-palette-btn');
+    if (copyBtn) {
+        const colors = copyBtn.dataset.colors;
         navigator.clipboard.writeText(colors).then(() => {
-            const icon = this.querySelector('i');
+            const icon = copyBtn.querySelector('i');
             const originalClass = icon.className;
-            icon.className = icon.className.replace(/bi-[\w-]+/, 'bi-check');
-            this.classList.add('text-green-500');
+            icon.className = 'bi bi-check-circle-fill text-xl';
+            copyBtn.classList.add('text-green-500');
 
             setTimeout(() => {
                 icon.className = originalClass;
-                this.classList.remove('text-green-500');
+                copyBtn.classList.remove('text-green-500');
             }, 2000);
         }).catch(err => {
-            // Silent fail
+            console.error('Copy failed:', err);
         });
-    });
-});
+        return;
+    }
 
-document.querySelectorAll('.like-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const icon = this.querySelector('i');
-        const countSpan = this.querySelector('.like-count');
+    // Handle like button
+    const likeBtn = e.target.closest('.like-btn');
+    if (likeBtn) {
+        const icon = likeBtn.querySelector('i');
+        const countSpan = likeBtn.querySelector('.like-count');
         const currentCount = parseInt(countSpan.textContent.replace('k', '00').replace('.', ''));
 
-        if (this.classList.contains('text-red-500')) {
-            this.classList.remove('text-red-500');
-            this.classList.add('text-slate-400');
+        if (likeBtn.classList.contains('text-red-500')) {
+            likeBtn.classList.remove('text-red-500');
+            likeBtn.classList.add('text-slate-400');
             const newCount = currentCount - 1;
             countSpan.textContent = formatCount(newCount);
         } else {
-            this.classList.remove('text-slate-400');
-            this.classList.add('text-red-500');
+            likeBtn.classList.remove('text-slate-400');
+            likeBtn.classList.add('text-red-500');
             const newCount = currentCount + 1;
             countSpan.textContent = formatCount(newCount);
         }
-    });
+        return;
+    }
+
+    // Handle individual color swatch copy
+    const swatch = e.target.closest('.swatch');
+    if (swatch && !e.target.closest('.copy-palette-btn')) {
+        const hexSpan = swatch.querySelector('.swatch-hex');
+        const colorCode = hexSpan.textContent;
+
+        navigator.clipboard.writeText(colorCode).then(() => {
+            const originalText = hexSpan.textContent;
+            hexSpan.textContent = 'Copied!';
+            hexSpan.classList.add('copied-state');
+
+            setTimeout(() => {
+                hexSpan.textContent = originalText;
+                hexSpan.classList.remove('copied-state');
+            }, 1500);
+        }).catch(err => {
+            console.error('Copy failed:', err);
+        });
+    }
 });
 
 function formatCount(num) {
@@ -148,8 +173,8 @@ function createPaletteCard(palette) {
         const bgClass = isLight ? 'bg-white/30' : 'bg-black/30';
 
         return `
-            <div class="swatch flex-1 flex flex-col justify-end p-3 bg-[${color}]">
-                <span class="swatch-hex text-[10px] font-bold ${textClass} ${bgClass} backdrop-blur-sm px-1.5 py-0.5 rounded text-center">${color}</span>
+            <div class="swatch flex-1 flex flex-col justify-end p-3 bg-[${color}] cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <span class="swatch-hex text-[10px] font-bold ${textClass} ${bgClass} backdrop-blur-sm px-1.5 py-0.5 rounded text-center transition-all">${color}</span>
             </div>
         `;
     }).join('');
