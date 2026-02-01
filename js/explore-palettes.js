@@ -1,10 +1,7 @@
 let allPalettes = [];
 let isLoading = false;
 let loadError = null;
-let displayedCount = 0;
-const palettesPerLoad = 12;
 const paletteGrid = document.getElementById('paletteGrid');
-const loadMoreBtn = document.getElementById('loadMoreBtn');
 
 // Event delegation for copy palette button
 paletteGrid?.addEventListener('click', function (e) {
@@ -28,24 +25,12 @@ paletteGrid?.addEventListener('click', function (e) {
         return;
     }
 
-    // Handle like button
-    const likeBtn = e.target.closest('.like-btn');
-    if (likeBtn) {
-        const icon = likeBtn.querySelector('i');
-        const countSpan = likeBtn.querySelector('.like-count');
-        const currentCount = parseInt(countSpan.textContent.replace('k', '00').replace('.', ''));
-
-        if (likeBtn.classList.contains('text-red-500')) {
-            likeBtn.classList.remove('text-red-500');
-            likeBtn.classList.add('text-slate-400');
-            const newCount = currentCount - 1;
-            countSpan.textContent = formatCount(newCount);
-        } else {
-            likeBtn.classList.remove('text-slate-400');
-            likeBtn.classList.add('text-red-500');
-            const newCount = currentCount + 1;
-            countSpan.textContent = formatCount(newCount);
-        }
+    // Handle favorite button
+    const favoriteBtn = e.target.closest('.favorite-btn');
+    if (favoriteBtn) {
+        const paletteId = favoriteBtn.dataset.paletteId;
+        toggleFavorite(paletteId);
+        updateFavoriteButton(favoriteBtn, paletteId);
         return;
     }
 
@@ -70,11 +55,46 @@ paletteGrid?.addEventListener('click', function (e) {
     }
 });
 
-function formatCount(num) {
-    if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'k';
+// Local Storage Functions for Favorites
+function getFavorites() {
+    const favorites = localStorage.getItem('colorMagicFavorites');
+    return favorites ? JSON.parse(favorites) : [];
+}
+
+function saveFavorites(favorites) {
+    localStorage.setItem('colorMagicFavorites', JSON.stringify(favorites));
+}
+
+function toggleFavorite(paletteId) {
+    const favorites = getFavorites();
+    const index = favorites.indexOf(paletteId);
+
+    if (index > -1) {
+        favorites.splice(index, 1); // Remove from favorites
+    } else {
+        favorites.push(paletteId); // Add to favorites
     }
-    return num.toString();
+
+    saveFavorites(favorites);
+}
+
+function isFavorite(paletteId) {
+    const favorites = getFavorites();
+    return favorites.includes(paletteId);
+}
+
+function updateFavoriteButton(button, paletteId) {
+    const icon = button.querySelector('i');
+
+    if (isFavorite(paletteId)) {
+        button.classList.remove('text-slate-400');
+        button.classList.add('text-red-500');
+        icon.className = 'bi bi-heart-fill text-lg';
+    } else {
+        button.classList.remove('text-red-500');
+        button.classList.add('text-slate-400');
+        icon.className = 'bi bi-heart text-lg';
+    }
 }
 
 const searchInput = document.getElementById('searchInput');
@@ -121,25 +141,32 @@ document.querySelectorAll('.theme-filter').forEach(btn => {
         let filteredPalettes;
         if (theme === 'all') {
             filteredPalettes = [...allPalettes];
+        } else if (theme === 'favorites') {
+            const favorites = getFavorites();
+            filteredPalettes = allPalettes.filter(palette => favorites.includes(palette.id));
+
+            // Show message if no favorites
+            if (filteredPalettes.length === 0) {
+                paletteGrid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                        <i class="bi bi-heart text-6xl text-slate-300 dark:text-slate-700 mb-4"></i>
+                        <p class="text-xl font-bold text-slate-700 dark:text-slate-300">No Favorites Yet</p>
+                        <p class="text-sm text-slate-500 max-w-md mt-2">Start adding palettes to your favorites by clicking the heart icon on any palette card.</p>
+                    </div>
+                `;
+                return;
+            }
         } else {
             filteredPalettes = allPalettes.filter(palette =>
                 palette.style.toLowerCase() === theme.toLowerCase()
             );
         }
 
-        displayedCount = 0;
+        // Display all filtered palettes
         filteredPalettes.forEach(palette => {
             const card = createPaletteCard(palette);
             paletteGrid.appendChild(card);
         });
-
-        displayedCount = filteredPalettes.length;
-
-        if (theme === 'all' && displayedCount < allPalettes.length) {
-            loadMoreBtn.style.display = 'flex';
-        } else {
-            loadMoreBtn.style.display = 'none';
-        }
     });
 });
 
@@ -151,21 +178,13 @@ function isLightColor(hex) {
     return brightness > 155;
 }
 
-function generateLikeCount() {
-    const formats = ['k', 'k'];
-    const useK = Math.random() > 0.3;
-    if (useK) {
-        const base = (Math.random() * 4.5 + 0.5).toFixed(1);
-        return `${base}k`;
-    } else {
-        return Math.floor(Math.random() * 900 + 100).toString();
-    }
-}
+
 
 function createPaletteCard(palette) {
     const card = document.createElement('div');
     card.className = 'group flex flex-col gap-4';
     card.dataset.tags = `${palette.style.toLowerCase()} ${palette.name.toLowerCase()}`;
+    card.dataset.paletteId = palette.id;
 
     const swatchesHTML = palette.colors.map(color => {
         const isLight = isLightColor(color);
@@ -179,6 +198,11 @@ function createPaletteCard(palette) {
         `;
     }).join('');
 
+    // Check if this palette is favorited
+    const isFav = isFavorite(palette.id);
+    const heartIcon = isFav ? 'bi-heart-fill' : 'bi-heart';
+    const heartColor = isFav ? 'text-red-500' : 'text-slate-400';
+
     card.innerHTML = `
         <div class="palette-card flex h-64 w-full rounded-2xl overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 ring-1 ring-slate-200 dark:ring-slate-800">
             ${swatchesHTML}
@@ -189,11 +213,10 @@ function createPaletteCard(palette) {
                 <p class="text-xs text-slate-500">By Color Studio • ${palette.style}</p>
             </div>
             <div class="flex items-center gap-4">
-                <button class="like-btn flex items-center gap-1 text-slate-400 hover:text-red-500 transition-colors">
-                    <i class="bi bi-heart-fill text-lg"></i>
-                    <span class="like-count text-sm font-bold">${generateLikeCount()}</span>
+                <button class="favorite-btn ${heartColor} hover:text-red-500 transition-colors" data-palette-id="${palette.id}" title="Add to favorites">
+                    <i class="${heartIcon} text-lg"></i>
                 </button>
-                <button class="copy-palette-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-colors="${palette.colors.join(',')}">
+                <button class="copy-palette-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-colors="${palette.colors.join(',')}" title="Copy all colors">
                     <i class="bi bi-clipboard text-xl"></i>
                 </button>
             </div>
@@ -203,20 +226,7 @@ function createPaletteCard(palette) {
     return card;
 }
 
-function loadPalettes(count) {
-    const palettesToShow = allPalettes.slice(displayedCount, displayedCount + count);
 
-    palettesToShow.forEach(palette => {
-        const card = createPaletteCard(palette);
-        paletteGrid.appendChild(card);
-    });
-
-    displayedCount += palettesToShow.length;
-
-    if (displayedCount >= allPalettes.length) {
-        loadMoreBtn.style.display = 'none';
-    }
-}
 
 function showLoadingState() {
     paletteGrid.innerHTML = `
@@ -226,7 +236,6 @@ function showLoadingState() {
             <p class="text-sm text-slate-500">Please wait while we fetch the color data</p>
         </div>
     `;
-    loadMoreBtn.style.display = 'none';
 }
 
 function showErrorState(error) {
@@ -241,7 +250,6 @@ function showErrorState(error) {
             </button>
         </div>
     `;
-    loadMoreBtn.style.display = 'none';
 }
 
 async function fetchPalettes() {
@@ -267,15 +275,12 @@ async function fetchPalettes() {
         allPalettes = data.sort(() => Math.random() - 0.5);
 
         paletteGrid.innerHTML = '';
-        displayedCount = 0;
-        loadPalettes(palettesPerLoad);
 
-        // Show Load More button if there are more palettes to load
-        if (displayedCount < allPalettes.length) {
-            loadMoreBtn.style.display = 'flex';
-        } else {
-            loadMoreBtn.style.display = 'none';
-        }
+        // Load all palettes at once
+        allPalettes.forEach(palette => {
+            const card = createPaletteCard(palette);
+            paletteGrid.appendChild(card);
+        });
 
         isLoading = false;
 
@@ -285,9 +290,5 @@ async function fetchPalettes() {
         showErrorState(error.message);
     }
 }
-
-loadMoreBtn?.addEventListener('click', function () {
-    loadPalettes(palettesPerLoad);
-});
 
 fetchPalettes();

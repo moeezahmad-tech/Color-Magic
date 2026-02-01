@@ -232,6 +232,11 @@
                     </button>
                     <button
                         class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+                        data-theme="favorites">
+                        <i class="bi bi-heart-fill text-lg"></i> Favorites
+                    </button>
+                    <button
+                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                         data-theme="pastel">
                         <i class="bi bi-flower1 text-lg"></i> Pastel
                     </button>
@@ -258,13 +263,7 @@
                 </div>
                 <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                 </div>
-                <div class="flex justify-center py-12">
-                    <button id="loadMoreBtn"
-                        class="flex items-center gap-2 px-8 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold rounded-xl transition-all hover:scale-105 active:scale-95">
-                        <i class="bi bi-chevron-down"></i>
-                        Load more palettes
-                    </button>
-                </div>
+                <!-- Load More button removed - all palettes now load at once -->
             </div>
 
             <div id="generate-section" class="hidden flex-col gap-8">
