@@ -1,8 +1,8 @@
-name: Testing Branch of Color Magic
+name: 🚀 Deploy Static HTML
 on:
   push:
     branches:
-      - test
+      - main
 jobs:
   web-deploy:
     name: 🎉 Sync to Server
@@ -20,4 +20,4 @@ jobs:
         # '.' means it will upload everything in your repo root
         local-dir: ./ 
         # Usually public_html/ or public_html/colorsmagic/
-        server-dir: ./testColorMagic/
+        server-dir: ./colormagic/
