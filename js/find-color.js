@@ -179,6 +179,7 @@ function showError(message) {
 function displayColorInfo(colorData) {
     const infoCard = document.createElement('div');
     infoCard.className = 'col-span-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 animate-fadeIn';
+    const colorPageUrl = `color/${colorData.hex.replace('#', '').toLowerCase()}/`;
 
     infoCard.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
@@ -210,6 +211,14 @@ function displayColorInfo(colorData) {
                             <span class="font-bold">${colorData.contrast}</span>
                         </div>
                     </div>
+                </div>
+                <div class="pt-2">
+                    <a href="${colorPageUrl}"
+                       class="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-all hover:scale-105 active:scale-95"
+                       aria-label="View color palettes for ${colorData.hex}">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        View Color Palettes
+                    </a>
                 </div>
             </div>
         </div>
