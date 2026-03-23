@@ -1,0 +1,6 @@
+RewriteEngine On
+# Tell Apache we are in a subfolder
+RewriteBase /colorCodeFinder/
+
+# This handles /color/00ff00 and sends it to color.php?hex=00ff00
+RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [L,QSA]
