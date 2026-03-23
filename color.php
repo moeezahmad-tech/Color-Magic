@@ -1,36 +1,10 @@
 <?php
 
-// 1. Force the server to stop hiding the error
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-
-echo "<h1>TechKreative Debug Mode</h1>";
-
-// 2. Check if the 'data' folder exists (Linux is Case-Sensitive!)
-$dataDir = __DIR__ . '/data';
-echo "Checking directory: " . $dataDir . "<br>";
-
-if (is_dir($dataDir)) {
-    echo "<b style='color:green'>[SUCCESS]</b> Data folder found.<br>";
-        
-            // 3. List files in data folder to check for case-sensitivity issues
-                echo "Files in data folder:<pre>";
-                    print_r(scandir($dataDir));
-                        echo "</pre>";
-                        } else {
-                            echo "<b style='color:red'>[FATAL]</b> Data folder NOT found. Check case sensitivity (data vs Data).<br>";
-                            }
-
-                            // 4. Test the Hex variable
-                            $hex = isset($_GET['hex']) ? $_GET['hex'] : 'NOT_FOUND';
-                            echo "Input Hex: <b style='color:blue'>#" . htmlspecialchars($hex) . "</b><br>";
-
-                            // 5. If it hasn't crashed yet, the 500 error is likely in a 'require' or 'include' below this line.
-                            echo "<hr>If you see this, the top logic is fine. Check your 'include' lines below.";
-
-
 declare(strict_types=1);
+
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
 
 function e(string $value): string
 {
