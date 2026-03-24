@@ -42,15 +42,34 @@ Visit: [colormagic.techkreative.com](https://colormagic.techkreative.com)
 
 ```
 colorCodeFinder/
-├── .github/workflows/   
-├── data/                
-│   ├── color-names.json 
-│   └── colors.json      
-├── images/              
-├── index.html           
-├── manifest.json        
-├── robots.txt           
-└── sitemap.xml          
+├── .github/
+│   └── workflows/
+│       ├── deploy.yml
+│       └── test.yml
+├── data/
+│   ├── color-names.json
+│   └── colors.json
+├── images/
+│   ├── TopContributers/
+│   ├── full-logo.png
+│   ├── logo.png
+│   └── roundlogo.png
+├── js/
+│   ├── explore-palettes.js
+│   ├── find-color.js
+│   ├── generate-palette.js
+│   ├── navigation.js
+│   └── tailwind-config.js
+├── style/
+│   └── style.css
+├── .htaccess
+├── color.php
+├── index.html
+├── manifest.json
+├── open-source.html
+├── README.md
+├── robots.txt
+└── sitemap.xml
 ```
 
 ## 🏃 Getting Started
