@@ -19,5 +19,5 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         # '.' means it will upload everything in your repo root
         local-dir: ./ 
-        # Usually public_html/ or public_html/colorsmagic/
-        server-dir: ./testColorMagic/
+        # Usually public_html/ or public_html/colormagic/
+        server-dir: ./colormagic/
