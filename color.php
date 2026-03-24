@@ -84,6 +84,8 @@ function colorDistanceSq(string $hexA, string $hexB): int
 $hexParam = isset($_GET['hex']) ? (string) $_GET['hex'] : '';
 $normalizedHex = normalizeHex($hexParam);
 $isValidHex = (bool) preg_match('/^[A-F0-9]{6}$/', $normalizedHex);
+$host = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+$isProduction = $host === 'colormagic.techkreative.com';
 
 if (!$isValidHex) {
     $normalizedHex = '000000';
@@ -230,6 +232,19 @@ $schema = [
     <meta name="keywords" content="<?php echo e($hexWithHash); ?>, <?php echo e($hexName); ?>, color hex, color palettes, rgb, hsl, color details" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="<?php echo $isValidHex ? 'index, follow' : 'noindex, follow'; ?>" />
+
+    <?php if ($isProduction): ?>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'G-537L4MR968');
+    </script>
+    <?php endif; ?>
 
     <link rel="canonical" href="<?php echo e($canonicalUrl); ?>" />
     <meta property="og:type" content="website" />
