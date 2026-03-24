@@ -1,8 +1,8 @@
-name: 🚀 Deploy Static HTML
+name: Deployment of Test Branch
 on:
   push:
     branches:
-      - main
+      - test
 jobs:
   web-deploy:
     name: 🎉 Sync to Server
