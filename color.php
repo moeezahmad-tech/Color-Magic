@@ -137,7 +137,12 @@ foreach ($paletteData as $palette) {
         continue;
     }
 
-    $palette['colors'] = array_map(static fn(string $h): string => '#' . $h, $paletteHexes);
+    $palette['colors'] = array_map(
+        static function (string $h): string {
+            return '#' . $h;
+        },
+        $paletteHexes
+    );
 
     if (in_array($normalizedHex, $paletteHexes, true)) {
         $exactPalettes[] = $palette;
@@ -156,7 +161,12 @@ foreach ($paletteData as $palette) {
     $nearPalettes[] = $palette;
 }
 
-usort($nearPalettes, static fn(array $a, array $b): int => ($a['_distance'] ?? PHP_INT_MAX) <=> ($b['_distance'] ?? PHP_INT_MAX));
+usort(
+    $nearPalettes,
+    static function (array $a, array $b): int {
+        return ($a['_distance'] ?? PHP_INT_MAX) <=> ($b['_distance'] ?? PHP_INT_MAX);
+    }
+);
 
 $relatedPalettes = $exactPalettes;
 foreach ($nearPalettes as $nearPalette) {
