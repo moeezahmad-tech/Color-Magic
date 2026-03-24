@@ -6,3 +6,5 @@ RewriteBase /
 
 # The Routing Rule
 RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
+
+RewriteRule ^$ index.html [L]

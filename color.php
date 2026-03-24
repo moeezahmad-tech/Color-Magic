@@ -197,7 +197,7 @@ if ($basePath === '/') {
 }
 
 $assetBase = $basePath;
-$homePageUrl = $assetBase . '/index.html';
+$homePageUrl = $assetBase . '/';
 $openSourceUrl = $assetBase . '/open-source.html';
 $manifestUrl = $assetBase . '/manifest.json';
 $faviconUrl = $assetBase . '/images/roundlogo.png';

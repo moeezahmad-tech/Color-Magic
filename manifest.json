@@ -2,7 +2,7 @@
   "name": "Color Magic",
   "short_name": "Color Magic",
   "description": "Professional Color Palette Generator & Explorer",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#101c22",
   "theme_color": "#13a4ec",
