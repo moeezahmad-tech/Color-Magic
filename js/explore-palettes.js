@@ -130,7 +130,7 @@ document.querySelectorAll('.theme-filter').forEach(btn => {
             b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
         });
 
-        this.classList.add('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
+        this.classList.add('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
         this.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
 
         const theme = this.dataset.theme;

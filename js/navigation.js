@@ -41,8 +41,8 @@ function updateNavigationState(targetSection) {
         const isMobile = b.classList.contains('nav-btn-mobile');
 
         if (isMobile) {
-            b.classList.remove('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20');
-            b.classList.add('hover:bg-slate-100', 'dark:hover:bg-slate-800');
+            b.classList.remove('bg-gradient-to-r', 'from-secondary', 'to-primary', 'text-white', 'shadow-lg', 'shadow-primary/20');
+            b.classList.add('bg-pink-100', 'hover:bg-pink-200', 'text-slate-700', 'border', 'border-pink-200', 'shadow-sm');
             const icon = b.querySelector('i');
             const subtext = b.querySelector('.text-sm');
 
@@ -53,8 +53,8 @@ function updateNavigationState(targetSection) {
             if (subtext) subtext.classList.remove('text-white/70');
             if (subtext) subtext.classList.add('text-slate-500');
         } else {
-            b.classList.remove('bg-gradient-to-r', 'from-primary', 'to-blue-500', 'text-white', 'shadow-lg', 'shadow-primary/25');
-            b.classList.add('bg-white', 'dark:bg-slate-800', 'border', 'border-slate-200', 'dark:border-slate-700');
+            b.classList.remove('bg-gradient-to-r', 'from-secondary', 'to-primary', 'text-white', 'shadow-lg', 'shadow-primary/25');
+            b.classList.add('bg-pink-100', 'hover:bg-pink-200', 'text-slate-700', 'border', 'border-pink-200', 'shadow-sm');
 
             const iconContainer = b.querySelector('.w-10');
             if (iconContainer) {
@@ -83,7 +83,8 @@ function updateNavigationState(targetSection) {
 
         if (b.dataset.section === targetSection) {
             if (isMobile) {
-                b.classList.add('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20');
+                b.classList.remove('bg-pink-100', 'hover:bg-pink-200', 'text-slate-700', 'border', 'border-pink-200', 'shadow-sm');
+                b.classList.add('bg-gradient-to-r', 'from-secondary', 'to-primary', 'text-white', 'shadow-lg', 'shadow-primary/20');
                 b.classList.remove('hover:bg-slate-100', 'dark:hover:bg-slate-800');
                 const icon = b.querySelector('i');
                 const subtext = b.querySelector('.text-sm');
@@ -95,8 +96,8 @@ function updateNavigationState(targetSection) {
                 if (subtext) subtext.classList.add('text-white/70');
                 if (subtext) subtext.classList.remove('text-slate-500');
             } else {
-                b.classList.remove('bg-white', 'dark:bg-slate-800', 'border', 'border-slate-200', 'dark:border-slate-700');
-                b.classList.add('bg-gradient-to-r', 'from-primary', 'to-blue-500', 'text-white', 'shadow-lg', 'shadow-primary/25');
+                b.classList.remove('bg-pink-100', 'hover:bg-pink-200', 'text-slate-700', 'border', 'border-pink-200', 'shadow-sm');
+                b.classList.add('bg-gradient-to-r', 'from-secondary', 'to-primary', 'text-white', 'shadow-lg', 'shadow-primary/25');
 
                 const iconContainer = b.querySelector('.w-10');
                 if (iconContainer) {

@@ -166,7 +166,7 @@ async function findColorByCode() {
 
 function resetButton() {
     const btn = findColorBtn;
-    btn.innerHTML = '<i class="bi bi-search"></i> Find Name';
+    btn.innerHTML = '<i class="bi bi-search"></i> Find Info';
     btn.disabled = false;
     colorCodeInput.disabled = false;
 }
@@ -180,6 +180,8 @@ function displayColorInfo(colorData) {
     const infoCard = document.createElement('div');
     infoCard.className = 'col-span-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 animate-fadeIn';
     const colorPageUrl = `color/${colorData.hex.replace('#', '').toLowerCase()}/`;
+    const rgbText = `${colorData.rgb.r}, ${colorData.rgb.g}, ${colorData.rgb.b}`;
+    const hslText = `${Math.round(colorData.hsl.h)}°, ${Math.round(colorData.hsl.s)}%, ${Math.round(colorData.hsl.l)}%`;
 
     infoCard.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
@@ -200,11 +202,11 @@ function displayColorInfo(colorData) {
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-slate-600 dark:text-slate-400">RGB</span>
-                            <span class="font-mono">${colorData.rgb.r}, ${colorData.rgb.g}, ${colorData.rgb.b}</span>
+                            <span class="font-mono">${rgbText}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-slate-600 dark:text-slate-400">HSL</span>
-                            <span class="font-mono">${Math.round(colorData.hsl.h)}°, ${Math.round(colorData.hsl.s)}%, ${Math.round(colorData.hsl.l)}%</span>
+                            <span class="font-mono">${hslText}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-slate-600 dark:text-slate-400">Best Contrast</span>
@@ -212,10 +214,14 @@ function displayColorInfo(colorData) {
                         </div>
                     </div>
                 </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button class="copy-color-value px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="${colorData.hex}">Copy HEX</button>
+                    <button class="copy-color-value px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="hsl(${hslText})">Copy HSL</button>
+                </div>
                 <div class="pt-2">
-                    <a href="${colorPageUrl}"
-                       class="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-all hover:scale-105 active:scale-95"
-                       aria-label="View color palettes for ${colorData.hex}">
+                    <a href="${colorPageUrl}" 
+                        aria-label="View color palettes for ${colorData.hex}"
+                        class="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all hover:opacity-95 hover:scale-105 active:scale-95 flex items-center gap-2 shadow-lg shadow-primary/20">
                         <i class="bi bi-box-arrow-up-right"></i>
                         View Color Palettes
                     </a>
@@ -226,6 +232,26 @@ function displayColorInfo(colorData) {
 
     colorResultsGrid.innerHTML = '';
     colorResultsGrid.appendChild(infoCard);
+
+    infoCard.querySelectorAll('.copy-color-value').forEach(button => {
+        button.addEventListener('click', async () => {
+            const value = button.dataset.copy || '';
+            const originalText = button.textContent;
+
+            try {
+                await navigator.clipboard.writeText(value);
+                button.textContent = 'Copied';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1200);
+            } catch (error) {
+                button.textContent = 'Failed';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1200);
+            }
+        });
+    });
 }
 
 function saveToHistory(colorData) {
