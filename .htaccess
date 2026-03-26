@@ -2,7 +2,7 @@ Options -MultiViews
 RewriteEngine On
 
 # Tell Apache we are in a subfolder
-RewriteBase /
+RewriteBase /ColorMagic/
 
 # The Routing Rule
 RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]

@@ -284,7 +284,7 @@ $schema = [
         <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between gap-8">
             <a href="<?php echo e($homePageUrl); ?>" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                 <img src="<?php echo e($logoUrl); ?>" alt="Color Magic Logo" class="h-8 w-8 object-contain">
-                <h2 class="text-xl font-bold tracking-tight">Color Magic</h2>
+                <h2 class="text-xl font-bold tracking-tight"><span class="text-slate-900">Color</span> <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span></h2>
             </a>
 
             <div class="flex items-center gap-3">
@@ -331,19 +331,18 @@ $schema = [
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">Hex</p>
                             <p class="font-mono font-bold text-lg mb-3"><?php echo e($hexWithHash); ?></p>
-                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors" data-copy="<?php echo e($hexWithHash); ?>">Copy Hex</button>
+                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="<?php echo e($hexWithHash); ?>">Copy HEX</button>
                         </div>
 
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">RGB</p>
                             <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
-                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors" data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)">Copy RGB</button>
                         </div>
 
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">HSL</p>
                             <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%</p>
-                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors" data-copy="hsl(<?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%)">Copy HSL</button>
+                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="hsl(<?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%)">Copy HSL</button>
                         </div>
 
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">

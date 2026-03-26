@@ -26,7 +26,7 @@
  }
 
  .theme-filter.bg-primary {
-     background-image: linear-gradient(135deg, var(--cm-secondary), var(--cm-primary));
+    background-color: var(--cm-primary);
      box-shadow: 0 10px 26px -10px rgba(236, 72, 153, 0.65);
  }
 
@@ -112,11 +112,11 @@
  }
 
  /* Active Navigation Button */
- .nav-btn.bg-gradient-to-r {
+.nav-btn.bg-gradient-to-r {
      box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.45);
  }
 
- .nav-btn.bg-gradient-to-r:hover {
+.nav-btn.bg-gradient-to-r:hover {
      box-shadow: 0 15px 35px -5px rgba(124, 58, 237, 0.45);
      transform: translateY(-2px);
  }
