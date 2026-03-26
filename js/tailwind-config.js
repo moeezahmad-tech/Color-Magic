@@ -3,9 +3,10 @@ tailwind.config = {
     theme: {
         extend: {
             colors: {
-                "primary": "#13a4ec",
-                "background-light": "#f6f7f8",
-                "background-dark": "#101c22",
+                "primary": "#ec4899",
+                "secondary": "#7c3aed",
+                "background-light": "#ffffff",
+                "background-dark": "#13111c",
             },
             fontFamily: {
                 "display": ["Space Grotesk", "sans-serif"]

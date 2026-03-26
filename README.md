@@ -4,7 +4,7 @@
 
 A beautiful, fully-featured web application for designers and developers to explore color palettes, find color names from hex codes, and generate professional color schemes using color theory.
 
-![Color Magic](images/roundlogo.png)
+![Color Magic](images/logo.png)
 
 ## ✨ Features
 
@@ -51,9 +51,9 @@ colorCodeFinder/
 │   └── colors.json
 ├── images/
 │   ├── TopContributers/
-│   ├── full-logo.png
 │   ├── logo.png
-│   └── roundlogo.png
+│   ├── logo.png
+│   └── logo.png
 ├── js/
 │   ├── explore-palettes.js
 │   ├── find-color.js

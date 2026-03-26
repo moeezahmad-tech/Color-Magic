@@ -53,7 +53,7 @@ function updateNavigationState(targetSection) {
             if (subtext) subtext.classList.remove('text-white/70');
             if (subtext) subtext.classList.add('text-slate-500');
         } else {
-            b.classList.remove('bg-gradient-to-r', 'from-primary', 'to-blue-500', 'text-white', 'shadow-lg', 'shadow-primary/25');
+            b.classList.remove('bg-gradient-to-r', 'from-secondary', 'to-primary', 'text-white', 'shadow-lg', 'shadow-primary/25');
             b.classList.add('bg-white', 'dark:bg-slate-800', 'border', 'border-slate-200', 'dark:border-slate-700');
 
             const iconContainer = b.querySelector('.w-10');
@@ -96,7 +96,7 @@ function updateNavigationState(targetSection) {
                 if (subtext) subtext.classList.remove('text-slate-500');
             } else {
                 b.classList.remove('bg-white', 'dark:bg-slate-800', 'border', 'border-slate-200', 'dark:border-slate-700');
-                b.classList.add('bg-gradient-to-r', 'from-primary', 'to-blue-500', 'text-white', 'shadow-lg', 'shadow-primary/25');
+                b.classList.add('bg-gradient-to-r', 'from-secondary', 'to-primary', 'text-white', 'shadow-lg', 'shadow-primary/25');
 
                 const iconContainer = b.querySelector('.w-10');
                 if (iconContainer) {

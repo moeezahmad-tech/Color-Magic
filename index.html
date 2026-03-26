@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -29,18 +29,18 @@
     <meta property="og:title" content="Color Magic | Professional Color Palette Generator & Explorer" />
     <meta property="og:description"
         content="Professional color schemes tailored for digital products. Generate, explore, and find the perfect colors for your next design." />
-    <meta property="og:image" content="images/full-logo.png" />
+    <meta property="og:image" content="images/logo.png" />
 
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://colormagic.techkreative.com/" />
     <meta property="twitter:title" content="Color Magic | Professional Color Palette Generator & Explorer" />
     <meta property="twitter:description"
         content="Professional color schemes tailored for digital products. Generate, explore, and find the perfect colors for your next design." />
-    <meta property="twitter:image" content="images/full-logo.png" />
+    <meta property="twitter:image" content="images/logo.png" />
 
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="images/roundlogo.png">
+    <link rel="icon" type="image/png" href="images/logo.png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -143,7 +143,7 @@
                     </div>
                     <div class="space-y-2">
                         <button
-                            class="nav-btn group w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-blue-500 text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+                            class="nav-btn group w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-secondary to-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
                             data-section="explore">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
@@ -226,53 +226,56 @@
                     </div>
                 </div>
 
-                <div class="w-full max-w-xl">
-                    <div class="relative group">
-                        <i
-                            class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl group-focus-within:text-primary transition-colors"></i>
-                        <input id="searchInput"
-                            class="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-4 pl-12 pr-6 text-lg focus:border-primary focus:outline-none transition-all shadow-sm placeholder:text-slate-500"
-                            placeholder="Search hex, theme or color..." type="text" />
+                <div
+                    class="space-y-6 bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 w-full">
+                    <div class="w-full max-w-xl">
+                        <div class="relative group">
+                            <i
+                                class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl group-focus-within:text-primary transition-colors"></i>
+                            <input id="searchInput"
+                                class="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-4 pl-12 pr-6 text-lg focus:border-primary focus:outline-none transition-all shadow-sm placeholder:text-slate-500"
+                                placeholder="Search hex, theme or color..." type="text" />
+                        </div>
                     </div>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button
-                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20"
-                        data-theme="all">
-                        All Styles
-                    </button>
-                    <button
-                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
-                        data-theme="favorites">
-                        <i class="bi bi-heart-fill text-lg"></i> Favorites
-                    </button>
-                    <button
-                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
-                        data-theme="pastel">
-                        <i class="bi bi-flower1 text-lg"></i> Pastel
-                    </button>
-                    <button
-                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
-                        data-theme="vintage">
-                        <i class="bi bi-clock-history text-lg"></i> Vintage
-                    </button>
-                    <button
-                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
-                        data-theme="neon">
-                        <i class="bi bi-lightning-fill text-lg"></i> Neon
-                    </button>
-                    <button
-                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
-                        data-theme="minimalist">
-                        <i class="bi bi-check-circle text-lg"></i> Minimalist
-                    </button>
-                    <button
-                        class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
-                        data-theme="earthy">
-                        <i class="bi bi-tree text-lg"></i> Earthy
-                    </button>
-                </div>
-                <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20"
+                            data-theme="all">
+                            All Styles
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+                            data-theme="favorites">
+                            <i class="bi bi-heart-fill text-lg"></i> Favorites
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+                            data-theme="pastel">
+                            <i class="bi bi-flower1 text-lg"></i> Pastel
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+                            data-theme="vintage">
+                            <i class="bi bi-clock-history text-lg"></i> Vintage
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+                            data-theme="neon">
+                            <i class="bi bi-lightning-fill text-lg"></i> Neon
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+                            data-theme="minimalist">
+                            <i class="bi bi-check-circle text-lg"></i> Minimalist
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+                            data-theme="earthy">
+                            <i class="bi bi-tree text-lg"></i> Earthy
+                        </button>
+                    </div>
+                    <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    </div>
                 </div>
                 <!-- Load More button removed - all palettes now load at once -->
             </div>
@@ -321,7 +324,7 @@
                             </div>
 
                             <button id="generatePaletteBtn"
-                                class="w-full mt-6 px-6 py-4 bg-gradient-to-r from-primary to-blue-500 text-white font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25">
+                                class="w-full mt-6 px-6 py-4 bg-gradient-to-r from-secondary to-primary text-white font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25">
                                 <i class="bi bi-stars text-xl"></i>
                                 <span>Generate Palette</span>
                             </button>

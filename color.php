@@ -202,12 +202,12 @@ $assetBase = $basePath;
 $homePageUrl = $assetBase . '/';
 $openSourceUrl = $assetBase . '/open-source.html';
 $manifestUrl = $assetBase . '/manifest.json';
-$faviconUrl = $assetBase . '/images/roundlogo.png';
+$faviconUrl = $assetBase . '/images/logo.png';
 $logoUrl = $assetBase . '/images/logo.png';
 $siteStylesUrl = $assetBase . '/style/style.css?v=1.0';
 $tailwindConfigUrl = $assetBase . '/js/tailwind-config.js';
 $colorRouteBase = $assetBase . '/color/';
-$ogImageUrl = $baseUrl . '/images/full-logo.png';
+$ogImageUrl = $baseUrl . '/images/logo.png';
 
 $schema = [
     '@context' => 'https://schema.org',
@@ -223,7 +223,7 @@ $schema = [
 ];
 ?>
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
