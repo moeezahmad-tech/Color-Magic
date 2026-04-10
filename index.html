@@ -9,7 +9,7 @@
     <meta name="description"
         content="Color Magic is a professional open-source tool for designers to find, generate, and organize color palettes with ease. Explore millions of hex codes and technical details." />
     <meta name="keywords"
-        content="color palette generator, color scheme, hex code finder, color theory, design tool, UI colors, palette explorer, color magic" />
+        content="color palette generator, hex code details, rgb to hsl, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="index, follow" />
 
@@ -29,14 +29,14 @@
     <meta property="og:title" content="Color Magic | Open Source Color Palette Generator" />
     <meta property="og:description"
         content="The ultimate tool for finding and organizing professional color palettes." />
-    <meta property="og:image" content="images/logo.png" />
+    <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
 
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://colormagic.techkreative.com/" />
     <meta property="twitter:title" content="Color Magic | Professional Color Palette Generator & Explorer" />
     <meta property="twitter:description"
         content="Professional color schemes tailored for digital products. Generate, explore, and find the perfect colors for your next design." />
-    <meta property="twitter:image" content="images/logo.png" />
+    <meta property="twitter:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
 
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
     <link rel="manifest" href="manifest.json">
@@ -54,24 +54,24 @@
         class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
         <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between gap-8">
             <div class="flex items-center gap-8">
-                <div class="flex items-center gap-2 text-primary">
-                    <img src="images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain">
+                <a href="https://colormagic.techkreative.com/" class="flex items-center gap-2 text-primary" aria-label="Go to Color Magic homepage">
+                    <img src="images/logo.png" alt="Color Magic by TechKreative Logo" class="h-8 w-8 object-contain">
                     <h2 class="text-xl font-bold tracking-tight"><span class="text-slate-900">Color</span> <span
                             class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span>
                     </h2>
-                </div>
+                </a>
 
             </div>
             <div class="flex flex-1 justify-end items-center gap-4">
                 <a href="open-source.html"
                     class="hidden lg:flex items-center gap-2 px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-all hover:scale-105 active:scale-95 group"
                     title="View on GitHub">
-                    <i class="bi bi-github text-xl group-hover:rotate-12 transition-transform"></i>
+                    <i class="bi bi-github text-xl group-hover:rotate-12 transition-transform" aria-label="GitHub icon"></i>
                     <span class="text-xs font-semibold">Open Source</span>
                 </a>
                 <button id="mobileMenuBtn"
                     class="lg:hidden p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                    <i class="bi bi-list"></i>
+                    <i class="bi bi-list" aria-label="Open menu icon"></i>
                 </button>
             </div>
 
@@ -81,22 +81,22 @@
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
         <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center gap-2 text-primary">
-                <img src="images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain">
+            <a href="https://colormagic.techkreative.com/" class="flex items-center gap-2 text-primary" aria-label="Go to Color Magic homepage">
+                <img src="images/logo.png" alt="Color Magic by TechKreative Logo" class="h-8 w-8 object-contain">
                 <h2 class="text-xl font-bold tracking-tight"><span class="text-slate-900">Color</span> <span
                         class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span>
                 </h2>
-            </div>
+            </a>
             <button id="closeMobileMenuBtn"
                 class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                <i class="bi bi-x-lg"></i>
+                <i class="bi bi-x-lg" aria-label="Close menu icon"></i>
             </button>
         </div>
         <div class="space-y-4">
             <button
                 class="nav-btn-mobile w-full flex items-center gap-4 px-4 py-4 rounded-xl bg-gradient-to-r from-secondary to-primary text-white shadow-lg shadow-primary/20 text-left"
                 data-section="explore">
-                <i class="bi bi-palette p-2 bg-white/20 rounded-lg"></i>
+                <i class="bi bi-palette p-2 bg-white/20 rounded-lg" aria-label="Explore palettes icon"></i>
                 <div>
                     <span class="block text-lg font-bold">Explore Palettes</span>
                     <span class="text-sm text-white/70">Browse presets</span>
@@ -106,7 +106,7 @@
                 class="nav-btn-mobile w-full flex items-center gap-4 px-4 py-4 rounded-xl bg-pink-100 hover:bg-pink-200 text-slate-700 border border-pink-200 shadow-sm transition-all text-left group"
                 data-section="find-color">
                 <i
-                    class="bi bi-eyedropper p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform"></i>
+                    class="bi bi-eyedropper p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform" aria-label="Find color icon"></i>
                 <div>
                     <span class="block text-lg font-bold">Find Color</span>
                     <span class="text-sm text-slate-500">Hex to name & info</span>
@@ -116,16 +116,16 @@
                 class="nav-btn-mobile w-full flex items-center gap-4 px-4 py-4 rounded-xl bg-pink-100 hover:bg-pink-200 text-slate-700 border border-pink-200 shadow-sm transition-all text-left group"
                 data-section="generate">
                 <i
-                    class="bi bi-stars p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform"></i>
+                    class="bi bi-stars p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform" aria-label="Generate palette icon"></i>
                 <div>
                     <span class="block text-lg font-bold">Generate Palette</span>
                     <span class="text-sm text-slate-500">Create new schemes</span>
                 </div>
             </button>
-            <a href="open-source.html"
+            <a href="https://colormagic.techkreative.com/open-source.html"
                 class="w-full flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-left group border-t border-slate-200 dark:border-slate-700 mt-4 pt-6">
                 <i
-                    class="bi bi-github p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform text-xl"></i>
+                    class="bi bi-github p-2 bg-primary/10 text-primary rounded-lg group-hover:scale-110 transition-transform text-xl" aria-label="GitHub icon"></i>
                 <div>
                     <span class="block text-lg font-bold">Open Source</span>
                     <span class="text-sm text-slate-500">View on GitHub</span>
@@ -151,7 +151,7 @@
                             data-section="explore">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
-                                <i class="bi bi-palette text-xl"></i>
+                                <i class="bi bi-palette text-xl" aria-label="Palette icon"></i>
                             </div>
                             <div class="flex-1 text-left">
                                 <span class="block text-sm font-bold">Explore Palettes</span>
@@ -163,7 +163,7 @@
                             data-section="find-color">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
-                                <i class="bi bi-eyedropper text-xl text-primary"></i>
+                                <i class="bi bi-eyedropper text-xl text-primary" aria-label="Eyedropper icon"></i>
                             </div>
                             <div class="flex-1 text-left">
                                 <span class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Find
@@ -176,7 +176,7 @@
                             data-section="generate">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
-                                <i class="bi bi-stars text-xl text-primary"></i>
+                                <i class="bi bi-stars text-xl text-primary" aria-label="Stars icon"></i>
                             </div>
                             <div class="flex-1 text-left">
                                 <span class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Generate
@@ -196,6 +196,7 @@
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div class="w-full">
                         <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Discover Professional Color Palettes with Color Magic</h1>
+                        <h2 class="text-xl md:text-2xl font-semibold tracking-tight mb-3">Explore Hex Code Details with Our Color Palette Design Tool</h2>
                         <p class="text-slate-500 dark:text-slate-400 text-lg">Enter a hex code to discover color names,
                             RGB/HSL values, and detailed information.</p>
                     </div>
@@ -205,13 +206,13 @@
                     <div class="flex gap-4">
                         <div class="flex-1 relative">
                             <i
-                                class="bi bi-eyedropper absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl"></i>
+                                class="bi bi-eyedropper absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" aria-label="Hex code input icon"></i>
                             <input id="colorCodeInput" type="text" placeholder="Enter hex code (e.g., FF5733)"
                                 class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:outline-none transition-colors" />
                         </div>
                         <button id="findColorBtn"
                             class="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all hover:opacity-95 hover:scale-105 active:scale-95 flex items-center gap-2 shadow-lg shadow-primary/20">
-                            <i class="bi bi-search"></i>
+                            <i class="bi bi-search" aria-label="Search icon"></i>
                             Find Info
                         </button>
                     </div>
@@ -224,7 +225,7 @@
             <div id="explore-section" class="flex flex-col gap-8">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div class="max-w-2xl">
-                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Explore Palettes</h2>
+                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Trending Color Palette Collections for Design Tool Projects</h2>
                         <p class="text-slate-500 dark:text-slate-400 text-lg">Browse through professional color schemes
                             tailored for digital products and modern design systems.</p>
                     </div>
@@ -235,7 +236,7 @@
                     <div class="w-full max-w-xl">
                         <div class="relative group">
                             <i
-                                class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl group-focus-within:text-primary transition-colors"></i>
+                                class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl group-focus-within:text-primary transition-colors" aria-label="Palette search icon"></i>
                             <input id="searchInput"
                                 class="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-4 pl-12 pr-6 text-lg focus:border-primary focus:outline-none transition-all shadow-sm placeholder:text-slate-500"
                                 placeholder="Search hex, theme or color..." type="text" />
@@ -250,32 +251,32 @@
                         <button
                             class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                             data-theme="favorites">
-                            <i class="bi bi-heart-fill text-lg"></i> Favorites
+                            <i class="bi bi-heart-fill text-lg" aria-label="Favorites icon"></i> Favorites
                         </button>
                         <button
                             class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                             data-theme="pastel">
-                            <i class="bi bi-flower1 text-lg"></i> Pastel
+                            <i class="bi bi-flower1 text-lg" aria-label="Pastel icon"></i> Pastel
                         </button>
                         <button
                             class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                             data-theme="vintage">
-                            <i class="bi bi-clock-history text-lg"></i> Vintage
+                            <i class="bi bi-clock-history text-lg" aria-label="Vintage icon"></i> Vintage
                         </button>
                         <button
                             class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                             data-theme="neon">
-                            <i class="bi bi-lightning-fill text-lg"></i> Neon
+                            <i class="bi bi-lightning-fill text-lg" aria-label="Neon icon"></i> Neon
                         </button>
                         <button
                             class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                             data-theme="minimalist">
-                            <i class="bi bi-check-circle text-lg"></i> Minimalist
+                            <i class="bi bi-check-circle text-lg" aria-label="Minimalist icon"></i> Minimalist
                         </button>
                         <button
                             class="theme-filter flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
                             data-theme="earthy">
-                            <i class="bi bi-tree text-lg"></i> Earthy
+                            <i class="bi bi-tree text-lg" aria-label="Earthy icon"></i> Earthy
                         </button>
                     </div>
                     <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -287,7 +288,7 @@
             <div id="generate-section" class="hidden flex-col gap-8">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div class="max-w-2xl">
-                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Generate Palette</h2>
+                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Generate Color Palette Variations with Our Design Tool</h2>
                         <p class="text-slate-500 dark:text-slate-400 text-lg">Create professional 5-color palettes from
                             a base color using color theory harmony rules.</p>
                     </div>
@@ -329,7 +330,7 @@
 
                             <button id="generatePaletteBtn"
                                 class="w-full mt-6 px-6 py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25">
-                                <i class="bi bi-stars text-xl"></i>
+                                <i class="bi bi-stars text-xl" aria-label="Generate palette icon"></i>
                                 <span>Generate Palette</span>
                             </button>
                             <p id="paletteErrorMessage" class="text-red-500 text-sm mt-2 hidden"></p>
@@ -338,7 +339,7 @@
                         <div class="space-y-6 w-full">
                             <div id="palettePlaceholder"
                                 class="p-6 text-center flex flex-col items-center justify-center h-full min-h-[460px] text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
-                                <i class="bi bi-palette text-6xl mb-4 opacity-20"></i>
+                                <i class="bi bi-palette text-6xl mb-4 opacity-20" aria-label="Palette placeholder icon"></i>
                                 <p class="text-lg font-medium opacity-50">Enter a color and click Generate</p>
                                 <p class="text-sm opacity-40">Create stunning color combinations instantly</p>
                             </div>
@@ -350,6 +351,10 @@
                 </div>
             </div>
 
+            <section aria-labelledby="about-color-magic" class="sr-only">
+                <h2 id="about-color-magic">About Color Magic Hex Code and Color Palette Design Tool</h2>
+                <p>Color Magic is a design tool for exploring color palettes, inspecting hex code details, and generating palette combinations.</p>
+            </section>
         </main>
     </div>
 

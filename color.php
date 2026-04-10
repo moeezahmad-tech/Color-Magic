@@ -199,7 +199,7 @@ if ($basePath === '/') {
 }
 
 $assetBase = $basePath;
-$homePageUrl = $assetBase . '/';
+$homePageUrl = $baseUrl . '/';
 $openSourceUrl = $assetBase . '/open-source.html';
 $manifestUrl = $assetBase . '/manifest.json';
 $faviconUrl = $assetBase . '/images/logo.png';
@@ -208,7 +208,7 @@ $siteStylesUrl = $assetBase . '/style/style.css?v=1.0';
 $tailwindConfigUrl = $assetBase . '/js/tailwind-config.js';
 $colorRouteBase = $assetBase . '/color/';
 $dynamicColorImageUrl = $baseUrl . '/colorImage.php?hex=' . strtolower($normalizedHex);
-$ogImageUrl = $dynamicColorImageUrl;
+$ogImageUrl = $baseUrl . '/assets/og-preview.png';
 
 $schema = [
     '@context' => 'https://schema.org',
@@ -232,7 +232,7 @@ $schema = [
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title><?php echo e($metaTitle); ?></title>
     <meta name="description" content="<?php echo e($metaDescription); ?>" />
-    <meta name="keywords" content="<?php echo e($hexWithHash); ?>, <?php echo e($hexName); ?>, color hex, color palettes, rgb, hsl, color details" />
+    <meta name="keywords" content="color palette generator, hex code details, rgb to hsl, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="<?php echo $isValidHex ? 'index, follow' : 'noindex, follow'; ?>" />
 
@@ -286,20 +286,20 @@ $schema = [
         class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
         <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between gap-8">
             <a href="<?php echo e($homePageUrl); ?>" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
-                <img src="<?php echo e($logoUrl); ?>" alt="Color Magic Logo" class="h-8 w-8 object-contain">
+                <img src="<?php echo e($logoUrl); ?>" alt="Color Magic by TechKreative Logo" class="h-8 w-8 object-contain">
                 <h2 class="text-xl font-bold tracking-tight"><span class="text-slate-900">Color</span> <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span></h2>
             </a>
 
             <div class="flex items-center gap-3">
                 <a href="<?php echo e($homePageUrl); ?>"
                     class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                    <i class="bi bi-house-door"></i>
+                    <i class="bi bi-house-door" aria-label="Home icon"></i>
                     <span>Home</span>
                 </a>
                 <a href="<?php echo e($openSourceUrl); ?>"
                     class="hidden lg:flex items-center gap-2 px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-all hover:scale-105 active:scale-95 group"
                     title="View on GitHub">
-                    <i class="bi bi-github text-xl group-hover:rotate-12 transition-transform"></i>
+                    <i class="bi bi-github text-xl group-hover:rotate-12 transition-transform" aria-label="GitHub icon"></i>
                     <span class="text-xs font-semibold">Open Source</span>
                 </a>
             </div>
@@ -334,6 +334,7 @@ $schema = [
 
                 <div class="p-6 md:p-8">
                     <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-3"><?php echo e($hexName); ?> Color Details</h1>
+                    <h2 class="text-xl md:text-2xl font-semibold tracking-tight mb-3">Explore Hex Code Details with the Color Magic Design Tool</h2>
                     <p class="text-slate-500 dark:text-slate-400 text-base md:text-lg mb-6">
                         Complete color profile for <?php echo e($hexWithHash); ?> with copy-ready values and related palettes.
                     </p>
@@ -410,11 +411,11 @@ $schema = [
             </p>
             <div class="flex items-center justify-center gap-6">
                 <a href="<?php echo e($homePageUrl); ?>" class="text-slate-500 hover:text-primary transition-colors" aria-label="Go to home">
-                    <i class="bi bi-house-door text-xl"></i>
+                    <i class="bi bi-house-door text-xl" aria-label="Home icon"></i>
                 </a>
                 <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
                     class="text-slate-500 hover:text-primary transition-colors" aria-label="GitHub repository">
-                    <i class="bi bi-github text-xl"></i>
+                    <i class="bi bi-github text-xl" aria-label="GitHub icon"></i>
                 </a>
             </div>
         </div>
