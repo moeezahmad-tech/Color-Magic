@@ -179,15 +179,25 @@ function showError(message) {
 function displayColorInfo(colorData) {
     const infoCard = document.createElement('div');
     infoCard.className = 'col-span-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 animate-fadeIn';
-    const colorPageUrl = `color/${colorData.hex.replace('#', '').toLowerCase()}/`;
+    const cleanHex = colorData.hex.replace('#', '').toLowerCase();
+    const colorPageUrl = `color/${cleanHex}/`;
+    const colorImageUrl = `https://colormagic.techkreative.com/colorImage.php?hex=${cleanHex}`;
     const rgbText = `${colorData.rgb.r}, ${colorData.rgb.g}, ${colorData.rgb.b}`;
     const hslText = `${Math.round(colorData.hsl.h)}°, ${Math.round(colorData.hsl.s)}%, ${Math.round(colorData.hsl.l)}%`;
 
     infoCard.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
-            <div class="p-8 flex flex-col justify-center" style="background-color: ${colorData.hex};">
-                <div class="text-center" style="color: ${colorData.contrast === 'White' ? '#FFFFFF' : '#000000'};">
-                    <h2 class="text-4xl font-bold mb-2">${colorData.name}</h2>
+            <div class="relative min-h-[280px] p-8 flex flex-col justify-center overflow-hidden" style="background-color: ${colorData.hex};">
+                <img
+                    src="${colorImageUrl}"
+                    alt="${colorData.name} color image (${colorData.hex})"
+                    width="1200"
+                    height="630"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    loading="eager"
+                    fetchpriority="high" />
+                <div class="relative z-10 text-center" style="color: ${colorData.contrast === 'White' ? '#FFFFFF' : '#000000'};">
+                    <h2 class="text-4xl font-bold mb-2">${colorData.hex}</h2>
                     <p class="text-2xl font-mono opacity-80">${colorData.hex}</p>
                 </div>
             </div>

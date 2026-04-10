@@ -207,7 +207,8 @@ $logoUrl = $assetBase . '/images/logo.png';
 $siteStylesUrl = $assetBase . '/style/style.css?v=1.0';
 $tailwindConfigUrl = $assetBase . '/js/tailwind-config.js';
 $colorRouteBase = $assetBase . '/color/';
-$ogImageUrl = $baseUrl . '/images/logo.png';
+$dynamicColorImageUrl = $baseUrl . '/colorImage.php?hex=' . strtolower($normalizedHex);
+$ogImageUrl = $dynamicColorImageUrl;
 
 $schema = [
     '@context' => 'https://schema.org',
@@ -215,6 +216,8 @@ $schema = [
     'name' => $metaTitle,
     'description' => $metaDescription,
     'url' => $canonicalUrl,
+    'image' => $dynamicColorImageUrl,
+    'primaryImageOfPage' => $dynamicColorImageUrl,
     'mainEntity' => [
         '@type' => 'DefinedTerm',
         'name' => $hexName,
@@ -314,8 +317,16 @@ $schema = [
 
         <section class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
             <div class="grid grid-cols-1 lg:grid-cols-[420px,1fr]">
-                <div class="min-h-[280px] md:min-h-[360px] p-6 flex items-end" style="background-color: <?php echo e($hexWithHash); ?>;">
-                    <div class="px-4 py-3 rounded-xl backdrop-blur-sm" style="background: rgba(15, 23, 42, 0.25); color: <?php echo e($contrast); ?>;">
+                <div class="relative min-h-[280px] md:min-h-[360px] p-6 flex items-end overflow-hidden" style="background-color: <?php echo e($hexWithHash); ?>;">
+                    <img
+                        src="<?php echo e($dynamicColorImageUrl); ?>"
+                        alt="<?php echo e($hexName); ?> color swatch image (<?php echo e($hexWithHash); ?>)"
+                        width="1200"
+                        height="630"
+                        class="absolute inset-0 h-full w-full object-cover"
+                        loading="eager"
+                        fetchpriority="high" />
+                    <div class="relative z-10 px-4 py-3 rounded-xl backdrop-blur-sm" style="background: rgba(15, 23, 42, 0.25); color: <?php echo e($contrast); ?>;">
                         <p class="text-sm uppercase tracking-widest opacity-85">Selected Color</p>
                         <p class="text-3xl font-bold"><?php echo e($hexWithHash); ?></p>
                     </div>
