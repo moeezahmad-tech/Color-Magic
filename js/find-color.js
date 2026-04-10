@@ -224,8 +224,9 @@ function displayColorInfo(colorData) {
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="grid grid-cols-3 gap-2">
                     <button class="copy-color-value px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="${colorData.hex}">Copy HEX</button>
+                    <button class="copy-color-value px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="rgb(${colorData.rgb.r}, ${colorData.rgb.g}, ${colorData.rgb.b})">Copy RGB</button>
                     <button class="copy-color-value px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="hsl(${hslText})">Copy HSL</button>
                 </div>
                 <div class="pt-2">

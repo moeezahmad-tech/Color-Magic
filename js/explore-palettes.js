@@ -1,7 +1,13 @@
 let allPalettes = [];
+let filteredPalettes = [];
 let isLoading = false;
 let loadError = null;
+const PAGE_SIZE = 60;
+let renderedCount = 0;
+let currentQuery = '';
 const paletteGrid = document.getElementById('paletteGrid');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+const paletteCountStatus = document.getElementById('paletteCountStatus');
 
 // Event delegation for copy palette button
 paletteGrid?.addEventListener('click', function (e) {
@@ -99,27 +105,8 @@ function updateFavoriteButton(button, paletteId) {
 
 const searchInput = document.getElementById('searchInput');
 searchInput?.addEventListener('input', function (e) {
-    const query = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('#paletteGrid > div');
-
-    cards.forEach(card => {
-        const tags = card.dataset.tags || '';
-        const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-        const colors = card.querySelectorAll('.swatch-hex');
-        let colorMatch = false;
-
-        colors.forEach(color => {
-            if (color.textContent.toLowerCase().includes(query)) {
-                colorMatch = true;
-            }
-        });
-
-        if (tags.includes(query) || title.includes(query) || colorMatch || query === '') {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
+    currentQuery = e.target.value.toLowerCase().trim();
+    applyFiltersAndRender();
 });
 
 let currentFilter = 'all';
@@ -135,38 +122,7 @@ document.querySelectorAll('.theme-filter').forEach(btn => {
 
         const theme = this.dataset.theme;
         currentFilter = theme;
-
-        paletteGrid.innerHTML = '';
-
-        let filteredPalettes;
-        if (theme === 'all') {
-            filteredPalettes = [...allPalettes];
-        } else if (theme === 'favorites') {
-            const favorites = getFavorites();
-            filteredPalettes = allPalettes.filter(palette => favorites.includes(palette.id));
-
-            // Show message if no favorites
-            if (filteredPalettes.length === 0) {
-                paletteGrid.innerHTML = `
-                    <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
-                        <i class="bi bi-heart text-6xl text-slate-300 dark:text-slate-700 mb-4"></i>
-                        <p class="text-xl font-bold text-slate-700 dark:text-slate-300">No Favorites Yet</p>
-                        <p class="text-sm text-slate-500 max-w-md mt-2">Start adding palettes to your favorites by clicking the heart icon on any palette card.</p>
-                    </div>
-                `;
-                return;
-            }
-        } else {
-            filteredPalettes = allPalettes.filter(palette =>
-                palette.style.toLowerCase() === theme.toLowerCase()
-            );
-        }
-
-        // Display all filtered palettes
-        filteredPalettes.forEach(palette => {
-            const card = createPaletteCard(palette);
-            paletteGrid.appendChild(card);
-        });
+        applyFiltersAndRender();
     });
 });
 
@@ -181,7 +137,7 @@ function isLightColor(hex) {
 
 
 function createPaletteCard(palette) {
-    const card = document.createElement('div');
+    const card = document.createElement('article');
     card.className = 'group flex flex-col gap-4';
     card.dataset.tags = `${palette.style.toLowerCase()} ${palette.name.toLowerCase()}`;
     card.dataset.paletteId = palette.id;
@@ -229,6 +185,12 @@ function createPaletteCard(palette) {
 
 
 function showLoadingState() {
+    if (loadMoreBtn) {
+        loadMoreBtn.classList.add('hidden');
+    }
+    if (paletteCountStatus) {
+        paletteCountStatus.textContent = '';
+    }
     paletteGrid.innerHTML = `
         <div class="col-span-full flex flex-col items-center justify-center py-20">
             <i class="bi bi-hourglass-split text-6xl text-primary animate-pulse mb-4"></i>
@@ -239,6 +201,12 @@ function showLoadingState() {
 }
 
 function showErrorState(error) {
+    if (loadMoreBtn) {
+        loadMoreBtn.classList.add('hidden');
+    }
+    if (paletteCountStatus) {
+        paletteCountStatus.textContent = '';
+    }
     paletteGrid.innerHTML = `
         <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
             <i class="bi bi-exclamation-triangle text-6xl text-red-500 mb-4"></i>
@@ -251,6 +219,91 @@ function showErrorState(error) {
         </div>
     `;
 }
+
+function getFilteredPalettes() {
+    let scoped = [...allPalettes];
+
+    if (currentFilter === 'favorites') {
+        const favorites = getFavorites();
+        scoped = scoped.filter(palette => favorites.includes(palette.id));
+    } else if (currentFilter !== 'all') {
+        scoped = scoped.filter(palette =>
+            palette.style.toLowerCase() === currentFilter.toLowerCase()
+        );
+    }
+
+    if (currentQuery !== '') {
+        scoped = scoped.filter(palette => {
+            const title = palette.name.toLowerCase();
+            const style = palette.style.toLowerCase();
+            const colors = palette.colors.join(' ').toLowerCase();
+            return title.includes(currentQuery) || style.includes(currentQuery) || colors.includes(currentQuery);
+        });
+    }
+
+    return scoped;
+}
+
+function updatePaginationState() {
+    if (paletteCountStatus) {
+        const total = filteredPalettes.length;
+        paletteCountStatus.textContent = total === 0
+            ? 'No palettes match your current filters.'
+            : `Showing ${renderedCount} of ${total} palettes`;
+    }
+
+    if (loadMoreBtn) {
+        const hasMore = renderedCount < filteredPalettes.length;
+        loadMoreBtn.classList.toggle('hidden', !hasMore || filteredPalettes.length === 0);
+    }
+}
+
+function renderNextBatch(reset = false) {
+    if (reset) {
+        paletteGrid.innerHTML = '';
+        renderedCount = 0;
+    }
+
+    if (filteredPalettes.length === 0) {
+        const emptyTitle = currentFilter === 'favorites'
+            ? 'No Favorites Yet'
+            : 'No Palettes Found';
+        const emptyMessage = currentFilter === 'favorites'
+            ? 'Start adding palettes to your favorites by clicking the heart icon on any palette card.'
+            : 'Try changing your filters or search query to discover more color palettes.';
+
+        paletteGrid.innerHTML = `
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                <i class="bi bi-heart text-6xl text-slate-300 dark:text-slate-700 mb-4"></i>
+                <p class="text-xl font-bold text-slate-700 dark:text-slate-300">${emptyTitle}</p>
+                <p class="text-sm text-slate-500 max-w-md mt-2">${emptyMessage}</p>
+            </div>
+        `;
+        updatePaginationState();
+        return;
+    }
+
+    const nextChunk = filteredPalettes.slice(renderedCount, renderedCount + PAGE_SIZE);
+    const fragment = document.createDocumentFragment();
+
+    nextChunk.forEach(palette => {
+        const card = createPaletteCard(palette);
+        fragment.appendChild(card);
+    });
+
+    paletteGrid.appendChild(fragment);
+    renderedCount += nextChunk.length;
+    updatePaginationState();
+}
+
+function applyFiltersAndRender() {
+    filteredPalettes = getFilteredPalettes();
+    renderNextBatch(true);
+}
+
+loadMoreBtn?.addEventListener('click', function () {
+    renderNextBatch(false);
+});
 
 async function fetchPalettes() {
     if (isLoading) return;
@@ -273,14 +326,7 @@ async function fetchPalettes() {
         }
 
         allPalettes = data.sort(() => Math.random() - 0.5);
-
-        paletteGrid.innerHTML = '';
-
-        // Load all palettes at once
-        allPalettes.forEach(palette => {
-            const card = createPaletteCard(palette);
-            paletteGrid.appendChild(card);
-        });
+        applyFiltersAndRender();
 
         isLoading = false;
 
