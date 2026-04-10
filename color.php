@@ -349,6 +349,7 @@ $schema = [
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">RGB</p>
                             <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
+                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)">Copy RGB</button>
                         </div>
 
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
