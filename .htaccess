@@ -7,4 +7,7 @@ RewriteBase /
 # The Routing Rule
 RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
 
-RewriteRule ^$ index.html [L]
+RewriteRule ^$ index.html 
+
+
+RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ generate.php?hex=$1 [L]
