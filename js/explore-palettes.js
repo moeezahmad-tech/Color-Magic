@@ -301,6 +301,7 @@ function applyFiltersAndRender() {
     renderNextBatch(true);
 }
 
+
 loadMoreBtn?.addEventListener('click', function () {
     renderNextBatch(false);
 });
@@ -337,4 +338,14 @@ async function fetchPalettes() {
     }
 }
 
-fetchPalettes();
+fetchPalettes().then(() => {
+    // Auto-activate a filter set in the URL: e.g. /?filter=favorites
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const filterParam = params.get('filter');
+        if (filterParam) {
+            const btn = document.querySelector(`.theme-filter[data-theme="${filterParam}"]`);
+            if (btn) btn.click();
+        }
+    } catch (_) {}
+});

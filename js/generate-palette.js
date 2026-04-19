@@ -2,7 +2,7 @@ const paletteColorInput = document.getElementById('paletteColorInput');
 const generatePaletteBtn = document.getElementById('generatePaletteBtn');
 const paletteErrorMessage = document.getElementById('paletteErrorMessage');
 const paletteResults = document.getElementById('paletteResults');
-const paletteColorPreview = document.getElementById('paletteColorPreview');
+
 
 let selectedScheme = 'mono';
 let selectedVariation = 'default';
@@ -36,9 +36,7 @@ paletteColorInput?.addEventListener('input', function () {
     if (color.startsWith('#')) {
         color = color.slice(1);
     }
-    if (color.length === 3 || color.length === 6) {
-        paletteColorPreview.style.backgroundColor = '#' + color;
-    }
+
 });
 
 generatePaletteBtn?.addEventListener('click', generatePalette);
