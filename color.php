@@ -81,6 +81,13 @@ function colorDistanceSq(string $hexA, string $hexB): int
     return ($dr * $dr) + ($dg * $dg) + ($db * $db);
 }
 
+function mixColor(array $base, array $mix, float $weight): string {
+    $r = (int) round($base['r'] * $weight + $mix['r'] * (1 - $weight));
+    $g = (int) round($base['g'] * $weight + $mix['g'] * (1 - $weight));
+    $b = (int) round($base['b'] * $weight + $mix['b'] * (1 - $weight));
+    return sprintf('%02x%02x%02x', $r, $g, $b);
+}
+
 $hexParam = isset($_GET['hex']) ? (string) $_GET['hex'] : '';
 $normalizedHex = normalizeHex($hexParam);
 $isValidHex = (bool) preg_match('/^[A-F0-9]{6}$/', $normalizedHex);
@@ -115,6 +122,25 @@ $hexName = $colorNames[strtolower($normalizedHex)] ?? ('Hex ' . $hexWithHash);
 $rgb = hexToRgb($normalizedHex);
 $hsl = hexToHsl($normalizedHex);
 $contrast = bestContrastText($normalizedHex);
+
+$shades = [];
+for ($i = 1; $i <= 10; $i++) {
+    $shades[] = mixColor($rgb, ['r'=>0,'g'=>0,'b'=>0], $i / 10);
+}
+
+$tints = [];
+for ($i = 10; $i >= 1; $i--) {
+    $tints[] = mixColor($rgb, ['r'=>255,'g'=>255,'b'=>255], $i / 10);
+}
+
+$tones = [];
+for ($i = 1; $i <= 10; $i++) {
+    $tones[] = mixColor($rgb, ['r'=>128,'g'=>128,'b'=>128], $i / 10);
+}
+
+$darkestShade = '#' . $shades[0];
+$lightestTint = '#' . $tints[9];
+$leastSaturatedTone = '#' . $tones[0];
 
 $exactPalettes = [];
 $nearPalettes = [];
@@ -366,6 +392,57 @@ $schema = [
                     </div>
                     <p id="copyFeedback" class="copy-feedback opacity-0 -translate-y-1 mt-4 text-sm font-semibold text-emerald-600">Copied to clipboard</p>
                 </div>
+            </div>
+        </section>
+
+        <section class="mt-12" aria-labelledby="shades-tints-title">
+            <h2 id="shades-tints-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Shades and Tints of <?php echo e($hexWithHash); ?></h2>
+            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                A shade is achieved by adding black to any pure hue, while a tint is created by mixing white to any pure hue. 
+                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($darkestShade); ?></span> is the darkest color, while 
+                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($lightestTint); ?></span> is the lightest one.
+            </p>
+
+            <div class="mb-8">
+                <div class="flex h-24 md:h-32 rounded-2xl overflow-hidden shadow-sm">
+                    <?php foreach ($shades as $shadeHex): ?>
+                        <a href="<?php echo e($colorRouteBase . $shadeHex . '/'); ?>" class="flex-1 transition-opacity hover:opacity-90 relative group" style="background-color: #<?php echo e($shadeHex); ?>;" aria-label="View shade <?php echo e('#' . $shadeHex); ?>">
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($shadeHex); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+                <p class="text-center text-sm text-slate-500 mt-2 font-medium">Shade Color Variation</p>
+            </div>
+
+            <div class="mb-10 lg:mb-12">
+                <div class="flex h-24 md:h-32 rounded-2xl overflow-hidden shadow-sm">
+                    <?php foreach ($tints as $tintHex): ?>
+                        <a href="<?php echo e($colorRouteBase . $tintHex . '/'); ?>" class="flex-1 transition-opacity hover:opacity-90 relative group" style="background-color: #<?php echo e($tintHex); ?>;" aria-label="View tint <?php echo e('#' . $tintHex); ?>">
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($tintHex); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+                <p class="text-center text-sm text-slate-500 mt-2 font-medium">Tint Color Variation</p>
+            </div>
+        </section>
+
+        <section class="mt-8 md:mt-12 mb-12 lg:mb-16" aria-labelledby="tones-title">
+            <h2 id="tones-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Tones of <?php echo e($hexWithHash); ?></h2>
+            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                A tone is produced by adding gray to any pure hue. In this case, 
+                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($leastSaturatedTone); ?></span> is the less saturated color, while 
+                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($hexWithHash); ?></span> is the most saturated one.
+            </p>
+
+            <div>
+                <div class="flex h-24 md:h-32 rounded-2xl overflow-hidden shadow-sm">
+                    <?php foreach ($tones as $toneHex): ?>
+                        <a href="<?php echo e($colorRouteBase . $toneHex . '/'); ?>" class="flex-1 transition-opacity hover:opacity-90 relative group" style="background-color: #<?php echo e($toneHex); ?>;" aria-label="View tone <?php echo e('#' . $toneHex); ?>">
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($toneHex); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+                <p class="text-center text-sm text-slate-500 mt-2 font-medium">Tone Color Variation</p>
             </div>
         </section>
 

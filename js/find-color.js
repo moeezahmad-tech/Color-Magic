@@ -234,7 +234,7 @@ function displayColorInfo(colorData) {
                         aria-label="View color palettes for ${colorData.hex}"
                         class="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all hover:opacity-95 hover:scale-105 active:scale-95 flex items-center gap-2 shadow-lg shadow-primary/20">
                         <i class="bi bi-box-arrow-up-right"></i>
-                        View Color Palettes
+                        View Shades & Palettes
                     </a>
                 </div>
             </div>

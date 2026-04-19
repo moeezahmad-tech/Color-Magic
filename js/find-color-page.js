@@ -259,7 +259,7 @@
                     <a href="${colorPageUrl}"
                         class="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-secondary to-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all">
                         <i class="bi bi-box-arrow-up-right text-base" aria-hidden="true"></i>
-                        View Color Palettes
+                        View Shades & Palettes
                     </a>
                 </div>
             </div>
