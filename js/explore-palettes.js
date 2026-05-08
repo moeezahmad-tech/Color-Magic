@@ -148,7 +148,7 @@ function createPaletteCard(palette) {
         const bgClass = isLight ? 'bg-white/30' : 'bg-black/30';
 
         return `
-            <div class="swatch flex-1 flex flex-col justify-end p-3 bg-[${color}] cursor-pointer hover:scale-105 transition-transform active:scale-95">
+            <div class="swatch min-w-0 flex flex-col justify-end p-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-95" style="background-color:${color}">
                 <span class="swatch-hex text-[10px] font-bold ${textClass} ${bgClass} backdrop-blur-sm px-1.5 py-0.5 rounded text-center transition-all">${color}</span>
             </div>
         `;
@@ -160,7 +160,7 @@ function createPaletteCard(palette) {
     const heartColor = isFav ? 'text-red-500' : 'text-slate-400';
 
     card.innerHTML = `
-        <div class="palette-card flex h-64 w-full rounded-2xl overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 ring-1 ring-slate-200 dark:ring-slate-800">
+        <div class="palette-card grid h-56 w-full rounded-2xl overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 ring-1 ring-slate-200 dark:ring-slate-800" style="grid-template-columns:repeat(${palette.colors.length}, minmax(0, 1fr));">
             ${swatchesHTML}
         </div>
         <div class="flex items-center justify-between px-1">

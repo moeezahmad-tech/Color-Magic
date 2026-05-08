@@ -261,6 +261,8 @@ $schema = [
     <meta name="keywords" content="color palette generator, hex code details, rgb to hsl, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="<?php echo $isValidHex ? 'index, follow' : 'noindex, follow'; ?>" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7562822016536735"
+     crossorigin="anonymous"></script>
 
     <?php if ($isProduction): ?>
     <!-- Google tag (gtag.js) -->
@@ -394,6 +396,49 @@ $schema = [
                 </div>
             </div>
         </section>
+
+           <!-- For Color Pages -->
+           <section id="colorPageAdSection" class="mt-8 hidden" aria-label="Advertisement">
+              <ins id="colorPageAdIns" class="adsbygoogle"
+                  style="display:block"
+                  data-ad-client="ca-pub-7562822016536735"
+                  data-ad-slot="6207841385"
+                  data-ad-format="auto"
+                  data-full-width-responsive="true"></ins>
+              <script>
+                  (function () {
+                      const adSection = document.getElementById('colorPageAdSection');
+                      const adIns = document.getElementById('colorPageAdIns');
+                      if (!adSection || !adIns) {
+                          return;
+                      }
+
+                      const showIfFilled = () => {
+                          if (adIns.querySelector('iframe')) {
+                              adSection.classList.remove('hidden');
+                              return true;
+                          }
+                          return false;
+                      };
+
+                      const observer = new MutationObserver(function () {
+                          if (showIfFilled()) {
+                              observer.disconnect();
+                          }
+                      });
+
+                      observer.observe(adIns, { childList: true, subtree: true });
+                      (adsbygoogle = window.adsbygoogle || []).push({});
+
+                      setTimeout(function () {
+                          if (!showIfFilled()) {
+                              adSection.remove();
+                          }
+                          observer.disconnect();
+                      }, 3500);
+                  })();
+              </script>
+           </section>
 
         <section class="mt-12" aria-labelledby="shades-tints-title">
             <h2 id="shades-tints-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Shades and Tints of <?php echo e($hexWithHash); ?></h2>

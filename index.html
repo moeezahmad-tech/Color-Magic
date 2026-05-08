@@ -8,6 +8,8 @@
     <meta name="keywords" content="color palette explorer, color schemes, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="index, follow" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7562822016536735"
+     crossorigin="anonymous"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
     <script src="assets/js/app.js" defer></script>
     <meta property="og:type" content="website" />
@@ -67,7 +69,6 @@
         .dark .sb-btn.sb-inactive .sb-icon { background: #1e293b; color: #ec4899; }
 
         /* Swatch / palette card */
-        .palette-card:hover .swatch { flex-grow: 2.5; }
         .swatch { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
         .swatch-hex { opacity: 0; transition: opacity 0.2s ease; }
         .swatch:hover .swatch-hex { opacity: 1; }
@@ -128,11 +129,11 @@
 </div>
 
 <!-- ══ LAYOUT (sidebar + main) ══════════════════════════════════════════════ -->
-<div class="max-w-[1440px] mx-auto flex">
+<div class="max-w-[1680px] w-full ml-0 mr-auto flex">
 
     <!-- ── SIDEBAR ── -->
-    <aside class="hidden lg:flex flex-col w-64 shrink-0 sticky top-16 h-[calc(100vh-64px)] border-r border-pink-100 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-y-auto" style="border-color:rgba(236,72,153,0.15)!important;">
-        <nav class="p-4 flex flex-col h-full" aria-label="Sidebar navigation">
+    <aside class="hidden lg:flex flex-col w-56 shrink-0 sticky top-16 h-[calc(100vh-64px)] border-r border-pink-100 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-y-auto" style="border-color:rgba(236,72,153,0.15)!important;">
+        <nav class="p-3 flex flex-col h-full" aria-label="Sidebar navigation">
 
             <!-- Features group -->
             <div class="mb-2">
@@ -166,7 +167,7 @@
     </aside>
 
     <!-- ── MAIN ── -->
-    <main class="flex-1 min-w-0 p-6 md:p-8 flex flex-col gap-6">
+    <main class="flex-1 min-w-0 p-5 md:p-6 flex flex-col gap-5">
 
         <!-- Page hero -->
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -179,7 +180,7 @@
         </div>
 
         <!-- Palette explorer card -->
-        <div class="bg-white dark:bg-slate-900 p-5 md:p-7 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <div class="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
 
             <!-- Search -->
             <div class="relative group w-full max-w-lg mb-5">
@@ -201,7 +202,7 @@
             </div>
 
             <!-- Grid -->
-            <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7"></div>
+            <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
 
             <!-- Pagination -->
             <div class="flex flex-col items-center gap-3 pt-6" id="palettePagination">
@@ -213,6 +214,21 @@
         </div>
 
     </main>
+
+    <!-- ColorMagic Side Ads -->
+    <aside class="hidden xl:block w-[220px] shrink-0 p-3">
+        <div class="sticky top-24 min-h-[320px]">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7562822016536735"
+                 data-ad-slot="6956892838"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </aside>
 </div>
 
 <script>window.CM_ACTIVE_PAGE = 'explore';</script>
