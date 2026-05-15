@@ -169,6 +169,14 @@ function createPaletteCard(palette) {
                 <p class="text-xs text-slate-500">By Color Studio • ${palette.style}</p>
             </div>
             <div class="flex items-center gap-4">
+                <a class="open-palette-btn p-1.5 text-slate-400 hover:text-secondary transition-colors"
+                   href="palette?id=${encodeURIComponent(palette.id)}"
+                   target="_blank"
+                   rel="noopener"
+                   title="Open in new tab"
+                   aria-label="Open palette in new tab">
+                    <i class="bi bi-box-arrow-up-right text-lg"></i>
+                </a>
                 <button class="favorite-btn ${heartColor} hover:text-red-500 transition-colors" data-palette-id="${palette.id}" title="Add to favorites">
                     <i class="${heartIcon} text-lg"></i>
                 </button>
