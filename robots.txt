@@ -1,7 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /colorImage.php
+Disallow: /colorimage.php
 
 Sitemap: https://colormagic.techkreative.com/sitemap.xml
-
-Disallow: https://colormagic.techkreative.com/image-sitemap.xml
-Disallow: /colorImage.php

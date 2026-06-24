@@ -3,6 +3,9 @@
 header('X-Robots-Tag: noindex, nofollow');
 header('Cache-Control: public, max-age=2592000'); // Optional: cache for 30 days
 
+// Tell bots this is an image, not HTML
+header('Content-Type: image/webp');
+
 // Rest of your code...
 // Safety check: Is the GD library actually enabled?
 if (!function_exists('imagecreatetruecolor')) {
