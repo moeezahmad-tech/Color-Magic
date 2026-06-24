@@ -1,4 +1,9 @@
 <?php
+
+header('X-Robots-Tag: noindex, nofollow');
+header('Cache-Control: public, max-age=2592000'); // Optional: cache for 30 days
+
+// Rest of your code...
 // Safety check: Is the GD library actually enabled?
 if (!function_exists('imagecreatetruecolor')) {
     die("Error: The PHP GD extension is not enabled. Please enable 'extension=gd' in your php.ini file.");

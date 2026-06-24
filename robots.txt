@@ -3,3 +3,5 @@ Allow: /
 
 Sitemap: https://colormagic.techkreative.com/sitemap.xml
 Sitemap: https://colormagic.techkreative.com/image-sitemap.xml
+
+Disallow: /colorImage.php
