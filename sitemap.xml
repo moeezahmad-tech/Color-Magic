@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   <sitemap>
-      <loc>https://colormagic.techkreative.com/sitemaps/pages.xml</loc>
-      <lastmod>2026-06-27</lastmod>
-   </sitemap>
-   <sitemap>
-      <loc>https://colormagic.techkreative.com/sitemaps/palettes.xml</loc>
-      <lastmod>2026-06-27</lastmod>
-   </sitemap>
-   <sitemap>
-      <loc>https://colormagic.techkreative.com/sitemaps/colors.xml</loc>
-      <lastmod>2026-06-27</lastmod>
-   </sitemap>
-   <sitemap>
-      <loc>https://colormagic.techkreative.com/sitemaps/images.xml</loc>
-      <lastmod>2026-06-27</lastmod>
-   </sitemap>
+  <sitemap>
+    <loc>https://colormagic.techkreative.com/sitemaps/pages.xml</loc>
+    <lastmod>2026-06-27</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://colormagic.techkreative.com/sitemaps/colors.xml</loc>
+    <lastmod>2026-06-27</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://colormagic.techkreative.com/sitemaps/palettes.xml</loc>
+    <lastmod>2026-06-27</lastmod>
+  </sitemap>
 </sitemapindex>

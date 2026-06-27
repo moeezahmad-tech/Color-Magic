@@ -239,18 +239,71 @@ $colorRouteBase = $assetBase . '/color/';
 $dynamicColorImageUrl = $baseUrl . '/colorImage.php?hex=' . strtolower($normalizedHex);
 $ogImageUrl = $baseUrl . '/assets/og-preview.png';
 
+// WCAG Contrast Ratios
+function contrastRatio(float $l1, float $l2): float {
+    $lighter = max($l1, $l2);
+    $darker = min($l1, $l2);
+    return ($lighter + 0.05) / ($darker + 0.05);
+}
+
+$colorLuminance = relativeLuminance($normalizedHex);
+$whiteLuminance = 1.0;
+$blackLuminance = 0.0;
+$contrastWithWhite = round(contrastRatio($colorLuminance, $whiteLuminance), 2);
+$contrastWithBlack = round(contrastRatio($colorLuminance, $blackLuminance), 2);
+
+$wcagAANormal = 4.5;
+$wcagAALarge = 3.0;
+$wcagAAA = 7.0;
+
+$whitePassesAA = $contrastWithWhite >= $wcagAANormal;
+$whitePassesAALarge = $contrastWithWhite >= $wcagAALarge;
+$whitePassesAAA = $contrastWithWhite >= $wcagAAA;
+$blackPassesAA = $contrastWithBlack >= $wcagAANormal;
+$blackPassesAALarge = $contrastWithBlack >= $wcagAALarge;
+$blackPassesAAA = $contrastWithBlack >= $wcagAAA;
+
+// Color Harmonies (based on HSL hue rotation)
+$hue = $hsl['h'];
+$complementaryHue = ($hue + 180) % 360;
+$analogous1 = ($hue + 30) % 360;
+$analogous2 = ($hue + 330) % 360;
+$triadic1 = ($hue + 120) % 360;
+$triadic2 = ($hue + 240) % 360;
+
+function hslToHex(int $h, int $s, int $l): string {
+    $s /= 100; $l /= 100;
+    $c = (1 - abs(2 * $l - 1)) * $s;
+    $x = $c * (1 - abs(fmod($h / 60, 2) - 1));
+    $m = $l - $c / 2;
+    if ($h < 60) { $r=$c; $g=$x; $b=0; }
+    elseif ($h < 120) { $r=$x; $g=$c; $b=0; }
+    elseif ($h < 180) { $r=0; $g=$c; $b=$x; }
+    elseif ($h < 240) { $r=0; $g=$x; $b=$c; }
+    elseif ($h < 300) { $r=$x; $g=0; $b=$c; }
+    else { $r=$c; $g=0; $b=$x; }
+    return sprintf('%02X%02X%02X', (int)round(($r+$m)*255), (int)round(($g+$m)*255), (int)round(($b+$m)*255));
+}
+
+$complementaryHex = '#' . hslToHex($complementaryHue, $hsl['s'], $hsl['l']);
+$analogous1Hex = '#' . hslToHex($analogous1, $hsl['s'], $hsl['l']);
+$analogous2Hex = '#' . hslToHex($analogous2, $hsl['s'], $hsl['l']);
+$triadic1Hex = '#' . hslToHex($triadic1, $hsl['s'], $hsl['l']);
+$triadic2Hex = '#' . hslToHex($triadic2, $hsl['s'], $hsl['l']);
+
 $schema = [
     '@context' => 'https://schema.org',
     '@type' => 'WebPage',
-    'name' => $metaTitle,
-    'description' => $metaDescription,
+    'name' => 'Hex ' . $hexWithHash . ' Color Palette & Harmonies',
     'url' => $canonicalUrl,
-    'image' => $dynamicColorImageUrl,
+    'description' => $metaDescription,
     'primaryImageOfPage' => $dynamicColorImageUrl,
+    'image' => $dynamicColorImageUrl,
     'mainEntity' => [
         '@type' => 'DefinedTerm',
         'name' => $hexName,
         'identifier' => $hexWithHash,
+        'description' => 'RGB(' . $rgb['r'] . ', ' . $rgb['g'] . ', ' . $rgb['b'] . ') | HSL(' . $hsl['h'] . ', ' . $hsl['s'] . '%, ' . $hsl['l'] . '%)',
     ],
 ];
 ?>
@@ -285,11 +338,11 @@ $schema = [
     <meta property="og:title" content="<?php echo e($metaTitle); ?>" />
     <meta property="og:description" content="<?php echo e($metaDescription); ?>" />
     <meta property="og:url" content="<?php echo e($canonicalUrl); ?>" />
-    <meta property="og:image" content="<?php echo e($ogImageUrl); ?>" />
+    <meta property="og:image" content="<?php echo e($dynamicColorImageUrl); ?>" />
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content="<?php echo e($metaTitle); ?>" />
     <meta property="twitter:description" content="<?php echo e($metaDescription); ?>" />
-    <meta property="twitter:image" content="<?php echo e($ogImageUrl); ?>" />
+    <meta property="twitter:image" content="<?php echo e($dynamicColorImageUrl); ?>" />
 
     <link rel="manifest" href="<?php echo e($manifestUrl); ?>" />
     <link rel="icon" type="image/png" href="<?php echo e($faviconUrl); ?>" />
@@ -351,9 +404,9 @@ $schema = [
                 <div class="relative min-h-[280px] md:min-h-[360px] p-6 flex items-end overflow-hidden" style="background-color: <?php echo e($hexWithHash); ?>;">
                     <img
                         src="<?php echo e($dynamicColorImageUrl); ?>"
-                        alt="<?php echo e($hexName); ?> color swatch image (<?php echo e($hexWithHash); ?>)"
-                        width="1200"
-                        height="630"
+                        alt="Color palette preview for hex code <?php echo e(strtolower($normalizedHex)); ?> featuring complementary design rules"
+                        width="600"
+                        height="600"
                         class="absolute inset-0 h-full w-full object-cover"
                         loading="eager"
                         fetchpriority="high" />
@@ -492,6 +545,96 @@ $schema = [
                 </div>
                 <p class="text-center text-sm text-slate-500 mt-2 font-medium">Tone Color Variation</p>
             </div>
+        </section>
+
+        <!-- Color Harmonies Section -->
+        <section class="mt-8 md:mt-12" aria-labelledby="harmonies-title">
+            <h2 id="harmonies-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Color Harmonies</h2>
+            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                Color harmonies derived from <?php echo e($hexWithHash); ?> using standard color theory rotation rules on the HSL color wheel.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900">
+                    <p class="text-xs uppercase tracking-widest text-slate-500 mb-2">Complementary</p>
+                    <div class="flex items-center gap-3">
+                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($complementaryHex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($complementaryHex); ?>;"></a>
+                        <span class="font-mono font-bold"><?php echo e($complementaryHex); ?></span>
+                    </div>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900">
+                    <p class="text-xs uppercase tracking-widest text-slate-500 mb-2">Analogous</p>
+                    <div class="flex items-center gap-3">
+                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($analogous1Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($analogous1Hex); ?>;"></a>
+                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($analogous2Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($analogous2Hex); ?>;"></a>
+                        <span class="font-mono text-sm"><?php echo e($analogous1Hex); ?>, <?php echo e($analogous2Hex); ?></span>
+                    </div>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900">
+                    <p class="text-xs uppercase tracking-widest text-slate-500 mb-2">Triadic</p>
+                    <div class="flex items-center gap-3">
+                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($triadic1Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($triadic1Hex); ?>;"></a>
+                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($triadic2Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($triadic2Hex); ?>;"></a>
+                        <span class="font-mono text-sm"><?php echo e($triadic1Hex); ?>, <?php echo e($triadic2Hex); ?></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WCAG Accessibility Contrast Section -->
+        <section class="mt-8 md:mt-12" aria-labelledby="wcag-title">
+            <h2 id="wcag-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">WCAG Contrast Accessibility</h2>
+            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                Contrast ratio analysis of <?php echo e($hexWithHash); ?> against white and black backgrounds per WCAG 2.1 guidelines.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-5 bg-white dark:bg-slate-900">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-white border border-slate-200"></div>
+                        <div>
+                            <p class="font-bold">On White Background</p>
+                            <p class="text-sm text-slate-500">Ratio: <span class="font-mono font-bold"><?php echo $contrastWithWhite; ?>:1</span></p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center justify-between">
+                            <span>AA Normal Text (4.5:1)</span>
+                            <span class="font-bold <?php echo $whitePassesAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $whitePassesAA ? '✓ Pass' : '✗ Fail'; ?></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>AA Large Text (3:1)</span>
+                            <span class="font-bold <?php echo $whitePassesAALarge ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $whitePassesAALarge ? '✓ Pass' : '✗ Fail'; ?></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>AAA Normal Text (7:1)</span>
+                            <span class="font-bold <?php echo $whitePassesAAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $whitePassesAAA ? '✓ Pass' : '✗ Fail'; ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-5 bg-white dark:bg-slate-900">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-black"></div>
+                        <div>
+                            <p class="font-bold">On Black Background</p>
+                            <p class="text-sm text-slate-500">Ratio: <span class="font-mono font-bold"><?php echo $contrastWithBlack; ?>:1</span></p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center justify-between">
+                            <span>AA Normal Text (4.5:1)</span>
+                            <span class="font-bold <?php echo $blackPassesAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $blackPassesAA ? '✓ Pass' : '✗ Fail'; ?></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>AA Large Text (3:1)</span>
+                            <span class="font-bold <?php echo $blackPassesAALarge ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $blackPassesAALarge ? '✓ Pass' : '✗ Fail'; ?></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>AAA Normal Text (7:1)</span>
+                            <span class="font-bold <?php echo $blackPassesAAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $blackPassesAAA ? '✓ Pass' : '✗ Fail'; ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-xs text-slate-400">Note: Full WCAG validation requires manual testing with assistive technologies and expert accessibility review.</p>
         </section>
 
         <section class="mt-8" aria-labelledby="related-palettes-title">
