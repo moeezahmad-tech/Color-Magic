@@ -41,52 +41,44 @@ Visit: [colormagic.techkreative.com](https://colormagic.techkreative.com)
 ## 📁 Project Structure
 
 ```
-colorCodeFinder/
-├── .git/
-├── .github/
-│   ├── workflows/
-│   │   ├── main.yml
-│   │   └── test.yml
-│   └── 0
-├── assets/
-│   ├── css/
-│   │   └── main.css
-│   └── js/
-│       └── app.js
-├── data/
-│   ├── color-names.json
-│   └── colors.json
-├── images/
-│   ├── TopContributers/
-│   │   └── MoeezAhmad.webp
-│   └── logo.png
-├── js/
-│   ├── explore-palettes.js
-│   ├── find-color-page.js
-│   ├── find-color.js
-│   ├── generate-palette-page.js
-│   ├── generate-palette.js
-│   ├── index-tabs.js
-│   ├── navigation.js
-│   ├── sidebar.js
-│   └── tailwind-config.js
-├── style/
-│   └── style.css
-├── .fordermapperignore
+ColorMagic/
 ├── .htaccess
-├── color.php
-├── colorImage.php
-├── colors-sitemap.xml
+├── index.html                    ← Pages at root (SEO-friendly, clean URLs)
+├── palette.html
 ├── find-color.html
 ├── generate-palette.html
-├── image-sitemap.xml
-├── index.html
-├── LICENSE
-├── manifest.json
 ├── open-source.html
-├── README.md
+├── color.php                     ← Dynamic PHP handlers
+├── colorImage.php
+├── paletteImage.php
+├── sitemap.xml                   ← Sitemap index (points to sub-sitemaps)
 ├── robots.txt
-└── sitemap.xml
+├── manifest.json
+├── BingSiteAuth.xml              ← Search engine verification (can't move)
+├── yandex_13ee0143663b95c8.html
+├── assets/                       ← All static assets consolidated
+│   ├── css/
+│   │   ├── main.css
+│   │   └── style.css
+│   ├── js/
+│   │   ├── app.js
+│   │   ├── explore-palettes.js
+│   │   ├── palette-page.js
+│   │   ├── sidebar.js
+│   │   ├── tailwind-config.js
+│   │   └── ...
+│   └── images/
+│       ├── logo.png
+│       └── TopContributers/
+├── data/                         ← JSON data files
+│   ├── colors.json
+│   └── color-names.json
+└── sitemaps/                     ← Sub-sitemaps organized together
+    ├── pages.xml
+    ├── palettes.xml
+    ├── colors.xml
+    └── images.xml
+
 ```
 
 ## 🏃 Getting Started
