@@ -213,7 +213,10 @@ foreach ($relatedPalettes as $palette) {
 $styles = array_values(array_unique($styles));
 $styleSnippet = $styles !== [] ? implode(', ', array_slice($styles, 0, 3)) : 'curated';
 
-$metaTitle = $hexName . ' ' . $hexWithHash . ' Color Details, RGB, HSL and Related Palettes | Color Magic';
+$hasColorName = isset($colorNames[strtolower($normalizedHex)]);
+$metaTitle = $hasColorName
+    ? $hexName . ' ' . $hexWithHash . ' Color Details, RGB, HSL and Related Palettes | Color Magic'
+    : $hexName . ' Color Details, RGB, HSL and Related Palettes | Color Magic';
 $metaDescription = 'Explore ' . $hexName . ' (' . $hexWithHash . ') with RGB(' . $rgb['r'] . ', ' . $rgb['g'] . ', ' . $rgb['b'] . ') and HSL(' . $hsl['h'] . ', ' . $hsl['s'] . '%, ' . $hsl['l'] . '%). Discover ' . count($relatedPalettes) . ' related ' . $styleSnippet . ' color palettes from our colors library.';
 
 $baseUrl = 'https://colormagic.techkreative.com';
