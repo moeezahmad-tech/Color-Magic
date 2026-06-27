@@ -136,6 +136,14 @@ function isLightColor(hex) {
 
 
 
+function getPaletteSlug(palette) {
+    let slug = palette.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (palette._isDuplicate) {
+        slug = slug + '-' + palette.id.replace('palette_', '');
+    }
+    return slug;
+}
+
 function createPaletteCard(palette) {
     const card = document.createElement('article');
     card.className = 'group flex flex-col gap-4';
@@ -170,7 +178,7 @@ function createPaletteCard(palette) {
             </div>
             <div class="flex items-center gap-4">
                 <a class="open-palette-btn p-1.5 text-slate-400 hover:text-secondary transition-colors"
-                   href="palette?id=${encodeURIComponent(palette.id)}"
+                   href="palette/${getPaletteSlug(palette)}/"
                    target="_blank"
                    rel="noopener"
                    title="Open in new tab"
@@ -335,6 +343,20 @@ async function fetchPalettes() {
         }
 
         allPalettes = data.sort(() => Math.random() - 0.5);
+
+        // Mark duplicates for slug generation
+        const nameCount = {};
+        allPalettes.forEach(p => {
+            const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            nameCount[slug] = (nameCount[slug] || 0) + 1;
+        });
+        allPalettes.forEach(p => {
+            const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            if (nameCount[slug] > 1) {
+                p._isDuplicate = true;
+            }
+        });
+
         applyFiltersAndRender();
 
         isLoading = false;

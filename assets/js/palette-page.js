@@ -1,6 +1,14 @@
 (async function () {
     const params = new URLSearchParams(window.location.search);
-    const paletteId = params.get('id');
+
+    // Extract slug from clean URL path: /palette/soft-steel/ or /ColorMagic/palette/soft-steel/
+    let paletteSlug = params.get('slug');
+    if (!paletteSlug) {
+        const pathMatch = window.location.pathname.match(/\/palette\/([a-z0-9-]+)\/?$/i);
+        if (pathMatch) {
+            paletteSlug = pathMatch[1];
+        }
+    }
 
     const paletteDetail = document.getElementById('paletteDetail');
     const paletteError = document.getElementById('paletteError');
@@ -91,8 +99,8 @@
         }
     }
 
-    if (paletteIdText && paletteId) {
-        paletteIdText.textContent = `id: ${paletteId}`;
+    if (paletteIdText && paletteSlug) {
+        paletteIdText.textContent = `slug: ${paletteSlug}`;
     }
 
     // Get export elements
@@ -100,28 +108,60 @@
     const copyExportBtn = document.getElementById('copyExportBtn');
     const exportBtns = document.querySelectorAll('.export-btn');
 
-    if (!paletteId) {
+    if (!paletteSlug) {
         paletteError?.classList.remove('hidden');
         return;
     }
 
     try {
-        const response = await fetch('data/colors.json');
+        // Compute base path for fetching data (base tag doesn't affect fetch API)
+        const currentPath = window.location.pathname;
+        const palettePathIdx = currentPath.indexOf('/palette/');
+        const fetchBase = palettePathIdx !== -1
+            ? currentPath.substring(0, palettePathIdx + 1)
+            : currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+
+        const response = await fetch(fetchBase + 'data/colors.json');
         if (!response.ok) {
             throw new Error(`Failed to fetch palettes (Status: ${response.status})`);
         }
 
         const palettes = await response.json();
-        const palette = Array.isArray(palettes)
-            ? palettes.find((item) => String(item.id) === paletteId)
-            : null;
+
+        // Helper: generate slug from palette name
+        function slugify(name) {
+            return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+
+        // Detect duplicate names for slug-with-id resolution
+        const nameCount = {};
+        if (Array.isArray(palettes)) {
+            palettes.forEach(p => {
+                const s = slugify(p.name || '');
+                nameCount[s] = (nameCount[s] || 0) + 1;
+            });
+        }
+
+        let palette = null;
+        if (paletteSlug) {
+            // Match slug (with duplicate ID suffix for duplicate names)
+            palette = Array.isArray(palettes)
+                ? palettes.find((item) => {
+                    let s = slugify(item.name || '');
+                    if (nameCount[s] > 1) {
+                        s = s + '-' + item.id.replace('palette_', '');
+                    }
+                    return s === paletteSlug;
+                })
+                : null;
+        }
 
         if (!palette) {
             paletteError?.classList.remove('hidden');
             return;
         }
 
-        document.title = `${palette.name} | Color Magic`;
+        document.title = `${palette.name} Color Palette | Color Magic`;
         paletteName.textContent = palette.name;
 
         const colorList = Array.isArray(palette.colors) ? palette.colors : [];
@@ -175,7 +215,7 @@
         darkColorParagraph.textContent = `${palette.name} starts with ${firstColor} as the anchor tone, giving the palette a strong visual base. As the colors progress to ${lastColor}, the composition opens into brighter accents that are great for UI highlights, typography emphasis, and layered backgrounds. This progression creates a clear rhythm that helps designs feel intentional instead of random.`;
 
         paletteSwatches.innerHTML = colorList.map((color) => `
-            <a href="/color/${color.replace('#', '')}" target="_blank" rel="noopener"
+            <a href="${fetchBase}color/${color.replace('#', '')}" target="_blank" rel="noopener"
                     class="group rounded-xl p-4 text-left bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all block"
                     title="Open ${color} details">
                 <span class="block w-full h-20 rounded-lg mb-3" style="background-color:${color}"></span>

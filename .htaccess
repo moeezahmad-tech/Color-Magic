@@ -9,7 +9,7 @@ RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ /ColorMagic/colorImage.php?hex=$1 [L]
 
 RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^palette/?$ /ColorMagic/palette.html [L,QSA]
+RewriteRule ^palette/([a-z0-9-]+)/?$ /ColorMagic/palette.html?slug=$1 [NC,L,QSA]
 
 RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^$ /ColorMagic/index.html [L]
@@ -19,7 +19,7 @@ RewriteBase /
 
 RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
 
-RewriteRule ^palette/?$ palette.html [L,QSA]
+RewriteRule ^palette/([a-z0-9-]+)/?$ palette.html?slug=$1 [NC,L,QSA]
 
 RewriteRule ^$ index.html [L]
 
