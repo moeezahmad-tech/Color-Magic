@@ -368,7 +368,7 @@ $schema = [
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
     <header
         class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
-        <div class="max-w-8xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
             <a href="<?php echo e($homePageUrl); ?>" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                 <img src="<?php echo e($logoUrl); ?>" alt="Color Magic by TechKreative Logo" class="h-8 w-8 object-contain">
                 <h2 class="text-xl font-bold tracking-tight"><span class="text-slate-900">Color</span> <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span></h2>
@@ -415,7 +415,7 @@ $schema = [
         </div>
     </header>
 
-    <main class="w-full max-w-8xl mx-auto pt-24 px-6 py-8 md:py-10">
+    <main class="w-full max-w-7xl mx-auto pt-24 px-6 py-8 md:py-10">
         <div class="mb-6">
             <p class="text-sm text-slate-500 dark:text-slate-400">
                 <a class="hover:text-primary transition-colors" href="<?php echo e($homePageUrl); ?>">Home</a>
@@ -698,7 +698,7 @@ $schema = [
             <?php endif; ?>
         </section>
 
-        <div class="w-full max-w-8xl mx-auto text-center pt-12 mt-12 border-t border-slate-200 dark:border-slate-800">
+        <div class="w-full max-w-7xl mx-auto text-center pt-12 mt-12 border-t border-slate-200 dark:border-slate-800">
             <p class="text-slate-600 dark:text-slate-400 mb-4">
                 <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
                     class="text-primary hover:underline font-semibold">A product of TechKreative</a>
