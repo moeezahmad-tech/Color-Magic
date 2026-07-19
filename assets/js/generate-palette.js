@@ -243,7 +243,7 @@ function showPaletteError(message) {
 function displayPaletteResult(paletteData) {
     const resultCard = document.createElement('div');
     resultCard.className = 'bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700';
-    resultCard.style.fontFamily = "'Space Grotesk', sans-serif";
+    resultCard.style.fontFamily = "'Inter', sans-serif";
 
     const swatchesHTML = paletteData.colorPalette.map(color => `
         <div class="flex-1 h-24 min-[700px]:h-32 flex items-end justify-center p-2 min-[700px]:p-3" style="background-color: ${color.hex};">

@@ -9,7 +9,7 @@ tailwind.config = {
                 "background-dark": "#13111c",
             },
             fontFamily: {
-                "display": ["Space Grotesk", "sans-serif"]
+                "display": ["Inter", "sans-serif"]
             },
             borderRadius: {
                 "DEFAULT": "0.25rem",

@@ -35,7 +35,7 @@ Visit: [colormagic.techkreative.com](https://colormagic.techkreative.com)
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
 - **Styling**: Tailwind CSS
 - **Icons**: Material Symbols
-- **Fonts**: Space Grotesk (Google Fonts)
+- **Fonts**: Inter (Google Fonts)
 - **Deployment**: GitHub Actions + FTP
 
 ## 📁 Project Structure

@@ -4,24 +4,21 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Color Magic | Find Color — Hex to Name, RGB &amp; HSL</title>
+    <title>Color Magic | Explore Color Palettes</title>
     <meta name="description"
-        content="Enter any hex code to instantly discover its color name, RGB, HSL values, best contrast color and more. Free hex color finder by Color Magic." />
-    <meta name="keywords"
-        content="hex color finder, color name from hex, RGB HSL converter, color info tool, TechKreative" />
+        content="Explore thousands of professional color palettes with Color Magic — the open-source color tool for designers." />
+    <meta name="keywords" content="color palette explorer, color schemes, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="index, follow" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7562822016536735"
-        crossorigin="anonymous"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
     <script src="assets/js/app.js" defer></script>
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://colormagic.techkreative.com/find-color.html" />
-    <meta property="og:title" content="Color Magic | Find Color — Hex to Name, RGB &amp; HSL" />
+    <meta property="og:url" content="https://colormagic.techkreative.com/" />
+    <meta property="og:title" content="Color Magic | Explore Color Palettes" />
     <meta property="og:description"
-        content="Enter any hex code to get the color name, RGB, HSL and contrast info instantly." />
+        content="The ultimate tool for finding and organizing professional color palettes." />
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
-    <link rel="canonical" href="https://colormagic.techkreative.com/find-color.html" />
+    <link rel="canonical" href="https://colormagic.techkreative.com/" />
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/png" href="assets/images/logo.png" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -32,6 +29,7 @@
     <link rel="stylesheet" href="assets/css/main.css" />
     <script id="tailwind-config" src="assets/js/tailwind-config.js"></script>
     <style>
+        /* ── Sidebar nav button styles ── */
         .sb-btn {
             display: flex;
             align-items: center;
@@ -64,6 +62,7 @@
             transform: scale(1.12);
         }
 
+        /* Inactive */
         .sb-btn.sb-inactive {
             color: #475569;
             background: transparent;
@@ -79,6 +78,7 @@
             color: #ec4899;
         }
 
+        /* Active */
         .sb-btn.sb-active {
             background: linear-gradient(135deg, #7c3aed, #ec4899);
             color: #fff;
@@ -95,6 +95,7 @@
             transform: translateY(-1px);
         }
 
+        /* Dark mode overrides */
         .dark .sb-btn.sb-inactive {
             color: #94a3b8;
         }
@@ -109,6 +110,28 @@
             color: #ec4899;
         }
 
+        /* Swatch / palette card */
+        .swatch {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .swatch-hex {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .swatch:hover .swatch-hex {
+            opacity: 1;
+        }
+
+        .swatch-hex.copied-state {
+            opacity: 1 !important;
+            background: rgba(34, 197, 94, 0.9) !important;
+            color: white !important;
+            font-weight: 700;
+        }
+
+        /* Mobile overlay */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -122,45 +145,12 @@
         .animate-fadeIn {
             animation: fadeIn 0.2s ease both;
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(14px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .result-card {
-            animation: fadeInUp 0.35s ease both;
-        }
-
-        .history-chip {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .history-chip:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.18);
-        }
-
-        #colorCodeInput:focus {
-            box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.12);
-        }
-
-        #livePreview {
-            transition: background-color 0.3s ease;
-        }
     </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <header
+    <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
+       <header
         class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
         <div class="max-w-8xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
             <a href="/" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
@@ -219,15 +209,17 @@
             </div>
         </div>
     </header>
+
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
         <div class="flex items-center justify-between mb-6">
             <a href="/" class="flex items-center gap-2 text-primary">
                 <img src="assets/images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain" />
-                <span class="text-xl font-bold tracking-tight"><span
-                        class="text-slate-900 dark:text-white">Color</span><span
-                        class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span></span>
+                <span class="text-xl font-bold tracking-tight">
+                    <span class="text-slate-900 dark:text-white">Color</span>
+                    <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span>
+                </span>
             </a>
             <button id="closeMobileMenuBtn"
                 class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
@@ -235,23 +227,24 @@
                 <i class="bi bi-x-lg text-2xl"></i>
             </button>
         </div>
+        <!-- Mobile nav items -->
         <div class="space-y-2">
             <a href="/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
             </a>
-            <a href="palettes.html" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="palettes.html" class="sb-btn sb-active w-full"><span class="sb-icon"><i
                         class="bi bi-palette"></i></span>
                 <div>
-                    <span class="block font-bold">Explore Palettes</span><span class="text-xs opacity-60">Browse
+                    <span class="block font-bold">Explore Palettes</span><span class="text-xs opacity-75">Browse
                         collections</span>
                 </div>
             </a>
-            <a href="find-color.html" class="sb-btn sb-active w-full"><span class="sb-icon"><i
+            <a href="find-color.html" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-eyedropper"></i></span>
                 <div>
-                    <span class="block font-bold">Find Color</span><span class="text-xs opacity-75">Hex to name &amp;
+                    <span class="block font-bold">Find Color</span><span class="text-xs opacity-60">Hex to name &amp;
                         info</span>
                 </div>
             </a>
@@ -281,154 +274,108 @@
     </div>
 
     <!-- ══ MAIN CONTENT ════════════════════════════════════════════════════════ -->
-    <main class="w-full max-w-7xl mx-auto pt-28 pb-8 px-6 md:px-8 flex flex-col gap-6">
-        <!-- Hero -->
-        <div
-            class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-pink-50 to-secondary/10 dark:from-primary/20 dark:via-slate-900 dark:to-secondary/20 p-7 md:p-10 border border-pink-100 dark:border-slate-800">
-            <div
-                class="absolute w-56 h-56 bg-primary/15 rounded-full blur-[70px] top-[-30px] right-[-30px] pointer-events-none">
-            </div>
-            <div
-                class="absolute w-44 h-44 bg-secondary/15 rounded-full blur-[55px] bottom-[-25px] left-[-25px] pointer-events-none">
-            </div>
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center gap-7">
-                <div class="flex-1">
-                    <div
-                        class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-full text-xs font-bold text-primary mb-3 border border-primary/20">
-                        <i class="bi bi-eyedropper"></i> Hex Color Lookup
-                    </div>
-                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-                        Find Color Info
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-300 text-base max-w-lg">
-                        Enter any hex code to instantly discover its name, RGB, HSL,
-                        contrast rating and more.
-                    </p>
-                </div>
-                <div class="shrink-0 flex flex-col items-center gap-2">
-                    <div id="livePreview"
-                        class="w-28 h-28 md:w-36 md:h-36 rounded-2xl shadow-2xl border-4 border-white dark:border-slate-700"
-                        style="background-color: #ec4899"></div>
-                    <span id="liveHexLabel"
-                        class="text-sm font-mono font-bold text-slate-500 dark:text-slate-400">#EC4899</span>
-                </div>
+    <main class="w-full max-w-7xl mx-auto pt-28 pb-8 px-5 md:px-8 flex flex-col gap-8">
+        <!-- Page hero -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+                    Explore Color Palettes
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 text-base max-w-xl">
+                    Browse thousands of professional color schemes — search by hex,
+                    theme, or style.
+                </p>
             </div>
         </div>
 
-        <!-- Search card -->
+        <!-- Palette explorer card -->
         <div
-            class="bg-white dark:bg-slate-900 p-5 md:p-7 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
-            <div class="flex gap-3 flex-wrap items-start">
-                <div class="flex-1 relative min-w-[220px]">
-                    <span
-                        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg select-none">#</span>
-                    <input id="colorCodeInput" type="text" placeholder="EC4899 — enter any hex code" maxlength="7"
-                        class="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:outline-none transition-all text-sm font-mono uppercase placeholder:normal-case placeholder:font-sans placeholder:text-slate-400"
-                        aria-label="Hex color code input" />
-                </div>
-                <button id="findColorBtn"
-                    class="px-7 py-3.5 bg-gradient-to-r from-secondary to-primary hover:from-secondary/90 hover:to-primary/90 text-white font-bold rounded-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-lg shadow-primary/25 shrink-0">
-                    <i class="bi bi-search text-base"></i> Find Info
+            class="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <!-- Search -->
+            <div class="relative group w-full mb-5">
+                <i
+                    class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-primary transition-colors"></i>
+                <input id="searchInput"
+                    class="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-11 pr-5 text-sm focus:border-primary focus:outline-none transition-all shadow-sm placeholder:text-slate-400"
+                    placeholder="Search hex, theme or color name…" type="text" aria-label="Search palettes" />
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-2 mb-7" role="group" aria-label="Filter by theme">
+                <button
+                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20 border border-transparent"
+                    data-theme="all">
+                    All Styles
+                </button>
+                <button
+                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                    data-theme="favorites">
+                    <i class="bi bi-heart-fill"></i> Favorites
+                </button>
+                <button
+                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                    data-theme="pastel">
+                    <i class="bi bi-flower1"></i> Pastel
+                </button>
+                <button
+                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                    data-theme="vintage">
+                    <i class="bi bi-clock-history"></i> Vintage
+                </button>
+                <button
+                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                    data-theme="neon">
+                    <i class="bi bi-lightning-fill"></i> Neon
+                </button>
+                <button
+                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                    data-theme="minimalist">
+                    <i class="bi bi-check-circle"></i> Minimalist
+                </button>
+                <button
+                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                    data-theme="earthy">
+                    <i class="bi bi-tree"></i> Earthy
                 </button>
             </div>
-            <p id="errorMessage" class="text-red-500 text-sm mt-2 hidden" role="alert"></p>
 
-            <!-- History chips -->
-            <div id="historyRow" class="mt-5 hidden">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-                    Recent Searches
+            <!-- Grid -->
+            <div id="paletteGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+
+            <!-- Pagination -->
+            <div class="flex flex-col items-center gap-3 pt-6 mb-12" id="palettePagination">
+                <p id="paletteCountStatus" class="text-sm text-slate-500 dark:text-slate-400"></p>
+                <button id="loadMoreBtn" type="button"
+                    class="hidden px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20">
+                    Load More Palettes
+                </button>
+            </div>
+
+            <!-- Footer -->
+            <div class="w-full text-center pt-8 border-t border-slate-200 dark:border-slate-800">
+                <p class="text-slate-600 dark:text-slate-400 mb-4">
+                    <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
+                        class="text-primary hover:underline font-semibold">A product of TechKreative</a>
                 </p>
-                <div id="historyChips" class="flex flex-wrap gap-2"></div>
-            </div>
-        </div>
-
-        <!-- Results -->
-        <div id="colorResultsGrid" class="flex flex-col gap-6"></div>
-
-        <!-- Info tips -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-            <div
-                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 flex gap-4 items-start">
-                <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary/10 shrink-0">
-                    <i class="bi bi-hash text-xl text-primary"></i>
+                <div class="flex items-center justify-center gap-6">
+                    <a href="https://colormagic.techkreative.com/"
+                        class="text-slate-500 hover:text-primary transition-colors">
+                        <i class="bi bi-house-door text-xl"></i>
+                    </a>
+                    <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
+                        class="text-slate-500 hover:text-primary transition-colors">
+                        <i class="bi bi-github text-xl"></i>
+                    </a>
                 </div>
-                <div>
-                    <h3 class="font-bold text-sm mb-1">HEX Code</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
-                        6-digit hex representation, e.g.
-                        <code class="text-primary font-mono">#FF5733</code>.
-                    </p>
-                </div>
-            </div>
-            <div
-                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 flex gap-4 items-start">
-                <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-secondary/10 shrink-0">
-                    <i class="bi bi-sliders text-xl text-secondary"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-sm mb-1">RGB Values</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
-                        Red, Green, Blue channels 0–255, the standard model for screens.
-                    </p>
-                </div>
-            </div>
-            <div
-                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 flex gap-4 items-start">
-                <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-500/10 shrink-0">
-                    <i class="bi bi-circle-half text-xl text-emerald-500"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-sm mb-1">HSL Values</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
-                        Hue, Saturation, Lightness — a human-friendly model for color.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="w-full text-center pt-8 border-t border-slate-200 dark:border-slate-800">
-            <p class="text-slate-600 dark:text-slate-400 mb-4">
-                <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
-                    class="text-primary hover:underline font-semibold">A product of TechKreative</a>
-            </p>
-            <div class="flex items-center justify-center gap-6">
-                <a href="https://colormagic.techkreative.com/"
-                    class="text-slate-500 hover:text-primary transition-colors">
-                    <i class="bi bi-house-door text-xl"></i>
-                </a>
-                <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
-                    class="text-slate-500 hover:text-primary transition-colors">
-                    <i class="bi bi-github text-xl"></i>
-                </a>
             </div>
         </div>
     </main>
 
     <script>
-        // Live preview
-        const colorInput = document.getElementById("colorCodeInput");
-        const livePreview = document.getElementById("livePreview");
-        const liveHexLabel = document.getElementById("liveHexLabel");
-        colorInput?.addEventListener("input", function () {
-            let val = this.value.trim().replace("#", "");
-            if (val.length === 3)
-                val = val
-                    .split("")
-                    .map((c) => c + c)
-                    .join("");
-            if (/^[0-9A-Fa-f]{6}$/.test(val)) {
-                livePreview.style.backgroundColor = "#" + val;
-                liveHexLabel.textContent = "#" + val.toUpperCase();
-            }
-        });
-        colorInput?.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") document.getElementById("findColorBtn")?.click();
-        });
-        window.CM_ACTIVE_PAGE = "find-color";
+        window.CM_ACTIVE_PAGE = "explore";
     </script>
-    <script src="assets/js/sidebar.js?v=2.0" defer></script>
-    <script src="assets/js/find-color-page.js?v=1.0" defer></script>
+    <script src="assets/js/sidebar.js?v=1.0" defer></script>
+    <script src="assets/js/explore-palettes.js?v=1.3" defer></script>
 </body>
 
 </html>
