@@ -33,20 +33,6 @@
     <link rel="stylesheet" href="assets/css/main.css" />
     <script id="tailwind-config" src="assets/js/tailwind-config.js"></script>
     <style>
-        .glow-bg {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            background: radial-gradient(circle,
-                    rgba(236, 72, 153, 0.15) 0%,
-                    rgba(124, 58, 237, 0.05) 50%,
-                    transparent 100%);
-            filter: blur(60px);
-            z-index: 0;
-            pointer-events: none;
-        }
-
         .card-hover:hover {
             transform: translateY(-6px);
             box-shadow: 0 20px 40px -15px rgba(124, 58, 237, 0.12);
@@ -157,6 +143,7 @@
                     white 80%,
                     transparent);
         }
+
     </style>
 </head>
 
@@ -233,7 +220,7 @@
     </div>
 
     <!-- ══ MAIN CONTENT ════════════════════════════════════════════════════════ -->
-    <main class="w-full max-w-7xl mx-auto pt-28 pb-12 px-6 md:px-12 lg:px-16 flex flex-col justify-center items-center">
+    <main class="w-full max-w-7xl mx-auto pt-28 px-6 md:px-12 lg:px-16 flex flex-col justify-center items-center">
         <!-- Hero Section -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full mb-16 mt-6">
             <!-- Left Text Content -->
@@ -557,24 +544,9 @@
             </a>
         </div>
 
-        <!-- Footer -->
-        <div class="w-full text-center pt-8 border-t border-slate-200 dark:border-slate-800">
-            <p class="text-slate-600 dark:text-slate-400 mb-4">
-                <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
-                    class="text-primary hover:underline font-semibold">A product of TechKreative</a>
-            </p>
-            <div class="flex items-center justify-center gap-6">
-                <a href="https://colormagic.techkreative.com/"
-                    class="text-slate-500 hover:text-primary transition-colors">
-                    <i class="bi bi-house-door text-xl"></i>
-                </a>
-                <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
-                    class="text-slate-500 hover:text-primary transition-colors">
-                    <i class="bi bi-github text-xl"></i>
-                </a>
-            </div>
-        </div>
     </main>
+
+    <?php include 'components/footer.php'; ?>
 
     <script>
         window.CM_ACTIVE_PAGE = "home";

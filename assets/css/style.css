@@ -13,6 +13,7 @@ body {
     color: var(--cm-ink);
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
+    height: 100%;
 }
 
 header {

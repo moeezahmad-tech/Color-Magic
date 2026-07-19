@@ -328,24 +328,9 @@
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="w-full text-center pt-8 border-t border-slate-200 dark:border-slate-800">
-            <p class="text-slate-600 dark:text-slate-400 mb-4">
-                <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
-                    class="text-primary hover:underline font-semibold">A product of TechKreative</a>
-            </p>
-            <div class="flex items-center justify-center gap-6">
-                <a href="https://colormagic.techkreative.com/"
-                    class="text-slate-500 hover:text-primary transition-colors">
-                    <i class="bi bi-house-door text-xl"></i>
-                </a>
-                <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
-                    class="text-slate-500 hover:text-primary transition-colors">
-                    <i class="bi bi-github text-xl"></i>
-                </a>
-            </div>
-        </div>
     </main>
+
+    <?php include 'components/footer.php'; ?>
 
     <script>
         // Live preview
