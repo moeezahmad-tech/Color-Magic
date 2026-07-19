@@ -1,26 +1,25 @@
 Options -MultiViews
 RewriteEngine On
 
-# ── Localhost: subfolder base (/ColorMagic/) ─────────────────────────────────
+# Redirect .php -> extensionless
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
 RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^color/([A-Fa-f0-9]{6})/?$ /ColorMagic/color.php?hex=$1 [NC,L,QSA]
+RewriteRule ^(.+)\.php$ /ColorMagic/$1 [R=301,L]
 
-RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ /ColorMagic/colorImage.php?hex=$1 [L]
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteRule ^(.+)\.php$ /$1 [R=301,L]
 
-RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^palette/([a-z0-9-]+)/?$ /ColorMagic/palette.php?slug=$1 [NC,L,QSA]
-
-RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^$ /ColorMagic/index.php [L]
-
-# ── Live server: root base (/) ────────────────────────────────────────────────
-RewriteBase /
-
-RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
-
-RewriteRule ^palette/([a-z0-9-]+)/?$ palette.php?slug=$1 [NC,L,QSA]
-
+# Homepage
 RewriteRule ^$ index.php [L]
 
+# Custom routes
+RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
+RewriteRule ^palette/([a-z0-9-]+)/?$ palette.php?slug=$1 [NC,L,QSA]
 RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ colorImage.php?hex=$1 [L]
+
+# Generic PHP-less pages
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([A-Za-z0-9-]+)/?$ $1.php [L]
