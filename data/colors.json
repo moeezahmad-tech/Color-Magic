@@ -4399,14 +4399,6 @@
     ]
   },
   {
-    "id": "palette_412",
-    "style": "Vibrant",
-    "name": "Gravatar Palette",
-    "colors": [
-      "#1E8CBE"
-    ]
-  },
-  {
     "id": "palette_413",
     "style": "Minimalist",
     "name": "Grunt Palette",
@@ -4665,14 +4657,6 @@
     ]
   },
   {
-    "id": "palette_438",
-    "style": "Neon",
-    "name": "HubSpot Palette",
-    "colors": [
-      "#FF7A59"
-    ]
-  },
-  {
     "id": "palette_439",
     "style": "Minimalist",
     "name": "Hulu Palette",
@@ -4763,22 +4747,6 @@
     ]
   },
   {
-    "id": "palette_448",
-    "style": "Dark",
-    "name": "IntelliJ IDEA Palette",
-    "colors": [
-      "#000000"
-    ]
-  },
-  {
-    "id": "palette_449",
-    "style": "Neon",
-    "name": "InVision Palette",
-    "colors": [
-      "#FF3366"
-    ]
-  },
-  {
     "id": "palette_450",
     "style": "Minimalist",
     "name": "Ionic Palette",
@@ -4794,14 +4762,6 @@
     "colors": [
       "#F7DF1E",
       "#000000"
-    ]
-  },
-  {
-    "id": "palette_452",
-    "style": "Neon",
-    "name": "JBL Palette",
-    "colors": [
-      "#FFD700"
     ]
   },
   {
@@ -4825,22 +4785,6 @@
     ]
   },
   {
-    "id": "palette_455",
-    "style": "Vibrant",
-    "name": "Jet Palette",
-    "colors": [
-      "#2DAAE1"
-    ]
-  },
-  {
-    "id": "palette_456",
-    "style": "Dark",
-    "name": "JetBrains Palette",
-    "colors": [
-      "#000000"
-    ]
-  },
-  {
     "id": "palette_457",
     "style": "Minimalist",
     "name": "Joomla! Palette",
@@ -4859,28 +4803,12 @@
     ]
   },
   {
-    "id": "palette_459",
-    "style": "Neon",
-    "name": "Jupyter Palette",
-    "colors": [
-      "#F37626"
-    ]
-  },
-  {
     "id": "palette_460",
     "style": "Minimalist",
     "name": "KakaoTalk Palette",
     "colors": [
       "#FFCD00",
       "#000000"
-    ]
-  },
-  {
-    "id": "palette_461",
-    "style": "Neon",
-    "name": "KDE Palette",
-    "colors": [
-      "#1D99F3"
     ]
   },
   {
@@ -4966,14 +4894,6 @@
     "colors": [
       "#F89F1B",
       "#2F4F4F"
-    ]
-  },
-  {
-    "id": "palette_471",
-    "style": "Dark",
-    "name": "Less Palette",
-    "colors": [
-      "#1D365D"
     ]
   },
   {
@@ -5446,14 +5366,6 @@
     ]
   },
   {
-    "id": "palette_517",
-    "style": "Vibrant",
-    "name": "Nextcloud Palette",
-    "colors": [
-      "#0082C9"
-    ]
-  },
-  {
     "id": "palette_518",
     "style": "Vibrant",
     "name": "NGINX Palette",
@@ -5568,14 +5480,6 @@
     ]
   },
   {
-    "id": "palette_530",
-    "style": "Modern",
-    "name": "Node.js Palette",
-    "colors": [
-      "#339933"
-    ]
-  },
-  {
     "id": "palette_531",
     "style": "Minimalist",
     "name": "Nodemon Palette",
@@ -5643,14 +5547,6 @@
     ]
   },
   {
-    "id": "palette_538",
-    "style": "Vibrant",
-    "name": "NuGet Palette",
-    "colors": [
-      "#004880"
-    ]
-  },
-  {
     "id": "palette_539",
     "style": "Dark",
     "name": "Nuxt.js Palette",
@@ -5667,14 +5563,6 @@
     "colors": [
       "#76B900",
       "#FFFFFF"
-    ]
-  },
-  {
-    "id": "palette_541",
-    "style": "Minimalist",
-    "name": "OCaml Palette",
-    "colors": [
-      "#EC6813"
     ]
   },
   {
@@ -5749,14 +5637,6 @@
       "#79B119",
       "#FCC624",
       "#E9000F"
-    ]
-  },
-  {
-    "id": "palette_549",
-    "style": "Neon",
-    "name": "Opera Palette",
-    "colors": [
-      "#FF1B2D"
     ]
   },
   {
@@ -6204,14 +6084,6 @@
     ]
   },
   {
-    "id": "palette_594",
-    "style": "Neon",
-    "name": "Postman Palette",
-    "colors": [
-      "#FF6C37"
-    ]
-  },
-  {
     "id": "palette_595",
     "style": "Vibrant",
     "name": "Power BI Palette",
@@ -6359,30 +6231,6 @@
     ]
   },
   {
-    "id": "palette_609",
-    "style": "Neon",
-    "name": "QEMU Palette",
-    "colors": [
-      "#FF6600"
-    ]
-  },
-  {
-    "id": "palette_610",
-    "style": "Vibrant",
-    "name": "Qiita Palette",
-    "colors": [
-      "#55C500"
-    ]
-  },
-  {
-    "id": "palette_611",
-    "style": "Modern",
-    "name": "Qt Palette",
-    "colors": [
-      "#41CD52"
-    ]
-  },
-  {
     "id": "palette_612",
     "style": "Minimalist",
     "name": "Qualcomm Palette",
@@ -6435,14 +6283,6 @@
     ]
   },
   {
-    "id": "palette_617",
-    "style": "Vibrant",
-    "name": "R Palette",
-    "colors": [
-      "#276DC3"
-    ]
-  },
-  {
     "id": "palette_618",
     "style": "Modern",
     "name": "Racket Palette",
@@ -6492,14 +6332,6 @@
     ]
   },
   {
-    "id": "palette_623",
-    "style": "Neon",
-    "name": "Razer Palette",
-    "colors": [
-      "#00FF00"
-    ]
-  },
-  {
     "id": "palette_624",
     "style": "Minimalist",
     "name": "React Palette",
@@ -6524,14 +6356,6 @@
     "colors": [
       "#3CA300",
       "#8CA1AF"
-    ]
-  },
-  {
-    "id": "palette_627",
-    "style": "Modern",
-    "name": "Realm Palette",
-    "colors": [
-      "#39477F"
     ]
   },
   {
@@ -6591,14 +6415,6 @@
     "colors": [
       "#DC382D",
       "#A41E11"
-    ]
-  },
-  {
-    "id": "palette_634",
-    "style": "Minimalist",
-    "name": "Redux Palette",
-    "colors": [
-      "#764ABC"
     ]
   },
   {
@@ -6790,22 +6606,6 @@
     ]
   },
   {
-    "id": "palette_652",
-    "style": "Neon",
-    "name": "rss Palette",
-    "colors": [
-      "#FF6600"
-    ]
-  },
-  {
-    "id": "palette_653",
-    "style": "Vibrant",
-    "name": "Ruby Palette",
-    "colors": [
-      "#CC342D"
-    ]
-  },
-  {
     "id": "palette_654",
     "style": "Vibrant",
     "name": "Rubygems Palette",
@@ -6839,27 +6639,11 @@
     ]
   },
   {
-    "id": "palette_657",
-    "style": "Minimalist",
-    "name": "RxJava Palette",
-    "colors": [
-      "#B7178C"
-    ]
-  },
-  {
     "id": "palette_658",
     "style": "Minimalist",
     "name": "Ryzen Palette",
     "colors": [
       "#ED1C24",
-      "#000000"
-    ]
-  },
-  {
-    "id": "palette_659",
-    "style": "Minimalist",
-    "name": "Safari Palette",
-    "colors": [
       "#000000"
     ]
   },
@@ -6897,14 +6681,6 @@
     "colors": [
       "#AA0000",
       "#B3995D"
-    ]
-  },
-  {
-    "id": "palette_664",
-    "style": "Minimalist",
-    "name": "Sass Palette",
-    "colors": [
-      "#CC6699"
     ]
   },
   {
@@ -7068,14 +6844,6 @@
     ]
   },
   {
-    "id": "palette_679",
-    "style": "Neon",
-    "name": "Sketch Palette",
-    "colors": [
-      "#F7B500"
-    ]
-  },
-  {
     "id": "palette_680",
     "style": "Neon",
     "name": "SketchUp Palette",
@@ -7199,14 +6967,6 @@
     ]
   },
   {
-    "id": "palette_691",
-    "style": "Modern",
-    "name": "Snyk Palette",
-    "colors": [
-      "#4C4A73"
-    ]
-  },
-  {
     "id": "palette_692",
     "style": "Modern",
     "name": "Society6 Palette",
@@ -7214,14 +6974,6 @@
       "#000000",
       "#85888D",
       "#00A39F"
-    ]
-  },
-  {
-    "id": "palette_693",
-    "style": "Dark",
-    "name": "Socket.io Palette",
-    "colors": [
-      "#010101"
     ]
   },
   {
@@ -7289,14 +7041,6 @@
       "#F80046",
       "#CCDD00",
       "#1E5E96"
-    ]
-  },
-  {
-    "id": "palette_700",
-    "style": "Minimalist",
-    "name": "SonicWall Palette",
-    "colors": [
-      "#FF6600"
     ]
   },
   {
@@ -7416,14 +7160,6 @@
       "#191414",
       "#FFFFFF",
       "#D3D3D3"
-    ]
-  },
-  {
-    "id": "palette_712",
-    "style": "Minimalist",
-    "name": "Spotlight Palette",
-    "colors": [
-      "#FFD500"
     ]
   },
   {
@@ -7611,14 +7347,6 @@
     ]
   },
   {
-    "id": "palette_732",
-    "style": "Minimalist",
-    "name": "Storybook Palette",
-    "colors": [
-      "#FF4785"
-    ]
-  },
-  {
     "id": "palette_733",
     "style": "Vibrant",
     "name": "Strava Palette",
@@ -7713,14 +7441,6 @@
     ]
   },
   {
-    "id": "palette_742",
-    "style": "Minimalist",
-    "name": "Subversion Palette",
-    "colors": [
-      "#809CC9"
-    ]
-  },
-  {
     "id": "palette_743",
     "style": "Minimalist",
     "name": "Subway Palette",
@@ -7758,14 +7478,6 @@
       "#5E5E5E",
       "#3E3E3E",
       "#FFFFFF"
-    ]
-  },
-  {
-    "id": "palette_747",
-    "style": "Minimalist",
-    "name": "Svelte Palette",
-    "colors": [
-      "#FF3E00"
     ]
   },
   {
@@ -7867,14 +7579,6 @@
       "#407AAB",
       "#9B4F96",
       "#B85B8D"
-    ]
-  },
-  {
-    "id": "palette_757",
-    "style": "Minimalist",
-    "name": "Tapas Palette",
-    "colors": [
-      "#FFCE00"
     ]
   },
   {
