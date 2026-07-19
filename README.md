@@ -43,11 +43,11 @@ Visit: [colormagic.techkreative.com](https://colormagic.techkreative.com)
 ```
 ColorMagic/
 ├── .htaccess
-├── index.html                    ← Pages at root (SEO-friendly, clean URLs)
-├── palette.html
-├── find-color.html
-├── generate-palette.html
-├── open-source.html
+├── index.php                    ← Pages at root (SEO-friendly, clean URLs)
+├── palette.php
+├── find-color.php
+├── generate-palette.php
+├── open-source.php
 ├── color.php                     ← Dynamic PHP handlers
 ├── colorImage.php
 ├── paletteImage.php
@@ -55,7 +55,7 @@ ColorMagic/
 ├── robots.txt
 ├── manifest.json
 ├── BingSiteAuth.xml              ← Search engine verification (can't move)
-├── yandex_13ee0143663b95c8.html
+├── yandex_13ee0143663b95c8.php
 ├── assets/                       ← All static assets consolidated
 │   ├── css/
 │   │   ├── main.css

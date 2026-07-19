@@ -1,6 +1,6 @@
 /**
  * index-tabs.js
- * Handles the Explore Palettes / Find Color tab switching on index.html
+ * Handles the Explore Palettes / Find Color tab switching on index.php
  */
 
 (function () {

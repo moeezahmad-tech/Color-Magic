@@ -1,6 +1,6 @@
 /**
  * generate-palette-page.js
- * Powers the standalone Generate Palette page (generate-palette.html)
+ * Powers the standalone Generate Palette page (generate-palette.php)
  */
 
 (function () {

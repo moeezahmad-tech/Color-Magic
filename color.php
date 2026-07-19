@@ -229,7 +229,7 @@ if ($basePath === '/') {
 
 $assetBase = $basePath;
 $homePageUrl = $baseUrl . '/';
-$openSourceUrl = $assetBase . '/open-source.html';
+$openSourceUrl = $assetBase . '/open-source.php';
 $manifestUrl = $assetBase . '/manifest.json';
 $faviconUrl = $assetBase . '/assets/images/logo.png';
 $logoUrl = $assetBase . '/assets/images/logo.png';
@@ -387,15 +387,15 @@ $schema = [
                     </button>
                     <!-- Dropdown Menu sliding down -->
                     <div class="absolute top-full right-0 mt-1 w-56 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50 p-2 text-left">
-                        <a href="<?php echo e($assetBase); ?>/palettes.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
+                        <a href="<?php echo e($assetBase); ?>/palettes.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
                             <i class="bi bi-palette text-base text-primary"></i>
                             <span>Explore Palettes</span>
                         </a>
-                        <a href="<?php echo e($assetBase); ?>/generate-palette.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
+                        <a href="<?php echo e($assetBase); ?>/generate-palette.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
                             <i class="bi bi-stars text-base text-secondary"></i>
                             <span>Generate Palette</span>
                         </a>
-                        <a href="<?php echo e($assetBase); ?>/find-color.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-500 transition-colors">
+                        <a href="<?php echo e($assetBase); ?>/find-color.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-500 transition-colors">
                             <i class="bi bi-eyedropper text-base text-emerald-500"></i>
                             <span>Find Color</span>
                         </a>

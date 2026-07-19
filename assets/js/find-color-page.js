@@ -1,6 +1,6 @@
 /**
  * find-color-page.js
- * Powers the standalone Find Color page (find-color.html)
+ * Powers the standalone Find Color page (find-color.php)
  */
 
 (function () {
