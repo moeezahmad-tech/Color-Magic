@@ -628,122 +628,12 @@ $schema = [
                 </div>
             <?php else: ?>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <!-- Rendered by JS using the shared createPaletteCard() component -->
+                <div id="relatedPalettesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"></div>
 
-                    <?php foreach ($relatedPalettes as $palette): ?>
-
-                        <?php
-                        $colors = $palette['colors'] ?? [];
-
-                        $slug = strtolower(trim(
-                            preg_replace('/[^a-z0-9]+/i', '-', $palette['name'] ?? 'palette'),
-                            '-'
-                        ));
-
-                        $paletteUrl = "/palette/" . $slug . "/";
-                        ?>
-
-                        <article
-                            class="group flex flex-col gap-4"
-                            data-palette-id="<?php echo e((string)($palette['id'] ?? '')); ?>">
-
-                            <!-- Palette Preview -->
-                            <div
-                                class="palette-card grid h-56 w-full rounded-2xl overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 ring-1 ring-slate-200 dark:ring-slate-800"
-                                style="grid-template-columns:repeat(<?php echo max(count($colors), 1); ?>,minmax(0,1fr));">
-
-                                <?php foreach ($colors as $color): ?>
-
-                                    <?php
-                                    $chipHex = normalizeHex((string)$color);
-
-                                    if (!preg_match('/^[A-F0-9]{6}$/', $chipHex)) {
-                                        continue;
-                                    }
-
-                                    $r = hexdec(substr($chipHex, 0, 2));
-                                    $g = hexdec(substr($chipHex, 2, 2));
-                                    $b = hexdec(substr($chipHex, 4, 2));
-
-                                    $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000;
-                                    $light = $brightness > 155;
-                                    ?>
-
-                                    <div
-                                        class="swatch flex flex-col justify-end p-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-95"
-                                        style="background-color:#<?php echo e($chipHex); ?>;"
-                                        title="Click to copy">
-
-                                        <span
-                                            class="swatch-hex text-[10px] font-bold px-1.5 py-0.5 rounded text-center backdrop-blur-sm transition-all <?php echo $light ? 'text-slate-800 bg-white/30' : 'text-white bg-black/30'; ?>">
-                                            #<?php echo e($chipHex); ?>
-                                        </span>
-
-                                    </div>
-
-                                <?php endforeach; ?>
-
-                            </div>
-
-                            <!-- Footer -->
-                            <div class="flex items-center justify-between px-1">
-
-                                <div>
-                                    <h3 class="font-bold text-lg">
-                                        <?php echo e($palette['name'] ?? 'Untitled Palette'); ?>
-                                    </h3>
-
-                                    <p class="text-xs text-slate-500">
-                                        By Color Studio •
-                                        <?php echo e($palette['style'] ?? 'General'); ?>
-                                    </p>
-                                </div>
-
-                                <div class="flex items-center gap-4">
-
-                                    <!-- Open Palette -->
-                                    <a
-                                        href="<?php echo e($paletteUrl); ?>"
-                                        target="_blank"
-                                        rel="noopener"
-                                        class="open-palette-btn p-1.5 text-slate-400 hover:text-secondary transition-colors"
-                                        title="Open palette">
-
-                                        <i class="bi bi-box-arrow-up-right text-lg"></i>
-
-                                    </a>
-
-                                    <!-- Favorite -->
-                                    <button
-                                        type="button"
-                                        class="favorite-btn text-slate-400 hover:text-red-500 transition-colors"
-                                        data-palette-id="<?php echo e((string)($palette['id'] ?? '')); ?>"
-                                        title="Add to favorites">
-
-                                        <i class="bi bi-heart text-lg"></i>
-
-                                    </button>
-
-                                    <!-- Copy Palette -->
-                                    <button
-                                        type="button"
-                                        class="copy-palette-btn p-1.5 text-slate-400 hover:text-primary transition-colors"
-                                        data-colors="<?php echo e(implode(',', $colors)); ?>"
-                                        title="Copy all colors">
-
-                                        <i class="bi bi-clipboard text-xl"></i>
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    <?php endforeach; ?>
-
-                </div>
+                <script>
+                    window._relatedPalettes = <?php echo json_encode(array_values($relatedPalettes), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+                </script>
 
             <?php endif; ?>
 
@@ -753,6 +643,16 @@ $schema = [
 
     </main>
     <?php include "components/footer.php"; ?>
+
+    <!-- Shared palette component (same as explore page) -->
+    <script>
+        // Base paths must be set before component scripts read them
+        window.CM_COLOR_BASE   = '<?php echo e($colorRouteBase); ?>';
+        window.CM_PALETTE_BASE = '<?php echo e($assetBase); ?>/palette/';
+    </script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/utils.js"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/services/favorites.js"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js"></script>
 
     <script>
         // ── Copy HEX / RGB / HSL buttons ─────────────────────────────────────
@@ -777,58 +677,79 @@ $schema = [
             });
         });
 
-        // ── Related palette — copy entire palette ────────────────────────────
+        // ── Render related palettes using the shared createPaletteCard() ──────
+        (function renderRelatedPalettes() {
+            var grid = document.getElementById('relatedPalettesGrid');
+            var data = window._relatedPalettes;
+            if (!grid || !data || !window.ColorMagic || !window.ColorMagic.createPaletteCard) return;
+
+            window.ColorMagic.markDuplicateSlugs(data);
+
+            var fragment = document.createDocumentFragment();
+            data.forEach(function (palette) {
+                fragment.appendChild(window.ColorMagic.createPaletteCard(palette));
+            });
+            grid.appendChild(fragment);
+        })();
+
+        // ── Delegated handlers for related palette cards ──────────────────────
         document.addEventListener('click', function (e) {
+
+            // Copy entire palette
             var copyBtn = e.target.closest('.copy-palette-btn');
-            if (!copyBtn) return;
+            if (copyBtn) {
+                var colors    = copyBtn.getAttribute('data-colors') || '';
+                var icon      = copyBtn.querySelector('i');
+                var origClass = icon ? icon.className : '';
+                navigator.clipboard.writeText(colors).then(function () {
+                    if (icon) icon.className = 'bi bi-check-circle-fill text-xl';
+                    copyBtn.classList.add('text-green-500');
+                    setTimeout(function () {
+                        if (icon) icon.className = origClass;
+                        copyBtn.classList.remove('text-green-500');
+                    }, 2000);
+                }).catch(function () {
+                    if (icon) { icon.className = 'bi bi-x-circle text-xl'; setTimeout(function () { icon.className = origClass; }, 2000); }
+                });
+                return;
+            }
 
-            var colors = copyBtn.getAttribute('data-colors') || '';
-            var icon   = copyBtn.querySelector('i');
-            var origClass = icon ? icon.className : '';
+            // Copy single swatch HEX
+            var hexBtn = e.target.closest('.swatch-copy-hex');
+            if (hexBtn) {
+                var hexVal   = hexBtn.getAttribute('data-hex') || '';
+                var hIcon    = hexBtn.querySelector('i');
+                var origHTML = hexBtn.innerHTML;
+                navigator.clipboard.writeText(hexVal).then(function () {
+                    if (hIcon) hIcon.className = 'bi bi-check-circle-fill';
+                    hexBtn.classList.add('text-green-600');
+                    setTimeout(function () { hexBtn.innerHTML = origHTML; hexBtn.classList.remove('text-green-600'); }, 1500);
+                }).catch(function () {
+                    hexBtn.innerHTML = '<i class="bi bi-x-circle"></i>';
+                    setTimeout(function () { hexBtn.innerHTML = origHTML; }, 1500);
+                });
+                return;
+            }
 
-            navigator.clipboard.writeText(colors).then(function () {
-                if (icon) icon.className = 'bi bi-check-circle-fill text-xl';
-                copyBtn.classList.add('text-green-500');
-                setTimeout(function () {
-                    if (icon) icon.className = origClass;
-                    copyBtn.classList.remove('text-green-500');
-                }, 2000);
-            }).catch(function () {
-                if (icon) icon.className = 'bi bi-x-circle text-xl';
-                setTimeout(function () {
-                    if (icon) icon.className = origClass;
-                }, 2000);
-            });
-        });
+            // Favorite single color
+            var favColorBtn = e.target.closest('.swatch-fav-color');
+            if (favColorBtn && window.ColorMagic && window.ColorMagic.ColorFavorites) {
+                var favHex  = favColorBtn.getAttribute('data-hex') || '';
+                var added   = window.ColorMagic.ColorFavorites.toggleFavorite(favHex);
+                var fIcon   = favColorBtn.querySelector('i');
+                if (fIcon) fIcon.className = added ? 'bi bi-heart-fill text-red-500' : 'bi bi-heart';
+                favColorBtn.title = added ? 'Remove from favorites' : 'Add to favorites';
+                return;
+            }
 
-        // ── Related palette swatches — copy single color ──────────────────────
-        document.addEventListener('click', function (e) {
-            var swatch = e.target.closest('.swatch');
-            if (!swatch) return;
-
-            var hexSpan = swatch.querySelector('.swatch-hex');
-            if (!hexSpan) return;
-
-            var colorCode = hexSpan.textContent.trim();
-            var origText  = colorCode;
-
-            navigator.clipboard.writeText(colorCode).then(function () {
-                hexSpan.textContent = 'Copied!';
-                hexSpan.style.opacity = '1';
-                hexSpan.classList.add('copied-state');
-                setTimeout(function () {
-                    hexSpan.textContent = origText;
-                    hexSpan.style.opacity = '';
-                    hexSpan.classList.remove('copied-state');
-                }, 1500);
-            }).catch(function () {
-                hexSpan.textContent = 'Failed';
-                hexSpan.style.opacity = '1';
-                setTimeout(function () {
-                    hexSpan.textContent = origText;
-                    hexSpan.style.opacity = '';
-                }, 1500);
-            });
+            // Favorite palette toggle
+            var favPaletteBtn = e.target.closest('.favorite-btn');
+            if (favPaletteBtn && window.ColorMagic && window.ColorMagic.Favorites) {
+                var paletteId = favPaletteBtn.getAttribute('data-palette-id');
+                window.ColorMagic.Favorites.toggleFavorite(paletteId);
+                window.ColorMagic.Favorites.updateFavoriteButton(favPaletteBtn, paletteId);
+                return;
+            }
         });
     </script>
 </body>

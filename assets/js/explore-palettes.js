@@ -209,6 +209,38 @@
     if (paletteGrid) {
         paletteGrid.addEventListener('click', function (e) {
 
+            // ── Copy single swatch HEX ──────────────────────────────────────
+            var hexCopyBtn = e.target.closest('.swatch-copy-hex');
+            if (hexCopyBtn) {
+                var hexVal    = hexCopyBtn.dataset.hex;
+                var icon      = hexCopyBtn.querySelector('i');
+                var origLabel = hexCopyBtn.innerHTML;
+                navigator.clipboard.writeText(hexVal).then(function () {
+                    if (icon) icon.className = 'bi bi-check-circle-fill text-[11px]';
+                    hexCopyBtn.classList.add('text-green-600');
+                    setTimeout(function () {
+                        hexCopyBtn.innerHTML = origLabel;
+                        hexCopyBtn.classList.remove('text-green-600');
+                    }, 1500);
+                }).catch(function (err) { console.error('Copy failed:', err); });
+                return;
+            }
+
+            // ── Favorite single color ────────────────────────────────────────
+            var favColorBtn = e.target.closest('.swatch-fav-color');
+            if (favColorBtn) {
+                var favHex  = favColorBtn.dataset.hex;
+                var added   = window.ColorMagic.ColorFavorites.toggleFavorite(favHex);
+                var favIcon = favColorBtn.querySelector('i');
+                if (favIcon) {
+                    favIcon.className = added
+                        ? 'bi bi-heart-fill text-red-500 text-[11px]'
+                        : 'bi bi-heart text-[11px]';
+                }
+                favColorBtn.title = added ? 'Remove from favorites' : 'Add to favorites';
+                return;
+            }
+
             // ── Copy entire palette ──────────────────────────────────────────
             var copyBtn = e.target.closest('.copy-palette-btn');
             if (copyBtn) {
@@ -236,24 +268,6 @@
                 return;
             }
 
-            // Copy single swatch color
-            var swatch = e.target.closest('.swatch');
-            if (swatch && !e.target.closest('.copy-palette-btn')) {
-                var hexSpan = swatch.querySelector('.swatch-hex');
-                if (!hexSpan) return;
-                var colorCode = hexSpan.textContent.trim();
-                var origText  = colorCode;
-                navigator.clipboard.writeText(colorCode).then(function () {
-                    hexSpan.textContent = 'Copied!';
-                    hexSpan.style.opacity = '1';
-                    hexSpan.classList.add('copied-state');
-                    setTimeout(function () {
-                        hexSpan.textContent = origText;
-                        hexSpan.style.opacity = '';
-                        hexSpan.classList.remove('copied-state');
-                    }, 1500);
-                }).catch(function (err) { console.error('Copy failed:', err); });
-            }
         });
     }
 

@@ -76,9 +76,32 @@ header {
     transition: opacity 0.2s ease;
 }
 
-.swatch:hover .swatch-hex {
-    opacity: 1;
+/* Icon buttons — slide in from top, staggered */
+@keyframes swatchBtnIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
+
+.swatch-icon-btn {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+
+.swatch:hover .swatch-icon-btn {
+    animation: swatchBtnIn 0.18s ease forwards;
+}
+
+.swatch:hover .swatch-btn-1 { animation-delay: 0s;     }
+.swatch:hover .swatch-btn-2 { animation-delay: 0.06s;  }
+.swatch:hover .swatch-btn-3 { animation-delay: 0.12s;  }
+
+/* Keep hex label visible; it's below the icons and not in the way */
 
 .swatch-hex.copied-state {
     opacity: 1 !important;

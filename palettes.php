@@ -110,7 +110,6 @@
             color: #ec4899;
         }
 
-        /* Swatch / palette card */
         .swatch {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -123,6 +122,21 @@
         .swatch:hover .swatch-hex {
             opacity: 1;
         }
+
+        @keyframes swatchBtnIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        .swatch-icon-btn {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+
+        .swatch:hover .swatch-icon-btn { animation: swatchBtnIn 0.18s ease forwards; }
+        .swatch:hover .swatch-btn-1    { animation-delay: 0s;    }
+        .swatch:hover .swatch-btn-2    { animation-delay: 0.06s; }
+        .swatch:hover .swatch-btn-3    { animation-delay: 0.12s; }
 
         .swatch-hex.copied-state {
             opacity: 1 !important;
@@ -300,7 +314,9 @@
     <?php include 'components/footer.php'; ?>
 
     <script>
-        window.CM_ACTIVE_PAGE = "explore";
+        window.CM_ACTIVE_PAGE  = "explore";
+        window.CM_COLOR_BASE   = 'color/';
+        window.CM_PALETTE_BASE = 'palette/';
     </script>
     <script src="assets/js/utils.js" defer></script>
     <script src="assets/js/services/favorites.js" defer></script>

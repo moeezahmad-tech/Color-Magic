@@ -56,3 +56,42 @@ window.ColorMagic.Favorites = (function () {
 
     return { getFavorites, saveFavorites, toggleFavorite, isFavorite, updateFavoriteButton };
 })();
+
+// ─── Color Favorites ──────────────────────────────────────────────────────────
+window.ColorMagic.ColorFavorites = (function () {
+    const STORAGE_KEY = 'colorMagicColorFavorites';
+
+    function getFavorites() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (_) {
+            return [];
+        }
+    }
+
+    function saveFavorites(favs) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(favs));
+    }
+
+    function toggleFavorite(hex) {
+        // Normalize: lowercase, no #
+        const key = hex.replace('#', '').toLowerCase();
+        const favs = getFavorites();
+        const idx  = favs.indexOf(key);
+        if (idx > -1) {
+            favs.splice(idx, 1);
+        } else {
+            favs.push(key);
+        }
+        saveFavorites(favs);
+        return idx === -1; // true = was added
+    }
+
+    function isFavorite(hex) {
+        const key = hex.replace('#', '').toLowerCase();
+        return getFavorites().includes(key);
+    }
+
+    return { getFavorites, toggleFavorite, isFavorite };
+})();
