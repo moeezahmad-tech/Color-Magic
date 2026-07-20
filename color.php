@@ -145,9 +145,12 @@ $colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
 
 // If accessed via hex URL and this color has a named slug, 301 redirect to the slug URL
 if ($slugParam === '' && $colorSlug !== null) {
-    $scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $httpHost = (string) ($_SERVER['HTTP_HOST'] ?? 'colormagic.techkreative.com');
-    $slugUrl  = $scheme . '://' . $httpHost . '/color/' . $colorSlug . '/';
+    $scheme      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $httpHost    = (string) ($_SERVER['HTTP_HOST'] ?? 'colormagic.techkreative.com');
+    $scriptName  = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
+    $basePath    = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+    if ($basePath === '/') $basePath = '';
+    $slugUrl     = $scheme . '://' . $httpHost . $basePath . '/color/' . $colorSlug . '/';
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: ' . $slugUrl);
     exit;
