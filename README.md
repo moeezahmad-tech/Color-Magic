@@ -4,7 +4,7 @@
 
 A beautiful, fully-featured web application for designers and developers to explore color palettes, find color names from hex codes, and generate professional color schemes using color theory.
 
-![Color Magic](images/logo.png)
+![Color Magic](assets/images/logo.png)
 
 ## ✨ Features
 

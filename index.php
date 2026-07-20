@@ -551,7 +551,6 @@
     <script>
         window.CM_ACTIVE_PAGE = "home";
     </script>
-    <script src="assets/js/sidebar.js" defer></script>
 </body>
 
 </html>

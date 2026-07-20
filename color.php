@@ -317,8 +317,6 @@ $schema = [
     <meta name="keywords" content="color palette generator, hex code details, rgb to hsl, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="<?php echo $isValidHex ? 'index, follow' : 'noindex, follow'; ?>" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7562822016536735"
-     crossorigin="anonymous"></script>
 
     <?php if ($isProduction): ?>
     <!-- Google tag (gtag.js) -->
@@ -477,49 +475,6 @@ $schema = [
                 </div>
             </div>
         </section>
-
-           <!-- For Color Pages -->
-           <section id="colorPageAdSection" class="mt-8 hidden" aria-label="Advertisement">
-              <ins id="colorPageAdIns" class="adsbygoogle"
-                  style="display:block"
-                  data-ad-client="ca-pub-7562822016536735"
-                  data-ad-slot="6207841385"
-                  data-ad-format="auto"
-                  data-full-width-responsive="true"></ins>
-              <script>
-                  (function () {
-                      const adSection = document.getElementById('colorPageAdSection');
-                      const adIns = document.getElementById('colorPageAdIns');
-                      if (!adSection || !adIns) {
-                          return;
-                      }
-
-                      const showIfFilled = () => {
-                          if (adIns.querySelector('iframe')) {
-                              adSection.classList.remove('hidden');
-                              return true;
-                          }
-                          return false;
-                      };
-
-                      const observer = new MutationObserver(function () {
-                          if (showIfFilled()) {
-                              observer.disconnect();
-                          }
-                      });
-
-                      observer.observe(adIns, { childList: true, subtree: true });
-                      (adsbygoogle = window.adsbygoogle || []).push({});
-
-                      setTimeout(function () {
-                          if (!showIfFilled()) {
-                              adSection.remove();
-                          }
-                          observer.disconnect();
-                      }, 3500);
-                  })();
-              </script>
-           </section>
 
         <section class="mt-12" aria-labelledby="shades-tints-title">
             <h2 id="shades-tints-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Shades and Tints of <?php echo e($hexWithHash); ?></h2>
@@ -800,44 +755,57 @@ $schema = [
     <?php include "components/footer.php"; ?>
 
     <script>
-        const copyFeedback = document.getElementById('copyFeedback');
-        document.querySelectorAll('.copy-btn').forEach((button) => {
-            button.addEventListener('click', async () => {
-                const text = button.getAttribute('data-copy') || '';
-                try {
-                    await navigator.clipboard.writeText(text);
+        // ── Copy HEX / RGB / HSL buttons ─────────────────────────────────────
+        var copyFeedback = document.getElementById('copyFeedback');
+
+        document.querySelectorAll('.copy-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var text = button.getAttribute('data-copy') || '';
+                navigator.clipboard.writeText(text).then(function () {
                     if (copyFeedback) {
                         copyFeedback.classList.add('show');
                         copyFeedback.textContent = text + ' copied';
-                        setTimeout(() => copyFeedback.classList.remove('show'), 1200);
+                        setTimeout(function () { copyFeedback.classList.remove('show'); }, 1200);
                     }
-                } catch (error) {
+                }).catch(function () {
                     if (copyFeedback) {
                         copyFeedback.classList.add('show');
                         copyFeedback.textContent = 'Copy failed. Please copy manually.';
-                        setTimeout(() => copyFeedback.classList.remove('show'), 1500);
+                        setTimeout(function () { copyFeedback.classList.remove('show'); }, 1500);
                     }
-                }
+                });
             });
         });
 
-        const swatch = e.target.closest('.swatch');
+        // ── Related palette swatches — copy single color ──────────────────────
+        document.addEventListener('click', function (e) {
+            var swatch = e.target.closest('.swatch');
+            if (!swatch) return;
 
-        if (swatch) {
-            const hexSpan = swatch.querySelector('.swatch-hex');
-            const colorCode = hexSpan.textContent;
+            var hexSpan = swatch.querySelector('.swatch-hex');
+            if (!hexSpan) return;
 
-            navigator.clipboard.writeText(colorCode).then(() => {
-                const originalText = hexSpan.textContent;
+            var colorCode = hexSpan.textContent.trim();
+            var origText  = colorCode;
+
+            navigator.clipboard.writeText(colorCode).then(function () {
                 hexSpan.textContent = 'Copied!';
+                hexSpan.style.opacity = '1';
                 hexSpan.classList.add('copied-state');
-
-                setTimeout(() => {
-                    hexSpan.textContent = originalText;
+                setTimeout(function () {
+                    hexSpan.textContent = origText;
+                    hexSpan.style.opacity = '';
                     hexSpan.classList.remove('copied-state');
                 }, 1500);
+            }).catch(function () {
+                hexSpan.textContent = 'Failed';
+                hexSpan.style.opacity = '1';
+                setTimeout(function () {
+                    hexSpan.textContent = origText;
+                    hexSpan.style.opacity = '';
+                }, 1500);
             });
-        }
+        });
     </script>
 </body>
 </html>

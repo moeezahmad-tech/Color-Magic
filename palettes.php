@@ -302,8 +302,10 @@
     <script>
         window.CM_ACTIVE_PAGE = "explore";
     </script>
-    <script src="assets/js/sidebar.js?v=1.0" defer></script>
-    <script src="assets/js/explore-palettes.js?v=1.3" defer></script>
+    <script src="assets/js/utils.js" defer></script>
+    <script src="assets/js/services/favorites.js" defer></script>
+    <script src="assets/js/components/palette-card.js" defer></script>
+    <script src="assets/js/explore-palettes.js?v=2.0" defer></script>
 </body>
 
 </html>

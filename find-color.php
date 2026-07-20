@@ -11,8 +11,6 @@
         content="hex color finder, color name from hex, RGB HSL converter, color info tool, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="index, follow" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7562822016536735"
-        crossorigin="anonymous"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
     <script src="assets/js/app.js" defer></script>
     <meta property="og:type" content="website" />
@@ -354,7 +352,6 @@
         });
         window.CM_ACTIVE_PAGE = "find-color";
     </script>
-    <script src="assets/js/sidebar.js?v=2.0" defer></script>
     <script src="assets/js/find-color-page.js?v=1.0" defer></script>
 </body>
 
