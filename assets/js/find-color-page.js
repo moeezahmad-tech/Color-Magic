@@ -28,15 +28,19 @@
         }
     }
 
-    fetchColorNames().then(() => {
+    const fetchColorNamesPromise = fetchColorNames();
+    fetchColorNamesPromise.then(() => {
         // Render history chips after DB is ready
         renderHistoryChips();
     });
 
     // ── Helpers ───────────────────────────────────────────────────────────────
     function getColorName(hex) {
-        const key = hex.toLowerCase().replace('#', '');
-        return colorNames[key] || hex.toUpperCase();
+        // Keys in color-names.json are uppercase hex without '#'
+        const key = hex.toUpperCase().replace('#', '');
+        const entry = colorNames[key];
+        if (entry && typeof entry === 'object') return entry.name || hex.toUpperCase();
+        return hex.toUpperCase();
     }
 
     function hexToRgb(hex) {
@@ -125,9 +129,12 @@
 
     // ── Main find logic ───────────────────────────────────────────────────────
     async function findColor() {
+        // Wait for DB if still loading instead of blocking the user
         if (!isColorNamesLoaded) {
-            showError('Color database is still loading. Please wait a moment.');
-            return;
+            findColorBtn.innerHTML = '<i class="bi bi-hourglass-split text-base"></i> Loading DB…';
+            findColorBtn.disabled = true;
+            await fetchColorNamesPromise;
+            findColorBtn.disabled = false;
         }
 
         const originalHTML = findColorBtn.innerHTML;

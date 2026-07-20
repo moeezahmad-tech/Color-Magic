@@ -10,7 +10,7 @@ A beautiful, fully-featured web application for designers and developers to expl
 
 ### 🔍 Find Color
 - Enter any hex code to discover color information
-- Get color names from a curated database of 300+ named colors
+- Get color names from a curated database of 300+ named colors with alias support
 - View RGB, HSL values, luminance, and contrast information
 - Copy hex and RGB values with one click
 
@@ -71,8 +71,8 @@ ColorMagic/
 │       ├── logo.png
 │       └── TopContributers/
 ├── data/                         ← JSON data files
-│   ├── colors.json
-│   └── color-names.json
+│   ├── palettes.json
+│   └── color-names.json          ← Keyed by 6-digit hex, each entry: { hex, name, aliases[] }
 └── sitemaps/                     ← Sub-sitemaps organized together
     ├── pages.xml
     ├── palettes.xml
@@ -85,6 +85,20 @@ ColorMagic/
 
 ```bash
    git clone https://github.com/moeezahmad-tech/Color-Magic.git
+```
+
+## 📦 Data Format
+
+`data/color-names.json` is keyed by 6-digit lowercase hex (no `#`). Each entry contains:
+
+```json
+{
+  "ff5733": {
+    "hex": "ff5733",
+    "name": "Cinnabar",
+    "aliases": ["orange-red"]
+  }
+}
 ```
 
 ## 🤝 Contributing

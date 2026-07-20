@@ -121,7 +121,7 @@
             ? currentPath.substring(0, palettePathIdx + 1)
             : currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
 
-        const response = await fetch(fetchBase + 'data/colors.json');
+        const response = await fetch(fetchBase + 'data/palettes.json');
         if (!response.ok) {
             throw new Error(`Failed to fetch palettes (Status: ${response.status})`);
         }

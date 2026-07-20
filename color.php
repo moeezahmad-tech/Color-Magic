@@ -110,7 +110,7 @@ if (is_file($colorNamesPath)) {
 }
 
 $paletteData = [];
-$palettePath = __DIR__ . '/data/colors.json';
+$palettePath = __DIR__ . '/data/palettes.json';
 if (is_file($palettePath)) {
     $decoded = json_decode((string) file_get_contents($palettePath), true);
     if (is_array($decoded)) {
@@ -118,7 +118,9 @@ if (is_file($palettePath)) {
     }
 }
 
-$hexName = $colorNames[strtolower($normalizedHex)] ?? ('Hex ' . $hexWithHash);
+// Keys in color-names.json are uppercase hex without '#'
+$hexNameEntry = $colorNames[strtoupper($normalizedHex)] ?? null;
+$hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWithHash)) : ('Hex ' . $hexWithHash);
 $rgb = hexToRgb($normalizedHex);
 $hsl = hexToHsl($normalizedHex);
 $contrast = bestContrastText($normalizedHex);
@@ -213,7 +215,7 @@ foreach ($relatedPalettes as $palette) {
 $styles = array_values(array_unique($styles));
 $styleSnippet = $styles !== [] ? implode(', ', array_slice($styles, 0, 3)) : 'curated';
 
-$hasColorName = isset($colorNames[strtolower($normalizedHex)]);
+$hasColorName = isset($colorNames[strtoupper($normalizedHex)]) && is_array($colorNames[strtoupper($normalizedHex)]);
 $metaTitle = $hasColorName
     ? $hexName . ' ' . $hexWithHash . ' Color Details, RGB, HSL and Related Palettes | Color Magic'
     : $hexName . ' Color Details, RGB, HSL and Related Palettes | Color Magic';

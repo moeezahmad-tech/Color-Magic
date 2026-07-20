@@ -145,7 +145,7 @@
         App.error   = null;
         showLoadingState();
 
-        fetch('data/colors.json')
+        fetch('data/palettes.json')
             .then(function (response) {
                 if (!response.ok) throw new Error('Failed to fetch palettes (Status: ' + response.status + ')');
                 return response.json();

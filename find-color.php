@@ -352,7 +352,7 @@
         });
         window.CM_ACTIVE_PAGE = "find-color";
     </script>
-    <script src="assets/js/find-color-page.js?v=1.0" defer></script>
+    <script src="assets/js/find-color-page.js?v=1.2" defer></script>
 </body>
 
 </html>
