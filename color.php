@@ -663,57 +663,141 @@ $schema = [
         </section>
 
         <section class="mt-8" aria-labelledby="related-palettes-title">
-            <h2 id="related-palettes-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-5">Related Color Palettes</h2>
+            <h2 id="related-palettes-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-5">
+                Related Color Palettes
+            </h2>
 
             <?php if ($relatedPalettes === []): ?>
                 <div class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
                     No related palettes found in the current library.
                 </div>
             <?php else: ?>
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
                     <?php foreach ($relatedPalettes as $palette): ?>
-                        <article class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
-                            <div class="mb-3">
-                                <h3 class="text-lg font-bold"><?php echo e((string) ($palette['name'] ?? 'Untitled Palette')); ?></h3>
-                                <p class="text-sm text-slate-500 dark:text-slate-400">Style: <?php echo e((string) ($palette['style'] ?? 'General')); ?></p>
+
+                        <?php
+                        $colors = $palette['colors'] ?? [];
+
+                        $slug = strtolower(trim(
+                            preg_replace('/[^a-z0-9]+/i', '-', $palette['name'] ?? 'palette'),
+                            '-'
+                        ));
+
+                        $paletteUrl = "/palette/" . $slug . "/";
+                        ?>
+
+                        <article
+                            class="group flex flex-col gap-4"
+                            data-palette-id="<?php echo e((string)($palette['id'] ?? '')); ?>">
+
+                            <!-- Palette Preview -->
+                            <div
+                                class="palette-card grid h-56 w-full rounded-2xl overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 ring-1 ring-slate-200 dark:ring-slate-800"
+                                style="grid-template-columns:repeat(<?php echo max(count($colors), 1); ?>,minmax(0,1fr));">
+
+                                <?php foreach ($colors as $color): ?>
+
+                                    <?php
+                                    $chipHex = normalizeHex((string)$color);
+
+                                    if (!preg_match('/^[A-F0-9]{6}$/', $chipHex)) {
+                                        continue;
+                                    }
+
+                                    $r = hexdec(substr($chipHex, 0, 2));
+                                    $g = hexdec(substr($chipHex, 2, 2));
+                                    $b = hexdec(substr($chipHex, 4, 2));
+
+                                    $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000;
+                                    $light = $brightness > 155;
+                                    ?>
+
+                                    <div
+                                        class="swatch flex flex-col justify-end p-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-95"
+                                        style="background-color:#<?php echo e($chipHex); ?>;"
+                                        title="Click to copy">
+
+                                        <span
+                                            class="swatch-hex text-[10px] font-bold px-1.5 py-0.5 rounded text-center backdrop-blur-sm transition-all <?php echo $light ? 'text-slate-800 bg-white/30' : 'text-white bg-black/30'; ?>">
+                                            #<?php echo e($chipHex); ?>
+                                        </span>
+
+                                    </div>
+
+                                <?php endforeach; ?>
+
                             </div>
 
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                <?php foreach (($palette['colors'] ?? []) as $c): ?>
-                                    <?php $chipHex = normalizeHex((string) $c); ?>
-                                    <?php if (!(bool) preg_match('/^[A-F0-9]{6}$/', $chipHex)) { continue; } ?>
-                                    <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                                        <a class="group block hover:opacity-95 transition-opacity" href="<?php echo e($colorRouteBase . strtolower($chipHex) . '/'); ?>" aria-label="View color #<?php echo e($chipHex); ?> details">
-                                            <div class="h-24 md:h-28" style="background-color: #<?php echo e($chipHex); ?>;"></div>
-                                        </a>
-                                        <div class="px-2 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 flex items-center justify-between">
-                                            <span>#<?php echo e($chipHex); ?></span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                            <!-- Footer -->
+                            <div class="flex items-center justify-between px-1">
+
+                                <div>
+                                    <h3 class="font-bold text-lg">
+                                        <?php echo e($palette['name'] ?? 'Untitled Palette'); ?>
+                                    </h3>
+
+                                    <p class="text-xs text-slate-500">
+                                        By Color Studio •
+                                        <?php echo e($palette['style'] ?? 'General'); ?>
+                                    </p>
+                                </div>
+
+                                <div class="flex items-center gap-4">
+
+                                    <!-- Open Palette -->
+                                    <a
+                                        href="<?php echo e($paletteUrl); ?>"
+                                        target="_blank"
+                                        rel="noopener"
+                                        class="open-palette-btn p-1.5 text-slate-400 hover:text-secondary transition-colors"
+                                        title="Open palette">
+
+                                        <i class="bi bi-box-arrow-up-right text-lg"></i>
+
+                                    </a>
+
+                                    <!-- Favorite -->
+                                    <button
+                                        type="button"
+                                        class="favorite-btn text-slate-400 hover:text-red-500 transition-colors"
+                                        data-palette-id="<?php echo e((string)($palette['id'] ?? '')); ?>"
+                                        title="Add to favorites">
+
+                                        <i class="bi bi-heart text-lg"></i>
+
+                                    </button>
+
+                                    <!-- Copy Palette -->
+                                    <button
+                                        type="button"
+                                        class="copy-palette-btn p-1.5 text-slate-400 hover:text-primary transition-colors"
+                                        data-colors="<?php echo e(implode(',', $colors)); ?>"
+                                        title="Copy all colors">
+
+                                        <i class="bi bi-clipboard text-xl"></i>
+
+                                    </button>
+
+                                </div>
+
                             </div>
+
                         </article>
+
                     <?php endforeach; ?>
+
                 </div>
+
             <?php endif; ?>
+
         </section>
 
-        <div class="w-full max-w-7xl mx-auto text-center pt-12 mt-12 border-t border-slate-200 dark:border-slate-800">
-            <p class="text-slate-600 dark:text-slate-400 mb-4">
-                <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
-                    class="text-primary hover:underline font-semibold">A product of TechKreative</a>
-            </p>
-            <div class="flex items-center justify-center gap-6">
-                <a href="<?php echo e($homePageUrl); ?>" class="text-slate-500 hover:text-primary transition-colors" aria-label="Go to home">
-                    <i class="bi bi-house-door text-xl" aria-label="Home icon"></i>
-                </a>
-                <a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank" rel="noopener noreferrer"
-                    class="text-slate-500 hover:text-primary transition-colors" aria-label="GitHub repository">
-                    <i class="bi bi-github text-xl" aria-label="GitHub icon"></i>
-                </a>
-            </div>
-        </div>
+
+
     </main>
+    <?php include "components/footer.php"; ?>
 
     <script>
         const copyFeedback = document.getElementById('copyFeedback');
@@ -736,6 +820,24 @@ $schema = [
                 }
             });
         });
+
+        const swatch = e.target.closest('.swatch');
+
+        if (swatch) {
+            const hexSpan = swatch.querySelector('.swatch-hex');
+            const colorCode = hexSpan.textContent;
+
+            navigator.clipboard.writeText(colorCode).then(() => {
+                const originalText = hexSpan.textContent;
+                hexSpan.textContent = 'Copied!';
+                hexSpan.classList.add('copied-state');
+
+                setTimeout(() => {
+                    hexSpan.textContent = originalText;
+                    hexSpan.classList.remove('copied-state');
+                }, 1500);
+            });
+        }
     </script>
 </body>
 </html>
