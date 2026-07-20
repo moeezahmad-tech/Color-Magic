@@ -14,7 +14,10 @@ RewriteRule ^(.+)\.php$ /$1 [R=301,L]
 RewriteRule ^$ index.php [L]
 
 # Custom routes
+# Hex route — exactly 6 hex chars (must come before slug rule)
 RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
+# Slug route — named colors e.g. /color/midnight-blue/ (must start with a letter)
+RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ color.php?slug=$1 [NC,L,QSA]
 RewriteRule ^palette/([a-z0-9-]+)/?$ palette.php?slug=$1 [NC,L,QSA]
 RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ colorImage.php?hex=$1 [L]
 

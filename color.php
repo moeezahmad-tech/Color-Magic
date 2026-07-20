@@ -89,6 +89,7 @@ function mixColor(array $base, array $mix, float $weight): string {
 }
 
 $hexParam = isset($_GET['hex']) ? (string) $_GET['hex'] : '';
+$slugParam = isset($_GET['slug']) ? (string) $_GET['slug'] : '';
 $normalizedHex = normalizeHex($hexParam);
 $isValidHex = (bool) preg_match('/^[A-F0-9]{6}$/', $normalizedHex);
 $host = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
@@ -109,6 +110,25 @@ if (is_file($colorNamesPath)) {
     }
 }
 
+// If accessed via slug (?slug=midnight-blue), look up the hex from the slug
+if ($slugParam !== '' && $hexParam === '') {
+    $slugMap = [];
+    foreach ($colorNames as $entry) {
+        if (is_array($entry) && isset($entry['slug'], $entry['hex'])) {
+            $slugMap[$entry['slug']] = $entry['hex'];
+        }
+    }
+    if (isset($slugMap[$slugParam])) {
+        $normalizedHex = strtoupper($slugMap[$slugParam]);
+        $isValidHex = true;
+        $hexWithHash = '#' . $normalizedHex;
+    } else {
+        // Unknown slug — fall back to 404-like redirect
+        header('HTTP/1.1 404 Not Found');
+        exit;
+    }
+}
+
 $paletteData = [];
 $palettePath = __DIR__ . '/data/palettes.json';
 if (is_file($palettePath)) {
@@ -121,6 +141,17 @@ if (is_file($palettePath)) {
 // Keys in color-names.json are uppercase hex without '#'
 $hexNameEntry = $colorNames[strtoupper($normalizedHex)] ?? null;
 $hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWithHash)) : ('Hex ' . $hexWithHash);
+$colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
+
+// If accessed via hex URL and this color has a named slug, 301 redirect to the slug URL
+if ($slugParam === '' && $colorSlug !== null) {
+    $scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $httpHost = (string) ($_SERVER['HTTP_HOST'] ?? 'colormagic.techkreative.com');
+    $slugUrl  = $scheme . '://' . $httpHost . '/color/' . $colorSlug . '/';
+    header('HTTP/1.1 301 Moved Permanently');
+    header('Location: ' . $slugUrl);
+    exit;
+}
 $rgb = hexToRgb($normalizedHex);
 $hsl = hexToHsl($normalizedHex);
 $contrast = bestContrastText($normalizedHex);
@@ -222,7 +253,9 @@ $metaTitle = $hasColorName
 $metaDescription = 'Explore ' . $hexName . ' (' . $hexWithHash . ') with RGB(' . $rgb['r'] . ', ' . $rgb['g'] . ', ' . $rgb['b'] . ') and HSL(' . $hsl['h'] . ', ' . $hsl['s'] . '%, ' . $hsl['l'] . '%). Discover ' . count($relatedPalettes) . ' related ' . $styleSnippet . ' color palettes from our colors library.';
 
 $baseUrl = 'https://colormagic.techkreative.com';
-$canonicalUrl = $baseUrl . '/color/' . strtolower($normalizedHex) . '/';
+$canonicalUrl = $colorSlug !== null
+    ? $baseUrl . '/color/' . $colorSlug . '/'
+    : $baseUrl . '/color/' . strtolower($normalizedHex) . '/';
 $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
 $basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
 if ($basePath === '/') {
