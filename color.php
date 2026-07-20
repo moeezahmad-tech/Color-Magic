@@ -777,6 +777,30 @@ $schema = [
             });
         });
 
+        // ── Related palette — copy entire palette ────────────────────────────
+        document.addEventListener('click', function (e) {
+            var copyBtn = e.target.closest('.copy-palette-btn');
+            if (!copyBtn) return;
+
+            var colors = copyBtn.getAttribute('data-colors') || '';
+            var icon   = copyBtn.querySelector('i');
+            var origClass = icon ? icon.className : '';
+
+            navigator.clipboard.writeText(colors).then(function () {
+                if (icon) icon.className = 'bi bi-check-circle-fill text-xl';
+                copyBtn.classList.add('text-green-500');
+                setTimeout(function () {
+                    if (icon) icon.className = origClass;
+                    copyBtn.classList.remove('text-green-500');
+                }, 2000);
+            }).catch(function () {
+                if (icon) icon.className = 'bi bi-x-circle text-xl';
+                setTimeout(function () {
+                    if (icon) icon.className = origClass;
+                }, 2000);
+            });
+        });
+
         // ── Related palette swatches — copy single color ──────────────────────
         document.addEventListener('click', function (e) {
             var swatch = e.target.closest('.swatch');
