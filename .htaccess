@@ -6,6 +6,7 @@ RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
 RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^(.+)\.php$ /ColorMagic/$1 [R=301,L]
+RewriteRule ^(.+)\.html$ /ColorMagic/$1 [R=301,L]
 
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
 RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
@@ -13,6 +14,7 @@ RewriteRule ^(.+)\.php$ /$1 [R=301,L]
 
 # Homepage
 RewriteRule ^$ index.php [L]
+RewriteRule ^$ index.html [L]
 
 # Custom routes
 # Hex route — exactly 6 hex chars (must come before slug rule)
