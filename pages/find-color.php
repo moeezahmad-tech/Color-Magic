@@ -229,7 +229,7 @@
     </div>
 
     <!-- ══ MAIN CONTENT ════════════════════════════════════════════════════════ -->
-    <main class="w-full max-w-7xl mx-auto pt-28 pb-8 px-6 md:px-8 flex flex-col gap-6">
+    <main class="w-full max-w-7xl mx-auto pt-16 pb-8 px-6 md:px-8 flex flex-col gap-6">
         <!-- Hero -->
         <div
             class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-pink-50 to-secondary/10 dark:from-primary/20 dark:via-slate-900 dark:to-secondary/20 p-7 md:p-10 border border-pink-100 dark:border-slate-800">

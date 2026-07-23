@@ -228,9 +228,9 @@
     </div>
 
     <!-- ══ MAIN CONTENT ════════════════════════════════════════════════════════ -->
-    <main class="w-full max-w-7xl mx-auto pt-28 px-6 md:px-12 lg:px-16 flex flex-col justify-center items-center">
+    <main class="w-full max-w-7xl mx-auto pt-16 px-6 md:px-12 lg:px-16 flex flex-col justify-center items-center">
         <!-- Hero Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full mb-16 mt-6">
+        <div class="grid grid-cols-1 py-16 lg:grid-cols-12 gap-12 items-center w-full mb-16 mt-6">
             <!-- Left Text Content -->
             <div class="lg:col-span-7 text-center lg:text-left">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6 leading-tight">

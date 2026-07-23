@@ -216,7 +216,7 @@
     </div>
 
     <!-- ══ MAIN CONTENT ════════════════════════════════════════════════════════ -->
-    <main class="w-full max-w-7xl mx-auto pt-28 pb-8 px-5 md:px-8 flex flex-col gap-8">
+    <main class="w-full max-w-7xl mx-auto pt-16 pb-8 px-5 md:px-8 flex flex-col gap-8">
         <!-- Page hero -->
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
