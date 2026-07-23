@@ -4,44 +4,20 @@ RewriteEngine On
 # ── SECURITY: Redirect /pages/... URLs to clean /... URLs ───────────────────────
 # Prevents /pages/ prefix from appearing in URLs (SEO canonical enforcement)
 
-# /pages/X.php → /X (local)
+# /pages/X.php → /X
 RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)\.(php|html) [NC]
-RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^pages/(.+)\.(php|html)$ /ColorMagic/$1 [R=301,L,NC]
-
-# /pages/X.php → /X (production)
-RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)\.(php|html) [NC]
-RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^pages/(.+)\.(php|html)$ /$1 [R=301,L,NC]
 
-# /pages/X → /X (local, extensionless direct access)
+# /pages/X → /X (extensionless direct access)
 RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)[\s?] [NC]
-RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^pages/(.+)$ /ColorMagic/$1 [R=301,L,NC]
-
-# /pages/X → /X (production, extensionless direct access)
-RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)[\s?] [NC]
-RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^pages/(.+)$ /$1 [R=301,L,NC]
 
-# Redirect index.php / index.html -> / (local)
+# Redirect index.php / index.html → /
 RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
-RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^(.*)index\.(php|html)$ /ColorMagic/$1 [R=301,L,NC]
-
-# Redirect index.php / index.html -> / (production)
-RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
-RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^(.*)index\.(php|html)$ /$1 [R=301,L,NC]
 
-# Redirect .php and .html extensions -> extensionless (local)
+# Redirect .php and .html extensions → extensionless
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
-RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^(.+)\.(php|html)$ /ColorMagic/$1 [R=301,L,NC]
-
-# Redirect .php and .html extensions -> extensionless (production)
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
-RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^(.+)\.(php|html)$ /$1 [R=301,L,NC]
 
 # ── INTERNAL REWRITES (invisible to users & search engines) ──────────────────────
