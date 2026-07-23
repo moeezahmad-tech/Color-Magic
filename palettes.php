@@ -198,6 +198,13 @@
                         collections</span>
                 </div>
             </a>
+            <a href="gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-rainbow"></i></span>
+                <div>
+                    <span class="block font-bold">Gradients</span><span class="text-xs opacity-60">Browse CSS
+                        gradients</span>
+                </div>
+            </a>
             <a href="find-color.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-eyedropper"></i></span>
                 <div>

@@ -187,6 +187,13 @@
                         collections</span>
                 </div>
             </a>
+            <a href="gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-rainbow"></i></span>
+                <div>
+                    <span class="block font-bold">Gradients</span><span class="text-xs opacity-60">Browse CSS
+                        gradients</span>
+                </div>
+            </a>
             <a href="find-color.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-eyedropper"></i></span>
                 <div>
@@ -419,8 +426,8 @@
             </div>
         </div>
 
-        <!-- 4-Card Grid Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full mb-16">
+        <!-- 6-Card Grid Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 w-full mb-16">
             <!-- Card 1: Explore Palettes -->
             <a href="palettes.php"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
@@ -515,7 +522,36 @@
                 </div>
             </a>
 
-            <!-- Card 4: Open Source -->
+            <!-- Card 4: Gradients -->
+            <a href="gradients"
+                class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
+                </div>
+                <div>
+                    <div
+                        class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 text-2xl mb-6">
+                        <i class="bi bi-rainbow"></i>
+                    </div>
+                    <h3
+                        class="text-xl md:text-4xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-amber-500 transition-colors">
+                        Gradients
+                    </h3>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6">
+                        Explore beautiful linear &amp; radial CSS gradients. Filter by style,
+                        preview live, and copy ready-to-use CSS with one click.
+                    </p>
+                </div>
+                <!-- Mini Visual Preview -->
+                <div
+                    class="flex gap-1.5 h-6 rounded-lg overflow-hidden w-full border border-slate-100 dark:border-slate-800">
+                    <div class="flex-1" style="background: linear-gradient(135deg, #7F00FF, #E100FF)"></div>
+                    <div class="flex-1" style="background: linear-gradient(135deg, #FF512F, #DD2476)"></div>
+                    <div class="flex-1" style="background: radial-gradient(circle, #11998E, #38EF7D)"></div>
+                </div>
+            </a>
+
+            <!-- Card 5: Open Source -->
             <a href="open-source.php"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
@@ -540,6 +576,32 @@
                 <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
                     <span class="flex items-center gap-1"><i class="bi bi-star-fill text-amber-400"></i> Star on
                         GitHub</span>
+                </div>
+            </a>
+
+            <!-- Card 6: Saved Palettes -->
+            <a href="palettes.php?filter=favorites"
+                class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
+                </div>
+                <div>
+                    <div
+                        class="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center text-red-500 text-2xl mb-6">
+                        <i class="bi bi-heart-fill"></i>
+                    </div>
+                    <h3
+                        class="text-xl md:text-4xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-red-500 transition-colors">
+                        Saved Palettes
+                    </h3>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6">
+                        Keep track of your favourite palettes across the entire app. Access
+                        them quickly anytime, and export in multiple formats.
+                    </p>
+                </div>
+                <!-- Mini Visual Preview -->
+                <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    <span class="flex items-center gap-1"><i class="bi bi-heart-fill text-red-400"></i> Your favourites</span>
                 </div>
             </a>
         </div>

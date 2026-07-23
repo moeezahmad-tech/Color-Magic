@@ -31,6 +31,11 @@
                             <i class="bi bi-palette text-base text-primary"></i>
                             <span>Explore Palettes</span>
                         </a>
+                        <a href="gradients"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-amber-500 transition-colors">
+                            <i class="bi bi-rainbow text-base text-amber-500"></i>
+                            <span>Gradients</span>
+                        </a>
                         <a href="generate-palette.php"
                             class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
                             <i class="bi bi-stars text-base text-secondary"></i>
