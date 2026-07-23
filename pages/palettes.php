@@ -1,3 +1,4 @@
+<?php include '../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -11,7 +12,7 @@
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="index, follow" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
-    <script src="assets/js/app.js" defer></script>
+    <script src="<?= $base ?>/assets/js/app.js" defer></script>
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://colormagic.techkreative.com/" />
     <meta property="og:title" content="Color Magic | Explore Color Palettes" />
@@ -19,15 +20,15 @@
         content="The ultimate tool for finding and organizing professional color palettes." />
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="icon" type="image/png" href="assets/images/logo.png" />
+    <link rel="manifest" href="<?= $base ?>/manifest.json" />
+    <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <script id="tailwind-config" src="assets/js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
     <style>
         /* ── Sidebar nav button styles ── */
         .sb-btn {
@@ -164,15 +165,15 @@
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
     <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
-    <?php include 'components/navbar.php'; ?>
+    <?php include '../components/navbar.php'; ?>
 
 
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
         <div class="flex items-center justify-between mb-6">
-            <a href="/" class="flex items-center gap-2 text-primary">
-                <img src="assets/images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain" />
+            <a href="<?= $base ?>/" class="flex items-center gap-2 text-primary">
+                <img src="<?= $base ?>/assets/images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain" />
                 <span class="text-xl font-bold tracking-tight">
                     <span class="text-slate-900 dark:text-white">Color</span>
                     <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span>
@@ -186,40 +187,40 @@
         </div>
         <!-- Mobile nav items -->
         <div class="space-y-2">
-            <a href="/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
             </a>
-            <a href="palettes.php" class="sb-btn sb-active w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/palettes" class="sb-btn sb-active w-full"><span class="sb-icon"><i
                         class="bi bi-palette"></i></span>
                 <div>
                     <span class="block font-bold">Explore Palettes</span><span class="text-xs opacity-75">Browse
                         collections</span>
                 </div>
             </a>
-            <a href="gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-rainbow"></i></span>
                 <div>
                     <span class="block font-bold">Gradients</span><span class="text-xs opacity-60">Browse CSS
                         gradients</span>
                 </div>
             </a>
-            <a href="find-color.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/find-color" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-eyedropper"></i></span>
                 <div>
                     <span class="block font-bold">Find Color</span><span class="text-xs opacity-60">Hex to name &amp;
                         info</span>
                 </div>
             </a>
-            <a href="generate-palette.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/generate-palette" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-stars"></i></span>
                 <div>
                     <span class="block font-bold">Generate Palette</span><span class="text-xs opacity-60">Create color
                         schemes</span>
                 </div>
             </a>
-            <a href="favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -227,7 +228,7 @@
                 </div>
             </a>
             <div class="border-t border-slate-200 dark:border-slate-700 my-2"></div>
-            <a href="open-source.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/open-source" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-github"></i></span>
                 <div>
                     <span class="block font-bold">Open Source</span><span class="text-xs opacity-60">View on
@@ -318,17 +319,17 @@
             <!-- Footer -->
     </main>
     
-    <?php include 'components/footer.php'; ?>
+    <?php include '../components/footer.php'; ?>
 
     <script>
         window.CM_ACTIVE_PAGE  = "explore";
         window.CM_COLOR_BASE   = 'color/';
         window.CM_PALETTE_BASE = 'palette/';
     </script>
-    <script src="assets/js/utils.js" defer></script>
-    <script src="assets/js/services/favorites.js" defer></script>
-    <script src="assets/js/components/palette-card.js" defer></script>
-    <script src="assets/js/explore-palettes.js?v=2.0" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js" defer></script>
+    <script src="<?= $base ?>/assets/js/explore-palettes.js?v=2.0" defer></script>
 </body>
 
 </html>

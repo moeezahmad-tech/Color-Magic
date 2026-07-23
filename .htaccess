@@ -1,6 +1,29 @@
 Options -MultiViews
 RewriteEngine On
 
+# ── SECURITY: Redirect /pages/... URLs to clean /... URLs ───────────────────────
+# Prevents /pages/ prefix from appearing in URLs (SEO canonical enforcement)
+
+# /pages/X.php → /X (local)
+RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)\.(php|html) [NC]
+RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteRule ^pages/(.+)\.(php|html)$ /ColorMagic/$1 [R=301,L,NC]
+
+# /pages/X.php → /X (production)
+RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)\.(php|html) [NC]
+RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteRule ^pages/(.+)\.(php|html)$ /$1 [R=301,L,NC]
+
+# /pages/X → /X (local, extensionless direct access)
+RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)[\s?] [NC]
+RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteRule ^pages/(.+)$ /ColorMagic/$1 [R=301,L,NC]
+
+# /pages/X → /X (production, extensionless direct access)
+RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)[\s?] [NC]
+RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteRule ^pages/(.+)$ /$1 [R=301,L,NC]
+
 # Redirect index.php / index.html -> / (local)
 RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
 RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
@@ -21,19 +44,23 @@ RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
 RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^(.+)\.(php|html)$ /$1 [R=301,L,NC]
 
+# ── INTERNAL REWRITES (invisible to users & search engines) ──────────────────────
+
 # Homepage
-RewriteRule ^$ index.php [L]
+RewriteRule ^$ pages/index.php [L]
 
 # Custom routes
 # Hex route — exactly 6 hex chars (must come before slug rule)
-RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
+RewriteRule ^color/([A-Fa-f0-9]{6})/?$ pages/color.php?hex=$1 [NC,L,QSA]
 # Slug route — named colors e.g. /color/midnight-blue/ (must start with a letter)
-RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ color.php?slug=$1 [NC,L,QSA]
-RewriteRule ^palette/([a-z0-9-]+)/?$ palette.php?slug=$1 [NC,L,QSA]
-RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ colorImage.php?hex=$1 [L]
+RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ pages/color.php?slug=$1 [NC,L,QSA]
+RewriteRule ^palette/([a-z0-9-]+)/?$ pages/palette.php?slug=$1 [NC,L,QSA]
+RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ pages/colorImage.php?hex=$1 [L]
 
-# Generic PHP-less pages
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^([A-Za-z0-9-]+)/?$ $1.php [L]
+# Static pages (explicit routes — no file-existence check needed)
+RewriteRule ^palettes/?$ pages/palettes.php [L]
+RewriteRule ^gradients/?$ pages/gradients.php [L]
+RewriteRule ^generate-palette/?$ pages/generate-palette.php [L]
+RewriteRule ^find-color/?$ pages/find-color.php [L]
+RewriteRule ^favorites/?$ pages/favorites.php [L]
+RewriteRule ^open-source/?$ pages/open-source.php [L]

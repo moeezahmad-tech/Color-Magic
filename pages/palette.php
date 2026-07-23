@@ -1,3 +1,4 @@
+<?php include '../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -19,23 +20,23 @@
     <title>Color Palette | Color Magic</title>
     <meta name="description"
         content="Explore this curated color palette with copy-ready HEX, RGB, and CSS values. Perfect for design projects." />
-    <link rel="icon" type="image/png" href="assets/images/logo.png" />
+    <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <script id="tailwind-config" src="assets/js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <?php include 'components/navbar.php'; ?>
+    <?php include '../components/navbar.php'; ?>
 
 
     <main class="w-full max-w-7xl mx-auto pt-24 p-5 md:p-8 flex flex-col gap-8">
         <div class="flex items-center justify-between flex-wrap gap-3">
-            <a href="palettes.php"
+            <a href="<?= $base ?>/palettes"
                 class="inline-flex items-center gap-2 text-primary font-semibold hover:opacity-90 transition-opacity">
                 <i class="bi bi-arrow-left"></i>
                 Back to Explore
@@ -182,10 +183,10 @@
         </section>
     </main>
 
-    <?php include 'components/footer.php'; ?>
+    <?php include '../components/footer.php'; ?>
 
 
-    <script src="assets/js/palette-page.js" defer></script>
+    <script src="<?= $base ?>/assets/js/palette-page.js" defer></script>
 </body>
 
 </html>

@@ -1,4 +1,6 @@
 <?php
+include '../components/config.php';
+/** @var string $base */
 
 function e(string $value): string
 {
@@ -102,7 +104,7 @@ if (!$isValidHex) {
 $hexWithHash = '#' . $normalizedHex;
 
 $colorNames = [];
-$colorNamesPath = __DIR__ . '/data/color-names.json';
+$colorNamesPath = __DIR__ . '/../data/color-names.json';
 if (is_file($colorNamesPath)) {
     $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
     if (is_array($decoded)) {
@@ -130,7 +132,7 @@ if ($slugParam !== '' && $hexParam === '') {
 }
 
 $paletteData = [];
-$palettePath = __DIR__ . '/data/palettes.json';
+$palettePath = __DIR__ . '/../data/palettes.json';
 if (is_file($palettePath)) {
     $decoded = json_decode((string) file_get_contents($palettePath), true);
     if (is_array($decoded)) {
@@ -148,8 +150,7 @@ if ($slugParam === '' && $colorSlug !== null) {
     $scheme      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $httpHost    = (string) ($_SERVER['HTTP_HOST'] ?? 'colormagic.techkreative.com');
     $scriptName  = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
-    $basePath    = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-    if ($basePath === '/') $basePath = '';
+    $basePath    = $base;
     $slugUrl     = $scheme . '://' . $httpHost . $basePath . '/color/' . $colorSlug . '/';
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: ' . $slugUrl);
@@ -260,21 +261,18 @@ $canonicalUrl = $colorSlug !== null
     ? $baseUrl . '/color/' . $colorSlug . '/'
     : $baseUrl . '/color/' . strtolower($normalizedHex) . '/';
 $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
-$basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-if ($basePath === '/') {
-    $basePath = '';
-}
+$basePath = $base;
 
 $assetBase = $basePath;
 $homePageUrl = $baseUrl . '/';
-$openSourceUrl = $assetBase . '/open-source.php';
+$openSourceUrl = $assetBase . '/open-source';
 $manifestUrl = $assetBase . '/manifest.json';
 $faviconUrl = $assetBase . '/assets/images/logo.png';
 $logoUrl = $assetBase . '/assets/images/logo.png';
 $siteStylesUrl = $assetBase . '/assets/css/style.css?v=1.0';
 $tailwindConfigUrl = $assetBase . '/assets/js/tailwind-config.js';
 $colorRouteBase = $assetBase . '/color/';
-$dynamicColorImageUrl = $baseUrl . '/colorImage.php?hex=' . strtolower($normalizedHex);
+$dynamicColorImageUrl = $baseUrl . '/colors/' . strtolower($normalizedHex) . '.webp';
 $ogImageUrl = $baseUrl . '/assets/og-preview.png';
 
 // WCAG Contrast Ratios
@@ -423,15 +421,15 @@ $schema = [
                     </button>
                     <!-- Dropdown Menu sliding down -->
                     <div class="absolute top-full right-0 mt-1 w-56 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50 p-2 text-left">
-                        <a href="<?php echo e($assetBase); ?>/palettes.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
+                        <a href="<?php echo e($assetBase); ?>/palettes" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
                             <i class="bi bi-palette text-base text-primary"></i>
                             <span>Explore Palettes</span>
                         </a>
-                        <a href="<?php echo e($assetBase); ?>/generate-palette.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
+                        <a href="<?php echo e($assetBase); ?>/generate-palette" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
                             <i class="bi bi-stars text-base text-secondary"></i>
                             <span>Generate Palette</span>
                         </a>
-                        <a href="<?php echo e($assetBase); ?>/find-color.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-500 transition-colors">
+                        <a href="<?php echo e($assetBase); ?>/find-color" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-500 transition-colors">
                             <i class="bi bi-eyedropper text-base text-emerald-500"></i>
                             <span>Find Color</span>
                         </a>
@@ -680,7 +678,7 @@ $schema = [
 
 
     </main>
-    <?php include "components/footer.php"; ?>
+    <?php include "../components/footer.php"; ?>
 
     <!-- Shared palette component (same as explore page) -->
     <script>

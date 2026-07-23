@@ -24,7 +24,7 @@ if (empty($paletteId)) {
 }
 
 // 2. Load palette data
-$palettePath = __DIR__ . '/data/palettes.json';
+$palettePath = __DIR__ . '/../data/palettes.json';
 if (!is_file($palettePath)) {
     header("HTTP/1.1 500 Internal Server Error");
     echo "Palette data not found";

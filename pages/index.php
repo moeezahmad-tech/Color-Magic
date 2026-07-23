@@ -1,3 +1,4 @@
+<?php include '../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -13,7 +14,7 @@
     <meta name="robots" content="index, follow" />
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
-    <script src="assets/js/app.js" defer></script>
+    <script src="<?= $base ?>/assets/js/app.js" defer></script>
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://colormagic.techkreative.com/" />
@@ -22,16 +23,16 @@
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
 
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="icon" type="image/png" href="assets/images/logo.png" />
+    <link rel="manifest" href="<?= $base ?>/manifest.json" />
+    <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <script id="tailwind-config" src="assets/js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
     <style>
         .card-hover:hover {
             transform: translateY(-6px);
@@ -154,14 +155,14 @@
     <div class="glow-bg bottom-[-100px] right-[-100px]"></div>
 
     <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
-       <?php include 'components/navbar.php'; ?>
+       <?php include '../components/navbar.php'; ?>
 
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
         <div class="flex items-center justify-between mb-6">
-            <a href="/" class="flex items-center gap-2 text-primary">
-                <img src="assets/images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain" />
+            <a href="<?= $base ?>/" class="flex items-center gap-2 text-primary">
+                <img src="<?= $base ?>/assets/images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain" />
                 <span class="text-xl font-bold tracking-tight">
                     <span class="text-slate-900 dark:text-white">Color</span>
                     <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span>
@@ -175,40 +176,40 @@
         </div>
         <!-- Mobile nav items -->
         <div class="space-y-2">
-            <a href="/" class="sb-btn sb-active w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-active w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-75">Back to homepage</span>
                 </div>
             </a>
-            <a href="palettes.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="/palettes" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-palette"></i></span>
                 <div>
                     <span class="block font-bold">Explore Palettes</span><span class="text-xs opacity-60">Browse
                         collections</span>
                 </div>
             </a>
-            <a href="gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="/gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-rainbow"></i></span>
                 <div>
                     <span class="block font-bold">Gradients</span><span class="text-xs opacity-60">Browse CSS
                         gradients</span>
                 </div>
             </a>
-            <a href="find-color.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="/find-color" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-eyedropper"></i></span>
                 <div>
                     <span class="block font-bold">Find Color</span><span class="text-xs opacity-60">Hex to name &amp;
                         info</span>
                 </div>
             </a>
-            <a href="generate-palette.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="/generate-palette" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-stars"></i></span>
                 <div>
                     <span class="block font-bold">Generate Palette</span><span class="text-xs opacity-60">Create color
                         schemes</span>
                 </div>
             </a>
-            <a href="favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -216,7 +217,7 @@
                 </div>
             </a>
             <div class="border-t border-slate-200 dark:border-slate-700 my-2"></div>
-            <a href="open-source.php" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="/open-source" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-github"></i></span>
                 <div>
                     <span class="block font-bold">Open Source</span><span class="text-xs opacity-60">View on
@@ -244,11 +245,11 @@
                     search colors by hex codes, and copy curated palettes instantly.
                 </p>
                 <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-                    <a href="palettes.php"
+                    <a href="<?= $base ?>/palettes"
                         class="px-6 py-3 bg-gradient-to-r from-secondary to-primary hover:opacity-95 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20">
                         Explore Palettes
                     </a>
-                    <a href="generate-palette.php"
+                    <a href="<?= $base ?>/generate-palette"
                         class="px-6 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl transition-all">
                         Generate Now
                     </a>
@@ -429,7 +430,7 @@
         <!-- 6-Card Grid Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 w-full mb-16">
             <!-- Card 1: Explore Palettes -->
-            <a href="palettes.php"
+            <a href="<?= $base ?>/palettes"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
@@ -461,7 +462,7 @@
             </a>
 
             <!-- Card 2: Generate Palette -->
-            <a href="generate-palette.php"
+            <a href="<?= $base ?>/generate-palette"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
@@ -493,7 +494,7 @@
             </a>
 
             <!-- Card 3: Find Color -->
-            <a href="find-color.php"
+            <a href="<?= $base ?>/find-color"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
@@ -523,7 +524,7 @@
             </a>
 
             <!-- Card 4: Gradients -->
-            <a href="gradients"
+            <a href="<?= $base ?>/gradients"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
@@ -552,7 +553,7 @@
             </a>
 
             <!-- Card 5: Open Source -->
-            <a href="open-source.php"
+            <a href="<?= $base ?>/open-source"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-slate-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
@@ -580,7 +581,7 @@
             </a>
 
             <!-- Card 6: Favorites -->
-            <a href="favorites"
+            <a href="<?= $base ?>/favorites"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
@@ -608,7 +609,7 @@
 
     </main>
 
-    <?php include 'components/footer.php'; ?>
+    <?php include '../components/footer.php'; ?>
 
     <script>
         window.CM_ACTIVE_PAGE = "home";
