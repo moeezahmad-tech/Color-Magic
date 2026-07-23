@@ -208,11 +208,11 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="palettes.php?filter=favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
-                    <span class="block font-bold">Saved Palettes</span><span class="text-xs opacity-60">Your
-                        favourites</span>
+                    <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
+                        palettes &amp; gradients</span>
                 </div>
             </a>
             <div class="border-t border-slate-200 dark:border-slate-700 my-2"></div>
@@ -579,8 +579,8 @@
                 </div>
             </a>
 
-            <!-- Card 6: Saved Palettes -->
-            <a href="palettes.php?filter=favorites"
+            <!-- Card 6: Favorites -->
+            <a href="favorites"
                 class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
@@ -592,16 +592,16 @@
                     </div>
                     <h3
                         class="text-xl md:text-4xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-red-500 transition-colors">
-                        Saved Palettes
+                        Favorites
                     </h3>
                     <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6">
-                        Keep track of your favourite palettes across the entire app. Access
-                        them quickly anytime, and export in multiple formats.
+                        All your saved colors, palettes and gradients in one place. Access
+                        your personal collection anytime and pick up right where you left off.
                     </p>
                 </div>
                 <!-- Mini Visual Preview -->
                 <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    <span class="flex items-center gap-1"><i class="bi bi-heart-fill text-red-400"></i> Your favourites</span>
+                    <span class="flex items-center gap-1"><i class="bi bi-heart-fill text-red-400"></i> Your collection</span>
                 </div>
             </a>
         </div>

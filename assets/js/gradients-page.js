@@ -47,7 +47,7 @@
         // Copy CSS overlay button
         var copyBtn = document.createElement('button');
         copyBtn.className =
-            'copy-css-btn absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-900 shadow-sm backdrop-blur-sm';
+            'copy-css-btn border-none absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-900 shadow-sm backdrop-blur-sm';
         copyBtn.dataset.css = g.css;
         copyBtn.innerHTML =
             '<i class="bi bi-clipboard text-sm"></i>'
@@ -68,24 +68,39 @@
         name.className = 'text-base font-bold text-slate-800 dark:text-white leading-tight';
         name.textContent = g.name;
 
+        var headerRight = document.createElement('div');
+        headerRight.className = 'flex items-center gap-1.5 flex-shrink-0';
+
         var typeBadge = document.createElement('span');
         typeBadge.className =
-            'flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border '
+            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border '
             + (g.type === 'linear'
                 ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300 border-violet-200 dark:border-violet-700'
-                : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border-amber-200 dark:border-amber-700');
+                : g.type === 'radial'
+                ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border-amber-200 dark:border-amber-700'
+                : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700');
+        var typeIcon = g.type === 'linear' ? 'arrow-right' : (g.type === 'radial' ? 'circle' : 'grid-3x3-gap');
         typeBadge.innerHTML =
-            '<i class="bi bi-' + (g.type === 'linear' ? 'arrow-right' : 'circle') + ' text-[9px]"></i>'
+            '<i class="bi bi-' + typeIcon + ' text-[9px]"></i>'
             + g.type;
 
+        var isFav = window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
+        var favBtn = document.createElement('button');
+        favBtn.className = 'gradient-fav-btn border-none bg-transparent p-1 rounded-md transition-colors ' + (isFav ? 'text-red-500' : 'text-slate-400 hover:text-red-500');
+        favBtn.dataset.gradientId = g.id;
+        favBtn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+        favBtn.innerHTML = '<i class="bi ' + (isFav ? 'bi-heart-fill' : 'bi-heart') + ' text-base"></i>';
+
+        headerRight.appendChild(typeBadge);
+        headerRight.appendChild(favBtn);
         header.appendChild(name);
-        header.appendChild(typeBadge);
+        header.appendChild(headerRight);
         body.appendChild(header);
 
         // Meta line
         var meta = document.createElement('p');
         meta.className = 'text-xs text-slate-400 dark:text-slate-500';
-        var angleOrShape = g.type === 'linear' ? (g.angle + '°') : g.shape;
+        var angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.type === 'mesh' ? 'mesh' : g.shape);
         meta.textContent = g.style + ' · ' + g.colors.length + ' colors · ' + angleOrShape;
         body.appendChild(meta);
 
@@ -215,16 +230,41 @@
     function buildStyleButtons() {
         if (!styleFilterContainer) return;
         var styleIcons = {
-            'Warm':   'bi-sun-fill',
-            'Cool':   'bi-snow',
-            'Purple': 'bi-flower2',
-            'Nature': 'bi-tree-fill',
-            'Pink':   'bi-heart-fill',
-            'Dark':   'bi-moon-fill',
-            'Pastel': 'bi-cloud-fill',
-            'Neon':   'bi-lightning-fill',
-            'Earth':  'bi-globe-americas',
-            'Mono':   'bi-circle-half'
+            'Warm':     'bi-sun-fill',
+            'Cool':     'bi-snow',
+            'Purple':   'bi-flower2',
+            'Nature':   'bi-tree-fill',
+            'Pink':     'bi-heart-fill',
+            'Dark':     'bi-moon-fill',
+            'Pastel':   'bi-cloud-fill',
+            'Neon':     'bi-lightning-fill',
+            'Earth':    'bi-globe-americas',
+            'Mono':     'bi-circle-half',
+            'Aurora':   'bi-stars',
+            'Sunset':   'bi-sunset-fill',
+            'Ocean':    'bi-water',
+            'Galaxy':   'bi-stars',
+            'Midnight': 'bi-moon-stars-fill',
+            'Luxury':   'bi-gem',
+            'Forest':   'bi-tree-fill',
+            'Sky':      'bi-cloud-sun-fill',
+            'Royal':    'bi-award-fill',
+            'Rose':     'bi-flower1',
+            'Emerald':  'bi-hexagon-fill',
+            'Lavender': 'bi-flower3',
+            'Peach':    'bi-circle-fill',
+            'Candy':    'bi-balloon-fill',
+            'Ice':      'bi-snow2',
+            'Coffee':   'bi-cup-hot-fill',
+            'Volcano':  'bi-fire',
+            'Autumn':   'bi-leaf-fill',
+            'Spring':   'bi-flower2',
+            'Summer':   'bi-brightness-high-fill',
+            'Winter':   'bi-snow',
+            'Gold':     'bi-coin',
+            'Glass':    'bi-window',
+            'Cyber':    'bi-cpu-fill',
+            'Minimal':  'bi-circle-half'
         };
 
         App.styles.forEach(function (style) {
@@ -320,6 +360,20 @@
     // Event delegation: copy CSS, copy swatch hex
     if (gradientGrid) {
         gradientGrid.addEventListener('click', function (e) {
+
+            // Gradient favorite toggle
+            var gradFavBtn = e.target.closest('.gradient-fav-btn');
+            if (gradFavBtn) {
+                var gid   = gradFavBtn.dataset.gradientId;
+                var added = window.ColorMagic.GradientFavorites.toggleFavorite(gid);
+                var icon  = gradFavBtn.querySelector('i');
+                if (icon) {
+                    icon.className = 'bi ' + (added ? 'bi-heart-fill' : 'bi-heart') + ' text-base';
+                }
+                gradFavBtn.className = 'gradient-fav-btn border-none bg-transparent p-1 rounded-md transition-colors ' + (added ? 'text-red-500' : 'text-slate-400 hover:text-red-500');
+                gradFavBtn.title = added ? 'Remove from favorites' : 'Add to favorites';
+                return;
+            }
 
             // Copy gradient CSS
             var copyBtn = e.target.closest('.copy-css-btn');

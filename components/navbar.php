@@ -46,6 +46,11 @@
                             <i class="bi bi-eyedropper text-base text-emerald-500"></i>
                             <span>Find Color</span>
                         </a>
+                        <a href="favorites"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-500 transition-colors">
+                            <i class="bi bi-heart-fill text-base text-red-500"></i>
+                            <span>Favorites</span>
+                        </a>
                         <a href="open-source.php"
                             class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-slate-600 transition-colors">
                             <i class="bi bi-github text-base text-slate-500"></i>
