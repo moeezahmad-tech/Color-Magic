@@ -1,19 +1,28 @@
 Options -MultiViews
 RewriteEngine On
 
-# Redirect .php -> extensionless
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+# Redirect index.php / index.html -> / (local)
+RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
 RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^(.+)\.php$ /ColorMagic/$1 [R=301,L]
+RewriteRule ^(.*)index\.(php|html)$ /ColorMagic/$1 [R=301,L,NC]
 
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+# Redirect index.php / index.html -> / (production)
+RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
 RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
-RewriteRule ^(.+)\.php$ /$1 [R=301,L]
+RewriteRule ^(.*)index\.(php|html)$ /$1 [R=301,L,NC]
+
+# Redirect .php and .html extensions -> extensionless (local)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
+RewriteCond %{HTTP_HOST} ^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteRule ^(.+)\.(php|html)$ /ColorMagic/$1 [R=301,L,NC]
+
+# Redirect .php and .html extensions -> extensionless (production)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
+RewriteCond %{HTTP_HOST} !(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteRule ^(.+)\.(php|html)$ /$1 [R=301,L,NC]
 
 # Homepage
 RewriteRule ^$ index.php [L]
-RewriteRule ^$ index.html [L]
 
 # Custom routes
 # Hex route — exactly 6 hex chars (must come before slug rule)
@@ -22,9 +31,6 @@ RewriteRule ^color/([A-Fa-f0-9]{6})/?$ color.php?hex=$1 [NC,L,QSA]
 RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ color.php?slug=$1 [NC,L,QSA]
 RewriteRule ^palette/([a-z0-9-]+)/?$ palette.php?slug=$1 [NC,L,QSA]
 RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ colorImage.php?hex=$1 [L]
-RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ color.html?slug=$1 [NC,L,QSA]
-RewriteRule ^palette/([a-z0-9-]+)/?$ palette.html?slug=$1 [NC,L,QSA]
-RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ colorImage.html?hex=$1 [L]
 
 # Generic PHP-less pages
 RewriteCond %{REQUEST_FILENAME} !-f
