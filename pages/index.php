@@ -5,11 +5,11 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Color Magic | The Open-Source Color Palette & Design Tool</title>
+    <title>Color Name Finder & Palette Generator | Hex to Color Name — Color Magic</title>
     <meta name="description"
-        content="Color Magic is a premium, open-source color tool. Explore palettes, generate harmonic schemes, find names of color codes, and export formats." />
+        content="Free color name finder — convert any hex code to its color name, RGB, and HSL values. Generate professional color palettes and explore 150+ curated schemes." />
     <meta name="keywords"
-        content="color palette explorer, color schemes, designer tools, TechKreative, color generator" />
+        content="color name finder, hex to color name, color palette generator, hex color lookup, RGB converter, color code identifier" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="index, follow" />
 
@@ -18,8 +18,8 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://colormagic.techkreative.com/" />
-    <meta property="og:title" content="Color Magic | The Open-Source Color Palette & Design Tool" />
-    <meta property="og:description" content="Discover, generate, and explore professional color schemes." />
+    <meta property="og:title" content="Color Name Finder & Palette Generator | Hex to Color Name — Color Magic" />
+    <meta property="og:description" content="Free color name finder — convert any hex code to its color name, RGB, and HSL values. Generate professional palettes." />
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
 
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
@@ -234,15 +234,11 @@
             <!-- Left Text Content -->
             <div class="lg:col-span-7 text-center lg:text-left">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6 leading-tight">
-                    Create & Explore <br class="hidden sm:inline" />
-                    <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Professional
-                        Colors</span>
+                    Find <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Color Names</span> & Generate <br class="hidden sm:inline" />Professional Palettes
                 </h1>
                 <p
                     class="text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-8 max-w-2xl mx-auto lg:mx-0">
-                    Color Magic is the ultimate open-source suite for designers,
-                    developers, and color enthusiasts. Generate harmonic palettes,
-                    search colors by hex codes, and copy curated palettes instantly.
+                    Instantly find any color's name from its hex code. Convert hex to RGB and HSL, generate harmonious palettes with color theory, and explore thousands of curated color schemes — all free and open-source.
                 </p>
                 <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
                     <a href="<?= $base ?>/palettes"
@@ -606,6 +602,102 @@
                 </div>
             </a>
         </div>
+
+        <!-- Popular Tools Section -->
+        <div class="mb-16 py-12 border-t border-slate-200 dark:border-slate-800">
+            <h2 class="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-white">Popular Color Tools</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a href="<?= $base ?>/find-color" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex Color Finder</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Enter any hex code and get its name, RGB, HSL and contrast info</p>
+                </a>
+                <a href="<?= $base ?>/hex-to-color-name" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex to Color Name</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Convert any hex code to a human-readable color name instantly</p>
+                </a>
+                <a href="<?= $base ?>/hex-to-rgb" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex to RGB Converter</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Fast, accurate hex to RGB and RGB to hex color conversion</p>
+                </a>
+                <a href="<?= $base ?>/what-color-is" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">What Color Is This Code?</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Identify any hex or RGB color code with our interactive tool</p>
+                </a>
+                <a href="<?= $base ?>/dark-color-finder" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Dark Color Name Finder</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Discover names for deep, dark shades and midnight tones</p>
+                </a>
+                <a href="<?= $base ?>/brand-color-lookup" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Brand Color Lookup</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Find hex codes and palettes from popular brand identities</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-white">Frequently Asked Questions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+                    <h3 class="font-bold text-base mb-2">What is a hex color code?</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">A hex color code is a 6-character combination of numbers and letters (0-9, A-F) preceded by a # symbol. It represents a specific color using the RGB model. For example, #FF5733 is a vibrant red-orange, where FF is the red channel, 57 is green, and 33 is blue.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+                    <h3 class="font-bold text-base mb-2">How do I find a color name from a hex code?</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Use our <a href="<?= $base ?>/find-color" class="text-primary hover:underline">Color Finder tool</a> — simply enter any hex code and instantly get its closest color name, along with RGB and HSL values. Our database includes over 1,000 named colors.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+                    <h3 class="font-bold text-base mb-2">What is a color palette generator?</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">A color palette generator creates harmonious color combinations using color theory rules like complementary, analogous, triadic, and split-complementary relationships. Try our <a href="<?= $base ?>/generate-palette" class="text-primary hover:underline">Palette Generator</a> to create professional schemes.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+                    <h3 class="font-bold text-base mb-2">How do I convert hex to RGB?</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Each pair of hex digits converts to a decimal value (0-255) for one RGB channel. For example, #3B82F6 becomes RGB(59, 130, 246). Use our <a href="<?= $base ?>/hex-to-rgb" class="text-primary hover:underline">Hex to RGB Converter</a> for instant, accurate conversions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Schema -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "What is a hex color code?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A hex color code is a 6-character combination of numbers and letters (0-9, A-F) preceded by a # symbol. It represents a specific color using the RGB model. For example, #FF5733 is a vibrant red-orange, where FF is the red channel, 57 is green, and 33 is blue."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How do I find a color name from a hex code?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Use our Color Finder tool — simply enter any hex code and instantly get its closest color name, along with RGB and HSL values. Our database includes over 1,000 named colors."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What is a color palette generator?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A color palette generator creates harmonious color combinations using color theory rules like complementary, analogous, triadic, and split-complementary relationships."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How do I convert hex to RGB?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Each pair of hex digits converts to a decimal value (0-255) for one RGB channel. For example, #3B82F6 becomes RGB(59, 130, 246)."
+                    }
+                }
+            ]
+        }
+        </script>
 
     </main>
 

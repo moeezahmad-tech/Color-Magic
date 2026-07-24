@@ -317,6 +317,20 @@
             </div>
 
             <!-- Footer -->
+
+        <!-- Need to identify a color? Callout -->
+        <div class="bg-gradient-to-r from-primary/5 via-pink-50 to-secondary/5 dark:from-primary/10 dark:via-slate-800 dark:to-secondary/10 rounded-2xl p-6 md:p-8 border border-pink-100 dark:border-slate-800 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <div class="flex-1">
+                    <h2 class="font-bold text-lg text-slate-800 dark:text-white mb-1">Need to identify a color?</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Enter any hex code to find its name, RGB, HSL values, and related palettes.</p>
+                </div>
+                <div class="flex gap-3 shrink-0">
+                    <a href="<?= $base ?>/find-color" class="px-5 py-2.5 bg-gradient-to-r from-secondary to-primary text-white font-bold rounded-xl text-sm hover:opacity-95 transition shadow-lg shadow-primary/20">Find Color</a>
+                    <a href="<?= $base ?>/hex-to-color-name" class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold rounded-xl text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition text-slate-700 dark:text-slate-200">Hex to Name</a>
+                </div>
+            </div>
+        </div>
     </main>
     
     <?php include '../components/footer.php'; ?>

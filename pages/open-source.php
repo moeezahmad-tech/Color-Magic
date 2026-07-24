@@ -582,6 +582,35 @@
             </div>
         </div>
 
+        <!-- Try Our Tools -->
+        <div class="mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                🧰 Try Our Tools
+            </h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <a href="<?= $base ?>/find-color" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                    <i class="bi bi-eyedropper text-2xl text-emerald-500 mb-3 block"></i>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Find Color</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Enter any hex code and get its name, RGB, HSL and more</p>
+                </a>
+                <a href="<?= $base ?>/hex-to-color-name" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                    <i class="bi bi-tag text-2xl text-violet-500 mb-3 block"></i>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex to Color Name</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Convert any hex code to a human-readable color name</p>
+                </a>
+                <a href="<?= $base ?>/palettes" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                    <i class="bi bi-palette text-2xl text-primary mb-3 block"></i>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Explore Palettes</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Browse 150+ curated color palettes</p>
+                </a>
+                <a href="<?= $base ?>/generate-palette" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                    <i class="bi bi-stars text-2xl text-secondary mb-3 block"></i>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Generate Palette</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Create color schemes using color theory</p>
+                </a>
+            </div>
+        </div>
+
     </main>
 
     <?php include '../components/footer.php'; ?>

@@ -397,57 +397,88 @@ $schema = [
             opacity: 1;
             transform: translateY(0);
         }
+
+        .sb-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+        }
+        .sb-btn .sb-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .sb-btn:hover .sb-icon { transform: scale(1.12); }
+        .sb-btn.sb-inactive { color: #475569; background: transparent; }
+        .sb-btn.sb-inactive:hover { background: #fdf2f8; color: #ec4899; }
+        .sb-btn.sb-inactive .sb-icon { background: #fdf2f8; color: #ec4899; }
+        .sb-btn.sb-active {
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            color: #fff;
+            box-shadow: 0 8px 24px -6px rgba(236, 72, 153, 0.45);
+        }
+        .sb-btn.sb-active .sb-icon { background: rgba(255, 255, 255, 0.18); color: #fff; }
+        .sb-btn.sb-active:hover { box-shadow: 0 12px 28px -6px rgba(124, 58, 237, 0.45); transform: translateY(-1px); }
+        .dark .sb-btn.sb-inactive { color: #94a3b8; }
+        .dark .sb-btn.sb-inactive:hover { background: #1e293b; color: #ec4899; }
+        .dark .sb-btn.sb-inactive .sb-icon { background: #1e293b; color: #ec4899; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <header
-        class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
-            <a href="<?php echo e($homePageUrl); ?>" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
-                <img src="<?php echo e($logoUrl); ?>" alt="Color Magic by TechKreative Logo" class="h-8 w-8 object-contain">
-                <h2 class="text-xl font-bold tracking-tight"><span class="text-slate-900">Color</span> <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span></h2>
+    <?php include '../components/navbar.php'; ?>
+    <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
+    <div id="mobileMenuOverlay"
+        class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
+        <div class="flex items-center justify-between mb-6">
+            <a href="<?php echo e($homePageUrl); ?>" class="flex items-center gap-2 text-primary">
+                <img src="<?php echo e($logoUrl); ?>" alt="Color Magic Logo" class="h-8 w-8 object-contain" />
+                <span class="text-xl font-bold tracking-tight"><span
+                        class="text-slate-900 dark:text-white">Color</span><span
+                        class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span></span>
             </a>
-
-            <div class="flex items-center gap-3">
-                <a href="<?php echo e($homePageUrl); ?>"
-                    class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                    <i class="bi bi-house-door" aria-label="Home icon"></i>
-                    <span>Home</span>
-                </a>
-                <div class="relative group">
-                    <button class="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary transition-colors focus:outline-none">
-                        <span>Tools</span>
-                        <i class="bi bi-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
-                    </button>
-                    <!-- Dropdown Menu sliding down -->
-                    <div class="absolute top-full right-0 mt-1 w-56 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50 p-2 text-left">
-                        <a href="<?php echo e($assetBase); ?>/palettes" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
-                            <i class="bi bi-palette text-base text-primary"></i>
-                            <span>Explore Palettes</span>
-                        </a>
-                        <a href="<?php echo e($assetBase); ?>/generate-palette" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
-                            <i class="bi bi-stars text-base text-secondary"></i>
-                            <span>Generate Palette</span>
-                        </a>
-                        <a href="<?php echo e($assetBase); ?>/find-color" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-500 transition-colors">
-                            <i class="bi bi-eyedropper text-base text-emerald-500"></i>
-                            <span>Find Color</span>
-                        </a>
-                        <a href="<?php echo e($openSourceUrl); ?>" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-slate-600 transition-colors">
-                            <i class="bi bi-github text-base text-slate-500"></i>
-                            <span>Open Source</span>
-                        </a>
-                    </div>
-                </div>
-                <a href="<?php echo e($openSourceUrl); ?>"
-                    class="hidden lg:flex items-center gap-2 px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-all hover:scale-105 active:scale-95 group"
-                    title="View on GitHub">
-                    <i class="bi bi-github text-xl group-hover:rotate-12 transition-transform" aria-label="GitHub icon"></i>
-                    <span class="text-xs font-semibold">Open Source</span>
-                </a>
-            </div>
+            <button id="closeMobileMenuBtn"
+                class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                aria-label="Close menu">
+                <i class="bi bi-x-lg text-2xl"></i>
+            </button>
         </div>
-    </header>
+        <div class="space-y-2">
+            <a href="<?php echo e($homePageUrl); ?>" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+                <div><span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span></div>
+            </a>
+            <a href="<?php echo e($assetBase); ?>/palettes" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-palette"></i></span>
+                <div><span class="block font-bold">Explore Palettes</span><span class="text-xs opacity-60">Browse collections</span></div>
+            </a>
+            <a href="<?php echo e($assetBase); ?>/gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-rainbow"></i></span>
+                <div><span class="block font-bold">Gradients</span><span class="text-xs opacity-60">Browse CSS gradients</span></div>
+            </a>
+            <a href="<?php echo e($assetBase); ?>/find-color" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-eyedropper"></i></span>
+                <div><span class="block font-bold">Find Color</span><span class="text-xs opacity-60">Hex to name &amp; info</span></div>
+            </a>
+            <a href="<?php echo e($assetBase); ?>/generate-palette" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-stars"></i></span>
+                <div><span class="block font-bold">Generate Palette</span><span class="text-xs opacity-60">Create color schemes</span></div>
+            </a>
+            <a href="<?php echo e($assetBase); ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-heart-fill"></i></span>
+                <div><span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors, palettes &amp; gradients</span></div>
+            </a>
+            <div class="border-t border-slate-200 dark:border-slate-700 my-2"></div>
+            <a href="<?php echo e($openSourceUrl); ?>" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-github"></i></span>
+                <div><span class="block font-bold">Open Source</span><span class="text-xs opacity-60">View on GitHub</span></div>
+            </a>
+        </div>
+    </div>
 
     <main class="w-full max-w-7xl mx-auto pt-24 px-6 py-8 md:py-10">
         <div class="mb-6">
@@ -675,6 +706,34 @@ $schema = [
 
         </section>
 
+        <!-- Related Tools -->
+        <section class="mt-8 md:mt-12 mb-8" aria-labelledby="related-tools-title">
+            <h2 id="related-tools-title" class="text-xl md:text-2xl font-bold tracking-tight mb-4">Related Color Tools</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <a href="<?php echo e($assetBase); ?>/hex-to-rgb" class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
+                    <i class="bi bi-sliders text-secondary text-lg"></i>
+                    <div>
+                        <p class="font-bold text-sm">Hex to RGB Converter</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Convert this color to RGB instantly</p>
+                    </div>
+                </a>
+                <a href="<?php echo e($assetBase); ?>/find-color" class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
+                    <i class="bi bi-eyedropper text-emerald-500 text-lg"></i>
+                    <div>
+                        <p class="font-bold text-sm">Find Color</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Look up any hex code details</p>
+                    </div>
+                </a>
+                <a href="<?php echo e($assetBase); ?>/generate-palette" class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
+                    <i class="bi bi-stars text-pink-500 text-lg"></i>
+                    <div>
+                        <p class="font-bold text-sm">Generate Palette</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Create schemes from this color</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
 
 
     </main>
@@ -787,6 +846,18 @@ $schema = [
                 return;
             }
         });
+    </script>
+    <script>
+        // Mobile menu toggle
+        (function() {
+            const openBtn = document.getElementById('mobileMenuBtn');
+            const closeBtn = document.getElementById('closeMobileMenuBtn');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            if (openBtn && closeBtn && overlay) {
+                openBtn.addEventListener('click', function() { overlay.style.display = 'flex'; });
+                closeBtn.addEventListener('click', function() { overlay.style.display = 'none'; });
+            }
+        })();
     </script>
 </body>
 </html>

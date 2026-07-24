@@ -26,7 +26,9 @@
                     </button>
                     <!-- Dropdown Menu sliding down -->
                     <div
-                        class="absolute top-full right-0 mt-0 w-56 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50 p-2 text-left">
+                        class="absolute top-full right-0 mt-0 w-64 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50 p-2 text-left">
+                        <!-- Section: Explore -->
+                        <p class="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Explore</p>
                         <a href="<?= $base ?>/palettes"
                             class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
                             <i class="bi bi-palette text-base text-primary"></i>
@@ -37,6 +39,9 @@
                             <i class="bi bi-rainbow text-base text-amber-500"></i>
                             <span>Gradients</span>
                         </a>
+                        <!-- Section: Create -->
+                        <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+                        <p class="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Create</p>
                         <a href="<?= $base ?>/generate-palette"
                             class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
                             <i class="bi bi-stars text-base text-secondary"></i>
@@ -47,6 +52,36 @@
                             <i class="bi bi-eyedropper text-base text-emerald-500"></i>
                             <span>Find Color</span>
                         </a>
+                        <!-- Section: Converters -->
+                        <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+                        <p class="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Converters</p>
+                        <a href="<?= $base ?>/hex-to-color-name"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-violet-500 transition-colors">
+                            <i class="bi bi-tag text-base text-violet-500"></i>
+                            <span>Hex to Color Name</span>
+                        </a>
+                        <a href="<?= $base ?>/hex-to-rgb"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-secondary transition-colors">
+                            <i class="bi bi-sliders text-base text-secondary"></i>
+                            <span>Hex to RGB</span>
+                        </a>
+                        <a href="<?= $base ?>/what-color-is"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-amber-500 transition-colors">
+                            <i class="bi bi-question-circle text-base text-amber-500"></i>
+                            <span>What Color Is This?</span>
+                        </a>
+                        <a href="<?= $base ?>/dark-color-finder"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-indigo-500 transition-colors">
+                            <i class="bi bi-moon-stars text-base text-indigo-500"></i>
+                            <span>Dark Color Finder</span>
+                        </a>
+                        <a href="<?= $base ?>/brand-color-lookup"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-500 transition-colors">
+                            <i class="bi bi-bookmark-star text-base text-emerald-500"></i>
+                            <span>Brand Colors</span>
+                        </a>
+                        <!-- Section: Other -->
+                        <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
                         <a href="<?= $base ?>/favorites"
                             class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-500 transition-colors">
                             <i class="bi bi-heart-fill text-base text-red-500"></i>
