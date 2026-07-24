@@ -34,7 +34,7 @@
         <!-- Bottom Bar -->
         <div class="border-t border-slate-200 dark:border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-slate-600 dark:text-slate-400 text-sm">
-                A product of
+                 Powered by
                 <a href="https://techkreative.com" target="_blank" rel="noopener noreferrer"
                     class="text-primary hover:underline font-semibold">TechKreative</a>
             </p>

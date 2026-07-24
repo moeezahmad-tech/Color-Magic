@@ -21,14 +21,11 @@
     const contrastCardA = document.getElementById('contrastCardA');
     const contrastCardB = document.getElementById('contrastCardB');
     const darkColorParagraph = document.getElementById('darkColorParagraph');
-    const paletteSwatches = document.getElementById('paletteSwatches');
     const colorInfoGrid = document.getElementById('colorInfoGrid');
     const brightnessChart = document.getElementById('brightnessChart');
     const paletteIdText = document.getElementById('paletteIdText');
     const copyAllBtn = document.getElementById('copyAllBtn');
     const copyCssVarsBtn = document.getElementById('copyCssVarsBtn');
-    const exportPreview = document.getElementById('exportPreview');
-    const exportCode = document.getElementById('exportCode');
 
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -103,10 +100,6 @@
         paletteIdText.textContent = `slug: ${paletteSlug}`;
     }
 
-    // Get export elements
-    const exportPreviewEl = document.getElementById('exportPreview');
-    const copyExportBtn = document.getElementById('copyExportBtn');
-    const exportBtns = document.querySelectorAll('.export-btn');
 
     if (!paletteSlug) {
         paletteError?.classList.remove('hidden');
@@ -214,34 +207,45 @@
         darkColorParagraph.style.color = firstColor;
         darkColorParagraph.textContent = `${palette.name} starts with ${firstColor} as the anchor tone, giving the palette a strong visual base. As the colors progress to ${lastColor}, the composition opens into brighter accents that are great for UI highlights, typography emphasis, and layered backgrounds. This progression creates a clear rhythm that helps designs feel intentional instead of random.`;
 
-        paletteSwatches.innerHTML = colorList.map((color) => `
-            <a href="${fetchBase}color/${color.replace('#', '')}" target="_blank" rel="noopener"
-                    class="group rounded-xl p-4 text-left bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all block"
-                    title="Open ${color} details">
-                <span class="block w-full h-20 rounded-lg mb-3" style="background-color:${color}"></span>
-                <span class="font-mono text-sm font-bold">${color}</span>
-                <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-                    <i class="bi bi-box-arrow-up-right"></i>Open
-                </span>
-            </a>
-        `).join('');
-
         // Color Information Grid
-        colorInfoGrid.innerHTML = colorList.map((color, index) => {
+        const colorRoute = fetchBase + 'color/';
+        colorInfoGrid.innerHTML = colorList.map((color) => {
             const rgb = hexToRgb(color);
             const hsl = hexToHsl(color);
-            const lum = getLuminance(color);
-            const brightness = lum > 0.5 ? 'Light' : 'Dark';
+            const lum = Math.round(getLuminance(color) * 100);
+            const bareHex = color.replace('#', '');
             return `
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="w-8 h-8 rounded-lg" style="background:${color}"></span>
-                        <span class="font-bold text-sm">${color}</span>
-                    </div>
-                    <div class="space-y-1 text-xs">
-                        <p><span class="text-slate-500 dark:text-slate-400">RGB:</span> ${rgb.r}, ${rgb.g}, ${rgb.b}</p>
-                        <p><span class="text-slate-500 dark:text-slate-400">HSL:</span> ${hsl.h}°, ${hsl.s}%, ${hsl.l}%</p>
-                        <p><span class="text-slate-500 dark:text-slate-400">Brightness:</span> ${brightness}</p>
+                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden flex flex-col">
+                    <div class="h-16 w-full" style="background:${color}"></div>
+                    <div class="p-4 flex flex-col gap-3 flex-1">
+                        <div class="flex items-center justify-between">
+                            <p class="font-mono font-bold text-base">${color}</p>
+                            <a href="${colorRoute}${bareHex}/" class="p-1.5 rounded-lg text-slate-400 hover:text-secondary hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="View ${color} details">
+                                <i class="bi bi-box-arrow-up-right text-sm"></i>
+                            </a>
+                        </div>
+                        <div class="space-y-1.5 text-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-400 text-xs uppercase tracking-wider">RGB</span>
+                                <span class="font-mono text-xs font-semibold">${rgb.r}, ${rgb.g}, ${rgb.b}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-400 text-xs uppercase tracking-wider">HSL</span>
+                                <span class="font-mono text-xs font-semibold">${hsl.h}°, ${hsl.s}%, ${hsl.l}%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-400 text-xs uppercase tracking-wider">Brightness</span>
+                                <span class="font-mono text-xs font-semibold">${lum}%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-auto pt-1">
+                            <button class="copy-color-hex-btn flex-1 px-3 py-2 bg-white dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all border border-slate-200 dark:border-slate-600 flex items-center justify-center gap-1.5" data-hex="${color}">
+                                <i class="bi bi-clipboard text-xs"></i> HEX
+                            </button>
+                            <button class="copy-color-rgb-btn flex-1 px-3 py-2 bg-white dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all border border-slate-200 dark:border-slate-600 flex items-center justify-center gap-1.5" data-rgb="rgb(${rgb.r}, ${rgb.g}, ${rgb.b})">
+                                <i class="bi bi-clipboard text-xs"></i> RGB
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -273,53 +277,64 @@
             await copyText(color, btn, 'Copied', 'Failed', resetText);
         });
 
-        // Export Format Handlers
+        // Copy color HEX / RGB buttons in color info grid
+        colorInfoGrid.addEventListener('click', async (event) => {
+            const hexBtn = event.target.closest('.copy-color-hex-btn');
+            if (hexBtn) {
+                const origHTML = hexBtn.innerHTML;
+                await copyText(hexBtn.dataset.hex, hexBtn, '<i class="bi bi-check-circle text-xs"></i> HEX', '<i class="bi bi-x-circle text-xs"></i> HEX', origHTML);
+                return;
+            }
+            const rgbBtn = event.target.closest('.copy-color-rgb-btn');
+            if (rgbBtn) {
+                const origHTML = rgbBtn.innerHTML;
+                await copyText(rgbBtn.dataset.rgb, rgbBtn, '<i class="bi bi-check-circle text-xs"></i> RGB', '<i class="bi bi-x-circle text-xs"></i> RGB', origHTML);
+            }
+        });
+
+        // --- Export Format Data ---
         const hexArrayFormat = `[\n  ${colorList.map(c => `'${c}'`).join(',\n  ')}\n]`;
+        const cssVarsFullFormat = `:root {\n${colorList.map((c, i) => `  --palette-color-${i + 1}: ${c};`).join('\n')}\n}`;
         const jsonFormat = JSON.stringify({ name: palette.name, colors: colorList, style: palette.style }, null, 2);
         const scssFormat = colorList.map((c, i) => `$palette-${i + 1}: ${c};`).join('\n');
         const tailwindFormat = `colors: {\n  ${colorList.map((c, i) => `palette-${i + 1}: '${c}'`).join(',\n  ')}\n}`;
+        const rgbArrayFormat = `[\n${colorList.map(c => {
+            const rgb = hexToRgb(c);
+            return `  rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+        }).join(',\n')}\n]`;
+        const hslArrayFormat = `[\n${colorList.map(c => {
+            const hsl = hexToHsl(c);
+            return `  hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        }).join(',\n')}\n]`;
+        const androidFormat = `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n${colorList.map((c, i) => `  <color name="palette_${i + 1}">${c}</color>`).join('\n')}\n</resources>`;
+        const swiftFormat = `import UIKit\n\nextension UIColor {\n${colorList.map((c, i) => {
+            const rgb = hexToRgb(c);
+            return `    static let palette${i + 1} = UIColor(red: ${(rgb.r / 255).toFixed(3)}, green: ${(rgb.g / 255).toFixed(3)}, blue: ${(rgb.b / 255).toFixed(3)}, alpha: 1.0)`;
+        }).join('\n')}\n}`;
 
-        const exportFormats = {
-            hex: hexArrayFormat,
-            json: jsonFormat,
-            scss: scssFormat,
-            tailwind: tailwindFormat
-        };
+        // Populate each export section's code block
+        const exportSections = [
+            { codeEl: 'hexArrayCode', copyBtnId: 'copyHexArrayBtn', data: hexArrayFormat },
+            { codeEl: 'cssVarsCode',  copyBtnId: 'copyCssVarsExportBtn', data: cssVarsFullFormat },
+            { codeEl: 'jsonCode',     copyBtnId: 'copyJsonBtn', data: jsonFormat },
+            { codeEl: 'scssCode',     copyBtnId: 'copyScssBtn', data: scssFormat },
+            { codeEl: 'tailwindCode', copyBtnId: 'copyTailwindBtn', data: tailwindFormat },
+            { codeEl: 'rgbArrayCode', copyBtnId: 'copyRgbArrayBtn', data: rgbArrayFormat },
+            { codeEl: 'hslArrayCode', copyBtnId: 'copyHslArrayBtn', data: hslArrayFormat },
+            { codeEl: 'androidCode',  copyBtnId: 'copyAndroidBtn', data: androidFormat },
+            { codeEl: 'swiftCode',    copyBtnId: 'copySwiftBtn', data: swiftFormat }
+        ];
 
-        let currentFormat = 'hex';
+        const copyIconHTML = '<i class="bi bi-clipboard me-1"></i>Copy';
 
-        function updateExportDisplay(format) {
-            currentFormat = format;
-            exportCode.textContent = exportFormats[format];
-            exportPreviewEl.classList.remove('hidden');
-            copyExportBtn.classList.remove('hidden');
-
-            // Update button styles
-            exportBtns.forEach(btn => {
-                if (btn.dataset.format === format) {
-                    btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'hover:bg-primary', 'hover:text-white');
-                    btn.classList.add('bg-primary', 'text-white');
-                } else {
-                    btn.classList.remove('bg-primary', 'text-white');
-                    btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'hover:bg-primary', 'hover:text-white');
-                }
-            });
-        }
-
-        exportBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const format = btn.dataset.format;
-                updateExportDisplay(format);
+        exportSections.forEach(({ codeEl, copyBtnId, data }) => {
+            const codeBlock = document.getElementById(codeEl);
+            const btn = document.getElementById(copyBtnId);
+            if (codeBlock) codeBlock.textContent = data;
+            btn?.addEventListener('click', async () => {
+                await copyText(data, btn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', copyIconHTML);
             });
         });
-
-        copyExportBtn?.addEventListener('click', async () => {
-            const code = exportFormats[currentFormat];
-            await copyText(code, copyExportBtn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', '<i class="bi bi-clipboard me-1"></i>Copy Code');
-        });
-
-        // Show first export format by default
-        updateExportDisplay('hex');
 
         copyAllBtn?.addEventListener('click', async () => {
             const resetText = '<i class="bi bi-clipboard me-1"></i>Copy All Colors';

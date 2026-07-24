@@ -23,6 +23,16 @@
 
     var PAGE_SIZE = 30;
 
+    // Fisher-Yates shuffle
+    function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+    }
+
     // ─── DOM References ───────────────────────────────────────────────────────
 
     var gradientGrid         = document.getElementById('gradientGrid');
@@ -39,10 +49,12 @@
         card.className =
             'gradient-card bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
 
-        // Preview area
-        var preview = document.createElement('div');
-        preview.className = 'gradient-preview h-44 w-full rounded-t-2xl relative';
-        preview.style.background = g.css;
+        // Preview area — wraps in link to detail page
+        var previewLink = document.createElement('a');
+        previewLink.href = (document.querySelector('base') ? '' : '/') + 'gradient/' + g.id + '/';
+        previewLink.className = 'gradient-preview h-44 w-full rounded-t-2xl relative block';
+        previewLink.style.background = g.css;
+        previewLink.setAttribute('aria-label', 'View ' + g.name + ' gradient details');
 
         // Copy CSS overlay button
         var copyBtn = document.createElement('button');
@@ -52,9 +64,9 @@
         copyBtn.innerHTML =
             '<i class="bi bi-clipboard text-sm"></i>'
             + '<span>Copy CSS</span>';
-        preview.appendChild(copyBtn);
+        previewLink.appendChild(copyBtn);
 
-        card.appendChild(preview);
+        card.appendChild(previewLink);
 
         // Info body
         var body = document.createElement('div');
@@ -84,6 +96,14 @@
             '<i class="bi bi-' + typeIcon + ' text-[9px]"></i>'
             + g.type;
 
+        var gradientBase = (document.querySelector('base') ? '' : '/') + 'gradient/';
+        var viewBtn = document.createElement('a');
+        viewBtn.href = gradientBase + g.id + '/';
+        viewBtn.className = 'p-1 rounded-md text-slate-400 hover:text-secondary transition-colors';
+        viewBtn.title = 'View ' + g.name + ' details';
+        viewBtn.setAttribute('aria-label', 'Open ' + g.name + ' gradient details');
+        viewBtn.innerHTML = '<i class="bi bi-box-arrow-up-right text-base"></i>';
+
         var isFav = window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
         var favBtn = document.createElement('button');
         favBtn.className = 'gradient-fav-btn border-none bg-transparent p-1 rounded-md transition-colors ' + (isFav ? 'text-red-500' : 'text-slate-400 hover:text-red-500');
@@ -92,6 +112,7 @@
         favBtn.innerHTML = '<i class="bi ' + (isFav ? 'bi-heart-fill' : 'bi-heart') + ' text-base"></i>';
 
         headerRight.appendChild(typeBadge);
+        headerRight.appendChild(viewBtn);
         headerRight.appendChild(favBtn);
         header.appendChild(name);
         header.appendChild(headerRight);
@@ -270,7 +291,7 @@
         App.styles.forEach(function (style) {
             var btn = document.createElement('button');
             btn.className =
-                'style-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700';
+                'style-filter flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-semibold transition-all border border-slate-200 dark:border-slate-700';
             btn.dataset.style = style.toLowerCase();
             var icon = styleIcons[style] || 'bi-tag-fill';
             btn.innerHTML = '<i class="bi ' + icon + '"></i> ' + style;
@@ -282,14 +303,38 @@
             var btn = e.target.closest('.style-filter');
             if (!btn) return;
             document.querySelectorAll('.style-filter').forEach(function (b) {
-                b.classList.remove('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
-                b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
+                b.classList.remove('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-md', 'shadow-primary/20', 'font-bold', 'border-transparent');
+                b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-semibold', 'border-slate-200', 'dark:border-slate-700');
             });
-            btn.classList.add('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
-            btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
+            btn.classList.add('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-md', 'shadow-primary/20', 'font-bold', 'border-transparent');
+            btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-semibold', 'border-slate-200', 'dark:border-slate-700');
             App.styleFilter = btn.dataset.style;
+
+            // Show/clear clear-filter button
+            var clearBtn = document.getElementById('clearStyleBtn');
+            if (clearBtn) clearBtn.classList.toggle('hidden', App.styleFilter === 'all');
+
             applyFiltersAndRender();
         });
+
+        // Clear style filter button
+        var clearStyleBtn = document.getElementById('clearStyleBtn');
+        if (clearStyleBtn) {
+            clearStyleBtn.addEventListener('click', function () {
+                document.querySelectorAll('.style-filter').forEach(function (b) {
+                    b.classList.remove('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-md', 'shadow-primary/20', 'font-bold', 'border-transparent');
+                    b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-semibold', 'border-slate-200', 'dark:border-slate-700');
+                });
+                var allBtn = document.querySelector('.style-filter[data-style="all"]');
+                if (allBtn) {
+                    allBtn.classList.add('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-md', 'shadow-primary/20', 'font-bold', 'border-transparent');
+                    allBtn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-semibold', 'border-slate-200', 'dark:border-slate-700');
+                }
+                App.styleFilter = 'all';
+                clearStyleBtn.classList.add('hidden');
+                applyFiltersAndRender();
+            });
+        }
     }
 
     // ─── Data Fetching ────────────────────────────────────────────────────────
@@ -299,14 +344,14 @@
         App.loading = true;
         showLoadingState();
 
-        fetch('data/gradients.json')
+        fetch('data/gradients.json?t=' + Date.now())
             .then(function (response) {
                 if (!response.ok) throw new Error('Failed to fetch gradients (Status: ' + response.status + ')');
                 return response.json();
             })
             .then(function (data) {
                 if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid gradient data format');
-                App.gradients = data;
+                App.gradients = shuffle(data);
 
                 // Extract unique styles (preserve order from JSON)
                 var seen = {};
@@ -343,11 +388,11 @@
     document.querySelectorAll('.type-filter').forEach(function (btn) {
         btn.addEventListener('click', function () {
             document.querySelectorAll('.type-filter').forEach(function (b) {
-                b.classList.remove('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
-                b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
+                b.classList.remove('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-md', 'shadow-primary/20', 'font-bold', 'border-transparent');
+                b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-semibold', 'border-slate-200', 'dark:border-slate-700');
             });
-            this.classList.add('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-lg', 'shadow-primary/20', 'font-bold');
-            this.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
+            this.classList.add('bg-primary', 'hover:bg-primary/90', 'text-white', 'shadow-md', 'shadow-primary/20', 'font-bold', 'border-transparent');
+            this.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-semibold', 'border-slate-200', 'dark:border-slate-700');
             App.typeFilter = this.dataset.type;
             applyFiltersAndRender();
         });
@@ -375,9 +420,11 @@
                 return;
             }
 
-            // Copy gradient CSS
+            // Copy gradient CSS — stop propagation to prevent navigating to detail page
             var copyBtn = e.target.closest('.copy-css-btn');
             if (copyBtn) {
+                e.preventDefault();
+                e.stopPropagation();
                 var css    = copyBtn.dataset.css;
                 var icon   = copyBtn.querySelector('i');
                 var label  = copyBtn.querySelector('span');

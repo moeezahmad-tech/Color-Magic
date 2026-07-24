@@ -285,4 +285,4 @@ Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ---
 
-A Product of  [TechKreative](https://techkreative.com)
+ Powered by  [TechKreative](https://techkreative.com)

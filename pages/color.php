@@ -736,6 +736,20 @@ $schema = [
 
         </section>
 
+        <!-- Related Gradients -->
+        <section class="mt-8 md:mt-12" aria-labelledby="related-gradients-title">
+            <h2 id="related-gradients-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-2">
+                Related Gradients
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                CSS gradients that contain or closely match <?php echo e($hexWithHash); ?>.
+            </p>
+            <div id="relatedGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+            <div id="relatedGradientsEmpty" class="hidden rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
+                No gradients found matching this color.
+            </div>
+        </section>
+
         <!-- Related Tools -->
         <section class="mt-8 md:mt-12 mb-8" aria-labelledby="related-tools-title">
             <h2 id="related-tools-title" class="text-xl md:text-2xl font-bold tracking-tight mb-4">Related Color Tools</h2>
@@ -876,6 +890,84 @@ $schema = [
                 return;
             }
         });
+    </script>
+    <script>
+        // ── Related Gradients ──────────────────────────────────────────────
+        (function () {
+            var currentHex = '<?php echo strtolower($normalizedHex); ?>';
+            var grid = document.getElementById('relatedGradientsGrid');
+            var emptyEl = document.getElementById('relatedGradientsEmpty');
+            var gradientBase = '<?php echo e($assetBase); ?>/gradient/';
+
+            if (!grid) return;
+
+            fetch('<?php echo e($assetBase); ?>/data/gradients.json?t=' + Date.now())
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    var exact = [];
+                    var near = [];
+
+                    data.forEach(function (g) {
+                        var hasExact = false;
+                        var minDist = Infinity;
+
+                        g.colors.forEach(function (c) {
+                            var gHex = c.replace('#', '').toLowerCase();
+                            if (gHex === currentHex) {
+                                hasExact = true;
+                            } else {
+                                var d = colorDist(currentHex, gHex);
+                                if (d < minDist) minDist = d;
+                            }
+                        });
+
+                        if (hasExact) {
+                            exact.push(g);
+                        } else if (minDist < 15000) {
+                            g._dist = minDist;
+                            near.push(g);
+                        }
+                    });
+
+                    near.sort(function (a, b) { return a._dist - b._dist; });
+
+                    var results = exact.concat(near).slice(0, 9);
+
+                    if (results.length === 0) {
+                        grid.classList.add('hidden');
+                        if (emptyEl) emptyEl.classList.remove('hidden');
+                        return;
+                    }
+
+                    results.forEach(function (g) {
+                        var angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.type === 'mesh' ? 'mesh' : (g.shape || g.type));
+                        var card = document.createElement('a');
+                        card.href = gradientBase + g.id + '/';
+                        card.className = 'group bg-white dark:bg-slate-900 rounded-xl overflow-hidden hover:shadow-lg transition-all border border-slate-200 dark:border-slate-800';
+                        card.innerHTML =
+                            '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
+                            + '<div class="p-3">'
+                            + '<p class="font-bold text-sm">' + g.name + '</p>'
+                            + '<p class="text-xs text-slate-400 mt-0.5">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
+                            + '<div class="flex gap-1 mt-2 h-3 rounded overflow-hidden">'
+                            + g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
+                            + '</div>'
+                            + '</div>';
+                        grid.appendChild(card);
+                    });
+                })
+                .catch(function () {
+                    grid.classList.add('hidden');
+                    if (emptyEl) emptyEl.classList.remove('hidden');
+                });
+
+            function colorDist(a, b) {
+                var ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);
+                var br = parseInt(b.substring(0, 2), 16), bg = parseInt(b.substring(2, 4), 16), bb = parseInt(b.substring(4, 6), 16);
+                var dr = ar - br, dg = ag - bg, db = ab - bb;
+                return dr * dr + dg * dg + db * db;
+            }
+        })();
     </script>
     <script>
         // Mobile menu toggle
