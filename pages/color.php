@@ -434,6 +434,36 @@ $schema = [
         .dark .sb-btn.sb-inactive .sb-icon { background: #1e293b; color: #ec4899; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
+
+        /* ── Swatch hover styles (shared with Explore Palettes) ── */
+        .swatch {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .swatch-hex {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .swatch:hover .swatch-hex {
+            opacity: 1;
+        }
+        @keyframes swatchBtnIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+        .swatch-icon-btn {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+        .swatch:hover .swatch-icon-btn { animation: swatchBtnIn 0.18s ease forwards; }
+        .swatch:hover .swatch-btn-1    { animation-delay: 0s;    }
+        .swatch:hover .swatch-btn-2    { animation-delay: 0.06s; }
+        .swatch:hover .swatch-btn-3    { animation-delay: 0.12s; }
+        .swatch-hex.copied-state {
+            opacity: 1 !important;
+            background: rgba(34, 197, 94, 0.9) !important;
+            color: white !important;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
