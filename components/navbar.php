@@ -47,6 +47,11 @@
                             <i class="bi bi-stars text-base text-secondary"></i>
                             <span>Generate Palette</span>
                         </a>
+                        <a href="<?= $base ?>/palette-from-image"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-fuchsia-500 transition-colors">
+                            <i class="bi bi-image text-base text-fuchsia-500"></i>
+                            <span>Palette from Image</span>
+                        </a>
                         <a href="<?= $base ?>/find-color"
                             class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-500 transition-colors">
                             <i class="bi bi-eyedropper text-base text-emerald-500"></i>
