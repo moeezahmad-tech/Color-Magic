@@ -110,7 +110,7 @@
         <!-- RGB → Hex Converter -->
         <div class="bg-white dark:bg-slate-900 p-5 md:p-7 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
             <h2 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="bi bi-arrow-left-circle text-secondary"></i> RGB to Hex</h2>
-            <div class="flex gap-3 flex-wrap items-start">
+            <div class="flex gap-3 flex-wrap items-end">
                 <div class="flex gap-2 flex-1 min-w-[220px]">
                     <div class="flex-1">
                         <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">R</label>
