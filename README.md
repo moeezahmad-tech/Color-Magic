@@ -38,6 +38,17 @@ Visit: [colormagic.techkreative.com](https://colormagic.techkreative.com)
 - Apply variations: Classic, Soft & Muted, Deep & Bold
 - All calculations done locally — no API required
 
+### Palette from Image (`/palette-from-image`)
+- Upload any photo to extract its dominant color palette
+- K-means++ clustering algorithm runs entirely in the browser — images never leave your device
+- Adjustable color count (3–12) with a real-time slider
+- Copy individual hex codes, open any color detail page, or copy the full palette at once
+- Full RGB and HSL values for every extracted color
+
+### Saved Palettes (`/palettes?filter=favorites`)
+- Favorites are stored in the browser via `localStorage`
+- Access from the home page card or the mobile sidebar
+
 ### Color Detail Pages
 - **Hex route** (`/color/{hex}`) — e.g. `/color/FF5733` — shows full color info
 - **Slug route** (`/color/{name}`) — e.g. `/color/midnight-blue` — named color lookup
@@ -45,10 +56,6 @@ Visit: [colormagic.techkreative.com](https://colormagic.techkreative.com)
 ### Palette Detail Page (`/palette/{slug}`)
 - Full palette view with contrast checks, brightness chart, and export formats
 - Export as HEX array, JSON, SCSS variables, or Tailwind config
-
-### Saved Palettes (`/palettes?filter=favorites`)
-- Favorites are stored in the browser via `localStorage`
-- Access from the home page card or the mobile sidebar
 
 ## Page Routes
 
@@ -62,6 +69,13 @@ All pages use **clean, extensionless URLs** enforced by `.htaccess`.
 | `/gradients` | `gradients.php` | Browse CSS gradients |
 | `/find-color` | `find-color.php` | Hex-to-name color lookup |
 | `/generate-palette` | `generate-palette.php` | Color theory palette generator |
+| `/palette-from-image` | `palette-from-image.php` | Extract palette from uploaded image |
+| `/favorites` | `favorites.php` | Saved colors, palettes & gradients |
+| `/hex-to-color-name` | `hex-to-color-name.php` | Hex-to-color-name lookup tool |
+| `/hex-to-rgb` | `hex-to-rgb.php` | Hex-to-RGB converter |
+| `/what-color-is` | `what-color-is.php` | Color identification tool |
+| `/dark-color-finder` | `dark-color-finder.php` | Find dark shades of a color |
+| `/brand-color-lookup` | `brand-color-lookup.php` | Brand color reference |
 | `/color/{hex}` | `color.php?hex=` | Dynamic color detail (hex) |
 | `/color/{slug}` | `color.php?slug=` | Dynamic color detail (name) |
 | `/palette/{slug}` | `palette.php?slug=` | Palette detail page |
@@ -114,7 +128,9 @@ ColorMagic/
 ├── gradients.php                       ← CSS gradients browser
 ├── find-color.php                      ← Hex-to-name color finder
 ├── generate-palette.php                ← Color theory palette generator
-├── open-source.php                     ← GitHub & contributors
+├── palette-from-image.php                ← Image-to-palette extractor
+├── favorites.php                         ← Saved favorites page
+├── open-source.php                       ← GitHub & contributors
 │
 ├── color.php                           ← Dynamic color detail (hex & slug)
 ├── palette.php                         ← Palette detail page (slug)
@@ -138,6 +154,8 @@ ColorMagic/
 │   │   ├── find-color-page.js          ← Find Color page logic
 │   │   ├── generate-palette.js         ← Color theory math engine
 │   │   ├── generate-palette-page.js    ← Generate Palette page controller
+│   │   ├── palette-from-image.js         ← Image palette extraction engine
+│   │   ├── favorites-page.js            ← Favorites page controller
 │   │   ├── palette-page.js             ← Palette detail page controller
 │   │   ├── components/
 │   │   │   └── palette-card.js         ← Reusable palette card component

@@ -48,4 +48,34 @@
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
    </url>
+   <url>
+      <loc>https://colormagic.techkreative.com/palettes</loc>
+      <lastmod>2026-07-24</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.9</priority>
+   </url>
+   <url>
+      <loc>https://colormagic.techkreative.com/gradients</loc>
+      <lastmod>2026-07-24</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.9</priority>
+   </url>
+   <url>
+      <loc>https://colormagic.techkreative.com/generate-palette</loc>
+      <lastmod>2026-07-24</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://colormagic.techkreative.com/palette-from-image</loc>
+      <lastmod>2026-07-24</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://colormagic.techkreative.com/favorites</loc>
+      <lastmod>2026-07-24</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+   </url>
 </urlset>
