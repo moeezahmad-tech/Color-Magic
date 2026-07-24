@@ -601,6 +601,92 @@
                     <span class="flex items-center gap-1"><i class="bi bi-heart-fill text-red-400"></i> Your collection</span>
                 </div>
             </a>
+
+            <!-- Card 7: Palette from Image -->
+            <a href="<?= $base ?>/palette-from-image"
+                class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
+                </div>
+                <div>
+                    <div
+                        class="w-12 h-12 bg-fuchsia-500/10 rounded-2xl flex items-center justify-center text-fuchsia-500 text-2xl mb-6">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <h3
+                        class="text-xl md:text-4xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-fuchsia-500 transition-colors">
+                        Palette from Image
+                    </h3>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6">
+                        Upload any photo and extract its dominant color palette instantly.
+                        All processing happens in your browser — your images never leave your device.
+                    </p>
+                </div>
+                <!-- Mini Visual Preview -->
+                <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    <span class="flex items-center gap-1"><i class="bi bi-upload text-fuchsia-400"></i> Upload &amp; extract</span>
+                </div>
+            </a>
+
+            <!-- Card 8: Hex to RGB -->
+            <a href="<?= $base ?>/hex-to-rgb"
+                class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
+                </div>
+                <div>
+                    <div
+                        class="w-12 h-12 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-500 text-2xl mb-6">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+                    <h3
+                        class="text-xl md:text-4xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-cyan-500 transition-colors">
+                        Hex to RGB
+                    </h3>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6">
+                        Convert hex color codes to RGB values and vice versa in real-time.
+                        Live color preview, conversion formula, and example table included.
+                    </p>
+                </div>
+                <!-- Mini Visual Preview -->
+                <div
+                    class="font-mono text-xs text-slate-400 dark:text-slate-600 flex justify-between items-center bg-slate-50 dark:bg-slate-800/40 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800/80">
+                    <span>#3B82F6</span>
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>59, 130, 246</span>
+                </div>
+            </a>
+
+            <!-- Card 9: Dark Color Finder -->
+            <a href="<?= $base ?>/dark-color-finder"
+                class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
+                </div>
+                <div>
+                    <div
+                        class="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-500 text-2xl mb-6">
+                        <i class="bi bi-moon-stars-fill"></i>
+                    </div>
+                    <h3
+                        class="text-xl md:text-4xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-indigo-500 transition-colors">
+                        Dark Color Finder
+                    </h3>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6">
+                        Discover names for deep, dark shades and midnight tones.
+                        Perfect for dark themes, backgrounds, and low-light design work.
+                    </p>
+                </div>
+                <!-- Mini Visual Preview -->
+                <div
+                    class="flex gap-1.5 h-6 rounded-lg overflow-hidden w-full border border-slate-100 dark:border-slate-800">
+                    <div class="flex-1 bg-slate-900"></div>
+                    <div class="flex-1 bg-indigo-900"></div>
+                    <div class="flex-1 bg-violet-900"></div>
+                    <div class="flex-1 bg-fuchsia-900"></div>
+                    <div class="flex-1 bg-rose-900"></div>
+                </div>
+            </a>
         </div>
 
         <!-- Popular Tools Section -->
@@ -608,28 +694,40 @@
             <h2 class="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-white">Popular Color Tools</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <a href="<?= $base ?>/find-color" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
-                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex Color Finder</h3>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">🔍 Hex Color Finder</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Enter any hex code and get its name, RGB, HSL and contrast info</p>
                 </a>
                 <a href="<?= $base ?>/hex-to-color-name" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
-                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex to Color Name</h3>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">🏷️ Hex to Color Name</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Convert any hex code to a human-readable color name instantly</p>
                 </a>
                 <a href="<?= $base ?>/hex-to-rgb" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
-                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex to RGB Converter</h3>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">🔄 Hex to RGB Converter</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Fast, accurate hex to RGB and RGB to hex color conversion</p>
                 </a>
+                <a href="<?= $base ?>/palette-from-image" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">🖼️ Palette from Image</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Upload any photo and extract its dominant colors instantly</p>
+                </a>
                 <a href="<?= $base ?>/what-color-is" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
-                    <h3 class="font-bold mb-1 group-hover:text-primary transition">What Color Is This Code?</h3>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">🎨 What Color Is This Code?</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Identify any hex or RGB color code with our interactive tool</p>
                 </a>
                 <a href="<?= $base ?>/dark-color-finder" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
-                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Dark Color Name Finder</h3>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">🌙 Dark Color Name Finder</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Discover names for deep, dark shades and midnight tones</p>
                 </a>
                 <a href="<?= $base ?>/brand-color-lookup" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
-                    <h3 class="font-bold mb-1 group-hover:text-primary transition">Brand Color Lookup</h3>
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">💼 Brand Color Lookup</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Find hex codes and palettes from popular brand identities</p>
+                </a>
+                <a href="<?= $base ?>/generate-palette" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">✨ Generate Palette</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Create harmonious color schemes using color theory rules</p>
+                </a>
+                <a href="<?= $base ?>/gradients" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                    <h3 class="font-bold mb-1 group-hover:text-primary transition">🌈 CSS Gradients</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Browse 100+ hand-crafted linear and radial CSS gradients</p>
                 </a>
             </div>
         </div>
