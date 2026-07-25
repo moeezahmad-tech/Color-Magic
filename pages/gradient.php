@@ -33,6 +33,43 @@
             transition: transform 0.4s ease;
         }
 
+        /* Swatch hover interactions (same as Explore Palettes) */
+        .swatch {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .swatch-hex {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .swatch:hover .swatch-hex {
+            opacity: 1;
+            display: block !important;
+        }
+
+        @keyframes swatchBtnIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        .swatch-icon-btn {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+
+        .swatch:hover .swatch-icon-btn { animation: swatchBtnIn 0.18s ease forwards; }
+        .swatch:hover .swatch-btn-1    { animation-delay: 0s;    }
+        .swatch:hover .swatch-btn-2    { animation-delay: 0.06s; }
+        .swatch:hover .swatch-btn-3    { animation-delay: 0.12s; }
+
+        .swatch-hex.copied-state {
+            opacity: 1 !important;
+            background: rgba(34, 197, 94, 0.9) !important;
+            color: white !important;
+            font-weight: 700;
+        }
+
         .gradient-hero:hover {
             transform: scale(1.02);
         }
@@ -85,7 +122,7 @@
         <section id="gradientDetail" class="hidden flex flex-col gap-8">
 
             <!-- Hero: Preview + Info -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 bg-white dark:bg-slate-900 rounded-3xl p-5 md:p-7 shadow-sm">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
                 <!-- Large gradient preview -->
                 <div id="heroGradientPreview"
                     class="gradient-hero h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30 relative cursor-pointer group">
@@ -125,6 +162,11 @@
                             class="px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
                             <i class="bi bi-clipboard"></i>
                             Copy CSS
+                        </button>
+                        <button id="downloadGradientPngBtn"
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="bi bi-download"></i>
+                            <span>Download PNG</span>
                         </button>
                         <button id="favGradientBtn"
                             class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
@@ -176,6 +218,15 @@
                 </p>
                 <div id="relatedGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
             </section>
+
+            <!-- Related Palettes -->
+            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                <h2 class="text-xl md:text-2xl font-bold mb-4">Related Palettes</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    Color palettes that share colors with this gradient
+                </p>
+                <div id="relatedPalettesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"></div>
+            </section>
         </section>
 
         <!-- Error state -->
@@ -194,7 +245,14 @@
 
     <?php include '../components/footer.php'; ?>
 
+    <script>
+        window.CM_COLOR_BASE   = '<?= $base ?>/color/';
+        window.CM_PALETTE_BASE = '<?= $base ?>/palette/';
+    </script>
+    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
     <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
+    <script src="<?= $base ?>/assets/js/image-export.js" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js" defer></script>
     <script src="<?= $base ?>/assets/js/gradient-page.js" defer></script>
 </body>
 

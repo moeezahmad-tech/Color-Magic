@@ -146,6 +146,26 @@
             font-weight: 700;
         }
 
+        /* Collapsible filter panel */
+        #filterPanel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.3s ease;
+            opacity: 0;
+        }
+        #filterPanel.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        /* Filter toggle active state */
+        .filter-toggle-active {
+            background: linear-gradient(135deg, #7c3aed, #ec4899) !important;
+            color: #fff !important;
+            border-color: transparent !important;
+            box-shadow: 0 4px 14px -4px rgba(124, 58, 237, 0.4);
+        }
+
         /* Mobile overlay */
         @keyframes fadeIn {
             from {
@@ -256,17 +276,29 @@
         <!-- Palette explorer card -->
         <div
             class="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
-            <!-- Search -->
-            <div class="relative group w-full mb-5">
-                <i
-                    class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-primary transition-colors"></i>
-                <input id="searchInput"
-                    class="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-11 pr-5 text-sm focus:border-primary focus:outline-none transition-all shadow-sm placeholder:text-slate-400"
-                    placeholder="Search hex, theme or color name…" type="text" aria-label="Search palettes" />
+            <!-- Search + Filter toggle row -->
+            <div class="flex items-center gap-3 mb-5">
+                <div class="relative group flex-1">
+                    <i
+                        class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-primary transition-colors"></i>
+                    <input id="searchInput"
+                        class="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-11 pr-5 text-sm focus:border-primary focus:outline-none transition-all shadow-sm placeholder:text-slate-400"
+                        placeholder="Search hex, theme or color name…" type="text" aria-label="Search palettes" />
+                </div>
+                <button id="filterToggleBtn"
+                    class="flex items-center gap-2 px-4 py-3 rounded-2xl border-none bg-slate-100 dark:bg-slate-800 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shrink-0"
+                    aria-expanded="false" aria-controls="filterPanel">
+                    <i class="bi bi-sliders text-base"></i>
+                    <span class="hidden sm:inline">Filters</span>
+                    <i class="bi bi-chevron-down text-xs transition-transform" id="filterChevron"></i>
+                </button>
             </div>
 
-            <!-- Filters -->
-            <div class="flex flex-wrap gap-2 mb-7" role="group" aria-label="Filter by theme">
+            <!-- Collapsible filter panel -->
+            <div id="filterPanel" class="px-1">
+                <div class="mb-2">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Style</p>
+                    <div class="flex flex-wrap gap-2 mb-5" role="group" aria-label="Filter by theme">
                 <button
                     class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20 border border-transparent"
                     data-theme="all">
@@ -302,6 +334,8 @@
                     data-theme="earthy">
                     <i class="bi bi-tree"></i> Earthy
                 </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Grid -->
@@ -339,6 +373,21 @@
         window.CM_ACTIVE_PAGE  = "explore";
         window.CM_COLOR_BASE   = 'color/';
         window.CM_PALETTE_BASE = 'palette/';
+
+        // Filter panel toggle
+        (function () {
+            var toggleBtn = document.getElementById('filterToggleBtn');
+            var panel     = document.getElementById('filterPanel');
+            var chevron   = document.getElementById('filterChevron');
+            if (!toggleBtn || !panel) return;
+
+            toggleBtn.addEventListener('click', function() {
+                var isOpen = panel.classList.toggle('open');
+                toggleBtn.setAttribute('aria-expanded', isOpen);
+                toggleBtn.classList.toggle('filter-toggle-active', isOpen);
+                if (chevron) chevron.style.transform = isOpen ? 'rotate(180deg)' : '';
+            });
+        })();
     </script>
     <script src="<?= $base ?>/assets/js/utils.js" defer></script>
     <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>

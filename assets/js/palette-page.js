@@ -346,6 +346,202 @@
             await copyText(cssVars, copyCssVarsBtn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', resetText);
         });
 
+        // Related Colors — derive complementary, analogous, triadic from palette colors
+        const relatedColorsGrid = document.getElementById('relatedColorsGrid');
+        if (relatedColorsGrid) {
+            function hslToHex(h, s, l) {
+                s /= 100; l /= 100;
+                const c = (1 - Math.abs(2 * l - 1)) * s;
+                const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+                const m = l - c / 2;
+                let r, g, b;
+                if (h < 60) { r=c; g=x; b=0; }
+                else if (h < 120) { r=x; g=c; b=0; }
+                else if (h < 180) { r=0; g=c; b=x; }
+                else if (h < 240) { r=0; g=x; b=c; }
+                else if (h < 300) { r=x; g=0; b=c; }
+                else { r=c; g=0; b=x; }
+                const toHex = v => { const hex = Math.round((v + m) * 255).toString(16); return hex.length === 1 ? '0' + hex : hex; };
+                return '#' + toHex(r) + toHex(g) + toHex(b);
+            }
+
+            const seen = {};
+            const relatedColors = [];
+            colorList.forEach(color => {
+                const hsl = hexToHsl(color);
+                const rules = [
+                    { label: 'Complementary', h: (hsl.h + 180) % 360 },
+                    { label: 'Analogous',     h: (hsl.h + 30) % 360 },
+                    { label: 'Analogous',     h: (hsl.h + 330) % 360 },
+                    { label: 'Triadic',       h: (hsl.h + 120) % 360 },
+                    { label: 'Triadic',       h: (hsl.h + 240) % 360 }
+                ];
+                rules.forEach(rule => {
+                    const hex = hslToHex(rule.h, hsl.s, hsl.l);
+                    if (!seen[hex]) { seen[hex] = true; relatedColors.push({ hex, label: rule.label }); }
+                });
+            });
+
+            const colorRoute = fetchBase + 'color/';
+            relatedColors.slice(0, 6).forEach(c => {
+                const rgb = hexToRgb(c.hex);
+                const card = document.createElement('a');
+                card.href = colorRoute + c.hex.replace('#', '') + '/';
+                card.className = 'group block rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all';
+                card.innerHTML =
+                    '<div class="h-20 relative" style="background:' + c.hex + '">'
+                    + '<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">'
+                    + '<span class="px-2 py-1 bg-white/90 dark:bg-slate-900/90 rounded-lg text-[10px] font-bold shadow">' + c.label + '</span>'
+                    + '</div></div>'
+                    + '<div class="bg-white dark:bg-slate-900 p-2.5">'
+                    + '<p class="font-mono text-xs font-bold">' + c.hex + '</p>'
+                    + '<p class="text-[10px] text-slate-400 mt-0.5">RGB(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')</p>'
+                    + '</div>';
+                relatedColorsGrid.appendChild(card);
+            });
+        }
+
+        // ── Related Gradients ─────────────────────────────────────────────
+        const relatedGradientsGrid = document.getElementById('relatedGradientsGrid');
+        if (relatedGradientsGrid) {
+            fetch(fetchBase + 'data/gradients.json')
+                .then(res => res.json())
+                .then(gradients => {
+                    const gradientBase = fetchBase + 'gradient/';
+                    const exact = [];
+                    const near = [];
+
+                    function colorDistSq(a, b) {
+                        const ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);
+                        const br = parseInt(b.substring(0, 2), 16), bg = parseInt(b.substring(2, 4), 16), bb = parseInt(b.substring(4, 6), 16);
+                        const dr = ar - br, dg = ag - bg, db = ab - bb;
+                        return dr * dr + dg * dg + db * db;
+                    }
+
+                    const paletteHexes = colorList.map(c => c.replace('#', '').toLowerCase());
+
+                    gradients.forEach(g => {
+                        if (g.id === palette.id) return;
+                        let hasExact = false;
+                        let minDist = Infinity;
+
+                        g.colors.forEach(gc => {
+                            const gHex = gc.replace('#', '').toLowerCase();
+                            paletteHexes.forEach(ph => {
+                                if (gHex === ph) hasExact = true;
+                                else {
+                                    const d = colorDistSq(gHex, ph);
+                                    if (d < minDist) minDist = d;
+                                }
+                            });
+                        });
+
+                        if (hasExact) exact.push(g);
+                        else if (minDist < 15000) { g._dist = minDist; near.push(g); }
+                    });
+
+                    near.sort((a, b) => a._dist - b._dist);
+                    const results = exact.concat(near).slice(0, 6);
+
+                    results.forEach(g => {
+                        const angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.shape || g.type);
+                        const card = document.createElement('div');
+                        card.className = 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
+                        card.innerHTML =
+                            '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
+                            + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
+                            +   '<p class="font-bold text-sm">' + g.name + '</p>'
+                            +   '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
+                            +   '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
+                            +     g.colors.map(c => '<div class="flex-1" style="background:' + c + '"></div>').join('')
+                            +   '</div>'
+                            +   '<div class="flex items-center justify-end gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
+                            +     '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient">'
+                            +       '<i class="bi bi-box-arrow-up-right text-base"></i>'
+                            +     '</a>'
+                            +   '</div>'
+                            + '</div>';
+                        relatedGradientsGrid.appendChild(card);
+                    });
+                })
+                .catch(() => {});
+        }
+
+        // ── Related Palettes ──────────────────────────────────────────────
+        const relatedPalettesGrid = document.getElementById('relatedPalettesGrid');
+        if (relatedPalettesGrid) {
+            function colorDistSqP(a, b) {
+                const ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);
+                const br = parseInt(b.substring(0, 2), 16), bg = parseInt(b.substring(2, 4), 16), bb = parseInt(b.substring(4, 6), 16);
+                const dr = ar - br, dg = ag - bg, db = ab - bb;
+                return dr * dr + dg * dg + db * db;
+            }
+
+            const paletteHexes = colorList.map(c => c.replace('#', '').toLowerCase());
+            const scored = [];
+
+            palettes.forEach(p => {
+                if (p.id === palette.id) return;
+                const pHexes = (p.colors || []).map(c => c.replace('#', '').toLowerCase());
+                let matchCount = 0;
+                let totalDist = 0;
+
+                paletteHexes.forEach(ph => {
+                    let minD = Infinity;
+                    pHexes.forEach(ch => {
+                        if (ph === ch) { matchCount++; minD = 0; }
+                        else {
+                            const d = colorDistSqP(ph, ch);
+                            if (d < minD) minD = d;
+                        }
+                    });
+                    totalDist += minD;
+                });
+
+                if (matchCount > 0 || totalDist / paletteHexes.length < 20000) {
+                    scored.push({ palette: p, score: matchCount * 100000 - totalDist });
+                }
+            });
+
+            scored.sort((a, b) => b.score - a.score);
+            const relatedPaletteResults = scored.slice(0, 6).map(s => s.palette);
+
+            if (relatedPaletteResults.length > 0 && window.ColorMagic && window.ColorMagic.createPaletteCard) {
+                window.ColorMagic.markDuplicateSlugs(relatedPaletteResults);
+                const fragment = document.createDocumentFragment();
+                relatedPaletteResults.forEach(p => {
+                    fragment.appendChild(window.ColorMagic.createPaletteCard(p));
+                });
+                relatedPalettesGrid.appendChild(fragment);
+            }
+        }
+
+        // Favorite palette button
+        const favPaletteBtn = document.getElementById('favPaletteBtn');
+        if (favPaletteBtn && window.ColorMagic && window.ColorMagic.Favorites) {
+            const { Favorites } = window.ColorMagic;
+            function updateFavPaletteBtn() {
+                const isFav = Favorites.isFavorite(palette.id);
+                const icon = favPaletteBtn.querySelector('i');
+                const span = favPaletteBtn.querySelector('span');
+                if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill text-red-500' : 'bi-heart');
+                if (span) span.textContent = isFav ? 'Favorited' : 'Favorite';
+            }
+            updateFavPaletteBtn();
+            favPaletteBtn.addEventListener('click', () => {
+                Favorites.toggleFavorite(palette.id);
+                updateFavPaletteBtn();
+            });
+        }
+
+        // Download PNG button
+        const downloadPngBtn = document.getElementById('downloadPalettePngBtn');
+        if (downloadPngBtn && window.ColorMagic && window.ColorMagic.exportPaletteImage) {
+            downloadPngBtn.addEventListener('click', () => {
+                window.ColorMagic.exportPaletteImage(palette);
+            });
+        }
+
         paletteDetail?.classList.remove('hidden');
     } catch (_) {
         paletteError?.classList.remove('hidden');

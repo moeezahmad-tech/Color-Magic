@@ -227,6 +227,14 @@
             }
         });
 
+        // Download PNG button
+        var downloadPngBtn = document.getElementById('downloadGradientPngBtn');
+        if (downloadPngBtn && window.ColorMagic && window.ColorMagic.exportGradientImage) {
+            downloadPngBtn.addEventListener('click', function () {
+                window.ColorMagic.exportGradientImage(g);
+            });
+        }
+
         // Update page title
         document.title = g.name + ' Gradient | Color Magic';
     }
@@ -324,22 +332,185 @@
             return;
         }
 
+        var gradientBase = (document.querySelector('base') ? '' : '/') + 'gradient/';
+
         related.forEach(function (g) {
-            var card = document.createElement('a');
-            card.href = (document.querySelector('base') ? '' : '/') + 'gradient/' + g.id + '/';
-            card.className = 'group bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden hover:shadow-lg transition-all';
             var angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.type === 'mesh' ? 'mesh' : (g.shape || g.type));
+            var isFav = window.ColorMagic && window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
+            var heartIcon = isFav ? 'bi-heart-fill text-red-500' : 'bi-heart';
+
+            var card = document.createElement('div');
+            card.className = 'gradient-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
+
             card.innerHTML =
                 '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
-                + '<div class="p-3">'
-                + '<p class="font-bold text-sm">' + g.name + '</p>'
-                + '<p class="text-xs text-slate-400 mt-0.5">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
-                + '<div class="flex gap-1 mt-2 h-3 rounded overflow-hidden">'
-                + g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
-                + '</div>'
+                + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
+                +   '<p class="font-bold text-sm">' + g.name + '</p>'
+                +   '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
+                +   '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
+                +     g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
+                +   '</div>'
+                +   '<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
+                +     '<button class="fav-gradient-btn p-1.5 text-slate-400 hover:text-red-500 transition-colors" data-gradient-id="' + g.id + '" title="' + (isFav ? 'Remove from' : 'Add to') + ' favorites">'
+                +       '<i class="bi ' + heartIcon + ' text-base"></i>'
+                +     '</button>'
+                +     '<button class="copy-gradient-css-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-css="' + g.css.replace(/"/g, '&quot;') + '" title="Copy CSS">'
+                +       '<i class="bi bi-clipboard text-lg"></i>'
+                +     '</button>'
+                +     '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient" target="_blank" rel="noopener">'
+                +       '<i class="bi bi-box-arrow-up-right text-base"></i>'
+                +     '</a>'
+                +   '</div>'
                 + '</div>';
+
             grid.appendChild(card);
         });
+
+        // Delegated click handlers for gradient cards
+        grid.addEventListener('click', function (e) {
+            // Favorite gradient
+            var favBtn = e.target.closest('.fav-gradient-btn');
+            if (favBtn && window.ColorMagic && window.ColorMagic.GradientFavorites) {
+                var gid = favBtn.dataset.gradientId;
+                window.ColorMagic.GradientFavorites.toggleFavorite(gid);
+                var icon = favBtn.querySelector('i');
+                var nowFav = window.ColorMagic.GradientFavorites.isFavorite(gid);
+                if (icon) icon.className = 'bi ' + (nowFav ? 'bi-heart-fill text-red-500' : 'bi-heart') + ' text-base';
+                return;
+            }
+            // Copy CSS
+            var copyBtn = e.target.closest('.copy-gradient-css-btn');
+            if (copyBtn) {
+                var css = copyBtn.dataset.css;
+                var icon = copyBtn.querySelector('i');
+                var origClass = icon ? icon.className : '';
+                navigator.clipboard.writeText(css).then(function () {
+                    if (icon) icon.className = 'bi bi-check-circle-fill text-lg text-green-500';
+                    setTimeout(function () { if (icon) icon.className = origClass; }, 2000);
+                });
+            }
+        });
+    }
+
+    function colorDistSq(a, b) {
+        var ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);
+        var br = parseInt(b.substring(0, 2), 16), bg = parseInt(b.substring(2, 4), 16), bb = parseInt(b.substring(4, 6), 16);
+        var dr = ar - br, dg = ag - bg, db = ab - bb;
+        return dr * dr + dg * dg + db * db;
+    }
+
+    function renderRelatedPalettes(gradient) {
+        var grid = document.getElementById('relatedPalettesGrid');
+        if (!grid || !window.ColorMagic || !window.ColorMagic.createPaletteCard) return;
+
+        var gradientHexes = gradient.colors.map(function (c) { return c.replace('#', '').toLowerCase(); });
+
+        fetch('data/palettes.json')
+            .then(function (r) { return r.ok ? r.json() : []; })
+            .then(function (palettes) {
+                var scored = [];
+                palettes.forEach(function (p) {
+                    if (!Array.isArray(p.colors)) return;
+                    var matchCount = 0;
+                    var totalDist = 0;
+
+                    gradientHexes.forEach(function (gh) {
+                        var minD = Infinity;
+                        p.colors.forEach(function (pc) {
+                            var ph = pc.replace('#', '').toLowerCase();
+                            if (gh === ph) { matchCount++; minD = 0; }
+                            else {
+                                var d = colorDistSq(gh, ph);
+                                if (d < minD) minD = d;
+                            }
+                        });
+                        totalDist += minD;
+                    });
+
+                    if (matchCount > 0 || totalDist / gradientHexes.length < 50000) {
+                        scored.push({ palette: p, score: matchCount * 100000 - totalDist });
+                    }
+                });
+
+                scored.sort(function (a, b) { return b.score - a.score; });
+                var top = scored.slice(0, 6);
+
+                if (top.length === 0) {
+                    // Fallback: just pick the 6 closest palettes regardless of threshold
+                    var allScored = [];
+                    palettes.forEach(function (p) {
+                        if (!Array.isArray(p.colors)) return;
+                        var td = 0;
+                        gradientHexes.forEach(function (gh) {
+                            var minD = Infinity;
+                            p.colors.forEach(function (pc) {
+                                var ph = pc.replace('#', '').toLowerCase();
+                                var d = colorDistSq(gh, ph);
+                                if (d < minD) minD = d;
+                            });
+                            td += minD;
+                        });
+                        allScored.push({ palette: p, score: -td });
+                    });
+                    allScored.sort(function (a, b) { return b.score - a.score; });
+                    top = allScored.slice(0, 6);
+                }
+
+                window.ColorMagic.markDuplicateSlugs(top.map(function (s) { return s.palette; }));
+                var fragment = document.createDocumentFragment();
+                top.forEach(function (s) {
+                    fragment.appendChild(window.ColorMagic.createPaletteCard(s.palette));
+                });
+                grid.appendChild(fragment);
+
+                // Delegated handlers for palette cards in this grid
+                grid.addEventListener('click', function (e) {
+                    var copyBtn = e.target.closest('.copy-palette-btn');
+                    if (copyBtn) {
+                        var colors = copyBtn.dataset.colors;
+                        var icon = copyBtn.querySelector('i');
+                        var origClass = icon ? icon.className : '';
+                        navigator.clipboard.writeText(colors).then(function () {
+                            if (icon) icon.className = 'bi bi-check-circle-fill text-xl';
+                            copyBtn.classList.add('text-green-500');
+                            setTimeout(function () {
+                                if (icon) icon.className = origClass;
+                                copyBtn.classList.remove('text-green-500');
+                            }, 2000);
+                        });
+                        return;
+                    }
+                    var swatchBtn = e.target.closest('.swatch-copy-hex');
+                    if (swatchBtn) {
+                        var hex = swatchBtn.dataset.hex;
+                        var swIcon = swatchBtn.querySelector('i');
+                        var swOrig = swatchBtn.innerHTML;
+                        navigator.clipboard.writeText(hex).then(function () {
+                            if (swIcon) swIcon.className = 'bi bi-check-circle-fill text-[11px]';
+                            swatchBtn.classList.add('text-green-600');
+                            setTimeout(function () { swatchBtn.innerHTML = swOrig; swatchBtn.classList.remove('text-green-600'); }, 1500);
+                        });
+                        return;
+                    }
+                    var favColorBtn = e.target.closest('.swatch-fav-color');
+                    if (favColorBtn && window.ColorMagic.ColorFavorites) {
+                        var favHex = favColorBtn.dataset.hex;
+                        var added = window.ColorMagic.ColorFavorites.toggleFavorite(favHex);
+                        var fIcon = favColorBtn.querySelector('i');
+                        if (fIcon) fIcon.className = added ? 'bi bi-heart-fill text-red-500' : 'bi bi-heart';
+                        return;
+                    }
+                    var favPaletteBtn = e.target.closest('.favorite-btn');
+                    if (favPaletteBtn && window.ColorMagic.Favorites) {
+                        var paletteId = favPaletteBtn.dataset.paletteId;
+                        window.ColorMagic.Favorites.toggleFavorite(paletteId);
+                        window.ColorMagic.Favorites.updateFavoriteButton(favPaletteBtn, paletteId);
+                    }
+                });
+            })
+            .catch(function () {
+                grid.innerHTML = '<p class="text-sm text-slate-400 col-span-full">Failed to load palettes.</p>';
+            });
     }
 
     // ─── Init ─────────────────────────────────────────────────────────────────
@@ -367,6 +538,7 @@
             renderGradient(gradient);
             renderRelatedColors(gradient);
             renderRelatedGradients(gradient, data);
+            renderRelatedPalettes(gradient);
         })
         .catch(function () {
             document.getElementById('gradientError').classList.remove('hidden');

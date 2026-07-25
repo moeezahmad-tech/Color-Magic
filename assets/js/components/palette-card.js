@@ -49,8 +49,8 @@ window.ColorMagic.createPaletteCard = function (palette) {
             +     '<i class="bi ' + heartIcon + '" style="font-size:11px;line-height:1"></i>'
             +   '</button>'
             + '</div>'
-            // HEX label at the bottom
-            + '<span class="swatch-hex text-[10px] font-bold ' + textClass + ' ' + bgClass + ' backdrop-blur-sm px-1.5 py-0.5 rounded text-center transition-all relative z-10">' + color + '</span>'
+            // HEX label at the bottom — hidden on narrow swatches via CSS, always shown on hover
+            + '<span class="swatch-hex text-[10px] font-bold ' + textClass + ' ' + bgClass + ' backdrop-blur-sm px-1.5 py-0.5 rounded text-center relative z-10">' + color + '</span>'
             + '</div>';
     }).join('');
 

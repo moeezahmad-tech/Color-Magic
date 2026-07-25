@@ -150,6 +150,7 @@ if ($slugParam === '' && $colorSlug !== null) {
     $scheme      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $httpHost    = (string) ($_SERVER['HTTP_HOST'] ?? 'colormagic.techkreative.com');
     $scriptName  = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
+    /** @var string $base */
     $basePath    = $base;
     $slugUrl     = $scheme . '://' . $httpHost . $basePath . '/color/' . $colorSlug . '/';
     header('HTTP/1.1 301 Moved Permanently');
@@ -235,7 +236,7 @@ usort(
 
 $relatedPalettes = $exactPalettes;
 foreach ($nearPalettes as $nearPalette) {
-    if (count($relatedPalettes) >= 12) {
+    if (count($relatedPalettes) >= 6) {
         break;
     }
     $relatedPalettes[] = $nearPalette;
@@ -261,6 +262,7 @@ $canonicalUrl = $colorSlug !== null
     ? $baseUrl . '/color/' . $colorSlug . '/'
     : $baseUrl . '/color/' . strtolower($normalizedHex) . '/';
 $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
+/** @var string $base */
 $basePath = $base;
 
 $assetBase = $basePath;
@@ -568,6 +570,18 @@ $schema = [
                             <p class="mt-3 text-sm text-slate-500 dark:text-slate-400"><?php echo e((string) count($relatedPalettes)); ?> related palettes found</p>
                         </div>
                     </div>
+                    <div class="flex items-center gap-3 mt-4">
+                        <button id="favColorHeroBtn"
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="bi bi-heart"></i>
+                            <span>Favorite Color</span>
+                        </button>
+                        <button id="downloadColorPngBtn"
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="bi bi-download"></i>
+                            <span>Download PNG</span>
+                        </button>
+                    </div>
                     <p id="copyFeedback" class="copy-feedback opacity-0 -translate-y-1 mt-4 text-sm font-semibold text-emerald-600">Copied to clipboard</p>
                 </div>
             </div>
@@ -622,96 +636,6 @@ $schema = [
                 </div>
                 <p class="text-center text-sm text-slate-500 mt-2 font-medium">Tone Color Variation</p>
             </div>
-        </section>
-
-        <!-- Color Harmonies Section -->
-        <section class="mt-8 md:mt-12" aria-labelledby="harmonies-title">
-            <h2 id="harmonies-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Color Harmonies</h2>
-            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                Color harmonies derived from <?php echo e($hexWithHash); ?> using standard color theory rotation rules on the HSL color wheel.
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-widest text-slate-500 mb-2">Complementary</p>
-                    <div class="flex items-center gap-3">
-                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($complementaryHex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($complementaryHex); ?>;"></a>
-                        <span class="font-mono font-bold"><?php echo e($complementaryHex); ?></span>
-                    </div>
-                </div>
-                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-widest text-slate-500 mb-2">Analogous</p>
-                    <div class="flex items-center gap-3">
-                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($analogous1Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($analogous1Hex); ?>;"></a>
-                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($analogous2Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($analogous2Hex); ?>;"></a>
-                        <span class="font-mono text-sm"><?php echo e($analogous1Hex); ?>, <?php echo e($analogous2Hex); ?></span>
-                    </div>
-                </div>
-                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-widest text-slate-500 mb-2">Triadic</p>
-                    <div class="flex items-center gap-3">
-                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($triadic1Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($triadic1Hex); ?>;"></a>
-                        <a href="<?php echo e($colorRouteBase . strtolower(ltrim($triadic2Hex, '#')) . '/'); ?>" class="w-12 h-12 rounded-lg shadow-sm block" style="background-color: <?php echo e($triadic2Hex); ?>;"></a>
-                        <span class="font-mono text-sm"><?php echo e($triadic1Hex); ?>, <?php echo e($triadic2Hex); ?></span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- WCAG Accessibility Contrast Section -->
-        <section class="mt-8 md:mt-12" aria-labelledby="wcag-title">
-            <h2 id="wcag-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">WCAG Contrast Accessibility</h2>
-            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                Contrast ratio analysis of <?php echo e($hexWithHash); ?> against white and black backgrounds per WCAG 2.1 guidelines.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-5 bg-white dark:bg-slate-900">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-lg bg-white border border-slate-200"></div>
-                        <div>
-                            <p class="font-bold">On White Background</p>
-                            <p class="text-sm text-slate-500">Ratio: <span class="font-mono font-bold"><?php echo $contrastWithWhite; ?>:1</span></p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex items-center justify-between">
-                            <span>AA Normal Text (4.5:1)</span>
-                            <span class="font-bold <?php echo $whitePassesAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $whitePassesAA ? '✓ Pass' : '✗ Fail'; ?></span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span>AA Large Text (3:1)</span>
-                            <span class="font-bold <?php echo $whitePassesAALarge ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $whitePassesAALarge ? '✓ Pass' : '✗ Fail'; ?></span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span>AAA Normal Text (7:1)</span>
-                            <span class="font-bold <?php echo $whitePassesAAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $whitePassesAAA ? '✓ Pass' : '✗ Fail'; ?></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-5 bg-white dark:bg-slate-900">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-lg bg-black"></div>
-                        <div>
-                            <p class="font-bold">On Black Background</p>
-                            <p class="text-sm text-slate-500">Ratio: <span class="font-mono font-bold"><?php echo $contrastWithBlack; ?>:1</span></p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex items-center justify-between">
-                            <span>AA Normal Text (4.5:1)</span>
-                            <span class="font-bold <?php echo $blackPassesAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $blackPassesAA ? '✓ Pass' : '✗ Fail'; ?></span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span>AA Large Text (3:1)</span>
-                            <span class="font-bold <?php echo $blackPassesAALarge ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $blackPassesAALarge ? '✓ Pass' : '✗ Fail'; ?></span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span>AAA Normal Text (7:1)</span>
-                            <span class="font-bold <?php echo $blackPassesAAA ? 'text-emerald-600' : 'text-red-500'; ?>"><?php echo $blackPassesAAA ? '✓ Pass' : '✗ Fail'; ?></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <p class="mt-4 text-xs text-slate-400">Note: Full WCAG validation requires manual testing with assistive technologies and expert accessibility review.</p>
         </section>
 
         <section class="mt-8" aria-labelledby="related-palettes-title">
@@ -791,6 +715,7 @@ $schema = [
     </script>
     <script src="<?php echo e($assetBase); ?>/assets/js/utils.js"></script>
     <script src="<?php echo e($assetBase); ?>/assets/js/services/favorites.js"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/image-export.js"></script>
     <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js"></script>
 
     <script>
@@ -815,6 +740,38 @@ $schema = [
                 });
             });
         });
+
+        // ── Favorite color hero button ────────────────────────────────────
+        (function () {
+            var favBtn = document.getElementById('favColorHeroBtn');
+            if (!favBtn || !window.ColorMagic || !window.ColorMagic.ColorFavorites) return;
+            var hex = '<?php echo e($hexWithHash); ?>';
+            function updateBtn() {
+                var isFav = window.ColorMagic.ColorFavorites.isFavorite(hex);
+                var icon = favBtn.querySelector('i');
+                var span = favBtn.querySelector('span');
+                if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill text-red-500' : 'bi-heart');
+                if (span) span.textContent = isFav ? 'Favorited' : 'Favorite Color';
+            }
+            updateBtn();
+            favBtn.addEventListener('click', function () {
+                window.ColorMagic.ColorFavorites.toggleFavorite(hex);
+                updateBtn();
+            });
+        })();
+
+        // ── Download PNG button ───────────────────────────────────────────
+        (function () {
+            var downloadBtn = document.getElementById('downloadColorPngBtn');
+            if (!downloadBtn || !window.ColorMagic || !window.ColorMagic.exportColorImage) return;
+            var hex = '<?php echo e($hexWithHash); ?>';
+            var name = '<?php echo e($hexName); ?>';
+            var rgb = { r: <?php echo $rgb['r']; ?>, g: <?php echo $rgb['g']; ?>, b: <?php echo $rgb['b']; ?> };
+            var hsl = { h: <?php echo $hsl['h']; ?>, s: <?php echo $hsl['s']; ?>, l: <?php echo $hsl['l']; ?> };
+            downloadBtn.addEventListener('click', function () {
+                window.ColorMagic.exportColorImage({ hex: hex, name: name, rgb: rgb, hsl: hsl });
+            });
+        })();
 
         // ── Render related palettes using the shared createPaletteCard() ──────
         (function renderRelatedPalettes() {
@@ -931,7 +888,7 @@ $schema = [
 
                     near.sort(function (a, b) { return a._dist - b._dist; });
 
-                    var results = exact.concat(near).slice(0, 9);
+                    var results = exact.concat(near).slice(0, 6);
 
                     if (results.length === 0) {
                         grid.classList.add('hidden');
@@ -939,20 +896,37 @@ $schema = [
                         return;
                     }
 
+                    var isFavFn = window.ColorMagic && window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite;
+
                     results.forEach(function (g) {
                         var angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.type === 'mesh' ? 'mesh' : (g.shape || g.type));
-                        var card = document.createElement('a');
-                        card.href = gradientBase + g.id + '/';
-                        card.className = 'group bg-white dark:bg-slate-900 rounded-xl overflow-hidden hover:shadow-lg transition-all border border-slate-200 dark:border-slate-800';
+                        var isFav = isFavFn ? window.ColorMagic.GradientFavorites.isFavorite(g.id) : false;
+                        var heartIcon = isFav ? 'bi-heart-fill text-red-500' : 'bi-heart';
+
+                        var card = document.createElement('div');
+                        card.className = 'gradient-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
+
                         card.innerHTML =
                             '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
-                            + '<div class="p-3">'
-                            + '<p class="font-bold text-sm">' + g.name + '</p>'
-                            + '<p class="text-xs text-slate-400 mt-0.5">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
-                            + '<div class="flex gap-1 mt-2 h-3 rounded overflow-hidden">'
-                            + g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
-                            + '</div>'
+                            + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
+                            +   '<p class="font-bold text-sm">' + g.name + '</p>'
+                            +   '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
+                            +   '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
+                            +     g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
+                            +   '</div>'
+                            +   '<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
+                            +     '<button class="fav-gradient-btn p-1.5 text-slate-400 hover:text-red-500 transition-colors" data-gradient-id="' + g.id + '" title="' + (isFav ? 'Remove from' : 'Add to') + ' favorites">'
+                            +       '<i class="bi ' + heartIcon + ' text-base"></i>'
+                            +     '</button>'
+                            +     '<button class="copy-gradient-css-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-css="' + g.css.replace(/"/g, '&quot;') + '" title="Copy CSS">'
+                            +       '<i class="bi bi-clipboard text-lg"></i>'
+                            +     '</button>'
+                            +     '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient" target="_blank" rel="noopener">'
+                            +       '<i class="bi bi-box-arrow-up-right text-base"></i>'
+                            +     '</a>'
+                            +   '</div>'
                             + '</div>';
+
                         grid.appendChild(card);
                     });
                 })
@@ -960,6 +934,31 @@ $schema = [
                     grid.classList.add('hidden');
                     if (emptyEl) emptyEl.classList.remove('hidden');
                 });
+
+            // Delegated click handlers for gradient cards
+            grid.addEventListener('click', function (e) {
+                // Favorite gradient
+                var favBtn = e.target.closest('.fav-gradient-btn');
+                if (favBtn && window.ColorMagic && window.ColorMagic.GradientFavorites) {
+                    var gid = favBtn.dataset.gradientId;
+                    window.ColorMagic.GradientFavorites.toggleFavorite(gid);
+                    var icon = favBtn.querySelector('i');
+                    var nowFav = window.ColorMagic.GradientFavorites.isFavorite(gid);
+                    if (icon) icon.className = 'bi ' + (nowFav ? 'bi-heart-fill text-red-500' : 'bi-heart') + ' text-base';
+                    return;
+                }
+                // Copy CSS
+                var copyBtn = e.target.closest('.copy-gradient-css-btn');
+                if (copyBtn) {
+                    var css = copyBtn.dataset.css;
+                    var icon = copyBtn.querySelector('i');
+                    var origClass = icon ? icon.className : '';
+                    navigator.clipboard.writeText(css).then(function () {
+                        if (icon) icon.className = 'bi bi-check-circle-fill text-lg text-green-500';
+                        setTimeout(function () { if (icon) icon.className = origClass; }, 2000);
+                    });
+                }
+            });
 
             function colorDist(a, b) {
                 var ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);

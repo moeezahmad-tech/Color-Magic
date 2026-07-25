@@ -28,6 +28,44 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
     <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
+    <style>
+        /* Swatch hover interactions (same as Explore Palettes) */
+        .swatch {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .swatch-hex {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .swatch:hover .swatch-hex {
+            opacity: 1;
+            display: block !important;
+        }
+
+        @keyframes swatchBtnIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        .swatch-icon-btn {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+
+        .swatch:hover .swatch-icon-btn { animation: swatchBtnIn 0.18s ease forwards; }
+        .swatch:hover .swatch-btn-1    { animation-delay: 0s;    }
+        .swatch:hover .swatch-btn-2    { animation-delay: 0.06s; }
+        .swatch:hover .swatch-btn-3    { animation-delay: 0.12s; }
+
+        .swatch-hex.copied-state {
+            opacity: 1 !important;
+            background: rgba(34, 197, 94, 0.9) !important;
+            color: white !important;
+            font-weight: 700;
+        }
+    </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
@@ -46,7 +84,7 @@
 
         <section id="paletteDetail" class="hidden flex flex-col gap-8">
             <div id="paletteTopSection"
-                class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-white dark:bg-slate-900 rounded-3xl p-5 md:p-7 shadow-sm">
+                class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
                 <div>
                     <div id="heroPaletteStrips"
                         class="grid h-full rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30">
@@ -80,7 +118,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 flex-wrap">
                         <button id="copyAllBtn"
                             class="px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors">
                             <i class="bi bi-clipboard me-1"></i>
@@ -90,6 +128,16 @@
                             class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors">
                             <i class="bi bi-code-slash me-1"></i>
                             Copy CSS Variables
+                        </button>
+                        <button id="downloadPalettePngBtn"
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="bi bi-download"></i>
+                            <span>Download PNG</span>
+                        </button>
+                        <button id="favPaletteBtn"
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors">
+                            <i class="bi bi-heart"></i>
+                            <span>Favorite</span>
                         </button>
                     </div>
 
@@ -275,6 +323,33 @@
                     <pre id="swiftCode"></pre>
                 </div>
             </section>
+
+            <!-- Related Colors -->
+            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                <h2 class="text-xl md:text-2xl font-bold mb-4">Related Colors</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    Complementary, analogous, and triadic colors derived from this palette
+                </p>
+                <div id="relatedColorsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+            </section>
+
+            <!-- Related Palettes -->
+            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                <h2 class="text-xl md:text-2xl font-bold mb-4">Related Palettes</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    Palettes with similar colors to this one
+                </p>
+                <div id="relatedPalettesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"></div>
+            </section>
+
+            <!-- Related Gradients -->
+            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                <h2 class="text-xl md:text-2xl font-bold mb-4">Related Gradients</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    Gradients that use colors from this palette
+                </p>
+                <div id="relatedGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+            </section>
         </section>
 
         <section id="paletteError"
@@ -290,6 +365,14 @@
     <?php include '../components/footer.php'; ?>
 
 
+    <script>
+        window.CM_COLOR_BASE   = '<?= $base ?>/color/';
+        window.CM_PALETTE_BASE = '<?= $base ?>/palette/';
+    </script>
+    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
+    <script src="<?= $base ?>/assets/js/image-export.js" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js" defer></script>
     <script src="<?= $base ?>/assets/js/palette-page.js" defer></script>
 </body>
 
