@@ -7,7 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Color Magic | Generate Color Palette</title>
     <meta name="description"
-        content="Generate professional 5-color palettes from any base color using color theory harmony rules — Monochromatic, Complementary, Triadic, Tetradic and Analogous." />
+        content="Generate professional palettes from one or more colors using color theory harmony rules — Monochromatic, Complementary, Triadic, Tetradic and Analogous." />
     <meta name="keywords"
         content="color palette generator, color theory, hex code generator, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
@@ -254,7 +254,7 @@
                     Generate Color Palette
                 </h1>
                 <p class="text-slate-600 dark:text-slate-300 text-base max-w-xl">
-                    Create stunning 5-color palettes from any base color using proven
+                    Start with one or more colors and create stunning palettes using proven
                     color theory harmony rules — instantly.
                 </p>
             </div>
@@ -265,18 +265,31 @@
             <!-- Controls panel -->
             <div
                 class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-6">
-                <div class="flex flex-wrap items-center gap-y-2 gap-x-4">
-                    <label for="paletteColorInput" class="text-sm font-bold shrink-0 min-w-[75px]">Base Color</label>
-                    <div class="flex gap-2.5 items-center flex-1 w-full sm:w-auto min-w-[200px]">
-                        <input id="paletteColorPicker" type="color" value="#ec4899"
-                            class="w-10 h-10 rounded-xl cursor-pointer border-2 border-slate-200 dark:border-slate-700 overflow-hidden shrink-0"
-                            aria-label="Pick a color" />
-                        <div class="flex-1 relative min-w-0">
-                            <span
-                                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">#</span>
-                            <input id="paletteColorInput" type="text" placeholder="EC4899" maxlength="7"
-                                class="w-full pl-7 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-primary rounded-xl text-sm outline-none transition-all placeholder:text-slate-400 font-mono uppercase"
-                                aria-label="Enter hex color code" />
+                <div>
+                    <div class="flex items-center justify-between gap-4 mb-3">
+                        <div>
+                            <label for="paletteColorInput" class="text-sm font-bold">Palette Colors</label>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Add two or more colors to use them together as palette anchors.</p>
+                        </div>
+                        <button id="addPaletteColorBtn" type="button"
+                            class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-pink-50 dark:bg-slate-800 text-primary hover:bg-pink-100 dark:hover:bg-slate-700 text-xs font-bold transition-colors">
+                            <i class="bi bi-plus-lg"></i> Add Color
+                        </button>
+                    </div>
+                    <div id="paletteColorList" class="flex flex-col gap-2">
+                        <div class="palette-color-row flex gap-2.5 items-center" data-color-row>
+                            <input id="paletteColorPicker" type="color" value="#ec4899"
+                                class="palette-color-picker w-10 h-10 rounded-xl cursor-pointer border-2 border-slate-200 dark:border-slate-700 overflow-hidden shrink-0"
+                                aria-label="Pick a palette color" />
+                            <div class="flex-1 relative min-w-0">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">#</span>
+                                <input id="paletteColorInput" type="text" value="EC4899" placeholder="EC4899" maxlength="7"
+                                    class="palette-color-input w-full pl-7 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-primary rounded-xl text-sm outline-none transition-all placeholder:text-slate-400 font-mono uppercase"
+                                    aria-label="Enter hex color code" />
+                            </div>
+                            <button type="button" class="remove-palette-color w-10 h-10 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Remove color">
+                                <i class="bi bi-trash3"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -340,7 +353,7 @@
                         Your palette will appear here
                     </p>
                     <p class="text-sm text-slate-400 dark:text-slate-500">
-                        Pick a base color and harmony rule, then hit
+                        Add one or more colors and a harmony rule, then hit
                         <strong>Generate Palette</strong>
                     </p>
                 </div>
@@ -395,7 +408,7 @@
     <script>
         window.CM_ACTIVE_PAGE = "generate";
     </script>
-    <script src="<?= $base ?>/assets/js/generate-palette-page.js?v=1.0" defer></script>
+    <script src="<?= $base ?>/assets/js/generate-palette-page.js?v=1.1" defer></script>
 </body>
 
 </html>

@@ -5,8 +5,8 @@
 
 (function () {
     // ── DOM refs ──────────────────────────────────────────────────────────────
-    const paletteColorInput = document.getElementById('paletteColorInput');
-    const paletteColorPicker = document.getElementById('paletteColorPicker');
+    const paletteColorList = document.getElementById('paletteColorList');
+    const addPaletteColorBtn = document.getElementById('addPaletteColorBtn');
     const generatePaletteBtn = document.getElementById('generatePaletteBtn');
     const paletteErrorMessage = document.getElementById('paletteErrorMessage');
     const paletteResults = document.getElementById('paletteResults');
@@ -38,32 +38,64 @@
         });
     });
 
-    // ── Sync text input → picker + preview ───────────────────────────────────
-    paletteColorInput?.addEventListener('input', function () {
-        let val = this.value.trim().replace('#', '');
-        if (val.length === 3) {
-            val = val.split('').map(c => c + c).join('');
-        }
-        if (/^[0-9A-Fa-f]{6}$/.test(val)) {
-            const full = '#' + val.toUpperCase();
-            if (paletteColorPicker) paletteColorPicker.value = full;
-        }   
-    });
+    // ── Multiple color inputs ────────────────────────────────────────────────
+    function updateRemoveButtons() {
+        const rows = paletteColorList?.querySelectorAll('[data-color-row]') || [];
+        rows.forEach(row => {
+            row.querySelector('.remove-palette-color').disabled = rows.length === 1;
+        });
+    }
 
-    // ── Sync picker → text input + preview ───────────────────────────────────
-    paletteColorPicker?.addEventListener('input', function () {
-        const hex = this.value.replace('#', '').toUpperCase();
-        if (paletteColorInput) paletteColorInput.value = hex;
-        
-    });
+    function bindColorRow(row) {
+        const input = row.querySelector('.palette-color-input');
+        const picker = row.querySelector('.palette-color-picker');
+        const removeBtn = row.querySelector('.remove-palette-color');
+
+        input.addEventListener('input', function () {
+            let val = this.value.trim().replace('#', '');
+            if (val.length === 3) val = val.split('').map(c => c + c).join('');
+            if (/^[0-9A-Fa-f]{6}$/.test(val)) picker.value = '#' + val.toUpperCase();
+        });
+
+        input.addEventListener('keypress', e => {
+            if (e.key === 'Enter') generatePalette();
+        });
+
+        picker.addEventListener('input', function () {
+            input.value = this.value.replace('#', '').toUpperCase();
+        });
+
+        removeBtn.addEventListener('click', () => {
+            if (paletteColorList.querySelectorAll('[data-color-row]').length === 1) return;
+            row.remove();
+            updateRemoveButtons();
+        });
+    }
+
+    function addColorRow(value = '#6366F1') {
+        const row = document.createElement('div');
+        const hex = value.replace('#', '').toUpperCase();
+        row.className = 'palette-color-row flex gap-2.5 items-center';
+        row.dataset.colorRow = '';
+        row.innerHTML = `
+            <input type="color" value="#${hex}" class="palette-color-picker w-10 h-10 rounded-xl cursor-pointer border-2 border-slate-200 dark:border-slate-700 overflow-hidden shrink-0" aria-label="Pick a palette color" />
+            <div class="flex-1 relative min-w-0">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">#</span>
+                <input type="text" value="${hex}" placeholder="EC4899" maxlength="7" class="palette-color-input w-full pl-7 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-primary rounded-xl text-sm outline-none transition-all placeholder:text-slate-400 font-mono uppercase" aria-label="Enter hex color code" />
+            </div>
+            <button type="button" class="remove-palette-color w-10 h-10 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" aria-label="Remove color"><i class="bi bi-trash3"></i></button>`;
+        paletteColorList.appendChild(row);
+        bindColorRow(row);
+        updateRemoveButtons();
+        row.querySelector('.palette-color-input').focus();
+    }
+
+    paletteColorList?.querySelectorAll('[data-color-row]').forEach(bindColorRow);
+    updateRemoveButtons();
+    addPaletteColorBtn?.addEventListener('click', () => addColorRow());
 
     // ── Generate button ───────────────────────────────────────────────────────
     generatePaletteBtn?.addEventListener('click', generatePalette);
-
-    // Also allow Enter from text input
-    paletteColorInput?.addEventListener('keypress', e => {
-        if (e.key === 'Enter') generatePalette();
-    });
 
     // ── Color math helpers ────────────────────────────────────────────────────
     function hexToHsl(hex) {
@@ -143,13 +175,16 @@
         btnText.textContent = 'Generating…';
         btnIcon.className = btnIcon.className.replace(/bi-[\w-]+/, 'bi-hourglass-split');
         generatePaletteBtn.disabled = true;
-        if (paletteColorInput) paletteColorInput.disabled = true;
+        const colorInputs = [...document.querySelectorAll('.palette-color-input')];
+        colorInputs.forEach(input => input.disabled = true);
+        document.querySelectorAll('.palette-color-picker, .remove-palette-color').forEach(control => control.disabled = true);
+        if (addPaletteColorBtn) addPaletteColorBtn.disabled = true;
         paletteErrorMessage.classList.add('hidden');
 
-        let colorCode = (paletteColorInput?.value || '').trim().replace('#', '');
+        const colorCodes = colorInputs.map(input => input.value.trim().replace('#', '').toUpperCase());
 
-        if (!colorCode || !/^[0-9A-F]{6}$/i.test(colorCode)) {
-            showError('Please enter a valid 6-character hex code (e.g., EC4899)');
+        if (!colorCodes.length || colorCodes.some(color => !/^[0-9A-F]{6}$/.test(color))) {
+            showError('Please enter a valid 6-character hex code for every color (e.g., EC4899).');
             resetBtn();
             return;
         }
@@ -157,14 +192,9 @@
         await new Promise(r => setTimeout(r, 500));
 
         try {
-            const baseHsl = hexToHsl(colorCode);
-            const palette1 = buildPalette(baseHsl, colorCode, 'Primary');
-
-            const variantHsl2 = { h: baseHsl.h, s: Math.max(0, baseHsl.s - 20), l: Math.min(100, baseHsl.l + 15) };
-            const palette2 = buildPalette(variantHsl2, hslToHex(variantHsl2.h, variantHsl2.s, variantHsl2.l), 'Lighter');
-
-            const variantHsl3 = { h: baseHsl.h, s: Math.min(100, baseHsl.s + 10), l: Math.max(0, baseHsl.l - 20) };
-            const palette3 = buildPalette(variantHsl3, hslToHex(variantHsl3.h, variantHsl3.s, variantHsl3.l), 'Darker');
+            const palette1 = buildPalette(colorCodes, 'Primary');
+            const palette2 = buildPalette(colorCodes, 'Lighter', { saturation: -20, lightness: 15 });
+            const palette3 = buildPalette(colorCodes, 'Darker', { saturation: 10, lightness: -20 });
 
             palettePlaceholder.classList.add('hidden');
             paletteResults.classList.remove('hidden');
@@ -182,7 +212,14 @@
         resetBtn();
     }
 
-    function buildPalette(base, baseHex, variantName) {
+    function buildPalette(colorCodes, variantName, adjustment = { saturation: 0, lightness: 0 }) {
+        const inputColors = [...new Set(colorCodes)];
+        const baseHslColors = inputColors.map(hexToHsl);
+        const base = {
+            h: averageHue(baseHslColors),
+            s: baseHslColors.reduce((sum, color) => sum + color.s, 0) / baseHslColors.length,
+            l: baseHslColors.reduce((sum, color) => sum + color.l, 0) / baseHslColors.length
+        };
         let hues = [];
         if (selectedScheme === 'mono') hues = [base.h, base.h, base.h, base.h, base.h];
         else if (selectedScheme === 'contrast') hues = [base.h, base.h + 60, base.h + 180, base.h + 240, base.h + 300];
@@ -195,7 +232,7 @@
             triade: 'Triadic', tetrade: 'Tetradic', analogic: 'Analogous'
         };
 
-        const colors = hues.map((h, i) => {
+        const derivedColors = hues.map((h, i) => {
             let s = base.s, l = base.l;
             if (selectedScheme === 'mono') {
                 s = Math.max(10, base.s - (i * 8));
@@ -204,6 +241,8 @@
                 s = Math.max(20, Math.min(100, s + (i % 2 === 0 ? 10 : -5)));
                 l = Math.max(25, Math.min(85, l + (i - 2) * 8));
             }
+            s = Math.max(0, Math.min(100, s + adjustment.saturation));
+            l = Math.max(10, Math.min(95, l + adjustment.lightness));
             const finalH = ((h % 360) + 360) % 360;
             const hex = hslToHex(finalH, s, l);
             return {
@@ -215,12 +254,40 @@
             };
         });
 
+        const chosenColors = inputColors.map(hex => {
+            const hsl = hexToHsl(hex);
+            const fullHex = '#' + hex;
+            return {
+                hex: fullHex,
+                name: getColorName(hsl.h, hsl.s, hsl.l),
+                rgb: hexToRgb(hex),
+                hsl: { h: Math.round(hsl.h), s: Math.round(hsl.s), l: Math.round(hsl.l) },
+                textColor: getContrastYIQ(fullHex)
+            };
+        });
+
+        const colors = [...chosenColors];
+        for (const color of derivedColors) {
+            if (colors.length >= Math.max(5, chosenColors.length)) break;
+            if (!colors.some(existing => existing.hex === color.hex)) colors.push(color);
+        }
+
         return {
-            sourceName: `${schemeNames[selectedScheme]} Palette - ${variantName}`,
+            sourceName: `${schemeNames[selectedScheme]} Palette - ${variantName}${inputColors.length > 1 ? ` (${inputColors.length} selected colors)` : ''}`,
             colorCount: colors.length,
             colorPalette: colors,
             colorPaletteRaw: colors.map(c => c.hex.slice(1))
         };
+    }
+
+    function averageHue(colors) {
+        const vector = colors.reduce((total, color) => {
+            const radians = color.h * Math.PI / 180;
+            total.x += Math.cos(radians);
+            total.y += Math.sin(radians);
+            return total;
+        }, { x: 0, y: 0 });
+        return (Math.atan2(vector.y, vector.x) * 180 / Math.PI + 360) % 360;
     }
 
     function resetBtn() {
@@ -229,7 +296,9 @@
         btnText.textContent = 'Generate Palette';
         btnIcon.className = btnIcon.className.replace(/bi-[\w-]+/, 'bi-stars');
         generatePaletteBtn.disabled = false;
-        if (paletteColorInput) paletteColorInput.disabled = false;
+        document.querySelectorAll('.palette-color-input, .palette-color-picker, .remove-palette-color').forEach(control => control.disabled = false);
+        if (addPaletteColorBtn) addPaletteColorBtn.disabled = false;
+        updateRemoveButtons();
     }
 
     function showError(msg) {
@@ -337,10 +406,5 @@
             setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('bg-green-500', 'text-white'); }, 1500);
         }).catch(() => { });
     };
-
-    // ── Seed with the default picker color ───────────────────────────────────
-    if (paletteColorInput && !paletteColorInput.value) {
-        paletteColorInput.value = 'EC4899';
-    }
 
 })();
