@@ -14,12 +14,11 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
     <script src="<?= $base ?>/assets/js/app.js" defer></script>
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://colormagic.techkreative.com/favorites" />
+    <meta property="og:url" content="https://colormagic.techkreative.com/profile" />
     <meta property="og:title" content="Color Magic | Your Favorites" />
-    <meta property="og:description"
-        content="All your saved colors, palettes and gradients in one place." />
+    <meta property="og:description" content="All your saved colors, palettes and gradients in one place." />
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
-    <link rel="canonical" href="https://colormagic.techkreative.com/favorites" />
+    <link rel="canonical" href="https://colormagic.techkreative.com/profile" />
     <link rel="manifest" href="<?= $base ?>/manifest.json" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -150,11 +149,11 @@
             border-radius: 10px;
             font-size: 11px;
             font-weight: 700;
-            background: rgba(0,0,0,0.08);
+            background: rgba(0, 0, 0, 0.08);
         }
 
         .fav-tab.active .fav-count {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.25);
             color: #fff;
         }
 
@@ -193,8 +192,13 @@
 
         /* Mobile overlay */
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .animate-fadeIn {
@@ -224,7 +228,8 @@
             </button>
         </div>
         <div class="space-y-2">
-            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
@@ -257,10 +262,11 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="<?= $base ?>/favorites" class="sb-btn sb-active w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" class=" sb-btn sb-active w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
-                    <span class="block font-bold">Favorites</span><span class="text-xs opacity-75">Your saved items</span>
+                    <span class="block font-bold">Favorites</span><span class="text-xs opacity-75">Your saved
+                        items</span>
                 </div>
             </a>
             <div class="border-t border-slate-200 dark:border-slate-700 my-2"></div>
@@ -280,19 +286,23 @@
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
                 <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2 flex items-center gap-3">
-                    <i class="bi bi-heart-fill text-red-500"></i>
-                    Your Favorites
+                    <?php if (isset($_SESSION['user']['picture'])): ?>
+                        <img src="<?= htmlspecialchars($_SESSION['user']['picture']) ?>" alt="Profile" class="w-10 h-10 rounded-full object-cover shadow-sm">
+                    <?php else: ?>
+                        <i class="bi bi-person-circle text-indigo-500"></i>
+                    <?php endif; ?>
+                    Your Profile
                 </h1>
                 <p class="text-slate-500 dark:text-slate-400 text-base max-w-xl">
-                    All your saved colors, palettes and gradients in one place —
-                    ready to revisit and use anytime.
+                    View your saved colors, palettes, and gradients. Manage your account settings below.
                 </p>
             </div>
-            <div id="favTotalCount" class="text-sm text-slate-500 dark:text-slate-400 font-mono"></div>
+            <div id="favTotalCount" class="text-sm text-slate-500 dark:text-slate-400 font-mono bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm"></div>
         </div>
 
         <!-- Tabs -->
-        <div class="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <div
+            class="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
             <div id="favTabs" class="flex flex-wrap gap-2 mb-6">
                 <button class="fav-tab active" data-tab="colors">
                     <i class="bi bi-eyedropper"></i>
@@ -313,7 +323,8 @@
 
             <!-- Tab panels -->
             <div id="favPanelColors" class="fav-panel">
-                <div id="favColorsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
+                <div id="favColorsGrid"
+                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
             </div>
 
             <div id="favPanelPalettes" class="fav-panel hidden">
@@ -324,13 +335,41 @@
                 <div id="favGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
             </div>
         </div>
+
+        <!-- Account Settings -->
+        <div class="mt-8 bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="bi bi-gear-fill text-slate-400"></i>
+                Account Settings
+            </h2>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 font-semibold mb-1">SIGNED IN AS</p>
+                    <p class="text-lg font-medium text-slate-900 dark:text-white">
+                        <?= htmlspecialchars($_SESSION['user']['email'] ?? 'Not logged in') ?>
+                    </p>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <a href="<?= $base ?>/auth/logout" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg text-sm font-semibold transition-all shadow-sm">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+                    </a>
+                    <button onclick="if(confirm('Are you sure you want to delete your account? This action cannot be undone.')) window.location.href='<?= $base ?>/auth/delete-account'" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg text-sm font-semibold transition-all shadow-sm">
+                        <i class="bi bi-trash3"></i>
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <?php include '../components/footer.php'; ?>
 
     <script>
         window.CM_ACTIVE_PAGE = "favorites";
-        window.CM_COLOR_BASE  = "color/";
+        window.CM_COLOR_BASE = "color/";
         window.CM_PALETTE_BASE = "palette/";
     </script>
     <script src="<?= $base ?>/assets/js/utils.js" defer></script>

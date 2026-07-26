@@ -166,7 +166,7 @@
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-   
+
     <?php include '../components/navbar.php'; ?>
 
 
@@ -187,7 +187,8 @@
             </button>
         </div>
         <div class="space-y-2">
-            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
@@ -220,7 +221,7 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="<?= $base ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -269,7 +270,8 @@
                     <div class="flex items-center justify-between gap-4 mb-3">
                         <div>
                             <label for="paletteColorInput" class="text-sm font-bold">Palette Colors</label>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Add two or more colors to use them together as palette anchors.</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Add two or more colors to use
+                                them together as palette anchors.</p>
                         </div>
                         <button id="addPaletteColorBtn" type="button"
                             class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-pink-50 dark:bg-slate-800 text-primary hover:bg-pink-100 dark:hover:bg-slate-700 text-xs font-bold transition-colors">
@@ -282,12 +284,16 @@
                                 class="palette-color-picker w-10 h-10 rounded-xl cursor-pointer border-2 border-slate-200 dark:border-slate-700 overflow-hidden shrink-0"
                                 aria-label="Pick a palette color" />
                             <div class="flex-1 relative min-w-0">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">#</span>
-                                <input id="paletteColorInput" type="text" value="EC4899" placeholder="EC4899" maxlength="7"
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">#</span>
+                                <input id="paletteColorInput" type="text" value="EC4899" placeholder="EC4899"
+                                    maxlength="7"
                                     class="palette-color-input w-full pl-7 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-primary rounded-xl text-sm outline-none transition-all placeholder:text-slate-400 font-mono uppercase"
                                     aria-label="Enter hex color code" />
                             </div>
-                            <button type="button" class="remove-palette-color w-10 h-10 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Remove color">
+                            <button type="button"
+                                class="remove-palette-color w-10 h-10 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                aria-label="Remove color">
                                 <i class="bi bi-trash3"></i>
                             </button>
                         </div>

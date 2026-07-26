@@ -91,7 +91,7 @@
             background: white;
             border: 3px solid #ec4899;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
             transition: transform 0.15s;
         }
 
@@ -106,12 +106,14 @@
             background: white;
             border: 3px solid #ec4899;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
         }
 
         /* Spinner */
         @keyframes spin-slow {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .spin-slow {
@@ -120,8 +122,15 @@
 
         /* Fade-in for results */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(18px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .anim-fade-in-up {
@@ -143,8 +152,15 @@
         }
 
         @keyframes swatchBtnIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to   { opacity: 1; transform: translateY(0);    }
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .swatch-icon-btn {
@@ -152,9 +168,17 @@
             transform: translateY(-6px);
         }
 
-        .swatch:hover .swatch-icon-btn { animation: swatchBtnIn 0.18s ease forwards; }
-        .swatch:hover .swatch-btn-1    { animation-delay: 0s;    }
-        .swatch:hover .swatch-btn-2    { animation-delay: 0.06s; }
+        .swatch:hover .swatch-icon-btn {
+            animation: swatchBtnIn 0.18s ease forwards;
+        }
+
+        .swatch:hover .swatch-btn-1 {
+            animation-delay: 0s;
+        }
+
+        .swatch:hover .swatch-btn-2 {
+            animation-delay: 0.06s;
+        }
 
         .swatch-hex.copied-state {
             opacity: 1 !important;
@@ -237,7 +261,7 @@
                 <div><span class="block font-bold">Palette from Image</span><span class="text-xs opacity-75">Extract
                         colors from photos</span></div>
             </a>
-            <a href="<?= $base ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div><span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
                         palettes &amp; gradients</span></div>
@@ -285,7 +309,8 @@
         <div id="dropZone"
             class="relative border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl bg-white dark:bg-slate-900 p-10 flex flex-col items-center justify-center text-center cursor-pointer min-h-[220px] transition-all">
 
-            <input id="fileInput" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+            <input id="fileInput" type="file" accept="image/*"
+                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
 
             <div id="dropZoneContent" class="flex flex-col items-center gap-4 pointer-events-none">
                 <div
@@ -294,7 +319,8 @@
                 </div>
                 <div>
                     <p class="text-lg font-bold text-slate-700 dark:text-slate-200 mb-1">
-                        Drop your image here or <span class="text-fuchsia-500 underline underline-offset-2">browse</span>
+                        Drop your image here or <span
+                            class="text-fuchsia-500 underline underline-offset-2">browse</span>
                     </p>
                     <p class="text-xs text-slate-400">PNG · JPG · WEBP · GIF · BMP · SVG — any size</p>
                 </div>
@@ -303,8 +329,7 @@
             <!-- Loading overlay (hidden by default) -->
             <div id="extractingOverlay"
                 class="absolute inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl hidden flex-col items-center justify-center gap-4 z-10">
-                <div
-                    class="w-16 h-16 rounded-full border-4 border-fuchsia-200 border-t-fuchsia-500 spin-slow">
+                <div class="w-16 h-16 rounded-full border-4 border-fuchsia-200 border-t-fuchsia-500 spin-slow">
                 </div>
                 <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Extracting colors…</p>
             </div>
@@ -313,8 +338,10 @@
         <!-- Image preview + slider (full width, hidden until image loaded) -->
         <div id="imagePreviewWrapper" class="hidden flex flex-col gap-5">
             <div class="flex flex-col md:flex-row gap-5">
-                <div id="imagePreviewContainer" class="relative border border-slate-200 dark:border-slate-700 shadow-sm rounded-2xl overflow-hidden flex-1">
-                    <img id="imagePreview" alt="Uploaded image preview" class="max-h-[360px] w-full object-contain bg-slate-50 dark:bg-slate-800" />
+                <div id="imagePreviewContainer"
+                    class="relative border border-slate-200 dark:border-slate-700 shadow-sm rounded-2xl overflow-hidden flex-1">
+                    <img id="imagePreview" alt="Uploaded image preview"
+                        class="max-h-[360px] w-full object-contain bg-slate-50 dark:bg-slate-800" />
                     <button id="removeImageBtn"
                         class="absolute top-3 right-3 w-9 h-9 bg-black/50 hover:bg-black/70 text-white rounded-xl flex items-center justify-center transition-all text-lg"
                         title="Remove image" aria-label="Remove image">

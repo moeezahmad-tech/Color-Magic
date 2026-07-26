@@ -133,8 +133,13 @@
 
         /* Mobile overlay */
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .animate-fadeIn {
@@ -148,6 +153,7 @@
             transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.3s ease;
             opacity: 0;
         }
+
         #filterPanel.open {
             max-height: 500px;
             opacity: 1;
@@ -184,7 +190,8 @@
             </button>
         </div>
         <div class="space-y-2">
-            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
@@ -217,7 +224,7 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="<?= $base ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -254,7 +261,8 @@
         </div>
 
         <!-- Gradients explorer card -->
-        <div class="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <div
+            class="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
             <!-- Search + Filter toggle row -->
             <div class="flex items-center gap-3 mb-5">
                 <div class="relative group flex-1">
@@ -277,7 +285,8 @@
             <div id="filterPanel" class="px-1">
                 <!-- Type filter -->
                 <div class="mb-4">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Type</p>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+                        Type</p>
                     <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by type">
                         <button
                             class="type-filter flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-md shadow-primary/20 border border-transparent transition-all"
@@ -305,10 +314,13 @@
                 <!-- Style filter -->
                 <div class="mb-2">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Style</p>
-                        <button id="clearStyleBtn" class="text-[11px] text-primary hover:underline font-semibold hidden">Clear filter</button>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                            Style</p>
+                        <button id="clearStyleBtn"
+                            class="text-[11px] text-primary hover:underline font-semibold hidden">Clear filter</button>
                     </div>
-                    <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by style" id="styleFilterContainer">
+                    <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by style"
+                        id="styleFilterContainer">
                         <button
                             class="style-filter flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-md shadow-primary/20 border border-transparent transition-all"
                             data-style="all">
@@ -339,13 +351,13 @@
         window.CM_ACTIVE_PAGE = "gradients";
 
         // Filter panel toggle
-        (function() {
+        (function () {
             var toggleBtn = document.getElementById('filterToggleBtn');
-            var panel     = document.getElementById('filterPanel');
-            var chevron   = document.getElementById('filterChevron');
+            var panel = document.getElementById('filterPanel');
+            var chevron = document.getElementById('filterChevron');
             if (!toggleBtn || !panel) return;
 
-            toggleBtn.addEventListener('click', function() {
+            toggleBtn.addEventListener('click', function () {
                 var isOpen = panel.classList.toggle('open');
                 toggleBtn.setAttribute('aria-expanded', isOpen);
                 toggleBtn.classList.toggle('filter-toggle-active', isOpen);

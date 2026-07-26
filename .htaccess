@@ -34,13 +34,20 @@ RewriteRule ^palette/([a-z0-9-]+)/?$ pages/palette.php?slug=$1 [NC,L,QSA]
 RewriteRule ^gradient/([a-z0-9_]+)/?$ pages/gradient.php?id=$1 [NC,L,QSA]
 RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ pages/colorImage.php?hex=$1 [L]
 
+# Auth routes
+RewriteRule ^auth/google-login/?$ auth/google-login.php [L]
+RewriteRule ^auth/google-callback/?$ auth/google-callback.php [L]
+RewriteRule ^auth/logout/?$ auth/logout.php [L]
+RewriteRule ^auth/delete-account/?$ auth/delete-account.php [L]
+
 # Static pages (explicit routes — no file-existence check needed)
 RewriteRule ^palettes/?$ pages/palettes.php [L]
 RewriteRule ^gradients/?$ pages/gradients.php [L]
 RewriteRule ^generate-palette/?$ pages/generate-palette.php [L]
 RewriteRule ^palette-from-image/?$ pages/palette-from-image.php [L]
 RewriteRule ^find-color/?$ pages/find-color.php [L]
-RewriteRule ^favorites/?$ pages/favorites.php [L]
+RewriteRule ^profile/?$ pages/profile.php [L]
+RewriteRule ^login/?$ pages/login.php [L]
 RewriteRule ^open-source/?$ pages/open-source.php [L]
 RewriteRule ^hex-to-color-name/?$ pages/hex-to-color-name.php [L]
 RewriteRule ^hex-to-rgb/?$ pages/hex-to-rgb.php [L]

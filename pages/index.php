@@ -19,7 +19,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://colormagic.techkreative.com/" />
     <meta property="og:title" content="Color Name Finder & Palette Generator | Hex to Color Name — Color Magic" />
-    <meta property="og:description" content="Free color name finder — convert any hex code to its color name, RGB, and HSL values. Generate professional palettes." />
+    <meta property="og:description"
+        content="Free color name finder — convert any hex code to its color name, RGB, and HSL values. Generate professional palettes." />
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
 
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
@@ -144,7 +145,6 @@
                     white 80%,
                     transparent);
         }
-
     </style>
 </head>
 
@@ -155,7 +155,7 @@
     <div class="glow-bg bottom-[-100px] right-[-100px]"></div>
 
     <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
-       <?php include '../components/navbar.php'; ?>
+    <?php include '../components/navbar.php'; ?>
 
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
     <div id="mobileMenuOverlay"
@@ -176,7 +176,8 @@
         </div>
         <!-- Mobile nav items -->
         <div class="space-y-2">
-            <a href="<?= $base ?>/" class="sb-btn sb-active w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-active w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-75">Back to homepage</span>
                 </div>
@@ -209,7 +210,7 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="/profile" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -234,11 +235,14 @@
             <!-- Left Text Content -->
             <div class="lg:col-span-7 text-center lg:text-left">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6 leading-tight">
-                    Find <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Color Names</span> & Generate <br class="hidden sm:inline" />Professional Palettes
+                    Find <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Color
+                        Names</span> & Generate <br class="hidden sm:inline" />Professional Palettes
                 </h1>
                 <p
                     class="text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-8 max-w-2xl mx-auto lg:mx-0">
-                    Instantly find any color's name from its hex code. Convert hex to RGB and HSL, generate harmonious palettes with color theory, and explore thousands of curated color schemes — all free and open-source.
+                    Instantly find any color's name from its hex code. Convert hex to RGB and HSL, generate harmonious
+                    palettes with color theory, and explore thousands of curated color schemes — all free and
+                    open-source.
                 </p>
                 <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
                     <a href="<?= $base ?>/palettes"
@@ -577,8 +581,9 @@
             </a>
 
             <!-- Card 6: Favorites -->
-            <a href="<?= $base ?>/favorites"
-                class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
+            <a href="<?= $base ?>/profile"
+                class=" card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl
+                p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                 <div
                     class="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110">
                 </div>
@@ -598,7 +603,8 @@
                 </div>
                 <!-- Mini Visual Preview -->
                 <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    <span class="flex items-center gap-1"><i class="bi bi-heart-fill text-red-400"></i> Your collection</span>
+                    <span class="flex items-center gap-1"><i class="bi bi-heart-fill text-red-400"></i> Your
+                        collection</span>
                 </div>
             </a>
 
@@ -624,7 +630,8 @@
                 </div>
                 <!-- Mini Visual Preview -->
                 <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    <span class="flex items-center gap-1"><i class="bi bi-upload text-fuchsia-400"></i> Upload &amp; extract</span>
+                    <span class="flex items-center gap-1"><i class="bi bi-upload text-fuchsia-400"></i> Upload &amp;
+                        extract</span>
                 </div>
             </a>
 
@@ -693,64 +700,96 @@
         <div class="mb-16 py-12 border-t border-slate-200 dark:border-slate-800">
             <h2 class="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-white">Popular Color Tools</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <a href="<?= $base ?>/find-color" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/find-color"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">🔍 Hex Color Finder</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Enter any hex code and get its name, RGB, HSL and contrast info</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Enter any hex code and get its name, RGB, HSL
+                        and contrast info</p>
                 </a>
-                <a href="<?= $base ?>/hex-to-color-name" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/hex-to-color-name"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">🏷️ Hex to Color Name</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Convert any hex code to a human-readable color name instantly</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Convert any hex code to a human-readable color
+                        name instantly</p>
                 </a>
-                <a href="<?= $base ?>/hex-to-rgb" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/hex-to-rgb"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">🔄 Hex to RGB Converter</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Fast, accurate hex to RGB and RGB to hex color conversion</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Fast, accurate hex to RGB and RGB to hex color
+                        conversion</p>
                 </a>
-                <a href="<?= $base ?>/palette-from-image" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/palette-from-image"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">🖼️ Palette from Image</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Upload any photo and extract its dominant colors instantly</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Upload any photo and extract its dominant
+                        colors instantly</p>
                 </a>
-                <a href="<?= $base ?>/what-color-is" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/what-color-is"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">🎨 What Color Is This Code?</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Identify any hex or RGB color code with our interactive tool</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Identify any hex or RGB color code with our
+                        interactive tool</p>
                 </a>
-                <a href="<?= $base ?>/dark-color-finder" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/dark-color-finder"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">🌙 Dark Color Name Finder</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Discover names for deep, dark shades and midnight tones</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Discover names for deep, dark shades and
+                        midnight tones</p>
                 </a>
-                <a href="<?= $base ?>/brand-color-lookup" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/brand-color-lookup"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">💼 Brand Color Lookup</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Find hex codes and palettes from popular brand identities</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Find hex codes and palettes from popular brand
+                        identities</p>
                 </a>
-                <a href="<?= $base ?>/generate-palette" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/generate-palette"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">✨ Generate Palette</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Create harmonious color schemes using color theory rules</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Create harmonious color schemes using color
+                        theory rules</p>
                 </a>
-                <a href="<?= $base ?>/gradients" class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+                <a href="<?= $base ?>/gradients"
+                    class="p-5 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">🌈 CSS Gradients</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Browse 100+ hand-crafted linear and radial CSS gradients</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Browse 100+ hand-crafted linear and radial CSS
+                        gradients</p>
                 </a>
             </div>
         </div>
 
         <!-- FAQ Section -->
         <div class="mb-16">
-            <h2 class="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-white">Frequently Asked Questions</h2>
+            <h2 class="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-white">Frequently Asked Questions
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                     <h3 class="font-bold text-base mb-2">What is a hex color code?</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">A hex color code is a 6-character combination of numbers and letters (0-9, A-F) preceded by a # symbol. It represents a specific color using the RGB model. For example, #FF5733 is a vibrant red-orange, where FF is the red channel, 57 is green, and 33 is blue.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">A hex color code is a 6-character combination
+                        of numbers and letters (0-9, A-F) preceded by a # symbol. It represents a specific color using
+                        the RGB model. For example, #FF5733 is a vibrant red-orange, where FF is the red channel, 57 is
+                        green, and 33 is blue.</p>
                 </div>
                 <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                     <h3 class="font-bold text-base mb-2">How do I find a color name from a hex code?</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Use our <a href="<?= $base ?>/find-color" class="text-primary hover:underline">Color Finder tool</a> — simply enter any hex code and instantly get its closest color name, along with RGB and HSL values. Our database includes over 1,000 named colors.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Use our <a href="<?= $base ?>/find-color"
+                            class="text-primary hover:underline">Color Finder tool</a> — simply enter any hex code and
+                        instantly get its closest color name, along with RGB and HSL values. Our database includes over
+                        1,000 named colors.</p>
                 </div>
                 <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                     <h3 class="font-bold text-base mb-2">What is a color palette generator?</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">A color palette generator creates harmonious color combinations using color theory rules like complementary, analogous, triadic, and split-complementary relationships. Try our <a href="<?= $base ?>/generate-palette" class="text-primary hover:underline">Palette Generator</a> to create professional schemes.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">A color palette generator creates harmonious
+                        color combinations using color theory rules like complementary, analogous, triadic, and
+                        split-complementary relationships. Try our <a href="<?= $base ?>/generate-palette"
+                            class="text-primary hover:underline">Palette Generator</a> to create professional schemes.
+                    </p>
                 </div>
                 <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                     <h3 class="font-bold text-base mb-2">How do I convert hex to RGB?</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Each pair of hex digits converts to a decimal value (0-255) for one RGB channel. For example, #3B82F6 becomes RGB(59, 130, 246). Use our <a href="<?= $base ?>/hex-to-rgb" class="text-primary hover:underline">Hex to RGB Converter</a> for instant, accurate conversions.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Each pair of hex digits converts to a decimal
+                        value (0-255) for one RGB channel. For example, #3B82F6 becomes RGB(59, 130, 246). Use our <a
+                            href="<?= $base ?>/hex-to-rgb" class="text-primary hover:underline">Hex to RGB Converter</a>
+                        for instant, accurate conversions.</p>
                 </div>
             </div>
         </div>

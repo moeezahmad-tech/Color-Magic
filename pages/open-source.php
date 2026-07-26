@@ -135,7 +135,7 @@
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
     <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
-       <?php include '../components/navbar.php'; ?>
+    <?php include '../components/navbar.php'; ?>
 
 
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
@@ -155,7 +155,8 @@
             </button>
         </div>
         <div class="space-y-2">
-            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
@@ -188,7 +189,7 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="<?= $base ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -588,22 +589,28 @@
                 🧰 Try Our Tools
             </h2>
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <a href="<?= $base ?>/find-color" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                <a href="<?= $base ?>/find-color"
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
                     <i class="bi bi-eyedropper text-2xl text-emerald-500 mb-3 block"></i>
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">Find Color</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Enter any hex code and get its name, RGB, HSL and more</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Enter any hex code and get its name, RGB, HSL
+                        and more</p>
                 </a>
-                <a href="<?= $base ?>/hex-to-color-name" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                <a href="<?= $base ?>/hex-to-color-name"
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
                     <i class="bi bi-tag text-2xl text-violet-500 mb-3 block"></i>
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">Hex to Color Name</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Convert any hex code to a human-readable color name</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Convert any hex code to a human-readable color
+                        name</p>
                 </a>
-                <a href="<?= $base ?>/palettes" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                <a href="<?= $base ?>/palettes"
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
                     <i class="bi bi-palette text-2xl text-primary mb-3 block"></i>
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">Explore Palettes</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400">Browse 150+ curated color palettes</p>
                 </a>
-                <a href="<?= $base ?>/generate-palette" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
+                <a href="<?= $base ?>/generate-palette"
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition group">
                     <i class="bi bi-stars text-2xl text-secondary mb-3 block"></i>
                     <h3 class="font-bold mb-1 group-hover:text-primary transition">Generate Palette</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400">Create color schemes using color theory</p>

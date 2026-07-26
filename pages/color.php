@@ -83,7 +83,8 @@ function colorDistanceSq(string $hexA, string $hexB): int
     return ($dr * $dr) + ($dg * $dg) + ($db * $db);
 }
 
-function mixColor(array $base, array $mix, float $weight): string {
+function mixColor(array $base, array $mix, float $weight): string
+{
     $r = (int) round($base['r'] * $weight + $mix['r'] * (1 - $weight));
     $g = (int) round($base['g'] * $weight + $mix['g'] * (1 - $weight));
     $b = (int) round($base['b'] * $weight + $mix['b'] * (1 - $weight));
@@ -147,12 +148,12 @@ $colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
 
 // If accessed via hex URL and this color has a named slug, 301 redirect to the slug URL
 if ($slugParam === '' && $colorSlug !== null) {
-    $scheme      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $httpHost    = (string) ($_SERVER['HTTP_HOST'] ?? 'colormagic.techkreative.com');
-    $scriptName  = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $httpHost = (string) ($_SERVER['HTTP_HOST'] ?? 'colormagic.techkreative.com');
+    $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '/color.php');
     /** @var string $base */
-    $basePath    = $base;
-    $slugUrl     = $scheme . '://' . $httpHost . $basePath . '/color/' . $colorSlug . '/';
+    $basePath = $base;
+    $slugUrl = $scheme . '://' . $httpHost . $basePath . '/color/' . $colorSlug . '/';
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: ' . $slugUrl);
     exit;
@@ -163,17 +164,17 @@ $contrast = bestContrastText($normalizedHex);
 
 $shades = [];
 for ($i = 1; $i <= 10; $i++) {
-    $shades[] = mixColor($rgb, ['r'=>0,'g'=>0,'b'=>0], $i / 10);
+    $shades[] = mixColor($rgb, ['r' => 0, 'g' => 0, 'b' => 0], $i / 10);
 }
 
 $tints = [];
 for ($i = 10; $i >= 1; $i--) {
-    $tints[] = mixColor($rgb, ['r'=>255,'g'=>255,'b'=>255], $i / 10);
+    $tints[] = mixColor($rgb, ['r' => 255, 'g' => 255, 'b' => 255], $i / 10);
 }
 
 $tones = [];
 for ($i = 1; $i <= 10; $i++) {
-    $tones[] = mixColor($rgb, ['r'=>128,'g'=>128,'b'=>128], $i / 10);
+    $tones[] = mixColor($rgb, ['r' => 128, 'g' => 128, 'b' => 128], $i / 10);
 }
 
 $darkestShade = '#' . $shades[0];
@@ -278,7 +279,8 @@ $dynamicColorImageUrl = $baseUrl . '/colors/' . strtolower($normalizedHex) . '.w
 $ogImageUrl = $baseUrl . '/assets/og-preview.png';
 
 // WCAG Contrast Ratios
-function contrastRatio(float $l1, float $l2): float {
+function contrastRatio(float $l1, float $l2): float
+{
     $lighter = max($l1, $l2);
     $darker = min($l1, $l2);
     return ($lighter + 0.05) / ($darker + 0.05);
@@ -309,18 +311,39 @@ $analogous2 = ($hue + 330) % 360;
 $triadic1 = ($hue + 120) % 360;
 $triadic2 = ($hue + 240) % 360;
 
-function hslToHex(int $h, int $s, int $l): string {
-    $s /= 100; $l /= 100;
+function hslToHex(int $h, int $s, int $l): string
+{
+    $s /= 100;
+    $l /= 100;
     $c = (1 - abs(2 * $l - 1)) * $s;
     $x = $c * (1 - abs(fmod($h / 60, 2) - 1));
     $m = $l - $c / 2;
-    if ($h < 60) { $r=$c; $g=$x; $b=0; }
-    elseif ($h < 120) { $r=$x; $g=$c; $b=0; }
-    elseif ($h < 180) { $r=0; $g=$c; $b=$x; }
-    elseif ($h < 240) { $r=0; $g=$x; $b=$c; }
-    elseif ($h < 300) { $r=$x; $g=0; $b=$c; }
-    else { $r=$c; $g=0; $b=$x; }
-    return sprintf('%02X%02X%02X', (int)round(($r+$m)*255), (int)round(($g+$m)*255), (int)round(($b+$m)*255));
+    if ($h < 60) {
+        $r = $c;
+        $g = $x;
+        $b = 0;
+    } elseif ($h < 120) {
+        $r = $x;
+        $g = $c;
+        $b = 0;
+    } elseif ($h < 180) {
+        $r = 0;
+        $g = $c;
+        $b = $x;
+    } elseif ($h < 240) {
+        $r = 0;
+        $g = $x;
+        $b = $c;
+    } elseif ($h < 300) {
+        $r = $x;
+        $g = 0;
+        $b = $c;
+    } else {
+        $r = $c;
+        $g = 0;
+        $b = $x;
+    }
+    return sprintf('%02X%02X%02X', (int) round(($r + $m) * 255), (int) round(($g + $m) * 255), (int) round(($b + $m) * 255));
 }
 
 $complementaryHex = '#' . hslToHex($complementaryHue, $hsl['s'], $hsl['l']);
@@ -347,26 +370,28 @@ $schema = [
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title><?php echo e($metaTitle); ?></title>
     <meta name="description" content="<?php echo e($metaDescription); ?>" />
-    <meta name="keywords" content="color palette generator, hex code details, rgb to hsl, designer tools, TechKreative" />
+    <meta name="keywords"
+        content="color palette generator, hex code details, rgb to hsl, designer tools, TechKreative" />
     <meta name="author" content="Color Magic" />
     <meta name="robots" content="<?php echo $isValidHex ? 'index, follow' : 'noindex, follow'; ?>" />
 
     <?php if ($isProduction): ?>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', 'G-537L4MR968');
-    </script>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-537L4MR968');
+        </script>
     <?php endif; ?>
 
     <link rel="canonical" href="<?php echo e($canonicalUrl); ?>" />
@@ -383,12 +408,15 @@ $schema = [
     <link rel="manifest" href="<?php echo e($manifestUrl); ?>" />
     <link rel="icon" type="image/png" href="<?php echo e($faviconUrl); ?>" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="<?php echo e($siteStylesUrl); ?>" />
     <script id="tailwind-config" src="<?php echo e($tailwindConfigUrl); ?>"></script>
 
-    <script type="application/ld+json"><?php echo json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?></script>
+    <script
+        type="application/ld+json"><?php echo json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?></script>
 
     <style>
         .copy-feedback {
@@ -409,6 +437,7 @@ $schema = [
             border-radius: 12px;
             transition: all 0.25s ease;
         }
+
         .sb-btn .sb-icon {
             width: 36px;
             height: 36px;
@@ -420,46 +449,117 @@ $schema = [
             flex-shrink: 0;
             transition: transform 0.2s ease;
         }
-        .sb-btn:hover .sb-icon { transform: scale(1.12); }
-        .sb-btn.sb-inactive { color: #475569; background: transparent; }
-        .sb-btn.sb-inactive:hover { background: #fdf2f8; color: #ec4899; }
-        .sb-btn.sb-inactive .sb-icon { background: #fdf2f8; color: #ec4899; }
+
+        .sb-btn:hover .sb-icon {
+            transform: scale(1.12);
+        }
+
+        .sb-btn.sb-inactive {
+            color: #475569;
+            background: transparent;
+        }
+
+        .sb-btn.sb-inactive:hover {
+            background: #fdf2f8;
+            color: #ec4899;
+        }
+
+        .sb-btn.sb-inactive .sb-icon {
+            background: #fdf2f8;
+            color: #ec4899;
+        }
+
         .sb-btn.sb-active {
             background: linear-gradient(135deg, #7c3aed, #ec4899);
             color: #fff;
             box-shadow: 0 8px 24px -6px rgba(236, 72, 153, 0.45);
         }
-        .sb-btn.sb-active .sb-icon { background: rgba(255, 255, 255, 0.18); color: #fff; }
-        .sb-btn.sb-active:hover { box-shadow: 0 12px 28px -6px rgba(124, 58, 237, 0.45); transform: translateY(-1px); }
-        .dark .sb-btn.sb-inactive { color: #94a3b8; }
-        .dark .sb-btn.sb-inactive:hover { background: #1e293b; color: #ec4899; }
-        .dark .sb-btn.sb-inactive .sb-icon { background: #1e293b; color: #ec4899; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
+
+        .sb-btn.sb-active .sb-icon {
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+        }
+
+        .sb-btn.sb-active:hover {
+            box-shadow: 0 12px 28px -6px rgba(124, 58, 237, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .dark .sb-btn.sb-inactive {
+            color: #94a3b8;
+        }
+
+        .dark .sb-btn.sb-inactive:hover {
+            background: #1e293b;
+            color: #ec4899;
+        }
+
+        .dark .sb-btn.sb-inactive .sb-icon {
+            background: #1e293b;
+            color: #ec4899;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.2s ease-out;
+        }
 
         /* ── Swatch hover styles (shared with Explore Palettes) ── */
         .swatch {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .swatch-hex {
             opacity: 0;
             transition: opacity 0.2s ease;
         }
+
         .swatch:hover .swatch-hex {
             opacity: 1;
         }
+
         @keyframes swatchBtnIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to   { opacity: 1; transform: translateY(0);    }
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .swatch-icon-btn {
             opacity: 0;
             transform: translateY(-6px);
         }
-        .swatch:hover .swatch-icon-btn { animation: swatchBtnIn 0.18s ease forwards; }
-        .swatch:hover .swatch-btn-1    { animation-delay: 0s;    }
-        .swatch:hover .swatch-btn-2    { animation-delay: 0.06s; }
-        .swatch:hover .swatch-btn-3    { animation-delay: 0.12s; }
+
+        .swatch:hover .swatch-icon-btn {
+            animation: swatchBtnIn 0.18s ease forwards;
+        }
+
+        .swatch:hover .swatch-btn-1 {
+            animation-delay: 0s;
+        }
+
+        .swatch:hover .swatch-btn-2 {
+            animation-delay: 0.06s;
+        }
+
+        .swatch:hover .swatch-btn-3 {
+            animation-delay: 0.12s;
+        }
+
         .swatch-hex.copied-state {
             opacity: 1 !important;
             background: rgba(34, 197, 94, 0.9) !important;
@@ -468,6 +568,7 @@ $schema = [
         }
     </style>
 </head>
+
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
     <?php include '../components/navbar.php'; ?>
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
@@ -487,27 +588,41 @@ $schema = [
             </button>
         </div>
         <div class="space-y-2">
-            <a href="<?php echo e($homePageUrl); ?>" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
-                <div><span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span></div>
+            <a href="<?php echo e($homePageUrl); ?>" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
+                <div><span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
+                </div>
             </a>
-            <a href="<?php echo e($assetBase); ?>/palettes" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-palette"></i></span>
-                <div><span class="block font-bold">Explore Palettes</span><span class="text-xs opacity-60">Browse collections</span></div>
+            <a href="<?php echo e($assetBase); ?>/palettes" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-palette"></i></span>
+                <div><span class="block font-bold">Explore Palettes</span><span class="text-xs opacity-60">Browse
+                        collections</span></div>
             </a>
-            <a href="<?php echo e($assetBase); ?>/gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-rainbow"></i></span>
-                <div><span class="block font-bold">Gradients</span><span class="text-xs opacity-60">Browse CSS gradients</span></div>
+            <a href="<?php echo e($assetBase); ?>/gradients" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-rainbow"></i></span>
+                <div><span class="block font-bold">Gradients</span><span class="text-xs opacity-60">Browse CSS
+                        gradients</span></div>
             </a>
-            <a href="<?php echo e($assetBase); ?>/find-color" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-eyedropper"></i></span>
-                <div><span class="block font-bold">Find Color</span><span class="text-xs opacity-60">Hex to name &amp; info</span></div>
+            <a href="<?php echo e($assetBase); ?>/find-color" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-eyedropper"></i></span>
+                <div><span class="block font-bold">Find Color</span><span class="text-xs opacity-60">Hex to name &amp;
+                        info</span></div>
             </a>
-            <a href="<?php echo e($assetBase); ?>/generate-palette" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-stars"></i></span>
-                <div><span class="block font-bold">Generate Palette</span><span class="text-xs opacity-60">Create color schemes</span></div>
+            <a href="<?php echo e($assetBase); ?>/generate-palette" class="sb-btn sb-inactive w-full"><span
+                    class="sb-icon"><i class="bi bi-stars"></i></span>
+                <div><span class="block font-bold">Generate Palette</span><span class="text-xs opacity-60">Create color
+                        schemes</span></div>
             </a>
-            <a href="<?php echo e($assetBase); ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-heart-fill"></i></span>
-                <div><span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors, palettes &amp; gradients</span></div>
+            <a href="<?php echo e($assetBase); ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-heart-fill"></i></span>
+                <div><span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
+                        palettes &amp; gradients</span></div>
             </a>
             <div class="border-t border-slate-200 dark:border-slate-700 my-2"></div>
-            <a href="<?php echo e($openSourceUrl); ?>" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-github"></i></span>
-                <div><span class="block font-bold">Open Source</span><span class="text-xs opacity-60">View on GitHub</span></div>
+            <a href="<?php echo e($openSourceUrl); ?>" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-github"></i></span>
+                <div><span class="block font-bold">Open Source</span><span class="text-xs opacity-60">View on
+                        GitHub</span></div>
             </a>
         </div>
     </div>
@@ -521,53 +636,71 @@ $schema = [
             </p>
         </div>
 
-        <section class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+        <section
+            class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
             <div class="grid grid-cols-1 lg:grid-cols-[420px,1fr]">
-                <div class="relative min-h-[280px] md:min-h-[360px] p-6 flex items-end overflow-hidden" style="background-color: <?php echo e($hexWithHash); ?>;">
-                    <img
-                        src="<?php echo e($dynamicColorImageUrl); ?>"
+                <div class="relative min-h-[280px] md:min-h-[360px] p-6 flex items-end overflow-hidden"
+                    style="background-color: <?php echo e($hexWithHash); ?>;">
+                    <img src="<?php echo e($dynamicColorImageUrl); ?>"
                         alt="Color palette preview for hex code <?php echo e(strtolower($normalizedHex)); ?> featuring complementary design rules"
-                        width="600"
-                        height="600"
-                        class="absolute inset-0 h-full w-full object-cover"
-                        loading="eager"
+                        width="600" height="600" class="absolute inset-0 h-full w-full object-cover" loading="eager"
                         fetchpriority="high" />
-                    <div class="relative z-10 px-4 py-3 rounded-xl backdrop-blur-sm" style="background: rgba(15, 23, 42, 0.25); color: <?php echo e($contrast); ?>;">
+                    <div class="relative z-10 px-4 py-3 rounded-xl backdrop-blur-sm"
+                        style="background: rgba(15, 23, 42, 0.25); color: <?php echo e($contrast); ?>;">
                         <p class="text-sm uppercase tracking-widest opacity-85">Selected Color</p>
                         <p class="text-3xl font-bold"><?php echo e($hexWithHash); ?></p>
                     </div>
                 </div>
 
                 <div class="p-6 md:p-8">
-                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-3"><?php echo e($hexName); ?> Color Details</h1>
-                    <h2 class="text-xl md:text-2xl font-semibold tracking-tight mb-3">Explore Hex Code Details with the Color Magic Design Tool</h2>
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-3"><?php echo e($hexName); ?> Color
+                        Details</h1>
+                    <h2 class="text-xl md:text-2xl font-semibold tracking-tight mb-3">Explore Hex Code Details with the
+                        Color Magic Design Tool</h2>
                     <p class="text-slate-500 dark:text-slate-400 text-base md:text-lg mb-6">
-                        Complete color profile for <?php echo e($hexWithHash); ?> with copy-ready values and related palettes.
+                        Complete color profile for <?php echo e($hexWithHash); ?> with copy-ready values and related
+                        palettes.
                     </p>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
+                        <div
+                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">Hex</p>
                             <p class="font-mono font-bold text-lg mb-3"><?php echo e($hexWithHash); ?></p>
-                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="<?php echo e($hexWithHash); ?>">Copy HEX</button>
+                            <button
+                                class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20"
+                                data-copy="<?php echo e($hexWithHash); ?>">Copy HEX</button>
                         </div>
 
-                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
+                        <div
+                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">RGB</p>
-                            <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
-                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)">Copy RGB</button>
+                            <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $rgb['r']); ?>,
+                                <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
+                            <button
+                                class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20"
+                                data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)">Copy
+                                RGB</button>
                         </div>
 
-                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
+                        <div
+                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">HSL</p>
-                            <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%</p>
-                            <button class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20" data-copy="hsl(<?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%)">Copy HSL</button>
+                            <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $hsl['h']); ?>,
+                                <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%</p>
+                            <button
+                                class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20"
+                                data-copy="hsl(<?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%)">Copy
+                                HSL</button>
                         </div>
 
-                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
+                        <div
+                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">Best Contrast</p>
-                            <p class="font-semibold text-lg"><?php echo $contrast === '#FFFFFF' ? 'White text' : 'Dark text'; ?></p>
-                            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400"><?php echo e((string) count($relatedPalettes)); ?> related palettes found</p>
+                            <p class="font-semibold text-lg">
+                                <?php echo $contrast === '#FFFFFF' ? 'White text' : 'Dark text'; ?></p>
+                            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                                <?php echo e((string) count($relatedPalettes)); ?> related palettes found</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 mt-4">
@@ -582,24 +715,36 @@ $schema = [
                             <span>Download PNG</span>
                         </button>
                     </div>
-                    <p id="copyFeedback" class="copy-feedback opacity-0 -translate-y-1 mt-4 text-sm font-semibold text-emerald-600">Copied to clipboard</p>
+                    <p id="copyFeedback"
+                        class="copy-feedback opacity-0 -translate-y-1 mt-4 text-sm font-semibold text-emerald-600">
+                        Copied to clipboard</p>
                 </div>
             </div>
         </section>
 
         <section class="mt-12" aria-labelledby="shades-tints-title">
-            <h2 id="shades-tints-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Shades and Tints of <?php echo e($hexWithHash); ?></h2>
+            <h2 id="shades-tints-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Shades and Tints of
+                <?php echo e($hexWithHash); ?></h2>
             <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                A shade is achieved by adding black to any pure hue, while a tint is created by mixing white to any pure hue. 
-                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($darkestShade); ?></span> is the darkest color, while 
-                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($lightestTint); ?></span> is the lightest one.
+                A shade is achieved by adding black to any pure hue, while a tint is created by mixing white to any pure
+                hue.
+                <span
+                    class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($darkestShade); ?></span>
+                is the darkest color, while
+                <span
+                    class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($lightestTint); ?></span>
+                is the lightest one.
             </p>
 
             <div class="mb-8">
                 <div class="flex h-24 md:h-32 rounded-2xl overflow-hidden shadow-sm">
                     <?php foreach ($shades as $shadeHex): ?>
-                        <a href="<?php echo e($colorRouteBase . $shadeHex . '/'); ?>" class="flex-1 transition-opacity hover:opacity-90 relative group" style="background-color: #<?php echo e($shadeHex); ?>;" aria-label="View shade <?php echo e('#' . $shadeHex); ?>">
-                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($shadeHex); ?></span>
+                        <a href="<?php echo e($colorRouteBase . $shadeHex . '/'); ?>"
+                            class="flex-1 transition-opacity hover:opacity-90 relative group"
+                            style="background-color: #<?php echo e($shadeHex); ?>;"
+                            aria-label="View shade <?php echo e('#' . $shadeHex); ?>">
+                            <span
+                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($shadeHex); ?></span>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -609,8 +754,12 @@ $schema = [
             <div class="mb-10 lg:mb-12">
                 <div class="flex h-24 md:h-32 rounded-2xl overflow-hidden shadow-sm">
                     <?php foreach ($tints as $tintHex): ?>
-                        <a href="<?php echo e($colorRouteBase . $tintHex . '/'); ?>" class="flex-1 transition-opacity hover:opacity-90 relative group" style="background-color: #<?php echo e($tintHex); ?>;" aria-label="View tint <?php echo e('#' . $tintHex); ?>">
-                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($tintHex); ?></span>
+                        <a href="<?php echo e($colorRouteBase . $tintHex . '/'); ?>"
+                            class="flex-1 transition-opacity hover:opacity-90 relative group"
+                            style="background-color: #<?php echo e($tintHex); ?>;"
+                            aria-label="View tint <?php echo e('#' . $tintHex); ?>">
+                            <span
+                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($tintHex); ?></span>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -619,18 +768,27 @@ $schema = [
         </section>
 
         <section class="mt-8 md:mt-12 mb-12 lg:mb-16" aria-labelledby="tones-title">
-            <h2 id="tones-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Tones of <?php echo e($hexWithHash); ?></h2>
+            <h2 id="tones-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Tones of
+                <?php echo e($hexWithHash); ?></h2>
             <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                A tone is produced by adding gray to any pure hue. In this case, 
-                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($leastSaturatedTone); ?></span> is the less saturated color, while 
-                <span class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($hexWithHash); ?></span> is the most saturated one.
+                A tone is produced by adding gray to any pure hue. In this case,
+                <span
+                    class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($leastSaturatedTone); ?></span>
+                is the less saturated color, while
+                <span
+                    class="inline-flex items-center mx-1 px-2 py-0.5 rounded text-sm bg-slate-100 dark:bg-slate-800 font-mono"><?php echo e($hexWithHash); ?></span>
+                is the most saturated one.
             </p>
 
             <div>
                 <div class="flex h-24 md:h-32 rounded-2xl overflow-hidden shadow-sm">
                     <?php foreach ($tones as $toneHex): ?>
-                        <a href="<?php echo e($colorRouteBase . $toneHex . '/'); ?>" class="flex-1 transition-opacity hover:opacity-90 relative group" style="background-color: #<?php echo e($toneHex); ?>;" aria-label="View tone <?php echo e('#' . $toneHex); ?>">
-                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($toneHex); ?></span>
+                        <a href="<?php echo e($colorRouteBase . $toneHex . '/'); ?>"
+                            class="flex-1 transition-opacity hover:opacity-90 relative group"
+                            style="background-color: #<?php echo e($toneHex); ?>;"
+                            aria-label="View tone <?php echo e('#' . $toneHex); ?>">
+                            <span
+                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 text-white text-xs font-mono font-bold backdrop-blur-sm transition-opacity">#<?php echo e($toneHex); ?></span>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -644,7 +802,8 @@ $schema = [
             </h2>
 
             <?php if ($relatedPalettes === []): ?>
-                <div class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
+                <div
+                    class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
                     No related palettes found in the current library.
                 </div>
             <?php else: ?>
@@ -669,30 +828,35 @@ $schema = [
                 CSS gradients that contain or closely match <?php echo e($hexWithHash); ?>.
             </p>
             <div id="relatedGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
-            <div id="relatedGradientsEmpty" class="hidden rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
+            <div id="relatedGradientsEmpty"
+                class="hidden rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
                 No gradients found matching this color.
             </div>
         </section>
 
         <!-- Related Tools -->
         <section class="mt-8 md:mt-12 mb-8" aria-labelledby="related-tools-title">
-            <h2 id="related-tools-title" class="text-xl md:text-2xl font-bold tracking-tight mb-4">Related Color Tools</h2>
+            <h2 id="related-tools-title" class="text-xl md:text-2xl font-bold tracking-tight mb-4">Related Color Tools
+            </h2>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <a href="<?php echo e($assetBase); ?>/hex-to-rgb" class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
+                <a href="<?php echo e($assetBase); ?>/hex-to-rgb"
+                    class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
                     <i class="bi bi-sliders text-secondary text-lg"></i>
                     <div>
                         <p class="font-bold text-sm">Hex to RGB Converter</p>
                         <p class="text-xs text-slate-500 dark:text-slate-400">Convert this color to RGB instantly</p>
                     </div>
                 </a>
-                <a href="<?php echo e($assetBase); ?>/find-color" class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
+                <a href="<?php echo e($assetBase); ?>/find-color"
+                    class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
                     <i class="bi bi-eyedropper text-emerald-500 text-lg"></i>
                     <div>
                         <p class="font-bold text-sm">Find Color</p>
                         <p class="text-xs text-slate-500 dark:text-slate-400">Look up any hex code details</p>
                     </div>
                 </a>
-                <a href="<?php echo e($assetBase); ?>/generate-palette" class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
+                <a href="<?php echo e($assetBase); ?>/generate-palette"
+                    class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
                     <i class="bi bi-stars text-pink-500 text-lg"></i>
                     <div>
                         <p class="font-bold text-sm">Generate Palette</p>
@@ -710,7 +874,7 @@ $schema = [
     <!-- Shared palette component (same as explore page) -->
     <script>
         // Base paths must be set before component scripts read them
-        window.CM_COLOR_BASE   = '<?php echo e($colorRouteBase); ?>';
+        window.CM_COLOR_BASE = '<?php echo e($colorRouteBase); ?>';
         window.CM_PALETTE_BASE = '<?php echo e($assetBase); ?>/palette/';
     </script>
     <script src="<?php echo e($assetBase); ?>/assets/js/utils.js"></script>
@@ -794,8 +958,8 @@ $schema = [
             // Copy entire palette
             var copyBtn = e.target.closest('.copy-palette-btn');
             if (copyBtn) {
-                var colors    = copyBtn.getAttribute('data-colors') || '';
-                var icon      = copyBtn.querySelector('i');
+                var colors = copyBtn.getAttribute('data-colors') || '';
+                var icon = copyBtn.querySelector('i');
                 var origClass = icon ? icon.className : '';
                 navigator.clipboard.writeText(colors).then(function () {
                     if (icon) icon.className = 'bi bi-check-circle-fill text-xl';
@@ -813,8 +977,8 @@ $schema = [
             // Copy single swatch HEX
             var hexBtn = e.target.closest('.swatch-copy-hex');
             if (hexBtn) {
-                var hexVal   = hexBtn.getAttribute('data-hex') || '';
-                var hIcon    = hexBtn.querySelector('i');
+                var hexVal = hexBtn.getAttribute('data-hex') || '';
+                var hIcon = hexBtn.querySelector('i');
                 var origHTML = hexBtn.innerHTML;
                 navigator.clipboard.writeText(hexVal).then(function () {
                     if (hIcon) hIcon.className = 'bi bi-check-circle-fill';
@@ -830,9 +994,9 @@ $schema = [
             // Favorite single color
             var favColorBtn = e.target.closest('.swatch-fav-color');
             if (favColorBtn && window.ColorMagic && window.ColorMagic.ColorFavorites) {
-                var favHex  = favColorBtn.getAttribute('data-hex') || '';
-                var added   = window.ColorMagic.ColorFavorites.toggleFavorite(favHex);
-                var fIcon   = favColorBtn.querySelector('i');
+                var favHex = favColorBtn.getAttribute('data-hex') || '';
+                var added = window.ColorMagic.ColorFavorites.toggleFavorite(favHex);
+                var fIcon = favColorBtn.querySelector('i');
                 if (fIcon) fIcon.className = added ? 'bi bi-heart-fill text-red-500' : 'bi bi-heart';
                 favColorBtn.title = added ? 'Remove from favorites' : 'Add to favorites';
                 return;
@@ -909,22 +1073,22 @@ $schema = [
                         card.innerHTML =
                             '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
                             + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
-                            +   '<p class="font-bold text-sm">' + g.name + '</p>'
-                            +   '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
-                            +   '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
-                            +     g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
-                            +   '</div>'
-                            +   '<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
-                            +     '<button class="fav-gradient-btn p-1.5 text-slate-400 hover:text-red-500 transition-colors" data-gradient-id="' + g.id + '" title="' + (isFav ? 'Remove from' : 'Add to') + ' favorites">'
-                            +       '<i class="bi ' + heartIcon + ' text-base"></i>'
-                            +     '</button>'
-                            +     '<button class="copy-gradient-css-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-css="' + g.css.replace(/"/g, '&quot;') + '" title="Copy CSS">'
-                            +       '<i class="bi bi-clipboard text-lg"></i>'
-                            +     '</button>'
-                            +     '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient" target="_blank" rel="noopener">'
-                            +       '<i class="bi bi-box-arrow-up-right text-base"></i>'
-                            +     '</a>'
-                            +   '</div>'
+                            + '<p class="font-bold text-sm">' + g.name + '</p>'
+                            + '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
+                            + '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
+                            + g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
+                            + '</div>'
+                            + '<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
+                            + '<button class="fav-gradient-btn p-1.5 text-slate-400 hover:text-red-500 transition-colors" data-gradient-id="' + g.id + '" title="' + (isFav ? 'Remove from' : 'Add to') + ' favorites">'
+                            + '<i class="bi ' + heartIcon + ' text-base"></i>'
+                            + '</button>'
+                            + '<button class="copy-gradient-css-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-css="' + g.css.replace(/"/g, '&quot;') + '" title="Copy CSS">'
+                            + '<i class="bi bi-clipboard text-lg"></i>'
+                            + '</button>'
+                            + '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient" target="_blank" rel="noopener">'
+                            + '<i class="bi bi-box-arrow-up-right text-base"></i>'
+                            + '</a>'
+                            + '</div>'
                             + '</div>';
 
                         grid.appendChild(card);
@@ -970,15 +1134,16 @@ $schema = [
     </script>
     <script>
         // Mobile menu toggle
-        (function() {
+        (function () {
             const openBtn = document.getElementById('mobileMenuBtn');
             const closeBtn = document.getElementById('closeMobileMenuBtn');
             const overlay = document.getElementById('mobileMenuOverlay');
             if (openBtn && closeBtn && overlay) {
-                openBtn.addEventListener('click', function() { overlay.style.display = 'flex'; });
-                closeBtn.addEventListener('click', function() { overlay.style.display = 'none'; });
+                openBtn.addEventListener('click', function () { overlay.style.display = 'flex'; });
+                closeBtn.addEventListener('click', function () { overlay.style.display = 'none'; });
             }
         })();
     </script>
 </body>
+
 </html>

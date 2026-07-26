@@ -177,7 +177,8 @@
             </button>
         </div>
         <div class="space-y-2">
-            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
@@ -210,7 +211,7 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="<?= $base ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -249,7 +250,8 @@
                         Find Your Color Name
                     </h1>
                     <p class="text-slate-600 dark:text-slate-300 text-base max-w-lg">
-                        Need to know what color a hex code is? Enter any hex code and instantly get its color name, RGB value, HSL value, contrast rating, and more. Our database covers 1000+ named colors.
+                        Need to know what color a hex code is? Enter any hex code and instantly get its color name, RGB
+                        value, HSL value, contrast rating, and more. Our database covers 1000+ named colors.
                     </p>
                 </div>
                 <div class="shrink-0 flex flex-col items-center gap-2">
@@ -293,22 +295,34 @@
         <div class="my-6">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Try These Colors</p>
             <div class="flex flex-wrap gap-2">
-                <button onclick="document.getElementById('colorCodeInput').value='FF5733';document.getElementById('findColorBtn').click();" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
+                <button
+                    onclick="document.getElementById('colorCodeInput').value='FF5733';document.getElementById('findColorBtn').click();"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
                     <span class="w-4 h-4 rounded-full" style="background:#FF5733"></span> #FF5733
                 </button>
-                <button onclick="document.getElementById('colorCodeInput').value='EC4899';document.getElementById('findColorBtn').click();" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
+                <button
+                    onclick="document.getElementById('colorCodeInput').value='EC4899';document.getElementById('findColorBtn').click();"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
                     <span class="w-4 h-4 rounded-full" style="background:#EC4899"></span> #EC4899
                 </button>
-                <button onclick="document.getElementById('colorCodeInput').value='3B82F6';document.getElementById('findColorBtn').click();" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
+                <button
+                    onclick="document.getElementById('colorCodeInput').value='3B82F6';document.getElementById('findColorBtn').click();"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
                     <span class="w-4 h-4 rounded-full" style="background:#3B82F6"></span> #3B82F6
                 </button>
-                <button onclick="document.getElementById('colorCodeInput').value='10B981';document.getElementById('findColorBtn').click();" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
+                <button
+                    onclick="document.getElementById('colorCodeInput').value='10B981';document.getElementById('findColorBtn').click();"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
                     <span class="w-4 h-4 rounded-full" style="background:#10B981"></span> #10B981
                 </button>
-                <button onclick="document.getElementById('colorCodeInput').value='191970';document.getElementById('findColorBtn').click();" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
+                <button
+                    onclick="document.getElementById('colorCodeInput').value='191970';document.getElementById('findColorBtn').click();"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
                     <span class="w-4 h-4 rounded-full" style="background:#191970"></span> #191970
                 </button>
-                <button onclick="document.getElementById('colorCodeInput').value='000000';document.getElementById('findColorBtn').click();" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
+                <button
+                    onclick="document.getElementById('colorCodeInput').value='000000';document.getElementById('findColorBtn').click();"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-primary transition text-sm font-mono">
                     <span class="w-4 h-4 rounded-full" style="background:#000000"></span> #000000
                 </button>
             </div>
@@ -362,55 +376,77 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                 <h3 class="font-bold text-base mb-2">What color is this hex code?</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400">Enter any 6-digit hex code in the search box above and we'll instantly tell you its closest color name, plus RGB and HSL values. Works for all 16.7 million possible hex colors.</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Enter any 6-digit hex code in the search box above
+                    and we'll instantly tell you its closest color name, plus RGB and HSL values. Works for all 16.7
+                    million possible hex colors.</p>
             </div>
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                 <h3 class="font-bold text-base mb-2">How do I convert hex to RGB?</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400">Hex codes are just RGB values written in hexadecimal. Each pair of characters represents Red, Green, or Blue (0-255). Our tool does this conversion automatically, or try our dedicated <a href="<?= $base ?>/hex-to-rgb" class="text-primary hover:underline">Hex to RGB Converter</a>.</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Hex codes are just RGB values written in
+                    hexadecimal. Each pair of characters represents Red, Green, or Blue (0-255). Our tool does this
+                    conversion automatically, or try our dedicated <a href="<?= $base ?>/hex-to-rgb"
+                        class="text-primary hover:underline">Hex to RGB Converter</a>.</p>
             </div>
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                 <h3 class="font-bold text-base mb-2">What is the difference between RGB and HSL?</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400">RGB defines colors by mixing Red, Green, and Blue light (0-255 each). HSL uses Hue (0-360°), Saturation (0-100%), and Lightness (0-100%) — a more intuitive model for humans to understand and manipulate colors.</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">RGB defines colors by mixing Red, Green, and Blue
+                    light (0-255 each). HSL uses Hue (0-360°), Saturation (0-100%), and Lightness (0-100%) — a more
+                    intuitive model for humans to understand and manipulate colors.</p>
             </div>
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                 <h3 class="font-bold text-base mb-2">How do I find a color name from its hex code?</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400">Simply paste or type the hex code (with or without #) into the input above. Our database of 1,000+ named colors will find the closest match. You can also try our <a href="<?= $base ?>/hex-to-color-name" class="text-primary hover:underline">Hex to Color Name Converter</a>.</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Simply paste or type the hex code (with or without
+                    #) into the input above. Our database of 1,000+ named colors will find the closest match. You can
+                    also try our <a href="<?= $base ?>/hex-to-color-name" class="text-primary hover:underline">Hex to
+                        Color Name Converter</a>.</p>
             </div>
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                 <h3 class="font-bold text-base mb-2">What is hex color lookup?</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400">Hex color lookup is the process of finding information about a color from its hex code — including its name, RGB/HSL values, luminance, contrast ratio, and related shades. This tool provides all of that in one search.</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Hex color lookup is the process of finding
+                    information about a color from its hex code — including its name, RGB/HSL values, luminance,
+                    contrast ratio, and related shades. This tool provides all of that in one search.</p>
             </div>
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
                 <h3 class="font-bold text-base mb-2">Can I find color names for dark shades?</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400">Yes! Our tool identifies names for all colors including dark shades like Midnight Blue (#191970), Dark Slate Gray (#2F4F4F), and more. For a curated list, try our <a href="<?= $base ?>/dark-color-finder" class="text-primary hover:underline">Dark Color Name Finder</a>.</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Yes! Our tool identifies names for all colors
+                    including dark shades like Midnight Blue (#191970), Dark Slate Gray (#2F4F4F), and more. For a
+                    curated list, try our <a href="<?= $base ?>/dark-color-finder"
+                        class="text-primary hover:underline">Dark Color Name Finder</a>.</p>
             </div>
         </div>
 
         <!-- Related Tools -->
-        <div class="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-2xl p-8 mb-12">
+        <div
+            class="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-2xl p-8 mb-12">
             <h2 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Related Color Tools</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                <a href="<?= $base ?>/hex-to-color-name" class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
+                <a href="<?= $base ?>/hex-to-color-name"
+                    class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
                     <i class="bi bi-tag text-primary text-lg"></i>
                     <span class="text-sm font-semibold">Hex to Color Name</span>
                 </a>
-                <a href="<?= $base ?>/hex-to-rgb" class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
+                <a href="<?= $base ?>/hex-to-rgb"
+                    class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
                     <i class="bi bi-sliders text-secondary text-lg"></i>
                     <span class="text-sm font-semibold">Hex to RGB Converter</span>
                 </a>
-                <a href="<?= $base ?>/what-color-is" class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
+                <a href="<?= $base ?>/what-color-is"
+                    class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
                     <i class="bi bi-question-circle text-amber-500 text-lg"></i>
                     <span class="text-sm font-semibold">What Color Is This?</span>
                 </a>
-                <a href="<?= $base ?>/dark-color-finder" class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
+                <a href="<?= $base ?>/dark-color-finder"
+                    class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
                     <i class="bi bi-moon-stars text-indigo-500 text-lg"></i>
                     <span class="text-sm font-semibold">Dark Color Finder</span>
                 </a>
-                <a href="<?= $base ?>/palettes" class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
+                <a href="<?= $base ?>/palettes"
+                    class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
                     <i class="bi bi-palette text-emerald-500 text-lg"></i>
                     <span class="text-sm font-semibold">Explore Palettes</span>
                 </a>
-                <a href="<?= $base ?>/generate-palette" class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
+                <a href="<?= $base ?>/generate-palette"
+                    class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl hover:shadow-md transition">
                     <i class="bi bi-stars text-pink-500 text-lg"></i>
                     <span class="text-sm font-semibold">Generate Palette</span>
                 </a>

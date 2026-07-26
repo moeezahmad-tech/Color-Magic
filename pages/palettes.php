@@ -125,8 +125,15 @@
         }
 
         @keyframes swatchBtnIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to   { opacity: 1; transform: translateY(0);    }
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .swatch-icon-btn {
@@ -134,10 +141,21 @@
             transform: translateY(-6px);
         }
 
-        .swatch:hover .swatch-icon-btn { animation: swatchBtnIn 0.18s ease forwards; }
-        .swatch:hover .swatch-btn-1    { animation-delay: 0s;    }
-        .swatch:hover .swatch-btn-2    { animation-delay: 0.06s; }
-        .swatch:hover .swatch-btn-3    { animation-delay: 0.12s; }
+        .swatch:hover .swatch-icon-btn {
+            animation: swatchBtnIn 0.18s ease forwards;
+        }
+
+        .swatch:hover .swatch-btn-1 {
+            animation-delay: 0s;
+        }
+
+        .swatch:hover .swatch-btn-2 {
+            animation-delay: 0.06s;
+        }
+
+        .swatch:hover .swatch-btn-3 {
+            animation-delay: 0.12s;
+        }
 
         .swatch-hex.copied-state {
             opacity: 1 !important;
@@ -153,6 +171,7 @@
             transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.3s ease;
             opacity: 0;
         }
+
         #filterPanel.open {
             max-height: 500px;
             opacity: 1;
@@ -207,7 +226,8 @@
         </div>
         <!-- Mobile nav items -->
         <div class="space-y-2">
-            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i class="bi bi-house-door"></i></span>
+            <a href="<?= $base ?>/" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+                        class="bi bi-house-door"></i></span>
                 <div>
                     <span class="block font-bold">Home</span><span class="text-xs opacity-60">Go to homepage</span>
                 </div>
@@ -240,7 +260,7 @@
                         schemes</span>
                 </div>
             </a>
-            <a href="<?= $base ?>/favorites" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
@@ -297,43 +317,44 @@
             <!-- Collapsible filter panel -->
             <div id="filterPanel" class="px-1">
                 <div class="mb-2">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Style</p>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+                        Style</p>
                     <div class="flex flex-wrap gap-2 mb-5" role="group" aria-label="Filter by theme">
-                <button
-                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20 border border-transparent"
-                    data-theme="all">
-                    All Styles
-                </button>
-                <button
-                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
-                    data-theme="favorites">
-                    <i class="bi bi-heart-fill"></i> Favorites
-                </button>
-                <button
-                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
-                    data-theme="pastel">
-                    <i class="bi bi-flower1"></i> Pastel
-                </button>
-                <button
-                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
-                    data-theme="vintage">
-                    <i class="bi bi-clock-history"></i> Vintage
-                </button>
-                <button
-                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
-                    data-theme="neon">
-                    <i class="bi bi-lightning-fill"></i> Neon
-                </button>
-                <button
-                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
-                    data-theme="minimalist">
-                    <i class="bi bi-check-circle"></i> Minimalist
-                </button>
-                <button
-                    class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
-                    data-theme="earthy">
-                    <i class="bi bi-tree"></i> Earthy
-                </button>
+                        <button
+                            class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20 border border-transparent"
+                            data-theme="all">
+                            All Styles
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                            data-theme="favorites">
+                            <i class="bi bi-heart-fill"></i> Favorites
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                            data-theme="pastel">
+                            <i class="bi bi-flower1"></i> Pastel
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                            data-theme="vintage">
+                            <i class="bi bi-clock-history"></i> Vintage
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                            data-theme="neon">
+                            <i class="bi bi-lightning-fill"></i> Neon
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                            data-theme="minimalist">
+                            <i class="bi bi-check-circle"></i> Minimalist
+                        </button>
+                        <button
+                            class="theme-filter flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-xs font-medium transition-colors border border-slate-200 dark:border-slate-700"
+                            data-theme="earthy">
+                            <i class="bi bi-tree"></i> Earthy
+                        </button>
                     </div>
                 </div>
             </div>
@@ -352,36 +373,42 @@
 
             <!-- Footer -->
 
-        <!-- Need to identify a color? Callout -->
-        <div class="bg-gradient-to-r from-primary/5 via-pink-50 to-secondary/5 dark:from-primary/10 dark:via-slate-800 dark:to-secondary/10 rounded-2xl p-6 md:p-8 border border-pink-100 dark:border-slate-800 mb-8">
-            <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <div class="flex-1">
-                    <h2 class="font-bold text-lg text-slate-800 dark:text-white mb-1">Need to identify a color?</h2>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Enter any hex code to find its name, RGB, HSL values, and related palettes.</p>
-                </div>
-                <div class="flex gap-3 shrink-0">
-                    <a href="<?= $base ?>/find-color" class="px-5 py-2.5 bg-gradient-to-r from-secondary to-primary text-white font-bold rounded-xl text-sm hover:opacity-95 transition shadow-lg shadow-primary/20">Find Color</a>
-                    <a href="<?= $base ?>/hex-to-color-name" class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold rounded-xl text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition text-slate-700 dark:text-slate-200">Hex to Name</a>
+            <!-- Need to identify a color? Callout -->
+            <div
+                class="bg-gradient-to-r from-primary/5 via-pink-50 to-secondary/5 dark:from-primary/10 dark:via-slate-800 dark:to-secondary/10 rounded-2xl p-6 md:p-8 border border-pink-100 dark:border-slate-800 mb-8">
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                    <div class="flex-1">
+                        <h2 class="font-bold text-lg text-slate-800 dark:text-white mb-1">Need to identify a color?</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Enter any hex code to find its name, RGB,
+                            HSL values, and related palettes.</p>
+                    </div>
+                    <div class="flex gap-3 shrink-0">
+                        <a href="<?= $base ?>/find-color"
+                            class="px-5 py-2.5 bg-gradient-to-r from-secondary to-primary text-white font-bold rounded-xl text-sm hover:opacity-95 transition shadow-lg shadow-primary/20">Find
+                            Color</a>
+                        <a href="<?= $base ?>/hex-to-color-name"
+                            class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold rounded-xl text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition text-slate-700 dark:text-slate-200">Hex
+                            to Name</a>
+                    </div>
                 </div>
             </div>
-        </div>
     </main>
-    
+
     <?php include '../components/footer.php'; ?>
 
     <script>
-        window.CM_ACTIVE_PAGE  = "explore";
-        window.CM_COLOR_BASE   = 'color/';
+        window.CM_ACTIVE_PAGE = "explore";
+        window.CM_COLOR_BASE = 'color/';
         window.CM_PALETTE_BASE = 'palette/';
 
         // Filter panel toggle
         (function () {
             var toggleBtn = document.getElementById('filterToggleBtn');
-            var panel     = document.getElementById('filterPanel');
-            var chevron   = document.getElementById('filterChevron');
+            var panel = document.getElementById('filterPanel');
+            var chevron = document.getElementById('filterChevron');
             if (!toggleBtn || !panel) return;
 
-            toggleBtn.addEventListener('click', function() {
+            toggleBtn.addEventListener('click', function () {
                 var isOpen = panel.classList.toggle('open');
                 toggleBtn.setAttribute('aria-expanded', isOpen);
                 toggleBtn.classList.toggle('filter-toggle-active', isOpen);
