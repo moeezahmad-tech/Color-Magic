@@ -18,3 +18,7 @@ $isBuiltinServer = php_sapi_name() === 'cli-server';
 $base = (!$isBuiltinServer && isset($_SERVER['HTTP_HOST']) && preg_match('/^(localhost|127\.0\.0\.1)(:\d+)?$/', $_SERVER['HTTP_HOST']))
     ? '/ColorMagic'
     : '';
+
+if (!headers_sent()) {
+    header('Link: <' . $base . '/assets/images/logo.png>; rel="icon"; type="image/png"');
+}
