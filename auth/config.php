@@ -1,15 +1,20 @@
 <?php
 require_once __DIR__ . '/../components/config.php';
 
-$envFile = __DIR__ . '/../.env';
+$isLocalHost = isset($_SERVER['HTTP_HOST']) && preg_match('/^(localhost|127\.0\.0\.1)(:\d+)?$/', $_SERVER['HTTP_HOST']);
+$envFile = $isLocalHost
+    ? __DIR__ . '/../.env.colormagic'
+    : __DIR__ . '/../../.env.colormagic';
+
 $env = [];
 if (file_exists($envFile)) {
     $env = parse_ini_file($envFile);
 }
 
-// Support both CLINET_ID (as in current .env) and CLIENT_ID
-$clientId = $env['CLIENT_ID'] ?? ($env['CLINET_ID'] ?? '');
-$clientSecret = $env['CLIENT_SECRET'] ?? '';
+// Support legacy and project-specific key names.
+$clientId = $env['CLIENT_ID_COLORMAGIC']
+    ?? ($env['CLINET_ID_COLORMAGIC'] ?? ($env['CLIENT_ID'] ?? ($env['CLINET_ID'] ?? '')));
+$clientSecret = $env['CLIENT_SECRET_COLORMAGIC'] ?? ($env['CLIENT_SECRET'] ?? '');
 
 // Dynamically determine protocol
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
