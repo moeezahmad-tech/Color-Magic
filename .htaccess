@@ -19,6 +19,9 @@ RewriteRule ^(.*)index\.(php|html)$ /$1 [R=301,L,NC]
 # Allow Yandex verification file to be served directly
 RewriteRule ^yandex_797f9c11121b55d1\.html$ - [L]
 
+# Also serve the verification file from the extensionless path
+RewriteRule ^yandex_797f9c11121b55d1/?$ yandex_797f9c11121b55d1.html [L]
+
 # Redirect .php and .html extensions → extensionless
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
 RewriteRule ^(.+)\.(php|html)$ /$1 [R=301,L,NC]
