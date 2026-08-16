@@ -114,7 +114,7 @@
             ? currentPath.substring(0, palettePathIdx + 1)
             : currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
 
-        const response = await fetch('https://api.colormagic.techkreative.com/palettes.json');
+        const response = await fetch('https://api.colormagic.techkreative.com/palettes.json?t=' + Date.now());
         if (!response.ok) {
             throw new Error(`Failed to fetch palettes (Status: ${response.status})`);
         }
@@ -137,9 +137,10 @@
 
         let palette = null;
         if (paletteSlug) {
-            // Match slug (with duplicate ID suffix for duplicate names)
+            // Match slug (with duplicate ID suffix for duplicate names) or exact ID
             palette = Array.isArray(palettes)
                 ? palettes.find((item) => {
+                    if (item.id === paletteSlug) return true;
                     let s = slugify(item.name || '');
                     if (nameCount[s] > 1) {
                         s = s + '-' + item.id.replace('palette_', '');
@@ -404,7 +405,7 @@
         // ── Related Gradients ─────────────────────────────────────────────
         const relatedGradientsGrid = document.getElementById('relatedGradientsGrid');
         if (relatedGradientsGrid) {
-            fetch('https://api.colormagic.techkreative.com/gradients.json')
+            fetch('https://api.colormagic.techkreative.com/gradients.json?t=' + Date.now())
                 .then(res => res.json())
                 .then(gradients => {
                     const gradientBase = fetchBase + 'gradient/';
@@ -543,7 +544,8 @@
         }
 
         paletteDetail?.classList.remove('hidden');
-    } catch (_) {
+    } catch (err) {
+        console.error("Error loading palette page:", err);
         paletteError?.classList.remove('hidden');
     }
 })();
