@@ -397,9 +397,16 @@
     <?php include '../components/footer.php'; ?>
 
     <script>
-        window.CM_ACTIVE_PAGE = "explore";
-        window.CM_COLOR_BASE = 'color/';
-        window.CM_PALETTE_BASE = 'palette/';
+        async function testFetchPalettes() {
+            try {
+                let res = await fetch("https://api.colormagic.techkreative.com/palettes.json");
+                let json = await res.json();
+                console.log("[Test Fetch] Palettes JSON:", json);
+            } catch (err) {
+                console.error("[Test Fetch] Failed:", err);
+            }
+        }
+        testFetchPalettes();
 
         // Filter panel toggle
         (function () {
@@ -416,10 +423,11 @@
             });
         })();
     </script>
-    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
+    <?php renderInlineData(['palettes']); ?>
+    <script src="<?= $base ?>/assets/js/utils.js?v=3.2" defer></script>
     <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
     <script src="<?= $base ?>/assets/js/components/palette-card.js" defer></script>
-    <script src="<?= $base ?>/assets/js/explore-palettes.js?v=2.0" defer></script>
+    <script src="<?= $base ?>/assets/js/explore-palettes.js?v=4.0" defer></script>
 </body>
 
 </html>

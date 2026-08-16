@@ -114,12 +114,9 @@
             ? currentPath.substring(0, palettePathIdx + 1)
             : currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
 
-        const response = await fetch(fetchBase + 'data/palettes.json');
-        if (!response.ok) {
-            throw new Error(`Failed to fetch palettes (Status: ${response.status})`);
-        }
-
-        const palettes = await response.json();
+        const palettes = window.ColorMagic && window.ColorMagic.fetchData
+            ? await window.ColorMagic.fetchData('palettes')
+            : (window.COLORMAGIC_DATA && window.COLORMAGIC_DATA.palettes ? window.COLORMAGIC_DATA.palettes : []);
 
         // Helper: generate slug from palette name
         function slugify(name) {
@@ -404,8 +401,11 @@
         // ── Related Gradients ─────────────────────────────────────────────
         const relatedGradientsGrid = document.getElementById('relatedGradientsGrid');
         if (relatedGradientsGrid) {
-            fetch(fetchBase + 'data/gradients.json')
-                .then(res => res.json())
+            const getGradients = window.ColorMagic && window.ColorMagic.fetchData
+                ? window.ColorMagic.fetchData('gradients')
+                : Promise.resolve(window.COLORMAGIC_DATA && window.COLORMAGIC_DATA.gradients ? window.COLORMAGIC_DATA.gradients : []);
+
+            getGradients
                 .then(gradients => {
                     const gradientBase = fetchBase + 'gradient/';
                     const exact = [];

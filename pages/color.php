@@ -105,7 +105,7 @@ if (!$isValidHex) {
 $hexWithHash = '#' . $normalizedHex;
 
 $colorNames = [];
-$colorNamesPath = __DIR__ . '/../data/color-names.json';
+$colorNamesPath = is_file(__DIR__ . '/../data/color-names.json') ? __DIR__ . '/../data/color-names.json' : __DIR__ . '/../api/color-names.json';
 if (is_file($colorNamesPath)) {
     $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
     if (is_array($decoded)) {
@@ -133,7 +133,7 @@ if ($slugParam !== '' && $hexParam === '') {
 }
 
 $paletteData = [];
-$palettePath = __DIR__ . '/../data/palettes.json';
+$palettePath = is_file(__DIR__ . '/../data/palettes.json') ? __DIR__ . '/../data/palettes.json' : __DIR__ . '/../api/palettes.json';
 if (is_file($palettePath)) {
     $decoded = json_decode((string) file_get_contents($palettePath), true);
     if (is_array($decoded)) {
@@ -1012,6 +1012,7 @@ $schema = [
             }
         });
     </script>
+    <?php renderInlineData(['gradients']); ?>
     <script>
         // ── Related Gradients ──────────────────────────────────────────────
         (function () {
@@ -1022,8 +1023,11 @@ $schema = [
 
             if (!grid) return;
 
-            fetch('<?php echo e($assetBase); ?>/data/gradients.json?t=' + Date.now())
-                .then(function (res) { return res.json(); })
+            var getGradients = (window.ColorMagic && window.ColorMagic.fetchData)
+                ? window.ColorMagic.fetchData('gradients')
+                : Promise.resolve(window.COLORMAGIC_DATA && window.COLORMAGIC_DATA.gradients ? window.COLORMAGIC_DATA.gradients : []);
+
+            getGradients
                 .then(function (data) {
                     var exact = [];
                     var near = [];

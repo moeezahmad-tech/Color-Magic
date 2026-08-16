@@ -4,7 +4,7 @@ include '../components/config.php';
 
 // Load color names and filter for dark colors (lightness < 40%)
 $colorNames = [];
-$colorNamesPath = __DIR__ . '/../data/color-names.json';
+$colorNamesPath = is_file(__DIR__ . '/../data/color-names.json') ? __DIR__ . '/../data/color-names.json' : __DIR__ . '/../api/color-names.json';
 if (is_file($colorNamesPath)) {
     $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
     if (is_array($decoded)) {

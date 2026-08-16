@@ -68,3 +68,39 @@ window.ColorMagic.copyToClipboard = function (text, button, successHTML, failHTM
         }
     });
 };
+
+/**
+ * Shared Data Fetcher / Provider.
+ * Performs direct HTTP fetch to https://api.colormagic.techkreative.com/
+ * @param {string} key - 'gradients' | 'palettes' | 'color-names'
+ * @returns {Promise<any>}
+ */
+window.ColorMagic.fetchData = function (key) {
+    var pathMap = {
+        'gradients': 'gradients.json',
+        'palettes': 'palettes.json',
+        'color-names': 'color-names.json'
+    };
+    var endpoint = pathMap[key] || (key + '.json');
+    var targetUrl = 'https://api.colormagic.techkreative.com/' + endpoint;
+
+    return fetch(targetUrl)
+        .then(function (res) {
+            console.log('[fetchData] Response for', key, ':', res);
+            if (!res.ok) {
+                console.error('[fetchData] Error status:', res.status, res.statusText);
+                throw new Error('Failed to load ' + key + ' (Status: ' + res.status + ')');
+            }
+            return res.json();
+        })
+        .then(function (resData) {
+            console.log('[fetchData] Parsed JSON for', key, ':', resData);
+            var data = (resData && resData.data !== undefined) ? resData.data : resData;
+            return data;
+        })
+        .catch(function (error) {
+            console.error('[fetchData] Fetch failed for', key, ':', error);
+            throw error;
+        });
+};
+

@@ -18,9 +18,11 @@
 
     async function fetchColorNames() {
         try {
-            const res = await fetch('data/color-names.json');
-            if (!res.ok) throw new Error('Failed to load color database');
-            colorNames = await res.json();
+            let res = await fetch("https://api.colormagic.techkreative.com/color-names.json");
+            if (!res.ok) throw new Error('Failed to load colors (Status: ' + res.status + ')');
+            
+            let data = await res.json();
+            colorNames = (data && data.data !== undefined) ? data.data : data;
             isColorNamesLoaded = true;
         } catch (err) {
             // Non-fatal — fall back to hex as name

@@ -365,6 +365,7 @@
     <?php include '../components/footer.php'; ?>
 
 
+    <?php renderInlineData(['palettes', 'gradients']); ?>
     <script>
         window.CM_COLOR_BASE   = '<?= $base ?>/color/';
         window.CM_PALETTE_BASE = '<?= $base ?>/palette/';

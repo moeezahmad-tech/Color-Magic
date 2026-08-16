@@ -537,6 +537,8 @@
         });
         window.CM_ACTIVE_PAGE = "what-color-is";
     </script>
+    <?php renderInlineData(['color-names']); ?>
+    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
     <script src="<?= $base ?>/assets/js/find-color-page.js?v=1.2" defer></script>
 </body>
 

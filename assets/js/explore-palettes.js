@@ -139,41 +139,41 @@
 
     // ─── Data Fetching ────────────────────────────────────────────────────────
 
-    function fetchPalettes() {
+    async function fetchPalettes() {
         if (App.loading) return;
         App.loading = true;
         App.error   = null;
         showLoadingState();
 
-        fetch('data/palettes.json')
-            .then(function (response) {
-                if (!response.ok) throw new Error('Failed to fetch palettes (Status: ' + response.status + ')');
-                return response.json();
-            })
-            .then(function (data) {
-                if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid palette data format');
+        try {
+            let res = await fetch("https://api.colormagic.techkreative.com/palettes.json");
+            if (!res.ok) throw new Error('Failed to load palettes (Status: ' + res.status + ')');
+            
+            let data = await res.json();
+            data = (data && data.data !== undefined) ? data.data : data;
 
-                // Shuffle then mark duplicate slugs
-                App.palettes = data.sort(function () { return Math.random() - 0.5; });
-                window.ColorMagic.markDuplicateSlugs(App.palettes);
+            if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid palette data format');
 
-                App.loading = false;
-                applyFiltersAndRender();
+            // Shuffle then mark duplicate slugs
+            App.palettes = data.sort(function () { return Math.random() - 0.5; });
+            window.ColorMagic.markDuplicateSlugs(App.palettes);
 
-                // Auto-activate URL filter param e.g. ?filter=favorites
-                try {
-                    var filterParam = new URLSearchParams(window.location.search).get('filter');
-                    if (filterParam) {
-                        var btn = document.querySelector('.theme-filter[data-theme="' + filterParam + '"]');
-                        if (btn) btn.click();
-                    }
-                } catch (_) {}
-            })
-            .catch(function (err) {
-                App.loading = false;
-                App.error   = err.message;
-                showErrorState(err.message);
-            });
+            App.loading = false;
+            applyFiltersAndRender();
+
+            // Auto-activate URL filter param e.g. ?filter=favorites
+            try {
+                var filterParam = new URLSearchParams(window.location.search).get('filter');
+                if (filterParam) {
+                    var btn = document.querySelector('.theme-filter[data-theme="' + filterParam + '"]');
+                    if (btn) btn.click();
+                }
+            } catch (_) {}
+        } catch (err) {
+            App.loading = false;
+            App.error   = err.message;
+            showErrorState(err.message);
+        }
     }
 
     // Exposed for the inline retry button
@@ -272,6 +272,13 @@
     }
 
     // ─── Init ─────────────────────────────────────────────────────────────────
-    fetchPalettes();
+    function init() {
+        fetchPalettes();
+    }
 
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();

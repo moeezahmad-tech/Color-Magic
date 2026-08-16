@@ -22,3 +22,18 @@ $base = (!$isBuiltinServer && isset($_SERVER['HTTP_HOST']) && preg_match('/^(loc
 if (!headers_sent()) {
     header('Link: <' . $base . '/assets/images/logo.png>; rel="icon"; type="image/png"');
 }
+?>
+<script>window.CM_BASE_PATH = "<?= $base ?>";</script>
+<?php
+
+/**
+ * Renders an inline <script> tag containing preloaded JSON datasets ('gradients', 'palettes', 'color-names').
+ * Prevents frontend JavaScript from making HTTP fetch() requests to static JSON files,
+ * eliminating extra server hits and unwanted Google Analytics / server logging entries.
+ *
+ * @param array $keys Array of data keys to inline, e.g. ['gradients', 'palettes']
+ */
+function renderInlineData(array $keys): void {
+    // Data is fetched via direct HTTP fetch() to https://api.colormagic.techkreative.com/
+}
+

@@ -537,7 +537,21 @@
         });
         window.CM_ACTIVE_PAGE = "find-color";
     </script>
-    <script src="<?= $base ?>/assets/js/find-color-page.js?v=1.2" defer></script>
+    <script>
+        async function testFetchColors() {
+            try {
+                let res = await fetch("https://api.colormagic.techkreative.com/color-names.json");
+                let json = await res.json();
+                console.log("[Test Fetch] Colors JSON:", json);
+            } catch (err) {
+                console.error("[Test Fetch] Failed:", err);
+            }
+        }
+        testFetchColors();
+    </script>
+    <?php renderInlineData(['color-names']); ?>
+    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
+    <script src="<?= $base ?>/assets/js/find-color-page.js?v=3.0" defer></script>
 </body>
 
 </html>

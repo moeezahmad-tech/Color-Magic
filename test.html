@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        async function myfuc() {
+            let res = await fetch("https://api.colormagic.techkreative.com/gradients.json")
+            let json = await res.json();
+            console.log(json);
+        }
+        myfuc();
+    </script>
+</body>
+
+</html>

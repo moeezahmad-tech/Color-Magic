@@ -23,6 +23,9 @@ RewriteRule ^(.+)\.(php|html)$ /$1 [R=301,L,NC]
 # Homepage
 RewriteRule ^$ pages/index.php [L]
 
+# Show the test.html page on /test
+RewriteRule ^test/?$ test.html [L]
+
 # Custom routes
 # Hex route — exactly 6 hex chars (must come before slug rule)
 RewriteRule ^color/([A-Fa-f0-9]{6})/?$ pages/color.php?hex=$1 [NC,L,QSA]

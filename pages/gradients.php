@@ -365,8 +365,22 @@
             });
         })();
     </script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
-    <script src="<?= $base ?>/assets/js/gradients-page.js?v=3" defer></script>
+    <script>
+        async function testFetchGradients() {
+            try {
+                let res = await fetch("https://api.colormagic.techkreative.com/gradients.json");
+                let json = await res.json();
+                console.log("[Test Fetch] Gradients JSON:", json);
+            } catch (err) {
+                console.error("[Test Fetch] Failed:", err);
+            }
+        }
+        testFetchGradients();
+    </script>
+    <?php renderInlineData(['gradients']); ?>
+    <script data-cfasync="false" src="<?= $base ?>/assets/js/utils.js?v=3.2" defer></script>
+    <script data-cfasync="false" src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
+    <script data-cfasync="false" src="<?= $base ?>/assets/js/gradients-page.js?v=6" defer></script>
 </body>
 
 </html>

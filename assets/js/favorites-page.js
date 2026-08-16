@@ -222,11 +222,17 @@
         return favGradients.length;
     }
 
-    // ─── Load all data and render ───────────────────────────────────────────────
+    var getData = function (key, fallback) {
+        if (window.ColorMagic && window.ColorMagic.fetchData) {
+            return window.ColorMagic.fetchData(key).catch(function () { return fallback; });
+        }
+        return Promise.resolve(window.COLORMAGIC_DATA && window.COLORMAGIC_DATA[key] ? window.COLORMAGIC_DATA[key] : fallback);
+    };
+
     Promise.all([
-        fetch('data/color-names.json').then(function (r) { return r.ok ? r.json() : {}; }),
-        fetch('data/palettes.json').then(function (r) { return r.ok ? r.json() : []; }),
-        fetch('data/gradients.json').then(function (r) { return r.ok ? r.json() : []; })
+        getData('color-names', {}),
+        getData('palettes', []),
+        getData('gradients', [])
     ]).then(function (results) {
         var colorNames     = results[0];
         var allPalettes    = Array.isArray(results[1]) ? results[1] : [];
@@ -250,7 +256,7 @@
             var hex = colorRemoveBtn.dataset.hex;
             window.ColorMagic.ColorFavorites.toggleFavorite(hex);
             // Re-render colors
-            fetch('data/color-names.json').then(function (r) { return r.json(); }).then(function (data) {
+            getData('color-names', {}).then(function (data) {
                 var count = renderColors(data);
                 var paletteCount  = window.ColorMagic.Favorites.getFavorites().length;
                 var gradientCount = window.ColorMagic.GradientFavorites.getFavorites().length;
@@ -284,7 +290,7 @@
             var paletteId = paletteFavBtn.dataset.paletteId;
             window.ColorMagic.Favorites.toggleFavorite(paletteId);
             // Re-render palettes
-            fetch('data/palettes.json').then(function (r) { return r.json(); }).then(function (data) {
+            getData('palettes', []).then(function (data) {
                 var count = renderPalettes(Array.isArray(data) ? data : []);
                 var colorCount    = window.ColorMagic.ColorFavorites.getFavorites().length;
                 var gradientCount = window.ColorMagic.GradientFavorites.getFavorites().length;

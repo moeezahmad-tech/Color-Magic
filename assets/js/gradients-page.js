@@ -339,38 +339,40 @@
 
     // ─── Data Fetching ────────────────────────────────────────────────────────
 
-    function fetchGradients() {
+    async function fetchGradients() {
         if (App.loading) return;
         App.loading = true;
         showLoadingState();
 
-        fetch('data/gradients.json?t=' + Date.now())
-            .then(function (response) {
-                if (!response.ok) throw new Error('Failed to fetch gradients (Status: ' + response.status + ')');
-                return response.json();
-            })
-            .then(function (data) {
-                if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid gradient data format');
-                App.gradients = shuffle(data);
+        try {
+            let res = await fetch("https://api.colormagic.techkreative.com/gradients.json");
+            if (!res.ok) throw new Error('Failed to load gradients (Status: ' + res.status + ')');
+            
+            let data = await res.json();
+            // Handle if it's wrapped in an object or just the array directly
+            data = (data && data.data !== undefined) ? data.data : data;
 
-                // Extract unique styles (preserve order from JSON)
-                var seen = {};
-                App.styles = [];
-                data.forEach(function (g) {
-                    if (!seen[g.style]) {
-                        seen[g.style] = true;
-                        App.styles.push(g.style);
-                    }
-                });
-                buildStyleButtons();
+            if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid gradient data format');
+            App.gradients = shuffle(data);
 
-                App.loading = false;
-                applyFiltersAndRender();
-            })
-            .catch(function (err) {
-                App.loading = false;
-                showErrorState(err.message);
+            // Extract unique styles (preserve order from JSON)
+            var seen = {};
+            App.styles = [];
+            data.forEach(function (g) {
+                if (!seen[g.style]) {
+                    seen[g.style] = true;
+                    App.styles.push(g.style);
+                }
             });
+            buildStyleButtons();
+
+            App.loading = false;
+            applyFiltersAndRender();
+        } catch (err) {
+            console.error("[gradients-page.js] fetchGradients error:", err);
+            App.loading = false;
+            showErrorState(err.message);
+        }
     }
 
     window._cmGradientRetry = fetchGradients;
@@ -455,6 +457,14 @@
     }
 
     // ─── Init ─────────────────────────────────────────────────────────────────
-    fetchGradients();
+    function initGradientsPage() {
+        console.log('[gradients-page.js] Script initialized successfully');
+        fetchGradients();
+    }
 
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGradientsPage);
+    } else {
+        initGradientsPage();
+    }
 })();

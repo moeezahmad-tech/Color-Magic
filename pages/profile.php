@@ -367,6 +367,7 @@
 
     <?php include '../components/footer.php'; ?>
 
+    <?php renderInlineData(['color-names', 'palettes', 'gradients']); ?>
     <script>
         window.CM_ACTIVE_PAGE = "favorites";
         window.CM_COLOR_BASE = "color/";

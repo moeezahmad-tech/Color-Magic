@@ -405,8 +405,11 @@
 
         var gradientHexes = gradient.colors.map(function (c) { return c.replace('#', '').toLowerCase(); });
 
-        fetch('data/palettes.json')
-            .then(function (r) { return r.ok ? r.json() : []; })
+        var getPalettes = (window.ColorMagic && window.ColorMagic.fetchData)
+            ? window.ColorMagic.fetchData('palettes')
+            : Promise.resolve(window.COLORMAGIC_DATA && window.COLORMAGIC_DATA.palettes ? window.COLORMAGIC_DATA.palettes : []);
+
+        getPalettes
             .then(function (palettes) {
                 var scored = [];
                 palettes.forEach(function (p) {
@@ -521,11 +524,11 @@
         return;
     }
 
-    fetch('data/gradients.json?t=' + Date.now())
-        .then(function (res) {
-            if (!res.ok) throw new Error('Failed to fetch');
-            return res.json();
-        })
+    var getGradients = (window.ColorMagic && window.ColorMagic.fetchData)
+        ? window.ColorMagic.fetchData('gradients')
+        : Promise.resolve(window.COLORMAGIC_DATA && window.COLORMAGIC_DATA.gradients ? window.COLORMAGIC_DATA.gradients : []);
+
+    getGradients
         .then(function (data) {
             var gradient = null;
             for (var i = 0; i < data.length; i++) {
