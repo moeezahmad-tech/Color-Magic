@@ -345,33 +345,36 @@
         showLoadingState();
 
         try {
-            let res = await fetch("https://api.colormagic.techkreative.com/gradients.json");
-            if (!res.ok) throw new Error('Failed to load gradients (Status: ' + res.status + ')');
+            const response = await fetch("https://api.colormagic.techkreative.com/gradients.json");
+            if (!response.ok) {
+                throw new Error("Failed to load gradients (" + response.status + ")");
+            }
+
+            const gradients = await response.json();
             
-            let data = await res.json();
-            // Handle if it's wrapped in an object or just the array directly
-            data = (data && data.data !== undefined) ? data.data : data;
+            if (!Array.isArray(gradients)) {
+                throw new Error("Invalid gradient data format");
+            }
+            
+            App.gradients = gradients;
 
-            if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid gradient data format');
-            App.gradients = shuffle(data);
-
-            // Extract unique styles (preserve order from JSON)
-            var seen = {};
+            // Build styles
+            const seen = {};
             App.styles = [];
-            data.forEach(function (g) {
-                if (!seen[g.style]) {
-                    seen[g.style] = true;
-                    App.styles.push(g.style);
+            gradients.forEach(function (gradient) {
+                if (!seen[gradient.style]) {
+                    seen[gradient.style] = true;
+                    App.styles.push(gradient.style);
                 }
             });
             buildStyleButtons();
 
             App.loading = false;
             applyFiltersAndRender();
-        } catch (err) {
-            console.error("[gradients-page.js] fetchGradients error:", err);
+        } catch (error) {
+            console.error("[Gradients] Failed:", error);
             App.loading = false;
-            showErrorState(err.message);
+            showErrorState(error.message);
         }
     }
 
@@ -456,9 +459,8 @@
         });
     }
 
-    // ─── Init ─────────────────────────────────────────────────────────────────
     function initGradientsPage() {
-        console.log('[gradients-page.js] Script initialized successfully');
+        console.log('[Gradients] Page initialized');
         fetchGradients();
     }
 
