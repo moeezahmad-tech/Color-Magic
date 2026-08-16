@@ -170,10 +170,15 @@ ColorMagic/
 │       ├── Inter-Italic-VariableFont_opsz,wght.ttf
 │       └── static/                     ← Individual weight .ttf files
 │
-├── data/                               ← Static JSON data files
-│   ├── palettes.json                   ← 150+ curated palettes
-│   ├── gradients.json                  ← 100 CSS gradients (linear & radial)
-│   └── color-names.json                ← 300+ named colors keyed by hex
+├── api/                                ← API Subdomain Files & Data
+│   ├── index.php                       ← API info/health endpoints
+│   ├── palettes.json                   ← 150+ curated palettes (Served via API)
+│   ├── gradients.json                  ← 100 CSS gradients (Served via API)
+│   ├── color-names.json                ← 300+ named colors keyed by hex
+│   ├── README.md                       ← API documentation
+│   └── v1/                             ← API v1 PHP Endpoints
+│
+├── data/                               ← Legacy static data files (Pre-API)
 │
 └── sitemaps/                           ← Sub-sitemaps for SEO
     ├── pages.xml                       ← Static page URLs
@@ -181,9 +186,11 @@ ColorMagic/
     └── colors.xml                      ← All color detail URLs
 ```
 
-## Data Formats
+## Data Formats & API
 
-### `data/palettes.json`
+Data is fetched via `https://api.colormagic.techkreative.com/`. The physical files reside in the `api/` directory.
+
+### `api/palettes.json`
 
 Array of palette objects:
 
@@ -198,7 +205,7 @@ Array of palette objects:
 ]
 ```
 
-### `data/gradients.json`
+### `api/gradients.json`
 
 Array of gradient objects. Linear gradients include an `angle`, radial gradients include a `shape`:
 
@@ -231,7 +238,7 @@ To regenerate `gradients.json`, run the Python script:
 python generate_gradients.py
 ```
 
-### `data/color-names.json`
+### `api/color-names.json`
 
 Object keyed by 6-digit lowercase hex (no `#`). Each entry has a name and optional aliases:
 
