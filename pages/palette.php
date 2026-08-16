@@ -369,11 +369,11 @@
         window.CM_COLOR_BASE   = '<?= $base ?>/color/';
         window.CM_PALETTE_BASE = '<?= $base ?>/palette/';
     </script>
-    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
-    <script src="<?= $base ?>/assets/js/image-export.js" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js" defer></script>
-    <script src="<?= $base ?>/assets/js/palette-page.js" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/image-export.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/palette-page.js?v=<?= time() ?>" defer></script>
 </body>
 
 </html>

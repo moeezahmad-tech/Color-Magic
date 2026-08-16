@@ -372,10 +372,10 @@
         window.CM_COLOR_BASE = "color/";
         window.CM_PALETTE_BASE = "palette/";
     </script>
-    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js" defer></script>
-    <script src="<?= $base ?>/assets/js/favorites-page.js" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/favorites-page.js?v=<?= time() ?>" defer></script>
 </body>
 
 </html>
