@@ -405,7 +405,7 @@
 
         var gradientHexes = gradient.colors.map(function (c) { return c.replace('#', '').toLowerCase(); });
 
-        fetch('data/palettes.json')
+        fetch('https://api.colormagic.techkreative.com/palettes.json')
             .then(function (r) { return r.ok ? r.json() : []; })
             .then(function (palettes) {
                 var scored = [];
@@ -521,7 +521,7 @@
         return;
     }
 
-    fetch('data/gradients.json?t=' + Date.now())
+    fetch('https://api.colormagic.techkreative.com/gradients.json?t=' + Date.now())
         .then(function (res) {
             if (!res.ok) throw new Error('Failed to fetch');
             return res.json();
