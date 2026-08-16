@@ -114,7 +114,7 @@
             ? currentPath.substring(0, palettePathIdx + 1)
             : currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
 
-        const response = await fetch(fetchBase + 'https://api.colormagic.techkreative.com/palettes.json');
+        const response = await fetch('https://api.colormagic.techkreative.com/palettes.json');
         if (!response.ok) {
             throw new Error(`Failed to fetch palettes (Status: ${response.status})`);
         }
@@ -404,7 +404,7 @@
         // ── Related Gradients ─────────────────────────────────────────────
         const relatedGradientsGrid = document.getElementById('relatedGradientsGrid');
         if (relatedGradientsGrid) {
-            fetch(fetchBase + 'https://api.colormagic.techkreative.com/gradients.json')
+            fetch('https://api.colormagic.techkreative.com/gradients.json')
                 .then(res => res.json())
                 .then(gradients => {
                     const gradientBase = fetchBase + 'gradient/';
