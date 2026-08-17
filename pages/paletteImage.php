@@ -24,14 +24,15 @@ if (empty($paletteId)) {
 }
 
 // 2. Load palette data
-$palettePath = __DIR__ . '/../data/palettes.json';
-if (!is_file($palettePath)) {
+$palettePath = 'https://api.colormagic.techkreative.com/palettes.json';
+$jsonContent = @file_get_contents($palettePath);
+if ($jsonContent === false) {
     header("HTTP/1.1 500 Internal Server Error");
     echo "Palette data not found";
     exit;
 }
 
-$decoded = json_decode((string) file_get_contents($palettePath), true);
+$decoded = json_decode((string) $jsonContent, true);
 if (!is_array($decoded)) {
     header("HTTP/1.1 500 Internal Server Error");
     echo "Invalid palette data";
