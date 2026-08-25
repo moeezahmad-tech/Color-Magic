@@ -35,7 +35,7 @@ export default function WhatColorIsClient({ colors }: Props) {
   const family = getFamily(hsl.h, hsl.s, hsl.l);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-8 pb-16 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 pt-8 pb-16 space-y-8">
 
 
       <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm space-y-6">

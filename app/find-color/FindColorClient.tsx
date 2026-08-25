@@ -46,7 +46,7 @@ export default function FindColorClient({ colors }: Props) {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 sm:pt-10 sm:pb-20 space-y-14">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 sm:pt-10 sm:pb-20 space-y-14">
       {/* Hero Card Container */}
       <div className="bg-[#FFF5F7] border border-pink-100/80 rounded-3xl p-10 flex flex-col items-center justify-center shadow-sm">
         {/* Right Swatch Box */}

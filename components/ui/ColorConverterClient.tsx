@@ -185,7 +185,7 @@ export default function ColorConverterClient({ initialMode }: Props) {
   const result = getConversionResult();
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-8 pb-16 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 pt-8 pb-16 space-y-8">
       {/* Dropdown Selector */}
       <div className="flex justify-center relative z-50">
         <div className="relative inline-block text-left w-full sm:w-64">
