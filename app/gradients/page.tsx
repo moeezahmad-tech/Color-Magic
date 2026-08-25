@@ -3,6 +3,8 @@ import GradientsClient from './GradientsClient';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Layers } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Explore CSS Gradients',
   description:
@@ -20,6 +22,7 @@ import { fetchGradients } from '@/lib/api-client';
 
 export default async function GradientsPage() {
   const gradients = await fetchGradients();
+  const shuffledGradients = [...gradients].sort(() => 0.5 - Math.random());
   return (
     <div>
       <PageHeader 
@@ -27,7 +30,7 @@ export default async function GradientsPage() {
         description="Browse hundreds of beautiful CSS gradients — linear, radial, and mesh. Ready to copy."
         icon={<Layers className="w-6 h-6" />}
       />
-      <GradientsClient gradients={gradients} />
+      <GradientsClient gradients={shuffledGradients} />
     </div>
   );
 }
