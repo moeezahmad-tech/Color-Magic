@@ -7,24 +7,28 @@ const API_BASE = 'https://api.colormagic.techkreative.com';
  */
 export async function fetchPalettes(): Promise<Palette[]> {
   try {
-    const res = await fetch(`${API_BASE}/palettes`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_BASE}/palettes`, { 
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     
     return (json.data || []).map((p: any) => {
-      const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || p.id;
+      const slug = p.name ? p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : String(p.id);
       const styleTag = p.style ? p.style.toLowerCase() : 'modern';
       return {
         id: p.id,
         slug,
-        name: p.name,
+        name: p.name || 'Untitled Palette',
         style: p.style || 'Modern',
         tags: [styleTag, 'curated', 'popular'],
-        colors: p.colors,
+        colors: p.colors || [],
       };
     });
   } catch (error) {
-    console.error('Error fetching palettes from API:', error);
+    console.warn('Warning: Failed to fetch palettes at build time, returning fallback array:', error);
     return [];
   }
 }
@@ -34,12 +38,16 @@ export async function fetchPalettes(): Promise<Palette[]> {
  */
 export async function fetchGradients(): Promise<Gradient[]> {
   try {
-    const res = await fetch(`${API_BASE}/gradients`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_BASE}/gradients`, { 
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' }
+    });
+
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     return json.data || [];
   } catch (error) {
-    console.error('Error fetching gradients from API:', error);
+    console.warn('Warning: Failed to fetch gradients at build time, returning fallback array:', error);
     return [];
   }
 }
@@ -49,19 +57,22 @@ export async function fetchGradients(): Promise<Gradient[]> {
  */
 export async function fetchColors(): Promise<ColorName[]> {
   try {
-    const res = await fetch(`${API_BASE}/colors`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_BASE}/colors`, { 
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' }
+    });
+
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     
-    // The API returns an object where keys are hex codes, so we extract the values.
     return Object.values(json.data || {}).map((item: any) => ({
-      hex: item.hex.startsWith('#') ? item.hex : `#${item.hex}`,
-      name: item.name,
-      slug: item.slug,
+      hex: item.hex?.startsWith('#') ? item.hex : `#${item.hex || '000000'}`,
+      name: item.name || 'Unknown',
+      slug: item.slug || '',
       aliases: item.aliases || [],
     }));
   } catch (error) {
-    console.error('Error fetching colors from API:', error);
+    console.warn('Warning: Failed to fetch colors at build time, returning fallback array:', error);
     return [];
   }
 }
