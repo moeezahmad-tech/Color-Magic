@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import PalettesClient from './PalettesClient';
 import { fetchPalettes } from '@/lib/api-client';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Explore Color Palettes',
   description:
@@ -17,6 +19,8 @@ export const metadata: Metadata = {
 
 export default async function PalettesPage() {
   const palettes = await fetchPalettes();
-  return <PalettesClient palettes={palettes} />;
+  const shuffledPalettes = [...palettes].sort(() => 0.5 - Math.random());
+  return <PalettesClient palettes={shuffledPalettes} />;
 }
+
 

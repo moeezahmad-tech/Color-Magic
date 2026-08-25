@@ -28,11 +28,6 @@ export default function GradientsClient({ gradients }: Props) {
 
   const { favoriteGradients } = useFavoritesStore();
 
-  // Shuffle gradients dynamically on client mount so each visitor gets a fresh UI order
-  useEffect(() => {
-    setDisplayGradients(shuffleArray(gradients));
-  }, [gradients]);
-
   const handleShuffle = () => {
     setDisplayGradients((prev) => shuffleArray(prev));
   };

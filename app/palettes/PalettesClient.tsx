@@ -28,11 +28,6 @@ export default function PalettesClient({ palettes }: Props) {
 
   const { favoritePalettes } = useFavoritesStore();
 
-  // Shuffle palettes dynamically on client mount so each visitor gets a fresh UI order
-  useEffect(() => {
-    setDisplayPalettes(shuffleArray(palettes));
-  }, [palettes]);
-
   const handleShuffle = () => {
     setDisplayPalettes((prev) => shuffleArray(prev));
   };
