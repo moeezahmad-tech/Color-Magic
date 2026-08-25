@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import GradientsClient from './GradientsClient';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Layers } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Explore CSS Gradients',
@@ -18,5 +20,14 @@ import { fetchGradients } from '@/lib/api-client';
 
 export default async function GradientsPage() {
   const gradients = await fetchGradients();
-  return <GradientsClient gradients={gradients} />;
+  return (
+    <div>
+      <PageHeader 
+        title="Explore CSS Gradients"
+        description="Browse hundreds of beautiful CSS gradients — linear, radial, and mesh. Ready to copy."
+        icon={<Layers className="w-6 h-6" />}
+      />
+      <GradientsClient gradients={gradients} />
+    </div>
+  );
 }

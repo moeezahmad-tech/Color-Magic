@@ -23,15 +23,8 @@ export default function HexToColorNameClient({ colors }: Props) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16 space-y-8">
-      <div className="text-center space-y-3">
-        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
-          HEX to Color Name Converter
-        </h1>
-        <p className="text-slate-600 text-base max-w-xl mx-auto">
-          Instantly convert any hexadecimal color code into its official human color name
-        </p>
-      </div>
+    <div className="max-w-4xl mx-auto px-4 pt-8 pb-16 space-y-8">
+
 
       <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row gap-3">

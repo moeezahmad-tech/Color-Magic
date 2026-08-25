@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import FindColorClient from './FindColorClient';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Search } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Hex to Color Name Finder — Identify Any Color Code',
@@ -19,5 +21,14 @@ import { fetchColors } from '@/lib/api-client';
 
 export default async function FindColorPage() {
   const colors = await fetchColors();
-  return <FindColorClient colors={colors} />;
+  return (
+    <div>
+      <PageHeader 
+        title="Find Color Name from Hex Code"
+        description="Convert any hex code to its nearest human-readable color name instantly."
+        icon={<Search className="w-6 h-6" />}
+      />
+      <FindColorClient colors={colors} />
+    </div>
+  );
 }

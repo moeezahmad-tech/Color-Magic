@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import HexToRgbClient from './HexToRgbClient';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { ArrowLeftRight } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Hex to RGB Converter — Free Online Color Code Conversion',
@@ -16,5 +18,14 @@ export const metadata: Metadata = {
 };
 
 export default function HexToRgbPage() {
-  return <HexToRgbClient />;
+  return (
+    <div>
+      <PageHeader 
+        title="Hex to RGB Converter"
+        description="Instantly convert hex color codes to RGB values and vice versa with live preview."
+        icon={<ArrowLeftRight className="w-6 h-6" />}
+      />
+      <HexToRgbClient />
+    </div>
+  );
 }

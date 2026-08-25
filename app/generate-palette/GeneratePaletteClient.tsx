@@ -11,6 +11,7 @@ import {
   Copy,
   RefreshCw,
 } from 'lucide-react';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 export default function GeneratePaletteClient() {
   const { showToast } = useToast();
@@ -64,27 +65,26 @@ export default function GeneratePaletteClient() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-            <Wand2 className="w-8 h-8 text-purple-600" />
-            <span>Color Theory Palette Generator</span>
-          </h1>
-          <p className="text-slate-600 mt-1 text-sm sm:text-base">
-            Algorithmic color harmony generator. Press <kbd className="px-2 py-0.5 bg-slate-100 text-purple-600 rounded border border-slate-200 font-mono text-xs font-bold">Spacebar</kbd> to generate unlocked colors!
-          </p>
-        </div>
-
-        <button
-          onClick={generateNewSwatches}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-sm shadow-md hover:from-purple-700 hover:to-pink-600 transition-opacity flex items-center gap-2 self-start md:self-auto"
-        >
-          <RefreshCw className="w-4 h-4" />
-          <span>Regenerate (Space)</span>
-        </button>
-      </div>
+    <div>
+      <PageHeader
+        title="Color Theory Palette Generator"
+        description={
+          <>
+            Algorithmic color harmony generator. Press <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded font-mono text-xs font-bold">Spacebar</span> to generate unlocked colors!
+          </>
+        }
+        icon={<Wand2 className="w-6 h-6" />}
+        action={
+          <button
+            onClick={generateNewSwatches}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-sm shadow-md hover:from-purple-600 hover:to-pink-600 transition-opacity flex items-center gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Regenerate (Space)</span>
+          </button>
+        }
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
 
       {/* Controls Bar */}
       <div className="bg-white border border-slate-100 rounded-3xl p-6 mb-10 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -207,6 +207,7 @@ export default function GeneratePaletteClient() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }

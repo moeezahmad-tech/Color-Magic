@@ -75,7 +75,7 @@ export default function HomePage() {
   const scrollCards2 = [...baseScrollCards2, ...baseScrollCards2];
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
 
       {/* ═══════════════════════════════════════════════════════════════════
           HERO SECTION — fills exactly 100vh minus the 64px navbar

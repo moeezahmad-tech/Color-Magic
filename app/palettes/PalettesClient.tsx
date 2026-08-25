@@ -61,7 +61,7 @@ export default function PalettesClient({ palettes }: Props) {
         description="Browse thousands of professional color schemes — search by hex, theme, or style."
         icon={<PaletteIcon className="w-6 h-6" />}
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
 
       {/* Main Container */}
       <div className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm">

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import HexToColorNameClient from './HexToColorNameClient';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Tag } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Hex to Color Name Converter — Find What Color is Your Hex Code',
@@ -26,5 +28,14 @@ import { fetchColors } from '@/lib/api-client';
 
 export default async function HexToColorNamePage() {
   const colors = await fetchColors();
-  return <HexToColorNameClient colors={colors} />;
+  return (
+    <div>
+      <PageHeader 
+        title="Hex to Color Name Converter"
+        description="Instantly find the human-readable color name for any hex code from 1000+ named colors."
+        icon={<Tag className="w-6 h-6" />}
+      />
+      <HexToColorNameClient colors={colors} />
+    </div>
+  );
 }

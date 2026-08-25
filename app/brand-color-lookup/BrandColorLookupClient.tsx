@@ -104,16 +104,8 @@ export default function BrandColorLookupClient() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-8">
-      <div className="text-center space-y-3">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 space-y-8">
 
-        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
-          Brand Colors Lookup
-        </h1>
-        <p className="text-slate-600 text-base max-w-xl mx-auto">
-          Official hexadecimal color palettes for world leading tech and digital brands
-        </p>
-      </div>
 
       <div className="max-w-xl mx-auto">
         <div className="relative">

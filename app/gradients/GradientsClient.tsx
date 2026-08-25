@@ -60,17 +60,9 @@ export default function GradientsClient({ gradients }: Props) {
   }, [activeCategory, gradientType, searchQuery, favoriteGradients]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header (Matching Screenshot 3) */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-            Explore CSS Gradients
-          </h1>
-          <p className="text-slate-600 mt-1 text-base max-w-2xl">
-            Browse beautiful linear, radial & mesh gradients — filter by style, copy ready-to-use CSS with a single click.
-          </p>
-        </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+      {/* Utilities */}
+      <div className="flex justify-end mb-4">
         <span className="text-xs font-mono text-slate-400 font-semibold shrink-0">
           {filteredGradients.length} gradients
         </span>

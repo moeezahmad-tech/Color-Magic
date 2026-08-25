@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import BrandColorLookupClient from './BrandColorLookupClient';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Briefcase } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Brand Color Lookup — Find Hex Codes for Popular Brand Colors',
@@ -24,5 +26,14 @@ export const metadata: Metadata = {
 };
 
 export default function BrandColorLookupPage() {
-  return <BrandColorLookupClient />;
+  return (
+    <div>
+      <PageHeader 
+        title="Brand Color Lookup"
+        description="Find exact hex codes and RGB values for popular brand colors like Google, Apple, and Spotify."
+        icon={<Briefcase className="w-6 h-6" />}
+      />
+      <BrandColorLookupClient />
+    </div>
+  );
 }

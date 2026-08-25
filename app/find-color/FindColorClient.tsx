@@ -46,21 +46,9 @@ export default function FindColorClient({ colors }: Props) {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 space-y-14">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 sm:pt-10 sm:pb-20 space-y-14">
       {/* Hero Card Container */}
-      <div className="bg-[#FFF5F7] border border-pink-100/80 rounded-3xl p-10 sm:p-14 flex flex-col md:flex-row items-center justify-between gap-10 shadow-sm">
-        <div className="space-y-5 max-w-xl">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white border border-pink-200 text-pink-500 shadow-2xs">
-            <Pipette className="w-3.5 h-3.5" /> Hex Color Lookup
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
-            Find Your Color Name
-          </h1>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-lg">
-            Enter any hex code and instantly get its color name, RGB value, HSL value, contrast rating, and more. Our database covers 1000+ named colors.
-          </p>
-        </div>
-
+      <div className="bg-[#FFF5F7] border border-pink-100/80 rounded-3xl p-10 flex flex-col items-center justify-center shadow-sm">
         {/* Right Swatch Box */}
         <div className="flex flex-col items-center shrink-0">
           <div

@@ -109,25 +109,10 @@ export default function PaletteFromImageClient() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-            <ImageIcon className="w-8 h-8 text-fuchsia-600" />
-            <span>Image Color Palette Extractor</span>
-          </h1>
-          <p className="text-slate-600 mt-1 text-sm sm:text-base">
-            Extract dominant color swatches using HTML5 Canvas K-Means++ clustering.
-          </p>
-        </div>
 
-        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/80 text-xs font-bold shadow-2xs">
-          <ShieldCheck className="w-4 h-4" /> 100% Client-Side Privacy (Zero Server Upload)
-        </span>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         {/* Left Column: Image Dropzone & Preview */}

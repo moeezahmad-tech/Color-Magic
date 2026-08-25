@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import DarkColorFinderClient from './DarkColorFinderClient';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Moon } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Dark Color Name Finder — Discover Deep & Dark Shade Names',
@@ -18,5 +20,14 @@ import { fetchPalettes } from '@/lib/api-client';
 
 export default async function DarkColorFinderPage() {
   const palettes = await fetchPalettes();
-  return <DarkColorFinderClient palettes={palettes} />;
+  return (
+    <div>
+      <PageHeader 
+        title="Dark Color Name Finder"
+        description="Discover names for deep, dark shades and midnight tones organized by hue family."
+        icon={<Moon className="w-6 h-6" />}
+      />
+      <DarkColorFinderClient palettes={palettes} />
+    </div>
+  );
 }
