@@ -187,7 +187,7 @@ export default function ColorConverterClient({ initialMode }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-4 pt-8 pb-16 space-y-8">
       {/* Dropdown Selector */}
-      <div className="flex justify-center relative z-50">
+      <div className="flex justify-center relative z-40">
         <div className="relative inline-block text-left w-full sm:w-64">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -202,7 +202,7 @@ export default function ColorConverterClient({ initialMode }: Props) {
           </button>
 
           {isDropdownOpen && (
-            <div className="origin-top-right absolute right-0 mt-2 w-full rounded-2xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 z-50 border border-slate-100 overflow-hidden">
+            <div className="origin-top-right absolute right-0 mt-2 w-full rounded-2xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 z-40 border border-slate-100 overflow-hidden">
               <div className="py-1">
                 {MODES.map((mode) => (
                   <button
