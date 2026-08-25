@@ -1,0 +1,38 @@
+# ColorMagic API .htaccess
+# Serves api.colormagic.techkreative.com
+
+<IfModule mod_headers.c>
+    # Enable CORS for all origins
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header set Cache-Control "max-age=86400, public"
+</IfModule>
+
+# Ensure proper MIME type for static JSON files
+AddType application/json .json
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Handle HTTP OPTIONS preflight requests
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ - [R=200,L]
+
+    # Endpoint URL Rewriting
+    # /gradients -> gradients.php
+    # /palettes -> palettes.php
+    # /colors -> colors.php
+    # /v1/gradients -> gradients.php
+    # /v1/palettes -> palettes.php
+    # /v1/colors -> colors.php
+    # /v1/health -> index.php
+    RewriteRule ^v1/gradients/?$ gradients.php [L,QSA]
+    RewriteRule ^v1/palettes/?$ palettes.php [L,QSA]
+    RewriteRule ^v1/colors/?$ colors.php [L,QSA]
+    RewriteRule ^v1/health/?$ index.php [L,QSA]
+
+    RewriteRule ^gradients/?$ gradients.php [L,QSA]
+    RewriteRule ^palettes/?$ palettes.php [L,QSA]
+    RewriteRule ^colors/?$ colors.php [L,QSA]
+</IfModule>

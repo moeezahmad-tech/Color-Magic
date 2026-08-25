@@ -1,0 +1,29 @@
+name: Deploy PHP API to api.colormagic.techkreative.com
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/**'
+      - '.github/workflows/api.yml'
+
+jobs:
+  api-deploy:
+    name: 🎉 Sync API to Subdomain Server (FTP)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📂 Deploy api/ folder via FTP to api_colormagic/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          local-dir: ./api/
+          server-dir: ./api_colormagic/
+          # Only sync changed files — faster deploys
+          log-level: verbose

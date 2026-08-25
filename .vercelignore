@@ -1,0 +1,12 @@
+# PHP API — deployed separately to api.colormagic.techkreative.com via FTP
+api/
+
+# Old PHP project — not part of the Next.js build
+OLD PROJECT/
+
+# Docs — internal only
+docs/
+
+# Local env
+.env.colormagic
+.env.local

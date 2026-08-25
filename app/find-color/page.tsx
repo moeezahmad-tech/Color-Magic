@@ -1,0 +1,23 @@
+import type { Metadata } from 'next';
+import FindColorClient from './FindColorClient';
+
+export const metadata: Metadata = {
+  title: 'Hex to Color Name Finder — Identify Any Color Code',
+  description:
+    'Free hex to color name finder. Enter any hex code to instantly discover its color name, RGB, HSL values, contrast ratio, and accessibility info. Lookup 1000+ color names.',
+  keywords: ['hex color finder', 'color name from hex', 'RGB HSL converter', 'color info tool'],
+  alternates: { canonical: '/find-color' },
+  openGraph: {
+    title: 'Hex to Color Name Finder — Identify Any Color Code | Color Magic',
+    description:
+      'Free hex to color name finder. Enter any hex code to get color name, RGB, HSL and contrast info instantly.',
+    url: '/find-color',
+  },
+};
+
+import { fetchColors } from '@/lib/api-client';
+
+export default async function FindColorPage() {
+  const colors = await fetchColors();
+  return <FindColorClient colors={colors} />;
+}

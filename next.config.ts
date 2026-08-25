@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/photo-**',
+      },
+    ],
+  },
+  // Suppress the "OLD PROJECT" directory from the build entirely
+  excludeDefaultMomentLocales: true,
 };
 
 export default nextConfig;
