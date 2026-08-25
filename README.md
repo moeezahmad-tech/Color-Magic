@@ -144,3 +144,11 @@ This project is open-source and available under the **MIT License**. You are fre
 <div align="center">
   <p>Crafted with 🖤 for the Open Source Community.</p>
 </div>
+
+
+
+
+
+ i have implemeted the ISR Sheild and 60second cache for the NextJS app to reduce the workflow for the backend
+
+ 
