@@ -1,22 +1,41 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Gradient } from '@/types';
 import { GradientCard } from '@/components/ui/GradientCard';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
-import { Search, ChevronDown, Sparkles } from 'lucide-react';
+import { Search, ChevronDown, Sparkles, Shuffle } from 'lucide-react';
 
 interface Props {
   gradients: Gradient[];
 }
 
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export default function GradientsClient({ gradients }: Props) {
+  const [displayGradients, setDisplayGradients] = useState<Gradient[]>(gradients);
   const [activeCategory, setActiveCategory] = useState('all');
   const [gradientType, setGradientType] = useState<'all' | 'linear' | 'radial'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
   const { favoriteGradients } = useFavoritesStore();
+
+  // Shuffle gradients dynamically on client mount so each visitor gets a fresh UI order
+  useEffect(() => {
+    setDisplayGradients(shuffleArray(gradients));
+  }, [gradients]);
+
+  const handleShuffle = () => {
+    setDisplayGradients((prev) => shuffleArray(prev));
+  };
 
   const filterCategories = [
     { id: 'all', label: 'All Styles' },
@@ -32,7 +51,7 @@ export default function GradientsClient({ gradients }: Props) {
   ];
 
   const filteredGradients = useMemo(() => {
-    let items = gradients;
+    let items = displayGradients;
 
     if (activeCategory === 'favorites') {
       items = items.filter((g) => favoriteGradients.includes(g.id));
@@ -57,7 +76,7 @@ export default function GradientsClient({ gradients }: Props) {
     }
 
     return items;
-  }, [activeCategory, gradientType, searchQuery, favoriteGradients]);
+  }, [activeCategory, gradientType, searchQuery, favoriteGradients, displayGradients]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
@@ -68,7 +87,7 @@ export default function GradientsClient({ gradients }: Props) {
         </span>
       </div>
 
-      {/* Main White Card Container (Matching Screenshot 3) */}
+      {/* Main White Card Container */}
       <div className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm">
         {/* Search Bar & Filters Dropdown */}
         <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
@@ -83,34 +102,47 @@ export default function GradientsClient({ gradients }: Props) {
             />
           </div>
 
-          <div className="relative w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Shuffle Button */}
             <button
-              onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-              onBlur={() => setTimeout(() => setIsFilterDropdownOpen(false), 200)}
-              className="w-full sm:w-auto flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
+              onClick={handleShuffle}
+              title="Shuffle Gradients"
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all shrink-0"
             >
-              <span>Filters ({activeCategory})</span>
-              <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
+              <Shuffle className="w-4 h-4 text-amber-500" />
+              <span>Shuffle</span>
             </button>
 
-            {isFilterDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50">
-                {filterCategories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      setActiveCategory(cat.id);
-                      setIsFilterDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors ${
-                      activeCategory === cat.id ? 'text-purple-600 font-bold bg-purple-50/50' : 'text-slate-700'
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Filter Dropdown */}
+            <div className="relative flex-1 sm:flex-initial">
+              <button
+                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                onBlur={() => setTimeout(() => setIsFilterDropdownOpen(false), 200)}
+                className="w-full sm:w-auto flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
+              >
+                <span>Filters ({activeCategory})</span>
+                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isFilterDropdownOpen && (
+                <div className="origin-top-right absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50">
+                  {filterCategories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setActiveCategory(cat.id);
+                        setIsFilterDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors ${
+                        activeCategory === cat.id ? 'text-purple-600 font-bold bg-purple-50/50' : 'text-slate-700'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -134,4 +166,5 @@ export default function GradientsClient({ gradients }: Props) {
     </div>
   );
 }
+
 

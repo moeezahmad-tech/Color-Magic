@@ -1,22 +1,41 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Palette } from '@/types';
 import { PaletteCard } from '@/components/ui/PaletteCard';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
-import { Search, ChevronDown, Palette as PaletteIcon } from 'lucide-react';
+import { Search, ChevronDown, Palette as PaletteIcon, Shuffle } from 'lucide-react';
 import { PageHeader } from '@/components/ui/PageHeader';
 
 interface Props {
   palettes: Palette[];
 }
 
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export default function PalettesClient({ palettes }: Props) {
+  const [displayPalettes, setDisplayPalettes] = useState<Palette[]>(palettes);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
   const { favoritePalettes } = useFavoritesStore();
+
+  // Shuffle palettes dynamically on client mount so each visitor gets a fresh UI order
+  useEffect(() => {
+    setDisplayPalettes(shuffleArray(palettes));
+  }, [palettes]);
+
+  const handleShuffle = () => {
+    setDisplayPalettes((prev) => shuffleArray(prev));
+  };
 
   const filterCategories = [
     { id: 'all', label: 'All Styles' },
@@ -30,7 +49,7 @@ export default function PalettesClient({ palettes }: Props) {
   ];
 
   const filteredPalettes = useMemo(() => {
-    let items = palettes;
+    let items = displayPalettes;
 
     if (activeFilter === 'favorites') {
       items = items.filter((p) => favoritePalettes.includes(p.id || p.slug));
@@ -52,7 +71,7 @@ export default function PalettesClient({ palettes }: Props) {
     }
 
     return items;
-  }, [activeFilter, searchQuery, favoritePalettes]);
+  }, [activeFilter, searchQuery, favoritePalettes, displayPalettes]);
 
   return (
     <div>
@@ -78,34 +97,47 @@ export default function PalettesClient({ palettes }: Props) {
             />
           </div>
 
-          <div className="relative w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Shuffle Button */}
             <button
-              onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-              onBlur={() => setTimeout(() => setIsFilterDropdownOpen(false), 200)}
-              className="w-full sm:w-auto flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
+              onClick={handleShuffle}
+              title="Shuffle Palettes"
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-all shrink-0"
             >
-              <span>Filters ({activeFilter})</span>
-              <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
+              <Shuffle className="w-4 h-4 text-purple-500" />
+              <span>Shuffle</span>
             </button>
 
-            {isFilterDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50">
-                {filterCategories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      setActiveFilter(cat.id);
-                      setIsFilterDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors ${
-                      activeFilter === cat.id ? 'text-purple-600 font-bold bg-purple-50/50' : 'text-slate-700'
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Filter Dropdown */}
+            <div className="relative flex-1 sm:flex-initial">
+              <button
+                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                onBlur={() => setTimeout(() => setIsFilterDropdownOpen(false), 200)}
+                className="w-full sm:w-auto flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
+              >
+                <span>Filters ({activeFilter})</span>
+                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isFilterDropdownOpen && (
+                <div className="origin-top-right absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50">
+                  {filterCategories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setActiveFilter(cat.id);
+                        setIsFilterDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors ${
+                        activeFilter === cat.id ? 'text-purple-600 font-bold bg-purple-50/50' : 'text-slate-700'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -130,4 +162,5 @@ export default function PalettesClient({ palettes }: Props) {
     </div>
   );
 }
+
 
