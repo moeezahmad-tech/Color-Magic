@@ -25,16 +25,16 @@ import {
 } from 'lucide-react';
 
 export default function HomePage() {
-  const toolCards = [
-    { title: 'Hex Color Finder', desc: 'Enter any hex code and get its name, RGB, HSL and contrast info', href: '/find-color', icon: <Search className="w-5 h-5 text-purple-500" /> },
-    { title: 'Hex to Color Name', desc: 'Convert any hex code to a human-readable color name instantly', href: '/hex-to-color-name', icon: <Tag className="w-5 h-5 text-pink-500" /> },
-    { title: 'Hex to RGB Converter', desc: 'Fast, accurate hex to RGB and RGB to hex color conversion', href: '/hex-to-rgb', icon: <ArrowLeftRight className="w-5 h-5 text-blue-500" /> },
-    { title: 'Palette from Image', desc: 'Upload any photo and extract its dominant colors instantly', href: '/palette-from-image', icon: <ImageIcon className="w-5 h-5 text-emerald-500" /> },
-    { title: 'What Color Is This Code?', desc: 'Identify any hex or RGB color code with our interactive tool', href: '/what-color-is', icon: <Pipette className="w-5 h-5 text-orange-500" /> },
+  const secondaryToolCards = [
+    { title: 'Generate Palette', desc: 'Create harmonious color schemes using color theory rules', href: '/generate-palette', icon: <Wand2 className="w-5 h-5 text-yellow-500" /> },
     { title: 'Dark Color Name Finder', desc: 'Discover names for deep, dark shades and midnight tones', href: '/dark-color-finder', icon: <Moon className="w-5 h-5 text-indigo-500" /> },
     { title: 'Brand Color Lookup', desc: 'Find hex codes and palettes from popular brand identities', href: '/brand-color-lookup', icon: <Briefcase className="w-5 h-5 text-slate-700" /> },
-    { title: 'Generate Palette', desc: 'Create harmonious color schemes using color theory rules', href: '/generate-palette', icon: <Wand2 className="w-5 h-5 text-yellow-500" /> },
-    { title: 'CSS Gradients', desc: 'Browse 100+ hand-crafted linear and radial CSS gradients', href: '/gradients', icon: <Layers className="w-5 h-5 text-teal-500" /> },
+    { title: 'Hex to Color Name', desc: 'Convert any hex code to a human-readable color name instantly', href: '/hex-to-color-name', icon: <Tag className="w-5 h-5 text-pink-500" /> },
+    { title: 'What Color Is This Code?', desc: 'Identify any hex or RGB color code with our interactive tool', href: '/what-color-is', icon: <Pipette className="w-5 h-5 text-orange-500" /> },
+    { title: 'Hex to RGB Converter', desc: 'Convert hex color codes to RGB values instantly', href: '/hex-to-rgb', icon: <ArrowLeftRight className="w-5 h-5 text-blue-500" /> },
+    { title: 'RGB to Hex Converter', desc: 'Convert RGB color values to hexadecimal codes instantly', href: '/rgb-to-hex', icon: <ArrowLeftRight className="w-5 h-5 text-cyan-500" /> },
+    { title: 'Hex to HSL Converter', desc: 'Convert hex color codes to HSL format accurately', href: '/hex-to-hsl', icon: <ArrowLeftRight className="w-5 h-5 text-purple-500" /> },
+    { title: 'HSL to RGB Converter', desc: 'Convert HSL values back to RGB effortlessly', href: '/hsl-to-rgb', icon: <ArrowLeftRight className="w-5 h-5 text-emerald-500" /> },
   ];
 
   const faqs = [
@@ -224,53 +224,7 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* 2. Generate Palette */}
-          <Link href="/generate-palette" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mb-6">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-purple-600 transition-colors tracking-tight">
-                Generate Palette
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Design unique color schemes based on color theory. Generate monochromatic, analogous, complementary, and triadic harmonies instantly.
-              </p>
-            </div>
-            <div className="relative z-10 mt-8 flex justify-center items-center">
-              {['#8B5CF6', '#d8b4fe', '#f9a8d4', '#f472b6'].map((c, i) => (
-                <div
-                  key={c}
-                  className="w-3.5 h-3.5 rounded-full shadow-sm"
-                  style={{ backgroundColor: c, marginLeft: i === 0 ? 0 : '8px' }}
-                />
-              ))}
-            </div>
-          </Link>
-
-          {/* 3. Find Color */}
-          <Link href="/find-color" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
-                <Pipette className="w-5 h-5" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors tracking-tight">
-                Find Color
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Convert Hex codes to human-readable names. Access exact values for RGB and HSL formats, review contrast levels, and download shade profiles.
-              </p>
-            </div>
-            <div className="relative z-10 mt-8 bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-3 flex items-center justify-between text-[10px] sm:text-xs font-mono text-slate-400">
-              <span className="font-semibold text-slate-500">#EC4899</span>
-              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="font-semibold text-slate-500">RGB(236, 72, 153)</span>
-            </div>
-          </Link>
-
-          {/* 4. Gradients */}
+          {/* 2. Gradients */}
           <Link href="/gradients" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
             <div className="relative z-10">
@@ -288,6 +242,46 @@ export default function HomePage() {
               <div className="flex-1 rounded-sm bg-gradient-to-r from-purple-600 to-pink-500" />
               <div className="flex-1 rounded-sm bg-gradient-to-r from-red-500 to-pink-500" />
               <div className="flex-1 rounded-sm bg-gradient-to-r from-emerald-500 to-teal-400" />
+            </div>
+          </Link>
+
+          {/* 3. Palette from Image */}
+          <Link href="/palette-from-image" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
+            <div className="relative z-10">
+              <div className="w-10 h-10 rounded-full bg-fuchsia-100 text-fuchsia-500 flex items-center justify-center mb-6">
+                <ImageIcon className="w-5 h-5" />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-fuchsia-500 transition-colors tracking-tight">
+                Palette from Image
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Upload any photo and extract its dominant color palette instantly. All processing happens in your browser — your images never leave your device.
+              </p>
+            </div>
+            <div className="relative z-10 mt-8 flex items-center gap-1.5 text-[11px] font-bold text-slate-500">
+              <UploadCloud className="w-4 h-4 text-purple-400" />
+              <span>Upload & extract</span>
+            </div>
+          </Link>
+
+          {/* 4. Favorites */}
+          <Link href="/profile" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-red-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
+            <div className="relative z-10">
+              <div className="w-10 h-10 rounded-full bg-red-100 text-red-500 flex items-center justify-center mb-6">
+                <Heart className="w-5 h-5 fill-red-500" />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-red-500 transition-colors tracking-tight">
+                Favorites
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                All your saved colors, palettes and gradients in one place. Access your personal collection anytime and pick up right where you left off.
+              </p>
+            </div>
+            <div className="relative z-10 mt-8 flex items-center gap-1.5 text-[11px] font-bold text-slate-500">
+              <Heart className="w-4 h-4 text-red-400 fill-red-400" />
+              <span>Your collection</span>
             </div>
           </Link>
 
@@ -311,85 +305,24 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* 6. Favorites */}
-          <Link href="/profile" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-red-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
+          {/* 6. Find Color */}
+          <Link href="/find-color" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
             <div className="relative z-10">
-              <div className="w-10 h-10 rounded-full bg-red-100 text-red-500 flex items-center justify-center mb-6">
-                <Heart className="w-5 h-5 fill-red-500" />
+              <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
+                <Pipette className="w-5 h-5" />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-red-500 transition-colors tracking-tight">
-                Favorites
+              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors tracking-tight">
+                Find Color
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed">
-                All your saved colors, palettes and gradients in one place. Access your personal collection anytime and pick up right where you left off.
-              </p>
-            </div>
-            <div className="relative z-10 mt-8 flex items-center gap-1.5 text-[11px] font-bold text-slate-500">
-              <Heart className="w-4 h-4 text-red-400 fill-red-400" />
-              <span>Your collection</span>
-            </div>
-          </Link>
-
-          {/* 7. Palette from Image */}
-          <Link href="/palette-from-image" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-full bg-fuchsia-100 text-fuchsia-500 flex items-center justify-center mb-6">
-                <ImageIcon className="w-5 h-5" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-fuchsia-500 transition-colors tracking-tight">
-                Palette from Image
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Upload any photo and extract its dominant color palette instantly. All processing happens in your browser — your images never leave your device.
-              </p>
-            </div>
-            <div className="relative z-10 mt-8 flex items-center gap-1.5 text-[11px] font-bold text-slate-500">
-              <UploadCloud className="w-4 h-4 text-purple-400" />
-              <span>Upload & extract</span>
-            </div>
-          </Link>
-
-          {/* 8. Hex to RGB */}
-          <Link href="/hex-to-rgb" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-full bg-cyan-100 text-cyan-500 flex items-center justify-center mb-6">
-                <ArrowLeftRight className="w-5 h-5" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-cyan-500 transition-colors tracking-tight">
-                Hex to RGB
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Convert hex color codes to RGB values and vice versa in real-time. Live color preview, conversion formula, and example table included.
+                Convert Hex codes to human-readable names. Access exact values for RGB and HSL formats, review contrast levels, and download shade profiles.
               </p>
             </div>
             <div className="relative z-10 mt-8 bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-3 flex items-center justify-between text-[10px] sm:text-xs font-mono text-slate-400">
-              <span className="font-semibold text-slate-500">#3B82F6</span>
-              <ArrowLeftRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="font-semibold text-slate-500">59, 130, 246</span>
-            </div>
-          </Link>
-
-          {/* 9. Dark Color Finder */}
-          <Link href="/dark-color-finder" className="group relative bg-white border border-slate-100 hover:border-purple-200 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden min-h-[320px]">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none" />
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-500 flex items-center justify-center mb-6">
-                <Moon className="w-5 h-5" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-indigo-500 transition-colors tracking-tight">
-                Dark Color Finder
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Discover names for deep, dark shades and midnight tones. Perfect for dark themes, backgrounds, and low-light design work.
-              </p>
-            </div>
-            <div className="relative z-10 mt-8 flex gap-1 h-3.5 rounded-sm overflow-hidden w-full">
-              {['#020617', '#1e1b4b', '#312e81', '#4c1d95', '#701a75'].map((c) => (
-                <div key={c} className="flex-1" style={{ backgroundColor: c }} />
-              ))}
+              <span className="font-semibold text-slate-500">#EC4899</span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              <span className="font-semibold text-slate-500">RGB(236, 72, 153)</span>
             </div>
           </Link>
 
@@ -397,17 +330,17 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          POPULAR TOOLS GRID
+          SECONDARY TOOLS GRID
       ═══════════════════════════════════════════════════════════════════ */}
       <section className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Popular Color Tools
+            Converters & Secondary Features
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {toolCards.map((tool) => (
+          {secondaryToolCards.map((tool) => (
             <Link
               key={tool.title}
               href={tool.href}

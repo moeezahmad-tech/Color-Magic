@@ -24,6 +24,11 @@ export function hexToRgb(hex: string): RGB {
   };
 }
 
+export function hexToHsl(hex: string): HSL {
+  const rgb = hexToRgb(hex);
+  return rgbToHsl(rgb.r, rgb.g, rgb.b);
+}
+
 export function rgbToHex(r: number, g: number, b: number): string {
   const clamp = (val: number) => Math.max(0, Math.min(255, Math.round(val)));
   const hexR = clamp(r).toString(16).padStart(2, '0');
@@ -99,6 +104,11 @@ export function hslToRgb(h: number, s: number, l: number): RGB {
     g: Math.round(g * 255),
     b: Math.round(b * 255),
   };
+}
+
+export function hslToHex(h: number, s: number, l: number): string {
+  const rgb = hslToRgb(h, s, l);
+  return rgbToHex(rgb.r, rgb.g, rgb.b);
 }
 
 export function rgbToHsv(r: number, g: number, b: number): HSV {

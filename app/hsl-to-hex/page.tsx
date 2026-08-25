@@ -5,19 +5,19 @@ import { ArrowLeftRight } from 'lucide-react';
 import ColorConverterClient from '@/components/ui/ColorConverterClient';
 
 export const metadata: Metadata = {
-  title: 'Hex to RGB Converter | Color Magic',
-  description: 'Convert hex color codes to RGB values instantly with real-time preview.',
+  title: 'HSL to Hex Converter | Color Magic',
+  description: 'Convert HSL (Hue, Saturation, Lightness) values to Hex color codes instantly with real-time preview.',
 };
 
-export default function HexToRgbPage() {
+export default function HslToHexPage() {
   return (
     <div>
       <PageHeader 
-        title="Hex to RGB Converter" 
-        description="Convert hex color codes to RGB values instantly."
+        title="HSL to Hex Converter" 
+        description="Convert HSL color values to Hexadecimal codes instantly."
         icon={<ArrowLeftRight className="w-6 h-6" />}
       />
-      <ColorConverterClient initialMode="hex-to-rgb" />
+      <ColorConverterClient initialMode="hsl-to-hex" />
     </div>
   );
 }
