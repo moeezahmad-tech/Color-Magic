@@ -385,37 +385,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          CTA BOTTOM BANNER
-      ═══════════════════════════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-3xl p-12 text-center text-white relative overflow-hidden">
-          <div aria-hidden className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-          <div className="relative">
-            <h2 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight">
-              Start Exploring Colors Today
-            </h2>
-            <p className="text-white/80 text-base mb-8 max-w-xl mx-auto">
-              Free, open-source, and always improving. No account needed — just instant color tools for designers and developers.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                href="/palettes"
-                className="px-8 py-3.5 rounded-2xl bg-white text-purple-700 font-bold text-sm hover:bg-purple-50 transition-colors shadow-md"
-              >
-                Explore Palettes
-              </Link>
-              <Link
-                href="/find-color"
-                className="px-8 py-3.5 rounded-2xl bg-white/10 border border-white/30 text-white font-bold text-sm hover:bg-white/20 transition-colors"
-              >
-                Find a Color
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 }

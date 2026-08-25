@@ -267,6 +267,41 @@ export default function ColorConverterClient({ initialMode }: Props) {
            </div>
         </div>
       </div>
+
+      {/* FAQs Section */}
+      <div className="bg-white border border-slate-100 rounded-3xl p-8 sm:p-12 shadow-sm">
+        <h2 className="text-2xl font-extrabold text-slate-900 mb-8 tracking-tight">Frequently Asked Questions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900">What is {MODES.find(m => m.id === initialMode)?.label.split(' to ')[0]}?</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              {initialMode.startsWith('hex') && "HEX (Hexadecimal) is a 6-digit alphanumeric code used in web design to represent RGB colors. It starts with a # symbol."}
+              {initialMode.startsWith('rgb') && "RGB (Red, Green, Blue) is the color model used by digital displays. Each channel ranges from 0 to 255."}
+              {initialMode.startsWith('hsl') && "HSL (Hue, Saturation, Lightness) is an intuitive color model that separates the base color (Hue) from its intensity (Saturation) and brightness (Lightness)."}
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900">What is {MODES.find(m => m.id === initialMode)?.label.split(' to ')[1]}?</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              {initialMode.endsWith('hex') && "HEX (Hexadecimal) is a 6-digit alphanumeric code used in web design to represent RGB colors. It starts with a # symbol."}
+              {initialMode.endsWith('rgb') && "RGB (Red, Green, Blue) is the color model used by digital displays. Each channel ranges from 0 to 255."}
+              {initialMode.endsWith('hsl') && "HSL (Hue, Saturation, Lightness) is an intuitive color model that separates the base color (Hue) from its intensity (Saturation) and brightness (Lightness)."}
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900">How accurate is this conversion?</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              The mathematical conversion between these color spaces is highly accurate and standardized across modern web browsers and design tools.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900">Is this tool free?</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              Yes, all color converters and tools on Color Magic are completely free and open-source.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
