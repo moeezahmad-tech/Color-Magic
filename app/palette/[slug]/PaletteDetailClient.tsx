@@ -29,7 +29,7 @@ function getWcagBadge(ratio: number) {
 
 export default function PaletteDetailClient({ palette, colors, relatedPalettes, relatedGradients, relatedColors }: Props) {
   const { showToast } = useToast();
-  const { isPaletteFavorited, toggleFavoritePalette } = useFavoritesStore();
+  const { isPaletteFavorited, toggleFavoritePalette, isColorFavorited, toggleFavoriteColor } = useFavoritesStore();
 
   const [activeExport, setActiveExport] = useState<string | null>(null);
 
@@ -159,20 +159,63 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
       <div className="bg-[#FFF5F7] border border-pink-100 rounded-3xl p-6 sm:p-10 mb-10 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Swatch Visual */}
-          <div className="lg:col-span-6 h-64 sm:h-80 w-full rounded-2xl overflow-hidden flex shadow-md border border-slate-200/80 bg-slate-100">
-            {palette.colors.map((color, i) => (
-              <div
-                key={`${color}-${i}`}
-                className="swatch-band min-w-0 h-full relative cursor-pointer group border-r border-black/5 last:border-r-0"
-                style={{ backgroundColor: color }}
-                onClick={() => copyText(color, color)}
-                title={`Click to copy ${color}`}
-              >
-                <span className="text-[10px] font-mono font-bold bg-white/90 text-slate-900 px-1.5 py-0.5 rounded shadow-sm backdrop-blur-sm pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
-                  {color}
-                </span>
-              </div>
-            ))}
+          <div className="lg:col-span-6 h-64 sm:h-80 w-full rounded-2xl overflow-hidden relative shadow-md border border-slate-200/80 bg-slate-100 flex">
+            {palette.colors.map((color, i) => {
+              const cleanHex = color.replace('#', '').toLowerCase();
+              const isColorFav = isColorFavorited(color);
+
+              return (
+                <div
+                  key={`${color}-${i}`}
+                  className="swatch-band min-w-0 h-full relative flex flex-col justify-end items-center pb-3.5 cursor-pointer group/swatch border-r border-black/5 last:border-r-0 overflow-hidden"
+                  style={{ backgroundColor: color }}
+                  onClick={() => copyText(color, color)}
+                  title={`Click to copy ${color}`}
+                >
+                  {/* Top-Left action icons in column format (top-to-bottom) sliding down on hover */}
+                  <div
+                    className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5 transform -translate-y-8 opacity-0 group-hover/swatch:translate-y-0 group-hover/swatch:opacity-100 transition-all duration-300 ease-out"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyText(color, color);
+                      }}
+                      className="w-7 h-7 rounded-full bg-white/90 hover:bg-white text-slate-700 shadow-md backdrop-blur-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                      title={`Copy ${color}`}
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                    </button>
+                    <Link
+                      href={`/color/${cleanHex}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-7 h-7 rounded-full bg-white/90 hover:bg-white text-slate-700 shadow-md backdrop-blur-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                      title={`Open ${color} details`}
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </Link>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const isNowFav = isColorFavorited(color);
+                        toggleFavoriteColor(color);
+                        showToast(isNowFav ? `Removed ${color} from favorites` : `Saved ${color} to favorites!`);
+                      }}
+                      className="w-7 h-7 rounded-full bg-white/90 hover:bg-white text-slate-700 shadow-md backdrop-blur-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                      title={isColorFav ? `Remove ${color} from favorites` : `Favorite ${color}`}
+                    >
+                      <Heart className={`w-3.5 h-3.5 ${isColorFav ? 'fill-pink-500 text-pink-500' : ''}`} />
+                    </button>
+                  </div>
+
+                  {/* Bottom Hex Tag */}
+                  <span className="text-[10px] font-mono font-bold bg-white/90 text-slate-900 px-1.5 py-0.5 rounded shadow-sm backdrop-blur-sm pointer-events-none opacity-0 group-hover/swatch:opacity-100 transition-opacity whitespace-nowrap z-10">
+                    {color}
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           {/* Info */}
