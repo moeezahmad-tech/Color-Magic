@@ -5,7 +5,7 @@ import { Palette, ColorName, Gradient } from '@/types';
 import { hexToRgb, hexToHsl, getLuminance, getContrastRatio, findClosestColorName } from '@/lib/color-math';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useToast } from '@/components/ui/ToastProvider';
-import { Heart, Hash, Layers, ChevronRight, Check, Copy, Code, ArrowLeft } from 'lucide-react';
+import { Heart, Hash, Layers, ChevronRight, Check, Copy, Code, ArrowLeft, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { PaletteCard } from '@/components/ui/PaletteCard';
 import { GradientCard } from '@/components/ui/GradientCard';
@@ -215,25 +215,46 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
 
             {/* Individual swatch list */}
             <div className="grid grid-cols-2 gap-2 pt-1 max-h-80 overflow-y-auto pr-1">
-              {colorDetails.map((item) => (
-                <div
-                  key={item.hex}
-                  onClick={() => copyText(item.hex, item.hex)}
-                  className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center justify-between cursor-pointer group hover:border-pink-300 transition-all shadow-2xs"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div 
-                      className="w-6 h-6 rounded-md border border-slate-300 shadow-2xs shrink-0" 
-                      style={{ backgroundColor: item.hex }} 
-                    />
-                    <div className="min-w-0">
-                      <span className="text-xs font-mono font-bold text-slate-800 block truncate">{item.hex}</span>
-                      <span className="text-[10px] text-slate-400 block truncate">{item.name}</span>
+              {colorDetails.map((item) => {
+                const cleanHex = item.hex.replace('#', '').toLowerCase();
+                return (
+                  <div
+                    key={item.hex}
+                    className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center justify-between group hover:border-pink-300 transition-all shadow-2xs"
+                  >
+                    <Link
+                      href={`/color/${cleanHex}`}
+                      className="flex items-center gap-2.5 min-w-0 hover:opacity-85 transition-opacity"
+                      title={`View details for ${item.name} (${item.hex})`}
+                    >
+                      <div 
+                        className="w-6 h-6 rounded-md border border-slate-300 shadow-2xs shrink-0" 
+                        style={{ backgroundColor: item.hex }} 
+                      />
+                      <div className="min-w-0">
+                        <span className="text-xs font-mono font-bold text-slate-800 hover:text-purple-600 block truncate transition-colors">{item.hex}</span>
+                        <span className="text-[10px] text-slate-400 block truncate">{item.name}</span>
+                      </div>
+                    </Link>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => copyText(item.hex, item.hex)}
+                        className="p-1 rounded text-slate-300 hover:text-pink-500 hover:bg-pink-50 transition-colors"
+                        title={`Copy ${item.hex}`}
+                      >
+                        <Copy className="w-3 h-3" />
+                      </button>
+                      <Link
+                        href={`/color/${cleanHex}`}
+                        className="p-1 rounded text-slate-300 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                        title={`View ${item.hex} details`}
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                      </Link>
                     </div>
                   </div>
-                  <Copy className="w-3 h-3 text-slate-300 group-hover:text-pink-500 transition-colors shrink-0" />
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

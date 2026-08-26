@@ -126,19 +126,40 @@ export default function GradientDetailClient({ gradient, relatedGradients, relat
             </div>
 
             <div className="grid grid-cols-2 gap-2 pt-1">
-              {colorDetails.map((item, i) => (
-                <div
-                  key={`${item.hex}-${i}`}
-                  onClick={() => copyText(item.hex, item.hex)}
-                  className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center justify-between cursor-pointer group hover:border-pink-300 transition-all"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-5 h-5 rounded-md border border-slate-200" style={{ backgroundColor: item.hex }} />
-                    <span className="text-xs font-mono font-bold text-slate-800">{item.hex}</span>
+              {colorDetails.map((item, i) => {
+                const cleanHex = item.hex.replace('#', '').toLowerCase();
+                return (
+                  <div
+                    key={`${item.hex}-${i}`}
+                    className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center justify-between group hover:border-pink-300 transition-all shadow-2xs"
+                  >
+                    <Link
+                      href={`/color/${cleanHex}`}
+                      className="flex items-center gap-2.5 min-w-0 hover:opacity-80 transition-opacity"
+                      title={`View color details for ${item.hex}`}
+                    >
+                      <div className="w-5 h-5 rounded-md border border-slate-300 shadow-2xs shrink-0" style={{ backgroundColor: item.hex }} />
+                      <span className="text-xs font-mono font-bold text-slate-800 hover:text-slate-900 truncate transition-colors">{item.hex}</span>
+                    </Link>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => copyText(item.hex, item.hex)}
+                        className="p-1 rounded text-slate-300 hover:text-pink-500 hover:bg-pink-50 transition-colors"
+                        title={`Copy ${item.hex}`}
+                      >
+                        <Copy className="w-3 h-3" />
+                      </button>
+                      <Link
+                        href={`/color/${cleanHex}`}
+                        className="p-1 rounded text-slate-300 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                        title={`View ${item.hex} details`}
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                      </Link>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400">{item.rgb.r},{item.rgb.g},{item.rgb.b}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -164,36 +185,72 @@ export default function GradientDetailClient({ gradient, relatedGradients, relat
           <p className="text-xs text-slate-500 mt-0.5">RGB, HSL, and brightness values for each stop</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {colorDetails.map((item, i) => (
-            <div key={`${item.hex}-info-${i}`} className="border border-slate-100 rounded-2xl overflow-hidden">
-              <div className="h-28 w-full" style={{ backgroundColor: item.hex }} />
-              <div className="p-4 bg-white space-y-2">
-                <div className="text-sm font-mono font-bold text-slate-900">{item.hex}</div>
-                <div className="space-y-1 text-xs text-slate-500 font-mono">
-                  <div className="flex justify-between">
-                    <span>RGB</span>
-                    <span className="font-bold text-slate-800">{item.rgb.r}, {item.rgb.g}, {item.rgb.b}</span>
+          {colorDetails.map((item, i) => {
+            const cleanHex = item.hex.replace('#', '').toLowerCase();
+            return (
+              <div key={`${item.hex}-info-${i}`} className="border border-slate-100 rounded-2xl overflow-hidden shadow-2xs hover:shadow-md transition-all group">
+                <Link
+                  href={`/color/${cleanHex}`}
+                  className="block h-28 w-full relative overflow-hidden group/swatch"
+                  title={`View color details for ${item.hex}`}
+                >
+                  <div
+                    className="w-full h-full group-hover/swatch:scale-105 transition-transform duration-300"
+                    style={{ backgroundColor: item.hex }}
+                  />
+                  <span className="absolute bottom-2 right-2 text-[10px] font-bold bg-white/90 text-slate-800 px-2 py-0.5 rounded backdrop-blur-xs opacity-0 group-hover/swatch:opacity-100 transition-opacity flex items-center gap-1">
+                    View Color <ExternalLink className="w-2.5 h-2.5" />
+                  </span>
+                </Link>
+                <div className="p-4 bg-white space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Link
+                      href={`/color/${cleanHex}`}
+                      className="text-sm font-mono font-bold text-slate-900 hover:text-slate-700 transition-colors flex items-center gap-1.5"
+                    >
+                      {item.hex}
+                      <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                    </Link>
                   </div>
-                  <div className="flex justify-between">
-                    <span>HSL</span>
-                    <span className="font-bold text-slate-800">{item.hsl.h}°, {item.hsl.s}%, {item.hsl.l}%</span>
+                  <div className="space-y-1 text-xs text-slate-500 font-mono">
+                    <div className="flex justify-between">
+                      <span>RGB</span>
+                      <span className="font-bold text-slate-800">{item.rgb.r}, {item.rgb.g}, {item.rgb.b}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>HSL</span>
+                      <span className="font-bold text-slate-800">{item.hsl.h}°, {item.hsl.s}%, {item.hsl.l}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>BRIGHTNESS</span>
+                      <span className="font-bold text-slate-800">{item.brightness}%</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>BRIGHTNESS</span>
-                    <span className="font-bold text-slate-800">{item.brightness}%</span>
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      onClick={() => copyText(item.hex, 'HEX')}
+                      className="flex-1 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-100 flex items-center justify-center gap-1 transition-colors"
+                    >
+                      <Copy className="w-3 h-3" /> HEX
+                    </button>
+                    <button
+                      onClick={() => copyText(`rgb(${item.rgb.r}, ${item.rgb.g}, ${item.rgb.b})`, 'RGB')}
+                      className="flex-1 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-100 flex items-center justify-center gap-1 transition-colors"
+                    >
+                      <Copy className="w-3 h-3" /> RGB
+                    </button>
+                    <Link
+                      href={`/color/${cleanHex}`}
+                      className="flex-1 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center gap-1 transition-colors text-center"
+                      title={`View full color page for ${item.hex}`}
+                    >
+                      <ExternalLink className="w-3 h-3 text-slate-400" /> Details
+                    </Link>
                   </div>
-                </div>
-                <div className="flex gap-2 pt-2 border-t border-slate-100">
-                  <button onClick={() => copyText(item.hex, 'HEX')} className="flex-1 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-100 flex items-center justify-center gap-1">
-                    <Copy className="w-3 h-3" /> HEX
-                  </button>
-                  <button onClick={() => copyText(`rgb(${item.rgb.r}, ${item.rgb.g}, ${item.rgb.b})`, 'RGB')} className="flex-1 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-100 flex items-center justify-center gap-1">
-                    <Copy className="w-3 h-3" /> RGB
-                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
