@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import ColorsClient from './ColorsClient';
-import { fetchColors, fetchPalettes, fetchGradients } from '@/lib/api-client';
+import { fetchColors } from '@/lib/api-client';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,21 +18,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ColorsPage() {
-  const [colors, palettes, gradients] = await Promise.all([
-    fetchColors(),
-    fetchPalettes(),
-    fetchGradients(),
-  ]);
-
+  const colors = await fetchColors();
   const shuffledColors = [...colors].sort(() => 0.5 - Math.random());
-  const shuffledPalettes = [...palettes].sort(() => 0.5 - Math.random());
-  const shuffledGradients = [...gradients].sort(() => 0.5 - Math.random());
 
-  return (
-    <ColorsClient 
-      colors={shuffledColors} 
-      relatedPalettes={shuffledPalettes} 
-      relatedGradients={shuffledGradients} 
-    />
-  );
+  return <ColorsClient colors={shuffledColors} />;
 }

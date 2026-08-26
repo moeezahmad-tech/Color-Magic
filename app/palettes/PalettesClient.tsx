@@ -20,16 +20,20 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
+const ITEMS_PER_PAGE = 72;
+
 export default function PalettesClient({ palettes }: Props) {
   const [displayPalettes, setDisplayPalettes] = useState<Palette[]>(palettes);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   const { favoritePalettes } = useFavoritesStore();
 
   const handleShuffle = () => {
     setDisplayPalettes((prev) => shuffleArray(prev));
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
   const filterCategories = [
@@ -97,7 +101,7 @@ export default function PalettesClient({ palettes }: Props) {
             <button
               onClick={handleShuffle}
               title="Shuffle Palettes"
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-all shrink-0"
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-all shrink-0 cursor-pointer"
             >
               <Shuffle className="w-4 h-4 text-purple-500" />
               <span>Shuffle</span>
@@ -146,11 +150,28 @@ export default function PalettesClient({ palettes }: Props) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPalettes.map((palette) => (
-              <PaletteCard key={palette.id} palette={palette} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredPalettes.slice(0, visibleCount).map((palette) => (
+                <PaletteCard key={palette.id} palette={palette} />
+              ))}
+            </div>
+
+            {/* Load More Button */}
+            {visibleCount < filteredPalettes.length && (
+              <div className="text-center pt-8">
+                <button
+                  onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
+                  className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Load More Palettes</span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    (+{Math.min(ITEMS_PER_PAGE, filteredPalettes.length - visibleCount)})
+                  </span>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

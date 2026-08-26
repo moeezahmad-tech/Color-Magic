@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ColorName, Palette, Gradient } from '@/types';
+import { ColorName } from '@/types';
 import { useToast } from '@/components/ui/ToastProvider';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { hexToRgb, hexToHsl } from '@/lib/color-math';
-import { PaletteCard } from '@/components/ui/PaletteCard';
-import { GradientCard } from '@/components/ui/GradientCard';
 import { 
   Search, 
   Shuffle, 
@@ -15,15 +13,12 @@ import {
   ExternalLink, 
   Heart, 
   Droplet, 
-  Sparkles,
-  ArrowRight
+  Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
 
 interface Props {
   colors: ColorName[];
-  relatedPalettes?: Palette[];
-  relatedGradients?: Gradient[];
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -61,9 +56,9 @@ function getColorFamily(h: number, s: number, l: number): string {
   return 'pink';
 }
 
-const ITEMS_PER_PAGE = 36;
+const ITEMS_PER_PAGE = 72;
 
-export default function ColorsClient({ colors, relatedPalettes, relatedGradients }: Props) {
+export default function ColorsClient({ colors }: Props) {
   const [displayColors, setDisplayColors] = useState<ColorName[]>(colors);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFamily, setActiveFamily] = useState('all');
@@ -96,7 +91,6 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
     showToast(isNowFav ? `Removed ${hex} from favorites` : `Saved ${hex} to favorites!`);
   };
 
-  // Color calculation cache
   const enrichedColors = useMemo(() => {
     return displayColors.map((c) => {
       const rgb = hexToRgb(c.hex);
@@ -115,14 +109,12 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
 
   const filteredColors = useMemo(() => {
     return enrichedColors.filter((item) => {
-      // Family filter
       if (activeFamily === 'favorites') {
         if (!favoriteColors.includes(item.hex.toUpperCase())) return false;
       } else if (activeFamily !== 'all' && item.family !== activeFamily) {
         return false;
       }
 
-      // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesName = item.name.toLowerCase().includes(q);
@@ -134,7 +126,9 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
     });
   }, [enrichedColors, activeFamily, searchQuery, favoriteColors]);
 
-  const visibleColors = filteredColors.slice(0, visibleCount);
+  const currentVisibleColors = useMemo(() => {
+    return filteredColors.slice(0, visibleCount);
+  }, [filteredColors, visibleCount]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -146,13 +140,13 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search colors by name or hex (e.g. Coral, Sapphire, #36C5F0)..."
+              placeholder="Search by color name or hex code (e.g. Amber, #f59e0b)..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setVisibleCount(ITEMS_PER_PAGE);
               }}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all placeholder:text-slate-400 text-slate-900"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all placeholder:text-slate-400"
             />
           </div>
 
@@ -161,9 +155,9 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
             <button
               onClick={handleShuffle}
               title="Shuffle Colors"
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all shrink-0"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-sky-50 hover:text-sky-600 hover:border-sky-200 transition-all shrink-0 cursor-pointer"
             >
-              <Shuffle className="w-4 h-4 text-amber-500" />
+              <Shuffle className="w-4 h-4 text-sky-500" />
               <span>Shuffle</span>
             </button>
 
@@ -174,12 +168,12 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
                 onBlur={() => setTimeout(() => setIsFamilyDropdownOpen(false), 200)}
                 className="w-full sm:w-auto flex items-center justify-between gap-2 px-5 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
               >
-                <span>Family ({COLOR_FAMILIES.find((f) => f.id === activeFamily)?.label || 'All'})</span>
+                <span>Family ({COLOR_FAMILIES.find((f) => f.id === activeFamily)?.label || activeFamily})</span>
                 <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isFamilyDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isFamilyDropdownOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50 max-h-80 overflow-y-auto">
+                <div className="origin-top-right absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50 max-h-80 overflow-y-auto">
                   {COLOR_FAMILIES.map((family) => (
                     <button
                       key={family.id}
@@ -188,11 +182,16 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
                         setIsFamilyDropdownOpen(false);
                         setVisibleCount(ITEMS_PER_PAGE);
                       }}
-                      className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors ${
+                      className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center justify-between ${
                         activeFamily === family.id ? 'text-sky-600 font-bold bg-sky-50/50' : 'text-slate-700'
                       }`}
                     >
-                      {family.label}
+                      <span>{family.label}</span>
+                      {family.id === 'favorites' && mounted && (
+                        <span className="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded-full">
+                          {favoriteColors.length}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -201,30 +200,73 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
           </div>
         </div>
 
-        {/* Counter Info */}
-        <div className="flex items-center justify-between px-1 text-xs text-slate-400 font-mono">
-          <span>Showing {visibleColors.length} of {filteredColors.length} named colors</span>
-          <span>Hex • RGB • HSL</span>
+        {/* Quick Color Family Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {COLOR_FAMILIES.map((family) => {
+            const isActive = activeFamily === family.id;
+            return (
+              <button
+                key={family.id}
+                onClick={() => {
+                  setActiveFamily(family.id);
+                  setVisibleCount(ITEMS_PER_PAGE);
+                }}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                  isActive
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'bg-white border border-slate-200/80 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                }`}
+              >
+                {family.id === 'favorites' ? (
+                  <Heart className={`w-3 h-3 ${isActive ? 'fill-white' : 'text-pink-500'}`} />
+                ) : (
+                  <Droplet className={`w-3 h-3 ${isActive ? 'text-sky-300' : 'text-slate-400'}`} />
+                )}
+                {family.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Color Count Banner */}
+        <div className="flex items-center justify-between text-xs text-slate-500 font-medium px-1">
+          <span>
+            Showing <strong className="text-slate-800">{currentVisibleColors.length}</strong> of{' '}
+            <strong className="text-slate-800">{filteredColors.length}</strong> named colors
+          </span>
+          {activeFamily !== 'all' && (
+            <button
+              onClick={() => {
+                setActiveFamily('all');
+                setSearchQuery('');
+                setVisibleCount(ITEMS_PER_PAGE);
+              }}
+              className="text-sky-600 hover:underline font-semibold"
+            >
+              Reset filters
+            </button>
+          )}
         </div>
 
         {/* Grid */}
         {filteredColors.length === 0 ? (
-          <div className="text-center py-20 bg-slate-50 border border-slate-100 rounded-3xl">
-            <Droplet className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+          <div className="text-center py-20 bg-white border border-slate-100 rounded-3xl shadow-sm">
+            <Sparkles className="w-12 h-12 text-slate-400 mx-auto mb-3" />
             <h3 className="text-lg font-bold text-slate-800">No Colors Found</h3>
-            <p className="text-slate-500 text-xs mt-1">
-              Try adjusting your search terms or selected color family.
+            <p className="text-slate-500 text-xs mt-1 max-w-sm mx-auto">
+              {activeFamily === 'favorites'
+                ? "You haven't saved any colors yet. Click the heart icon on any color to add it here!"
+                : 'Try adjusting your search query or choosing another color family.'}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {visibleColors.map((item) => {
-              const isColorFav = mounted ? isColorFavorited(item.hex) : false;
-
+            {currentVisibleColors.map((item) => {
+              const isColorFav = mounted && isColorFavorited(item.hex);
               return (
-                <div 
+                <div
                   key={item.hex}
-                  className="bg-white border border-slate-100 hover:border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
+                  className="group bg-white rounded-2xl border border-slate-100 p-3.5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   <div>
                     {/* Color Preview Swatch */}
@@ -303,67 +345,13 @@ export default function ColorsClient({ colors, relatedPalettes, relatedGradients
           <div className="text-center pt-8">
             <button
               onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
-              className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2"
+              className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer"
             >
               <span>Load More Colors</span>
               <span className="text-xs text-slate-400 font-mono">
                 (+{Math.min(ITEMS_PER_PAGE, filteredColors.length - visibleCount)})
               </span>
             </button>
-          </div>
-        )}
-
-        {/* Cross-Discovery: Related Palettes */}
-        {relatedPalettes && relatedPalettes.length > 0 && (
-          <div className="pt-16 space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                  Curated Color Palettes
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Browse harmonious palettes assembled by professional designers
-                </p>
-              </div>
-              <Link
-                href="/palettes"
-                className="text-xs font-bold text-pink-600 hover:text-pink-700 transition-colors flex items-center gap-1"
-              >
-                Explore All Palettes <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedPalettes.slice(0, 6).map((palette) => (
-                <PaletteCard key={palette.id} palette={palette} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Cross-Discovery: Related Gradients */}
-        {relatedGradients && relatedGradients.length > 0 && (
-          <div className="pt-12 space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                  CSS Gradients
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Copy-ready CSS gradients using these colors
-                </p>
-              </div>
-              <Link
-                href="/gradients"
-                className="text-xs font-bold text-purple-600 hover:text-purple-700 transition-colors flex items-center gap-1"
-              >
-                Explore All Gradients <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedGradients.slice(0, 6).map((gradient) => (
-                <GradientCard key={gradient.id} gradient={gradient} />
-              ))}
-            </div>
           </div>
         )}
       </div>

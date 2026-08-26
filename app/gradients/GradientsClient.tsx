@@ -1,16 +1,13 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Gradient, Palette } from '@/types';
+import { Gradient } from '@/types';
 import { GradientCard } from '@/components/ui/GradientCard';
-import { PaletteCard } from '@/components/ui/PaletteCard';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { Search, ChevronDown, Sparkles, Shuffle } from 'lucide-react';
-import Link from 'next/link';
 
 interface Props {
   gradients: Gradient[];
-  relatedPalettes?: Palette[];
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -22,17 +19,21 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-export default function GradientsClient({ gradients, relatedPalettes }: Props) {
+const ITEMS_PER_PAGE = 72;
+
+export default function GradientsClient({ gradients }: Props) {
   const [displayGradients, setDisplayGradients] = useState<Gradient[]>(gradients);
   const [activeCategory, setActiveCategory] = useState('all');
   const [gradientType, setGradientType] = useState<'all' | 'linear' | 'radial'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   const { favoriteGradients } = useFavoritesStore();
 
   const handleShuffle = () => {
     setDisplayGradients((prev) => shuffleArray(prev));
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
   const filterCategories = [
@@ -88,7 +89,10 @@ export default function GradientsClient({ gradients, relatedPalettes }: Props) {
               type="text"
               placeholder="Search gradients by name, style, or hex code..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setVisibleCount(ITEMS_PER_PAGE);
+              }}
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
             />
           </div>
@@ -98,7 +102,7 @@ export default function GradientsClient({ gradients, relatedPalettes }: Props) {
             <button
               onClick={handleShuffle}
               title="Shuffle Gradients"
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all shrink-0"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all shrink-0 cursor-pointer"
             >
               <Shuffle className="w-4 h-4 text-amber-500" />
               <span>Shuffle</span>
@@ -123,6 +127,7 @@ export default function GradientsClient({ gradients, relatedPalettes }: Props) {
                       onClick={() => {
                         setActiveCategory(cat.id);
                         setIsFilterDropdownOpen(false);
+                        setVisibleCount(ITEMS_PER_PAGE);
                       }}
                       className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors ${
                         activeCategory === cat.id ? 'text-purple-600 font-bold bg-purple-50/50' : 'text-slate-700'
@@ -147,38 +152,28 @@ export default function GradientsClient({ gradients, relatedPalettes }: Props) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredGradients.map((gradient) => (
-              <GradientCard key={gradient.id} gradient={gradient} />
-            ))}
-          </div>
-        )}
-
-        {/* Related Color Palettes */}
-        {relatedPalettes && relatedPalettes.length > 0 && (
-          <div className="pt-16 space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                  Related Color Palettes
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Curated color palettes matching modern web design trends
-                </p>
-              </div>
-              <Link
-                href="/palettes"
-                className="text-xs font-bold text-pink-600 hover:text-pink-700 transition-colors"
-              >
-                Explore All Palettes →
-              </Link>
-            </div>
+          <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedPalettes.slice(0, 6).map((palette) => (
-                <PaletteCard key={palette.id} palette={palette} />
+              {filteredGradients.slice(0, visibleCount).map((gradient) => (
+                <GradientCard key={gradient.id} gradient={gradient} />
               ))}
             </div>
-          </div>
+
+            {/* Load More Button */}
+            {visibleCount < filteredGradients.length && (
+              <div className="text-center pt-8">
+                <button
+                  onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
+                  className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Load More Gradients</span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    (+{Math.min(ITEMS_PER_PAGE, filteredGradients.length - visibleCount)})
+                  </span>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
