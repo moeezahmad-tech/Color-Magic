@@ -76,6 +76,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { AuthProvider } from '@/components/providers/AuthProvider';
+
 export default function RootLayout({
   children,
 }: {
@@ -87,11 +89,13 @@ export default function RootLayout({
         suppressHydrationWarning
         className="bg-white text-slate-900 min-h-screen flex flex-col selection:bg-pink-500 selection:text-white"
       >
-        <ToastProvider>
-          <Navbar />
-          <main className="flex-1 w-full">{children}</main>
-          <Footer />
-        </ToastProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <Navbar />
+            <main className="flex-1 w-full">{children}</main>
+            <Footer />
+          </ToastProvider>
+        </AuthProvider>
       </body>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || 'G-537L4MR968'} />
       <Analytics />
