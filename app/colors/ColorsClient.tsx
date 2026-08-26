@@ -13,7 +13,6 @@ import {
   Copy, 
   ExternalLink, 
   Heart, 
-  Droplet, 
   Droplets,
   Sparkles
 } from 'lucide-react';
@@ -206,34 +205,6 @@ export default function ColorsClient({ colors }: Props) {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Quick Color Family Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {COLOR_FAMILIES.map((family) => {
-            const isActive = activeFamily === family.id;
-            return (
-              <button
-                key={family.id}
-                onClick={() => {
-                  setActiveFamily(family.id);
-                  setVisibleCount(ITEMS_PER_PAGE);
-                }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                  isActive
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'bg-white border border-slate-200/80 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                {family.id === 'favorites' ? (
-                  <Heart className={`w-3 h-3 ${isActive ? 'fill-white' : 'text-pink-500'}`} />
-                ) : (
-                  <Droplet className={`w-3 h-3 ${isActive ? 'text-sky-300' : 'text-slate-400'}`} />
-                )}
-                {family.label}
-              </button>
-            );
-          })}
         </div>
 
         {/* Color Count Banner */}
