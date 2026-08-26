@@ -22,6 +22,11 @@ import {
   Heart,
   UploadCloud,
   ArrowLeftRight,
+  ShieldCheck,
+  CheckCircle2,
+  Lock,
+  Globe,
+  UserCheck,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -101,7 +106,10 @@ export default function HomePage() {
 
             {/* ── Left: Hero Text ───────────────────────────────────────── */}
             <div className="lg:col-span-7 space-y-7">
-
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-50 border border-purple-100 text-purple-700 text-xs font-bold shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                <span>100% Free &amp; Open-Source Color Suite • No Login Required</span>
+              </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.08]">
                 Find{' '}
@@ -326,6 +334,93 @@ export default function HomePage() {
             </div>
           </Link>
 
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          APPLICATION PURPOSE & HOW IT WORKS (Google OAuth & Transparency)
+      ═══════════════════════════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-gradient-to-b from-slate-50/80 to-white border border-slate-200/80 rounded-3xl p-8 sm:p-12 shadow-xs space-y-8">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-purple-50 text-purple-600 rounded-full border border-purple-100 text-xs font-bold shadow-2xs">
+              <ShieldCheck className="w-4 h-4 text-purple-600" /> Transparent &amp; Open Access
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              About Color Magic &amp; Application Purpose
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              Color Magic is an open-access color exploration and design suite created by <strong>TechKreative</strong>. Our purpose is to make color theory, palette generation, and digital accessibility effortless for designers, developers, and creatives worldwide.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            {/* Purpose 1 */}
+            <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-2xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-pink-50 text-pink-500 flex items-center justify-center mb-3">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">100% Free &amp; Open Access</h3>
+                <p className="text-slate-500 text-xs sm:text-sm mt-2 leading-relaxed">
+                  All color conversion tools, image palette extractors, and color schemes are publicly accessible immediately. No payment, registration, or sign-in is required to use any feature.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-pink-600 pt-2">
+                <CheckCircle2 className="w-4 h-4 text-pink-500" />
+                <span>Instant Guest Access</span>
+              </div>
+            </div>
+
+            {/* Purpose 2 */}
+            <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-2xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">Optional Google Sign-In</h3>
+                <p className="text-slate-500 text-xs sm:text-sm mt-2 leading-relaxed">
+                  Google authentication is entirely optional. It is used exclusively to allow users to securely sync and backup their saved favorite palettes and custom gradients across multiple devices.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-purple-600 pt-2">
+                <CheckCircle2 className="w-4 h-4 text-purple-500" />
+                <span>Sync Across Devices</span>
+              </div>
+            </div>
+
+            {/* Purpose 3 */}
+            <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-2xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">Privacy &amp; Local Computation</h3>
+                <p className="text-slate-500 text-xs sm:text-sm mt-2 leading-relaxed">
+                  Image color analysis and color math calculations run locally in your browser. We never sell your personal information and strictly adhere to Google API Services User Data Policy.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 pt-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <span>Client-Side Privacy</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-2 text-center text-xs text-slate-500 flex flex-wrap items-center justify-center gap-4 border-t border-slate-100">
+            <span>Read our full legal policies:</span>
+            <Link href="/privacy" className="font-bold text-purple-600 hover:underline">
+              Privacy Policy
+            </Link>
+            <span>•</span>
+            <Link href="/terms" className="font-bold text-purple-600 hover:underline">
+              Terms of Service
+            </Link>
+            <span>•</span>
+            <Link href="/open-source" className="font-bold text-pink-600 hover:underline">
+              Open Source Details
+            </Link>
+          </div>
         </div>
       </section>
 
