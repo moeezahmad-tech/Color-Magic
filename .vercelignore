@@ -1,10 +1,10 @@
-# PHP API — deployed separately to api.colormagic.techkreative.com via FTP
-api/
+# Legacy PHP API — deployed separately via FTP
+legacy_php_api/
 
-# Old PHP project — not part of the Next.js build
+# Old PHP project
 OLD PROJECT/
 
-# Docs — internal only
+# Docs
 docs/
 
 # Local env
