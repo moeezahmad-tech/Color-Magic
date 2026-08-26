@@ -19,6 +19,7 @@ import {
   Moon,
   Bookmark,
   User,
+  Droplet,
 } from 'lucide-react';
 import { GithubIcon, GoogleIcon } from '@/components/ui/Icons';
 
@@ -28,6 +29,7 @@ const NAV_SECTIONS = [
     items: [
       { href: '/palettes', icon: Palette, color: 'text-pink-500', label: 'Color Palettes', desc: 'Browse 150+ curated schemes' },
       { href: '/gradients', icon: Sparkles, color: 'text-amber-500', label: 'CSS Gradients', desc: '100+ copy-ready gradients' },
+      { href: '/colors', icon: Droplet, color: 'text-sky-500', label: 'Explore Colors', desc: '1,000+ curated named colors' },
     ],
   },
   {

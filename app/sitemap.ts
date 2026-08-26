@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
     { url: `${baseUrl}/palettes`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/gradients`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/colors`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/find-color`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/generate-palette`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/palette-from-image`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },

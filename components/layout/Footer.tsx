@@ -8,6 +8,7 @@ const footerLinks = {
   Explore: [
     { href: '/palettes', label: 'Color Palettes' },
     { href: '/gradients', label: 'CSS Gradients' },
+    { href: '/colors', label: 'Explore Colors' },
     { href: '/generate-palette', label: 'Generate Palette' },
     { href: '/palette-from-image', label: 'Palette from Image' },
   ],
