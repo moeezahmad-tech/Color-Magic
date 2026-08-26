@@ -1,5 +1,6 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { NextRequest } from 'next/server';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -20,4 +21,14 @@ export const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+async function authHandler(
+  req: NextRequest,
+  context: { params: Promise<{ nextauth: string[] }> | { nextauth: string[] } }
+) {
+  // In Next.js 15+, route parameters are passed as a Promise.
+  // We resolve params before passing to NextAuth v4 so route matching succeeds.
+  const params = context?.params instanceof Promise ? await context.params : context?.params;
+  return handler(req as any, { params } as any);
+}
+
+export { authHandler as GET, authHandler as POST };
