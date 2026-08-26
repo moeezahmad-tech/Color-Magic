@@ -24,6 +24,8 @@ const footerLinks = {
     { href: '/open-source', label: 'Open Source' },
     { href: '/profile', label: 'Saved Favorites' },
     { href: '/login', label: 'Sign In' },
+    { href: '/privacy', label: 'Privacy Policy' },
+    { href: '/terms', label: 'Terms of Service' },
   ],
 };
 
@@ -105,10 +107,12 @@ export const Footer = () => {
             </a>
             . MIT License.
           </p>
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-5">
             <Link href="/palettes" className="hover:text-slate-700 transition-colors font-medium">Palettes</Link>
             <Link href="/gradients" className="hover:text-slate-700 transition-colors font-medium">Gradients</Link>
             <Link href="/open-source" className="hover:text-slate-700 transition-colors font-medium">Open Source</Link>
+            <Link href="/privacy" className="hover:text-slate-700 transition-colors font-medium">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-slate-700 transition-colors font-medium">Terms of Service</Link>
           </div>
         </div>
       </div>

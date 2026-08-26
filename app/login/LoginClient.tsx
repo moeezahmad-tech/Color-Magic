@@ -65,11 +65,23 @@ function LoginForm() {
       <button
         onClick={handleGoogleSignIn}
         disabled={isLoading}
-        className="w-full py-3.5 px-4 rounded-xl bg-white border-2 border-slate-200 hover:border-purple-400 text-slate-800 font-bold text-sm flex items-center justify-center gap-3 transition-all hover:bg-purple-50 shadow-sm mb-4 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full py-3.5 px-4 rounded-xl bg-white border-2 border-slate-200 hover:border-purple-400 text-slate-800 font-bold text-sm flex items-center justify-center gap-3 transition-all hover:bg-purple-50 shadow-sm mb-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
       >
         <GoogleIcon className="w-5 h-5" />
         <span>{isLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
       </button>
+
+      <p className="text-[11px] text-slate-400 leading-relaxed px-2">
+        By signing in, you agree to our{' '}
+        <Link href="/terms" className="text-purple-600 hover:underline font-semibold">
+          Terms of Service
+        </Link>{' '}
+        and{' '}
+        <Link href="/privacy" className="text-purple-600 hover:underline font-semibold">
+          Privacy Policy
+        </Link>
+        .
+      </p>
 
       <div className="flex items-center gap-3 my-4">
         <div className="flex-1 h-px bg-slate-100" />
