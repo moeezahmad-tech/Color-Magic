@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ToastProvider } from '@/components/ui/ToastProvider';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({
@@ -99,6 +100,7 @@ export default function RootLayout({
       </body>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || 'G-537L4MR968'} />
       <Analytics />
+      <SpeedInsights />
     </html>
   );
 }
