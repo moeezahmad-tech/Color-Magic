@@ -1,13 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Gradient } from '@/types';
+import React, { useState, useMemo } from 'react';
+import { Gradient, Palette } from '@/types';
 import { GradientCard } from '@/components/ui/GradientCard';
+import { PaletteCard } from '@/components/ui/PaletteCard';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { Search, ChevronDown, Sparkles, Shuffle } from 'lucide-react';
+import Link from 'next/link';
 
 interface Props {
   gradients: Gradient[];
+  relatedPalettes?: Palette[];
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -19,7 +22,7 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-export default function GradientsClient({ gradients }: Props) {
+export default function GradientsClient({ gradients, relatedPalettes }: Props) {
   const [displayGradients, setDisplayGradients] = useState<Gradient[]>(gradients);
   const [activeCategory, setActiveCategory] = useState('all');
   const [gradientType, setGradientType] = useState<'all' | 'linear' | 'radial'>('all');
@@ -46,54 +49,47 @@ export default function GradientsClient({ gradients }: Props) {
   ];
 
   const filteredGradients = useMemo(() => {
-    let items = displayGradients;
+    return displayGradients.filter((gradient) => {
+      // Type Filter
+      if (gradientType !== 'all' && gradient.type !== gradientType) {
+        return false;
+      }
 
-    if (activeCategory === 'favorites') {
-      items = items.filter((g) => favoriteGradients.includes(g.id));
-    } else if (activeCategory !== 'all') {
-      items = items.filter(
-        (g) => g.style.toLowerCase() === activeCategory.toLowerCase()
-      );
-    }
+      // Category / Style Filter
+      if (activeCategory === 'favorites') {
+        return favoriteGradients.includes(gradient.id);
+      }
+      if (activeCategory !== 'all' && gradient.style.toLowerCase() !== activeCategory.toLowerCase()) {
+        return false;
+      }
 
-    if (gradientType !== 'all') {
-      items = items.filter((g) => g.type === gradientType);
-    }
+      // Search Query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesName = gradient.name.toLowerCase().includes(q);
+        const matchesColor = gradient.colors.some((c) => c.toLowerCase().includes(q));
+        const matchesStyle = gradient.style.toLowerCase().includes(q);
+        return matchesName || matchesColor || matchesStyle;
+      }
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      items = items.filter(
-        (g) =>
-          g.name.toLowerCase().includes(q) ||
-          g.style.toLowerCase().includes(q) ||
-          g.colors.some((c) => c.toLowerCase().includes(q))
-      );
-    }
-
-    return items;
-  }, [activeCategory, gradientType, searchQuery, favoriteGradients, displayGradients]);
+      return true;
+    });
+  }, [displayGradients, activeCategory, gradientType, searchQuery, favoriteGradients]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
-      {/* Utilities */}
-      <div className="flex justify-end mb-4">
-        <span className="text-xs font-mono text-slate-400 font-semibold shrink-0">
-          {filteredGradients.length} gradients
-        </span>
-      </div>
-
-      {/* Main White Card Container */}
-      <div className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm">
-        {/* Search Bar & Filters Dropdown */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
-          <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="space-y-6">
+        {/* Controls Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          {/* Search */}
+          <div className="relative flex-1 w-full sm:w-auto">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
+              placeholder="Search gradients by name, style, or hex code..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search gradient name, style, or type..."
-              className="w-full bg-slate-50 border border-slate-200/80 focus:bg-white focus:border-purple-500 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
             />
           </div>
 
@@ -102,7 +98,7 @@ export default function GradientsClient({ gradients }: Props) {
             <button
               onClick={handleShuffle}
               title="Shuffle Gradients"
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all shrink-0"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all shrink-0"
             >
               <Shuffle className="w-4 h-4 text-amber-500" />
               <span>Shuffle</span>
@@ -113,7 +109,7 @@ export default function GradientsClient({ gradients }: Props) {
               <button
                 onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
                 onBlur={() => setTimeout(() => setIsFilterDropdownOpen(false), 200)}
-                className="w-full sm:w-auto flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
+                className="w-full sm:w-auto flex items-center justify-between gap-2 px-5 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
               >
                 <span>Filters ({activeCategory})</span>
                 <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
@@ -157,9 +153,34 @@ export default function GradientsClient({ gradients }: Props) {
             ))}
           </div>
         )}
+
+        {/* Related Color Palettes */}
+        {relatedPalettes && relatedPalettes.length > 0 && (
+          <div className="pt-16 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+                  Related Color Palettes
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Curated color palettes matching modern web design trends
+                </p>
+              </div>
+              <Link
+                href="/palettes"
+                className="text-xs font-bold text-pink-600 hover:text-pink-700 transition-colors"
+              >
+                Explore All Palettes →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedPalettes.slice(0, 6).map((palette) => (
+                <PaletteCard key={palette.id} palette={palette} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-

@@ -157,20 +157,8 @@ export default function GradientDetailClient({ gradient, relatedGradients, relat
 
 
 
-      {/* Related Gradients */}
-      {relatedGradients.length > 0 && (
-        <div className="space-y-6 mb-10">
-          <h2 className="text-2xl font-extrabold text-slate-900">Related Gradients</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedGradients.map((rg) => (
-              <GradientCard key={rg.id} gradient={rg} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Color Info */}
-      <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm space-y-5">
+      {/* Color Information */}
+      <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm space-y-5 mb-12">
         <div>
           <h2 className="text-xl font-extrabold text-slate-900">Color Information</h2>
           <p className="text-xs text-slate-500 mt-0.5">RGB, HSL, and brightness values for each stop</p>
@@ -208,6 +196,43 @@ export default function GradientDetailClient({ gradient, relatedGradients, relat
           ))}
         </div>
       </div>
+
+      {/* Related Gradients */}
+      {relatedGradients.length > 0 && (
+        <div className="space-y-6 mb-12">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-extrabold text-slate-900">Related Gradients</h2>
+            <Link href="/gradients" className="text-xs font-bold text-pink-600 hover:text-pink-700 transition-colors">
+              Explore All Gradients →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedGradients.map((rg) => (
+              <GradientCard key={rg.id} gradient={rg} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Related Color Palettes */}
+      {relatedPalettes && relatedPalettes.length > 0 && (
+        <div className="space-y-6 mb-12">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-extrabold text-slate-900">Related Color Palettes</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Matching {gradient.style.toLowerCase()} schemes for UI & design</p>
+            </div>
+            <Link href="/palettes" className="text-xs font-bold text-pink-600 hover:text-pink-700 transition-colors">
+              View All Palettes →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedPalettes.slice(0, 6).map((rp) => (
+              <PaletteCard key={rp.id} palette={rp} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
