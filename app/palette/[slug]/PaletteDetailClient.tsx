@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Palette, ColorName, Gradient } from '@/types';
 import { hexToRgb, hexToHsl, getLuminance, getContrastRatio, findClosestColorName } from '@/lib/color-math';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useToast } from '@/components/ui/ToastProvider';
-import { Heart, Hash, Layers, ChevronRight, Check, Copy, Code, ArrowLeft, ExternalLink } from 'lucide-react';
+import { Heart, Copy, Code, ArrowLeft, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { PaletteCard } from '@/components/ui/PaletteCard';
 import { GradientCard } from '@/components/ui/GradientCard';
@@ -31,7 +31,80 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
   const { showToast } = useToast();
   const { isPaletteFavorited, toggleFavoritePalette, isColorFavorited, toggleFavoriteColor } = useFavoritesStore();
 
-  const [activeExport, setActiveExport] = useState<string | null>(null);
+  // Calculate top 6 colorful, accessible contrast combinations from palette (Hooks must be called unconditionally)
+  const contrastPairs = React.useMemo(() => {
+    if (!palette?.colors || palette.colors.length === 0) return [];
+    const colorList = palette.colors;
+    const pairs: { bg: string; text: string; ratio: number; score: number; isColorful: boolean }[] = [];
+    const seenPairs = new Set<string>();
+
+    for (let i = 0; i < colorList.length; i++) {
+      for (let j = 0; j < colorList.length; j++) {
+        if (i === j) continue;
+        const c1 = colorList[i];
+        const c2 = colorList[j];
+        const pairKey = `${c1}->${c2}`;
+        if (seenPairs.has(pairKey)) continue;
+        seenPairs.add(pairKey);
+
+        const rgb1 = hexToRgb(c1);
+        const rgb2 = hexToRgb(c2);
+        const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
+        const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+        const ratio = getContrastRatio(lum1, lum2);
+
+        // Filter for usable contrast ratios
+        if (ratio < 3.0) continue;
+
+        const hsl1 = hexToHsl(c1);
+        const hsl2 = hexToHsl(c2);
+        const isColorful = hsl1.s > 20 || hsl2.s > 20;
+        const totalSaturation = hsl1.s + hsl2.s;
+
+        // Score formula: heavily rewards pairs that have rich color vibrancy while maintaining high contrast
+        const vibrancyBonus = isColorful ? totalSaturation * 0.15 : -8;
+        const score = ratio * 1.5 + vibrancyBonus;
+
+        pairs.push({ bg: c1, text: c2, ratio, score, isColorful });
+      }
+    }
+
+    // Sort by calculated score (vibrant high contrast first)
+    pairs.sort((a, b) => b.score - a.score);
+
+    // Pick top 6 distinct combinations (or top 4/2 if fewer colors)
+    let selected = pairs.slice(0, 6);
+
+    if (selected.length === 0) {
+      const c1 = colorList[0];
+      const c2 = colorList[colorList.length - 1] || colorList[0];
+      const lum1 = getLuminance(hexToRgb(c1).r, hexToRgb(c1).g, hexToRgb(c1).b);
+      const lum2 = getLuminance(hexToRgb(c2).r, hexToRgb(c2).g, hexToRgb(c2).b);
+      const ratio = getContrastRatio(lum1, lum2);
+      selected = [
+        { bg: c1, text: c2, ratio, score: 0, isColorful: true },
+        { bg: c2, text: c1, ratio, score: 0, isColorful: true },
+      ];
+    }
+
+    const roleLabels = [
+      'Vibrant Surface',
+      'Dark Mode UI',
+      'Accent Banner',
+      'Interactive Hero',
+      'Secondary Card',
+      'Badge & Highlight',
+    ];
+
+    return selected.map((item, index) => ({
+      id: `pair-${item.bg}-${item.text}-${index}`,
+      bg: item.bg,
+      text: item.text,
+      ratio: item.ratio.toFixed(1),
+      label: roleLabels[index] || `Palette Contrast Pair ${index + 1}`,
+      wcag: getWcagBadge(item.ratio),
+    }));
+  }, [palette?.colors]);
 
   if (!palette) {
     return (
@@ -69,80 +142,6 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
     navigator.clipboard.writeText(`:root {\n${vars}\n}`);
     showToast('Copied CSS Variables!');
   };
-
-  // Calculate top 6 colorful, accessible contrast combinations from palette
-  const contrastPairs = React.useMemo(() => {
-    const colors = palette.colors;
-    const pairs: { bg: string; text: string; ratio: number; score: number; isColorful: boolean }[] = [];
-    const seenPairs = new Set<string>();
-
-    for (let i = 0; i < colors.length; i++) {
-      for (let j = 0; j < colors.length; j++) {
-        if (i === j) continue;
-        const c1 = colors[i];
-        const c2 = colors[j];
-        const pairKey = `${c1}->${c2}`;
-        if (seenPairs.has(pairKey)) continue;
-        seenPairs.add(pairKey);
-
-        const rgb1 = hexToRgb(c1);
-        const rgb2 = hexToRgb(c2);
-        const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
-        const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
-        const ratio = getContrastRatio(lum1, lum2);
-
-        // Filter for usable contrast ratios
-        if (ratio < 3.0) continue;
-
-        const hsl1 = hexToHsl(c1);
-        const hsl2 = hexToHsl(c2);
-        const isColorful = hsl1.s > 20 || hsl2.s > 20;
-        const totalSaturation = hsl1.s + hsl2.s;
-
-        // Score formula: heavily rewards pairs that have rich color vibrancy while maintaining high contrast
-        const vibrancyBonus = isColorful ? totalSaturation * 0.15 : -8;
-        const score = ratio * 1.5 + vibrancyBonus;
-
-        pairs.push({ bg: c1, text: c2, ratio, score, isColorful });
-      }
-    }
-
-    // Sort by calculated score (vibrant high contrast first)
-    pairs.sort((a, b) => b.score - a.score);
-
-    // Pick top 6 distinct combinations (or top 4/2 if fewer colors)
-    let selected = pairs.slice(0, 6);
-
-    if (selected.length === 0) {
-      const c1 = colors[0];
-      const c2 = colors[colors.length - 1] || colors[0];
-      const lum1 = getLuminance(hexToRgb(c1).r, hexToRgb(c1).g, hexToRgb(c1).b);
-      const lum2 = getLuminance(hexToRgb(c2).r, hexToRgb(c2).g, hexToRgb(c2).b);
-      const ratio = getContrastRatio(lum1, lum2);
-      selected = [
-        { bg: c1, text: c2, ratio, score: 0, isColorful: true },
-        { bg: c2, text: c1, ratio, score: 0, isColorful: true },
-      ];
-    }
-
-    const roleLabels = [
-      'Vibrant Surface',
-      'Dark Mode UI',
-      'Accent Banner',
-      'Interactive Hero',
-      'Secondary Card',
-      'Badge & Highlight',
-    ];
-
-    return selected.map((item, index) => ({
-      id: `pair-${item.bg}-${item.text}-${index}`,
-      bg: item.bg,
-      text: item.text,
-      ratio: item.ratio,
-      label: roleLabels[index % roleLabels.length],
-      wcag: getWcagBadge(item.ratio),
-    }));
-  }, [palette.colors]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
