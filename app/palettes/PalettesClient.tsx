@@ -90,7 +90,10 @@ export default function PalettesClient({ palettes }: Props) {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setVisibleCount(ITEMS_PER_PAGE);
+              }}
               placeholder="Search hex, theme or color name..."
               className="w-full bg-slate-50 border border-slate-200/80 focus:bg-white focus:border-purple-500 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors"
             />
@@ -126,6 +129,7 @@ export default function PalettesClient({ palettes }: Props) {
                       onClick={() => {
                         setActiveFilter(cat.id);
                         setIsFilterDropdownOpen(false);
+                        setVisibleCount(ITEMS_PER_PAGE);
                       }}
                       className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-slate-50 transition-colors ${
                         activeFilter === cat.id ? 'text-purple-600 font-bold bg-purple-50/50' : 'text-slate-700'

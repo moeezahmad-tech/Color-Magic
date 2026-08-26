@@ -78,7 +78,7 @@ export default function GradientsClient({ gradients }: Props) {
   }, [displayGradients, activeCategory, gradientType, searchQuery, favoriteGradients]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
       <div className="space-y-6">
         {/* Controls Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">

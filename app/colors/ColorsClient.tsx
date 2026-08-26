@@ -5,6 +5,7 @@ import { ColorName } from '@/types';
 import { useToast } from '@/components/ui/ToastProvider';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { hexToRgb, hexToHsl } from '@/lib/color-math';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { 
   Search, 
   Shuffle, 
@@ -13,6 +14,7 @@ import {
   ExternalLink, 
   Heart, 
   Droplet, 
+  Droplets,
   Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
@@ -131,10 +133,16 @@ export default function ColorsClient({ colors }: Props) {
   }, [filteredColors, visibleCount]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="space-y-6">
-        {/* Controls Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+    <div>
+      <PageHeader 
+        title="Explore Named Colors" 
+        description="Browse thousands of curated named colors — search by name, hex code, or color family."
+        icon={<Droplets className="w-6 h-6" />}
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
+        <div className="space-y-6">
+          {/* Controls Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
           {/* Search */}
           <div className="relative flex-1 w-full sm:w-auto">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -355,6 +363,7 @@ export default function ColorsClient({ colors }: Props) {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }
