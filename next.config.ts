@@ -14,8 +14,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Suppress the "OLD PROJECT" directory from the build entirely
-  excludeDefaultMomentLocales: true,
 };
 
 export default nextConfig;

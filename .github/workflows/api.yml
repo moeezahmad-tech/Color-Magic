@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'api/**'
+      - 'legacy_php_api/**'
       - '.github/workflows/api.yml'
 
 jobs:
@@ -16,14 +16,14 @@ jobs:
       - name: 🚚 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 📂 Deploy api/ folder via FTP to api_colormagic/
+      - name: 📂 Deploy legacy_php_api/ folder via FTP to api_colormagic/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          local-dir: ./api/
+          local-dir: ./legacy_php_api/
           server-dir: ./api_colormagic/
           # Only sync changed files — faster deploys
           log-level: verbose
