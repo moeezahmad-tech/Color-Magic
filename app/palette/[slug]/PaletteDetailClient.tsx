@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Palette, ColorName, Gradient } from '@/types';
-import { hexToRgb, getLuminance, findClosestColorName } from '@/lib/color-math';
+import { hexToRgb, hexToHsl, getLuminance, getContrastRatio, findClosestColorName } from '@/lib/color-math';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useToast } from '@/components/ui/ToastProvider';
 import { Heart, Hash, Layers, ChevronRight, Check, Copy, Code, ArrowLeft } from 'lucide-react';
@@ -18,6 +18,13 @@ interface Props {
   relatedPalettes: Palette[];
   relatedGradients: Gradient[];
   relatedColors: ColorName[];
+}
+
+function getWcagBadge(ratio: number) {
+  if (ratio >= 7.0) return { label: 'AAA Pass', bg: 'bg-emerald-500/20 text-emerald-950 border-emerald-500/30' };
+  if (ratio >= 4.5) return { label: 'AA Pass', bg: 'bg-emerald-500/20 text-emerald-950 border-emerald-500/30' };
+  if (ratio >= 3.0) return { label: 'AA Large', bg: 'bg-amber-500/20 text-amber-950 border-amber-500/30' };
+  return { label: 'Low Contrast', bg: 'bg-red-500/20 text-red-950 border-red-500/30' };
 }
 
 export default function PaletteDetailClient({ palette, colors, relatedPalettes, relatedGradients, relatedColors }: Props) {
@@ -63,8 +70,79 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
     showToast('Copied CSS Variables!');
   };
 
-  const colorA = palette.colors[0];
-  const colorB = palette.colors[palette.colors.length - 1];
+  // Calculate top 6 colorful, accessible contrast combinations from palette
+  const contrastPairs = React.useMemo(() => {
+    const colors = palette.colors;
+    const pairs: { bg: string; text: string; ratio: number; score: number; isColorful: boolean }[] = [];
+    const seenPairs = new Set<string>();
+
+    for (let i = 0; i < colors.length; i++) {
+      for (let j = 0; j < colors.length; j++) {
+        if (i === j) continue;
+        const c1 = colors[i];
+        const c2 = colors[j];
+        const pairKey = `${c1}->${c2}`;
+        if (seenPairs.has(pairKey)) continue;
+        seenPairs.add(pairKey);
+
+        const rgb1 = hexToRgb(c1);
+        const rgb2 = hexToRgb(c2);
+        const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
+        const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+        const ratio = getContrastRatio(lum1, lum2);
+
+        // Filter for usable contrast ratios
+        if (ratio < 3.0) continue;
+
+        const hsl1 = hexToHsl(c1);
+        const hsl2 = hexToHsl(c2);
+        const isColorful = hsl1.s > 20 || hsl2.s > 20;
+        const totalSaturation = hsl1.s + hsl2.s;
+
+        // Score formula: heavily rewards pairs that have rich color vibrancy while maintaining high contrast
+        const vibrancyBonus = isColorful ? totalSaturation * 0.15 : -8;
+        const score = ratio * 1.5 + vibrancyBonus;
+
+        pairs.push({ bg: c1, text: c2, ratio, score, isColorful });
+      }
+    }
+
+    // Sort by calculated score (vibrant high contrast first)
+    pairs.sort((a, b) => b.score - a.score);
+
+    // Pick top 6 distinct combinations (or top 4/2 if fewer colors)
+    let selected = pairs.slice(0, 6);
+
+    if (selected.length === 0) {
+      const c1 = colors[0];
+      const c2 = colors[colors.length - 1] || colors[0];
+      const lum1 = getLuminance(hexToRgb(c1).r, hexToRgb(c1).g, hexToRgb(c1).b);
+      const lum2 = getLuminance(hexToRgb(c2).r, hexToRgb(c2).g, hexToRgb(c2).b);
+      const ratio = getContrastRatio(lum1, lum2);
+      selected = [
+        { bg: c1, text: c2, ratio, score: 0, isColorful: true },
+        { bg: c2, text: c1, ratio, score: 0, isColorful: true },
+      ];
+    }
+
+    const roleLabels = [
+      'Vibrant Surface',
+      'Dark Mode UI',
+      'Accent Banner',
+      'Interactive Hero',
+      'Secondary Card',
+      'Badge & Highlight',
+    ];
+
+    return selected.map((item, index) => ({
+      id: `pair-${item.bg}-${item.text}-${index}`,
+      bg: item.bg,
+      text: item.text,
+      ratio: item.ratio,
+      label: roleLabels[index % roleLabels.length],
+      wcag: getWcagBadge(item.ratio),
+    }));
+  }, [palette.colors]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -81,15 +159,16 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
       <div className="bg-[#FFF5F7] border border-pink-100 rounded-3xl p-6 sm:p-10 mb-10 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Swatch Visual */}
-          <div className="lg:col-span-6 h-64 sm:h-80 w-full rounded-2xl overflow-hidden flex shadow-md border border-slate-100">
+          <div className="lg:col-span-6 h-64 sm:h-80 w-full rounded-2xl overflow-hidden flex shadow-md border border-slate-200/80 bg-slate-100">
             {palette.colors.map((color, i) => (
               <div
                 key={`${color}-${i}`}
-                className="flex-1 h-full flex flex-col justify-end p-3 cursor-pointer group relative"
+                className="swatch-band min-w-0 h-full relative cursor-pointer group border-r border-black/5 last:border-r-0"
                 style={{ backgroundColor: color }}
                 onClick={() => copyText(color, color)}
+                title={`Click to copy ${color}`}
               >
-                <span className="text-[10px] font-mono font-bold bg-white/85 text-slate-900 px-1.5 py-0.5 rounded backdrop-blur-sm self-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-[10px] font-mono font-bold bg-white/90 text-slate-900 px-1.5 py-0.5 rounded shadow-sm backdrop-blur-sm pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
                   {color}
                 </span>
               </div>
@@ -135,21 +214,24 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
             </div>
 
             {/* Individual swatch list */}
-            <div className="grid grid-cols-2 gap-2 pt-1">
+            <div className="grid grid-cols-2 gap-2 pt-1 max-h-80 overflow-y-auto pr-1">
               {colorDetails.map((item) => (
                 <div
                   key={item.hex}
                   onClick={() => copyText(item.hex, item.hex)}
-                  className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center justify-between cursor-pointer group hover:border-pink-300 transition-all"
+                  className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center justify-between cursor-pointer group hover:border-pink-300 transition-all shadow-2xs"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-6 h-6 rounded-md border border-slate-200" style={{ backgroundColor: item.hex }} />
-                    <div>
-                      <span className="text-xs font-mono font-bold text-slate-800 block">{item.hex}</span>
-                      <span className="text-[10px] text-slate-400">{item.name}</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div 
+                      className="w-6 h-6 rounded-md border border-slate-300 shadow-2xs shrink-0" 
+                      style={{ backgroundColor: item.hex }} 
+                    />
+                    <div className="min-w-0">
+                      <span className="text-xs font-mono font-bold text-slate-800 block truncate">{item.hex}</span>
+                      <span className="text-[10px] text-slate-400 block truncate">{item.name}</span>
                     </div>
                   </div>
-                  <Copy className="w-3 h-3 text-slate-300 group-hover:text-pink-500 transition-colors" />
+                  <Copy className="w-3 h-3 text-slate-300 group-hover:text-pink-500 transition-colors shrink-0" />
                 </div>
               ))}
             </div>
@@ -157,17 +239,51 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
         </div>
       </div>
 
-      {/* Contrast Previews */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <div className="rounded-3xl p-8 flex flex-col justify-between h-44 shadow-sm" style={{ backgroundColor: colorA, color: colorB }}>
-          <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">CONTRAST PREVIEW A</span>
-          <div className="text-4xl font-extrabold">Aa</div>
-          <span className="text-xs font-mono opacity-80">bg: {colorA} • text: {colorB}</span>
+      {/* Recommended Colorful Contrast Previews */}
+      <div className="space-y-4 mb-12">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight">
+              Recommended Contrast Pairings
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              High-contrast, colorful combinations from this palette evaluated for WCAG legibility.
+            </p>
+          </div>
+          <span className="self-start sm:self-auto text-xs font-bold px-3 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-100">
+            {contrastPairs.length} Accessible Pairs
+          </span>
         </div>
-        <div className="rounded-3xl p-8 flex flex-col justify-between h-44 shadow-sm border border-slate-100" style={{ backgroundColor: colorB, color: colorA }}>
-          <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">CONTRAST PREVIEW B</span>
-          <div className="text-4xl font-extrabold">Aa</div>
-          <span className="text-xs font-mono opacity-80">bg: {colorB} • text: {colorA}</span>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {contrastPairs.map((pair, index) => (
+            <div
+              key={pair.id}
+              className="rounded-3xl p-6 flex flex-col justify-between min-h-[175px] shadow-sm border border-black/5 hover:shadow-md transition-all group relative overflow-hidden"
+              style={{ backgroundColor: pair.bg, color: pair.text }}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-black/10 backdrop-blur-xs">
+                  {pair.label}
+                </span>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-white/20 backdrop-blur-xs border border-white/20">
+                  {pair.ratio}:1 • {pair.wcag.label}
+                </span>
+              </div>
+
+              <div className="my-3">
+                <div className="text-3xl font-black tracking-tight">Aa</div>
+                <p className="text-xs font-medium mt-1 opacity-90 leading-relaxed line-clamp-1">
+                  Sample interface typography & headline contrast.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] font-mono opacity-90 pt-2.5 border-t border-current/15">
+                <span className="truncate">bg: <strong className="font-bold">{pair.bg}</strong></span>
+                <span className="truncate">text: <strong className="font-bold">{pair.text}</strong></span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -175,7 +291,7 @@ export default function PaletteDetailClient({ palette, colors, relatedPalettes, 
       <div className="bg-white border border-slate-100 rounded-3xl p-8 space-y-3 mb-10">
         <h2 className="text-xl font-extrabold text-slate-900">About the {palette.name} Palette</h2>
         <p className="text-sm text-slate-600 leading-relaxed">
-          The <strong>{palette.name}</strong> palette is a {palette.style.toLowerCase()} color scheme featuring {palette.colors.length} carefully curated colors from {colorA} to {colorB}. These colors work harmoniously together for UI design, branding, illustration, and web development projects.
+          The <strong>{palette.name}</strong> palette is a {palette.style.toLowerCase()} color scheme featuring {palette.colors.length} carefully curated colors from {palette.colors[0]} to {palette.colors[palette.colors.length - 1]}. These colors work harmoniously together for UI design, branding, illustration, and web development projects.
         </p>
         <p className="text-sm text-slate-600 leading-relaxed">
           Copy the hex codes above or use the CSS variables export for seamless integration into any design system.
