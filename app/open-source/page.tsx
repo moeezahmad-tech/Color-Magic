@@ -3,13 +3,13 @@ import React from 'react';
 import { Heart, Code2, ShieldCheck, Award, GitFork, GitBranch, GitPullRequest, Search, Palette, Wand2, Image, Sparkles, Layers, Terminal, Users, GitMerge, Wrench } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Open Source | Color Magic - Professional Color Palette Generator',
+  title: 'Open Source Color Palette Generator',
   description:
     'Color Magic is an open-source color palette generator and explorer. Browse the code, contribute, and help make color selection easier for designers worldwide.',
   keywords: ['open source', 'color palette', 'GitHub', 'color tool', 'design tool', 'contribute'],
   alternates: { canonical: '/open-source' },
   openGraph: {
-    title: 'Open Source | Color Magic',
+    title: 'Open Source Color Palette Generator | Color Magic',
     description: 'Color Magic is an open-source project. Explore the code and contribute.',
     url: '/open-source',
   },

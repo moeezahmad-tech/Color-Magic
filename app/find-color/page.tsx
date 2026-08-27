@@ -4,13 +4,13 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Search } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hex to Color Name Finder — Identify Any Color Code',
+  title: 'Color Name Finder from Hex Code',
   description:
     'Free hex to color name finder. Enter any hex code to instantly discover its color name, RGB, HSL values, contrast ratio, and accessibility info. Lookup 1000+ color names.',
   keywords: ['hex color finder', 'color name from hex', 'RGB HSL converter', 'color info tool'],
   alternates: { canonical: '/find-color' },
   openGraph: {
-    title: 'Hex to Color Name Finder — Identify Any Color Code | Color Magic',
+    title: 'Color Name Finder from Hex Code | Color Magic',
     description:
       'Free hex to color name finder. Enter any hex code to get color name, RGB, HSL and contrast info instantly.',
     url: '/find-color',

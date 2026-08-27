@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Briefcase } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Brand Color Lookup — Find Hex Codes for Popular Brand Colors',
+  title: 'Brand Color Lookup',
   description:
     'Find exact hex codes and RGB values for popular brand colors. Google, Apple, Spotify, Netflix, Meta, and 25+ more brand color palettes.',
   keywords: [
@@ -18,9 +18,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/brand-color-lookup' },
   openGraph: {
-    title: 'Brand Color Lookup — Find Hex Codes for Popular Brand Colors | Color Magic',
-    description:
-      'Find exact hex codes and RGB values for popular brand colors. Google, Apple, Spotify, Netflix, and 25+ more.',
+    title: 'Brand Color Lookup | Color Magic',
+    description: 'Find exact hex codes and RGB values for popular brand colors.',
     url: '/brand-color-lookup',
   },
 };

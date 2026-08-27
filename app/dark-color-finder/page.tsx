@@ -4,13 +4,13 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Moon } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Dark Color Name Finder — Discover Deep & Dark Shade Names',
+  title: 'Dark Color Name Finder',
   description:
     'Find names for dark and deep color shades. Browse 50+ dark colors organized by hue family — dark reds, blues, greens, purples, and more.',
   keywords: ['dark color names', 'dark shade finder', 'deep color names', 'dark hex colors', 'midnight blue'],
   alternates: { canonical: '/dark-color-finder' },
   openGraph: {
-    title: 'Dark Color Name Finder — Discover Deep & Dark Shade Names | Color Magic',
+    title: 'Dark Color Name Finder | Color Magic',
     description: 'Find names for dark and deep color shades. Browse 50+ dark colors organized by hue family.',
     url: '/dark-color-finder',
   },

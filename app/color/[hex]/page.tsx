@@ -84,6 +84,41 @@ export default async function ColorDetailPage({ params }: Props) {
   }
 
   const relatedColors = [...colors].sort(() => 0.5 - Math.random()).slice(0, 12);
+  const normalized = normalizeHex(rawHex);
+  const closest = findClosestColorName(normalized, colors);
 
-  return <ColorDetailClient hex={rawHex} colors={colors} relatedColors={relatedColors} relatedPalettes={relatedPalettes} relatedGradients={relatedGradients} />;
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Colors',
+        item: `${siteUrl}/colors`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `${closest.name} (${normalized})`,
+        item: `${siteUrl}/color/${rawHex.toLowerCase()}`,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <ColorDetailClient hex={rawHex} colors={colors} relatedColors={relatedColors} relatedPalettes={relatedPalettes} relatedGradients={relatedGradients} />
+    </>
+  );
 }

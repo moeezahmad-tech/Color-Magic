@@ -5,8 +5,8 @@ import { ArrowLeftRight } from 'lucide-react';
 import ColorConverterClient from '@/components/ui/ColorConverterClient';
 
 export const metadata: Metadata = {
-  title: 'RGB to Hex Converter | Color Magic',
-  description: 'Convert RGB values to hex color codes instantly with real-time preview.',
+  title: 'RGB to Hex Converter',
+  description: 'Convert RGB color values to hexadecimal codes instantly with real-time preview.',
 };
 
 export default function RgbToHexPage() {

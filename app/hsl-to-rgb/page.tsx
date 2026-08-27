@@ -5,7 +5,7 @@ import { ArrowLeftRight } from 'lucide-react';
 import ColorConverterClient from '@/components/ui/ColorConverterClient';
 
 export const metadata: Metadata = {
-  title: 'HSL to RGB Converter | Color Magic',
+  title: 'HSL to RGB Converter',
   description: 'Convert HSL color values to RGB instantly with real-time preview.',
 };
 

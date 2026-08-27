@@ -5,8 +5,8 @@ import { ArrowLeftRight } from 'lucide-react';
 import ColorConverterClient from '@/components/ui/ColorConverterClient';
 
 export const metadata: Metadata = {
-  title: 'HSL to Hex Converter | Color Magic',
-  description: 'Convert HSL (Hue, Saturation, Lightness) values to Hex color codes instantly with real-time preview.',
+  title: 'HSL to Hex Converter',
+  description: 'Convert HSL (Hue, Saturation, Lightness) color values to Hexadecimal codes instantly with real-time preview.',
 };
 
 export default function HslToHexPage() {

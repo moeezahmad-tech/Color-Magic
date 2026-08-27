@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ShieldCheck, Lock, Eye, Database, Globe, UserCheck, Mail, ArrowLeft, Cookie, Sparkles } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Color Magic',
+  title: 'Privacy Policy',
   description: 'Learn how Color Magic collects, uses, and safeguards your data when you use our color tools and Google authentication.',
   alternates: { canonical: '/privacy' },
   openGraph: {

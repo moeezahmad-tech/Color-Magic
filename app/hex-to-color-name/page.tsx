@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Tag } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hex to Color Name Converter — Find What Color is Your Hex Code',
+  title: 'Hex to Color Name Converter',
   description:
     'Free hex to color name converter. Enter any hex code to instantly find its human-readable color name. Browse 1000+ named colors with hex, RGB, and HSL values.',
   keywords: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/hex-to-color-name' },
   openGraph: {
-    title: 'Hex to Color Name Converter — Find What Color is Your Hex Code | Color Magic',
+    title: 'Hex to Color Name Converter | Color Magic',
     description:
       'Free hex to color name converter. Enter any hex code to instantly find its human-readable color name from 1000+ named colors.',
     url: '/hex-to-color-name',

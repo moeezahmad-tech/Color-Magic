@@ -4,13 +4,13 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Pipette } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'What Color Is This Code? — Online Hex Color Identifier',
+  title: 'What Color Is This Code? Hex Identifier',
   description:
     'Paste any hex code and we\'ll tell you exactly what color it is. Free online hex color identifier with 20 common examples organized by category.',
   keywords: ['what color is this', 'hex color identifier', 'identify color from code', 'color lookup tool'],
   alternates: { canonical: '/what-color-is' },
   openGraph: {
-    title: 'What Color Is This Code? — Online Hex Color Identifier | Color Magic',
+    title: 'What Color Is This Code? Hex Identifier | Color Magic',
     description: 'Paste any hex code and we\'ll tell you exactly what color it is.',
     url: '/what-color-is',
   },

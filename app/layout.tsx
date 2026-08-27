@@ -18,7 +18,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://colormagic.techkrea
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Color Name Finder & Palette Generator | Hex to Color Name — Color Magic',
+    default: 'Color Name Finder & Palette Generator — Color Magic',
     template: '%s | Color Magic',
   },
   description:
@@ -38,12 +38,13 @@ export const metadata: Metadata = {
     'Color Converter',
   ],
   authors: [{ name: 'Color Magic' }],
-  creator: 'TechKreative',
+  creator: 'Color Magic',
+  publisher: 'Color Magic',
   robots: { index: true, follow: true },
   openGraph: {
     type: 'website',
     siteName: 'Color Magic',
-    title: 'Color Name Finder & Palette Generator | Hex to Color Name — Color Magic',
+    title: 'Color Name Finder & Palette Generator — Color Magic',
     description:
       'Free color name finder — convert any hex code to its color name, RGB, and HSL values. Generate professional palettes.',
     url: siteUrl,
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Color Name Finder & Palette Generator | Color Magic',
+    title: 'Color Name Finder & Palette Generator — Color Magic',
     description:
       'Free color name finder — convert any hex code to its color name, RGB, and HSL values.',
     images: [`${siteUrl}/og-preview.png`],
@@ -76,6 +77,39 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLdWebSite = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Color Magic',
+  alternateName: ['ColorMagic', 'Color Magic Palette Generator', 'Color Name Finder'],
+  url: siteUrl,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteUrl}/color/{search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Color Magic',
+  url: siteUrl,
+  applicationCategory: 'DesignApplication',
+  operatingSystem: 'All',
+  browserRequirements: 'Requires JavaScript. Requires HTML5.',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  description:
+    'Free color name finder, hex to color converter, and professional color palette generator for designers and developers.',
+};
+
 import { AuthProvider } from '@/components/providers/AuthProvider';
 
 export default function RootLayout({
@@ -85,6 +119,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebSite) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebApp) }}
+        />
+      </head>
       <body
         suppressHydrationWarning
         className="bg-white text-slate-900 min-h-screen flex flex-col selection:bg-pink-500 selection:text-white"

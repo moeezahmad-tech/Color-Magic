@@ -89,5 +89,38 @@ export default async function PaletteDetailPage({ params }: Props) {
 
   const relatedColors = [...allColorNames].sort(() => 0.5 - Math.random()).slice(0, 12);
 
-  return <PaletteDetailClient palette={palette} colors={allColorNames} relatedPalettes={relatedPalettes} relatedGradients={relatedGradients} relatedColors={relatedColors} />;
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Palettes',
+        item: `${siteUrl}/palettes`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: palette.name,
+        item: `${siteUrl}/palette/${palette.slug}`,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <PaletteDetailClient palette={palette} colors={allColorNames} relatedPalettes={relatedPalettes} relatedGradients={relatedGradients} relatedColors={relatedColors} />
+    </>
+  );
 }

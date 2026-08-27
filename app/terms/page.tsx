@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FileText, CheckCircle, AlertTriangle, Scale, Code, ShieldCheck, Mail, ArrowLeft, HeartHandshake } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | Color Magic',
+  title: 'Terms of Service',
   description: 'Terms of Service and conditions for using Color Magic, an open-source color palette generator and designer suite.',
   alternates: { canonical: '/terms' },
   openGraph: {
