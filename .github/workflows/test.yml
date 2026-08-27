@@ -1,26 +1,23 @@
 name: Deployment of Test Branch
-
 on:
   push:
     branches:
       - test
-
 jobs:
-  vercel-preview:
-    name: 🧪 Deploy Preview to Vercel
+  web-deploy:
+    name: 🎉 Sync to Server
     runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Get latest code
-        uses: actions/checkout@v4
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
 
-      - name: 📦 Install Vercel CLI
-        run: npm install --global vercel@latest
-
-      - name: 🔗 Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: 🏗 Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: 🚢 Deploy Preview to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+    - name: 📂 Sync files via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        # '.' means it will upload everything in your repo root
+        local-dir: ./ 
+        # Usually public_html/ or public_html/colorsmagic/
+        server-dir: ./testColorMagic/

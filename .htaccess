@@ -1,0 +1,54 @@
+Options -MultiViews
+RewriteEngine On
+
+# ── SECURITY: Redirect /pages/... URLs to clean /... URLs ───────────────────────
+# Prevents /pages/ prefix from appearing in URLs (SEO canonical enforcement)
+
+# /pages/X.php → /X
+RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)\.(php|html) [NC]
+RewriteRule ^pages/(.+)\.(php|html)$ /$1 [R=301,L,NC]
+
+# /pages/X → /X (extensionless direct access)
+RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)[\s?] [NC]
+RewriteRule ^pages/(.+)$ /$1 [R=301,L,NC]
+
+# Redirect index.php / index.html → /
+RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
+RewriteRule ^(.*)index\.(php|html)$ /$1 [R=301,L,NC]
+
+# Redirect .php and .html extensions → extensionless
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
+RewriteRule ^(.+)\.(php|html)$ /$1 [R=301,L,NC]
+
+# Homepage
+RewriteRule ^$ pages/index.php [L]
+
+# Custom routes
+# Hex route — exactly 6 hex chars (must come before slug rule)
+RewriteRule ^color/([A-Fa-f0-9]{6})/?$ pages/color.php?hex=$1 [NC,L,QSA]
+# Slug route — named colors e.g. /color/midnight-blue/ (must start with a letter)
+RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ pages/color.php?slug=$1 [NC,L,QSA]
+RewriteRule ^palette/([a-z0-9-]+)/?$ pages/palette.php?slug=$1 [NC,L,QSA]
+RewriteRule ^gradient/([a-z0-9_]+)/?$ pages/gradient.php?id=$1 [NC,L,QSA]
+RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ pages/colorImage.php?hex=$1 [L]
+
+# Auth routes
+RewriteRule ^auth/google-login/?$ auth/google-login.php [L]
+RewriteRule ^auth/google-callback/?$ auth/google-callback.php [L]
+RewriteRule ^auth/logout/?$ auth/logout.php [L]
+RewriteRule ^auth/delete-account/?$ auth/delete-account.php [L]
+
+# Static pages (explicit routes — no file-existence check needed)
+RewriteRule ^palettes/?$ pages/palettes.php [L]
+RewriteRule ^gradients/?$ pages/gradients.php [L]
+RewriteRule ^generate-palette/?$ pages/generate-palette.php [L]
+RewriteRule ^palette-from-image/?$ pages/palette-from-image.php [L]
+RewriteRule ^find-color/?$ pages/find-color.php [L]
+RewriteRule ^profile/?$ pages/profile.php [L]
+RewriteRule ^login/?$ pages/login.php [L]
+RewriteRule ^open-source/?$ pages/open-source.php [L]
+RewriteRule ^hex-to-color-name/?$ pages/hex-to-color-name.php [L]
+RewriteRule ^hex-to-rgb/?$ pages/hex-to-rgb.php [L]
+RewriteRule ^what-color-is/?$ pages/what-color-is.php [L]
+RewriteRule ^dark-color-finder/?$ pages/dark-color-finder.php [L]
+RewriteRule ^brand-color-lookup/?$ pages/brand-color-lookup.php [L]
