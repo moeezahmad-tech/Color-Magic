@@ -3,6 +3,8 @@ import { fetchGradients, fetchPalettes, fetchColors } from '@/lib/api-client';
 import { Metadata } from 'next';
 import GradientDetailClient from './GradientDetailClient';
 
+export const revalidate = 2592000;
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://colormagic.techkreative.com';
 
 interface Props {

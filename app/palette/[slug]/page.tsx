@@ -3,6 +3,8 @@ import { fetchPalettes, fetchColors, fetchGradients } from '@/lib/api-client';
 import { Metadata } from 'next';
 import PaletteDetailClient from './PaletteDetailClient';
 
+export const revalidate = 2592000;
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://colormagic.techkreative.com';
 
 interface Props {
