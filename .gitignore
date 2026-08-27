@@ -3,3 +3,8 @@ temp.txt
 genrators
 .env
 .env.colormagic
+.env.local
+node_modules
+next-env.d.ts
+.next
+tsconfig.tsbuildinfo
