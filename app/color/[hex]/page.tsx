@@ -3,6 +3,14 @@ import { fetchColors, fetchPalettes, fetchGradients } from '@/lib/api-client';
 import { normalizeHex, hexToRgb, rgbToHsl, findClosestColorName } from '@/lib/color-math';
 import ColorDetailClient from './ColorDetailClient';
 
+// Set static revalidation to 30 days (2,592,000 seconds)
+export const revalidate = 2592000;
+
+// Do NOT pre-generate all pages at build time; generate on-demand on first visit
+export async function generateStaticParams() {
+  return [];
+}
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://colormagic.techkreative.com';
 
 interface Props {
