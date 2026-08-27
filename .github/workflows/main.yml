@@ -1,23 +1,90 @@
-name: Pushing to main Branch
+name: Clear Cloudflare Cache & Production Deploy
+
 on:
   push:
     branches:
       - main
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
 jobs:
   web-deploy:
     name: 🎉 Sync to Server
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v4
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
 
-    - name: 📂 Sync files via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        # '.' means it will upload everything in your repo root
-        local-dir: ./ 
-        # Usually public_html/ or public_html/colormagic/
-        server-dir: ./colormagic/
+      - name: 📂 Sync files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # '.' means it will upload everything in your repo root
+          local-dir: ./ 
+          # Usually public_html/ or public_html/colormagic/
+          server-dir: ./colormagic/
+
+  purge-cache:
+    name: 🧹 Purge Cloudflare Cache
+    needs: web-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🌐 Purge All Cloudflare Cache
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          echo "🚀 Starting Cloudflare Cache Purge..."
+
+          # 1. Determine the Zone ID
+          ZONE_ID="$CLOUDFLARE_ZONE_ID"
+
+          if [ -z "$ZONE_ID" ]; then
+            echo "🔍 Zone ID secret not explicitly set, looking up via Account ID..."
+            
+            # Fetch zones under the specified Account ID
+            RESPONSE=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?account.id=${CLOUDFLARE_ACCOUNT_ID}&status=active" \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              -H "Content-Type: application/json")
+
+            ZONE_ID=$(echo "$RESPONSE" | jq -r '.result[0].id // empty')
+
+            # Fallback: Query all accessible zones if account filter returned nothing
+            if [ -z "$ZONE_ID" ] || [ "$ZONE_ID" = "null" ]; then
+              echo "🔍 Querying accessible zones directly with API Token..."
+              FALLBACK_RES=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?status=active" \
+                -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+                -H "Content-Type: application/json")
+              ZONE_ID=$(echo "$FALLBACK_RES" | jq -r '.result[0].id // empty')
+            fi
+          fi
+
+          if [ -z "$ZONE_ID" ] || [ "$ZONE_ID" = "null" ]; then
+            echo "❌ Error: Unable to resolve Cloudflare Zone ID."
+            echo "Please ensure CLOUDFLARE_API_TOKEN has 'Zone:Read' and 'Cache Purge' permissions, or add CLOUDFLARE_ZONE_ID to secrets."
+            exit 1
+          fi
+
+          echo "✅ Found Zone ID: $ZONE_ID"
+          echo "🧹 Requesting Cloudflare to purge everything from cache..."
+
+          # 2. Call Cloudflare Purge Cache API
+          PURGE_RES=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')
+
+          SUCCESS=$(echo "$PURGE_RES" | jq -r '.success')
+
+          if [ "$SUCCESS" = "true" ]; then
+            echo "🎉 SUCCESS: All Cloudflare cache has been purged completely!"
+          else
+            echo "❌ ERROR: Failed to purge Cloudflare cache."
+            echo "$PURGE_RES" | jq .
+            exit 1
+          fi
