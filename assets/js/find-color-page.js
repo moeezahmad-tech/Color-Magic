@@ -18,7 +18,10 @@
 
     async function fetchColorNames() {
         try {
-            const res = await fetch('https://api.colormagic.techkreative.com/color-names.json');
+            const apiUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
+                ? window.ColorMagic.getApiUrl('color-names.json')
+                : '/api/color-names.json';
+            const res = await fetch(apiUrl);
             if (!res.ok) throw new Error('Failed to load color database');
             colorNames = await res.json();
             isColorNamesLoaded = true;

@@ -405,7 +405,11 @@
 
         var gradientHexes = gradient.colors.map(function (c) { return c.replace('#', '').toLowerCase(); });
 
-        fetch('https://api.colormagic.techkreative.com/palettes.json')
+        var palettesUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
+            ? window.ColorMagic.getApiUrl('palettes.json')
+            : '/api/palettes.json';
+
+        fetch(palettesUrl)
             .then(function (r) { return r.ok ? r.json() : []; })
             .then(function (palettes) {
                 var scored = [];
@@ -521,7 +525,11 @@
         return;
     }
 
-    fetch('https://api.colormagic.techkreative.com/gradients.json?t=' + Date.now())
+    var gradientsUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
+        ? window.ColorMagic.getApiUrl('gradients.json')
+        : '/api/gradients.json';
+
+    fetch(gradientsUrl + '?t=' + Date.now())
         .then(function (res) {
             if (!res.ok) throw new Error('Failed to fetch');
             return res.json();

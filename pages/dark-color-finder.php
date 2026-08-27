@@ -4,8 +4,10 @@ include '../components/config.php';
 
 // Load color names and filter for dark colors (lightness < 40%)
 $colorNames = [];
-$colorNamesPath = 'https://api.colormagic.techkreative.com/color-names.json';
-$jsonContent = @file_get_contents($colorNamesPath);
+$colorNamesPath = __DIR__ . '/../api/color-names.json';
+$jsonContent = file_exists($colorNamesPath)
+    ? file_get_contents($colorNamesPath)
+    : @file_get_contents('https://colormagic.techkreative.com/api/color-names.json');
 if ($jsonContent !== false) {
     $decoded = json_decode((string) $jsonContent, true);
     if (is_array($decoded)) {

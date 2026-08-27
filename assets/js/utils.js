@@ -6,6 +6,22 @@
 
 window.ColorMagic = window.ColorMagic || {};
 
+window.ColorMagic.apiBase = (function () {
+    if (typeof window !== 'undefined' && window.location) {
+        var path = window.location.pathname;
+        if (path.indexOf('/ColorMagic') === 0) {
+            return '/ColorMagic/api';
+        }
+    }
+    return '/api';
+})();
+
+window.ColorMagic.getApiUrl = function (endpoint) {
+    var base = window.ColorMagic.apiBase || '/api';
+    var clean = endpoint.replace(/^\//, '');
+    return base + '/' + clean;
+};
+
 /**
  * Returns true if a hex color is perceptually light.
  * @param {string} hex - e.g. "#EC4899"

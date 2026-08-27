@@ -344,7 +344,11 @@
         App.loading = true;
         showLoadingState();
 
-        fetch('https://api.colormagic.techkreative.com/gradients.json?t=' + Date.now())
+        var apiUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
+            ? window.ColorMagic.getApiUrl('gradients.json')
+            : '/api/gradients.json';
+
+        fetch(apiUrl + '?t=' + Date.now())
             .then(function (response) {
                 if (!response.ok) throw new Error('Failed to fetch gradients (Status: ' + response.status + ')');
                 return response.json();

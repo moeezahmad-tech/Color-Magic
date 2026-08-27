@@ -223,10 +223,14 @@
     }
 
     // ─── Load all data and render ───────────────────────────────────────────────
+    var colorNamesUrl = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('color-names.json') : '/api/color-names.json';
+    var palettesUrl   = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('palettes.json') : '/api/palettes.json';
+    var gradientsUrl  = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('gradients.json') : '/api/gradients.json';
+
     Promise.all([
-        fetch('https://api.colormagic.techkreative.com/color-names.json').then(function (r) { return r.ok ? r.json() : {}; }),
-        fetch('https://api.colormagic.techkreative.com/palettes.json').then(function (r) { return r.ok ? r.json() : []; }),
-        fetch('https://api.colormagic.techkreative.com/gradients.json').then(function (r) { return r.ok ? r.json() : []; })
+        fetch(colorNamesUrl).then(function (r) { return r.ok ? r.json() : {}; }),
+        fetch(palettesUrl).then(function (r) { return r.ok ? r.json() : []; }),
+        fetch(gradientsUrl).then(function (r) { return r.ok ? r.json() : []; })
     ]).then(function (results) {
         var colorNames     = results[0];
         var allPalettes    = Array.isArray(results[1]) ? results[1] : [];
@@ -250,7 +254,8 @@
             var hex = colorRemoveBtn.dataset.hex;
             window.ColorMagic.ColorFavorites.toggleFavorite(hex);
             // Re-render colors
-            fetch('https://api.colormagic.techkreative.com/color-names.json').then(function (r) { return r.json(); }).then(function (data) {
+            var cnUrl = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('color-names.json') : '/api/color-names.json';
+            fetch(cnUrl).then(function (r) { return r.json(); }).then(function (data) {
                 var count = renderColors(data);
                 var paletteCount  = window.ColorMagic.Favorites.getFavorites().length;
                 var gradientCount = window.ColorMagic.GradientFavorites.getFavorites().length;
@@ -284,7 +289,8 @@
             var paletteId = paletteFavBtn.dataset.paletteId;
             window.ColorMagic.Favorites.toggleFavorite(paletteId);
             // Re-render palettes
-            fetch('https://api.colormagic.techkreative.com/palettes.json').then(function (r) { return r.json(); }).then(function (data) {
+            var pUrl = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('palettes.json') : '/api/palettes.json';
+            fetch(pUrl).then(function (r) { return r.json(); }).then(function (data) {
                 var count = renderPalettes(Array.isArray(data) ? data : []);
                 var colorCount    = window.ColorMagic.ColorFavorites.getFavorites().length;
                 var gradientCount = window.ColorMagic.GradientFavorites.getFavorites().length;

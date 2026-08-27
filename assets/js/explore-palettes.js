@@ -145,7 +145,11 @@
         App.error   = null;
         showLoadingState();
 
-        fetch('https://api.colormagic.techkreative.com/palettes.json')
+        var apiUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
+            ? window.ColorMagic.getApiUrl('palettes.json')
+            : '/api/palettes.json';
+
+        fetch(apiUrl)
             .then(function (response) {
                 if (!response.ok) throw new Error('Failed to fetch palettes (Status: ' + response.status + ')');
                 return response.json();

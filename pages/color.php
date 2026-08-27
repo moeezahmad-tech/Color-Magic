@@ -105,8 +105,10 @@ if (!$isValidHex) {
 $hexWithHash = '#' . $normalizedHex;
 
 $colorNames = [];
-$colorNamesPath = 'https://api.colormagic.techkreative.com/color-names.json';
-$jsonContentColor = @file_get_contents($colorNamesPath);
+$colorNamesPath = __DIR__ . '/../api/color-names.json';
+$jsonContentColor = file_exists($colorNamesPath)
+    ? file_get_contents($colorNamesPath)
+    : @file_get_contents('https://colormagic.techkreative.com/api/color-names.json');
 if ($jsonContentColor !== false) {
     $decoded = json_decode((string) $jsonContentColor, true);
     if (is_array($decoded)) {
@@ -134,8 +136,10 @@ if ($slugParam !== '' && $hexParam === '') {
 }
 
 $paletteData = [];
-$palettePath = 'https://api.colormagic.techkreative.com/palettes.json';
-$jsonContentPalette = @file_get_contents($palettePath);
+$palettePath = __DIR__ . '/../api/palettes.json';
+$jsonContentPalette = file_exists($palettePath)
+    ? file_get_contents($palettePath)
+    : @file_get_contents('https://colormagic.techkreative.com/api/palettes.json');
 if ($jsonContentPalette !== false) {
     $decoded = json_decode((string) $jsonContentPalette, true);
     if (is_array($decoded)) {
@@ -1024,7 +1028,11 @@ $schema = [
 
             if (!grid) return;
 
-            fetch('https://api.colormagic.techkreative.com/gradients.json?t=' + Date.now())
+            var gradientsApi = (window.ColorMagic && window.ColorMagic.getApiUrl)
+                ? window.ColorMagic.getApiUrl('gradients.json')
+                : '/api/gradients.json';
+
+            fetch(gradientsApi + '?t=' + Date.now())
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
                     var exact = [];
