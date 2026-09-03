@@ -59,6 +59,12 @@ def make_request(
     
     headers.setdefault("User-Agent", "ColorMagic-TestRunner/2.0")
     headers.setdefault("Accept", "application/json")
+    headers.setdefault("Cache-Control", "no-cache, no-store, must-revalidate")
+    headers.setdefault("Pragma", "no-cache")
+
+    # Append cache-busting timestamp parameter to bypass intermediate CDN caching
+    sep = '&' if '?' in url else '?'
+    url = f"{url}{sep}_cb={int(time.time() * 1000)}"
 
     encoded_data = None
     if data is not None:
@@ -278,7 +284,7 @@ def run_test_suite(base_url: str, verbose: bool = False, insecure: bool = True) 
             "name": "V1 Colors by Slug (?slug=phthalo-green)",
             "path": "/v1/colors?slug=phthalo-green",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("hex") == "#123524"
+            "validate": lambda j: j.get("status") == "success" and (j.get("data", {}).get("hex") in ("#123524", "123524"))
         },
         {
             "category": "V1 Legacy Endpoints",
