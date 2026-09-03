@@ -5,7 +5,6 @@ DirectoryIndex index.php
 Options -Indexes +FollowSymLinks
 
 <IfModule mod_headers.c>
-    # Enable CORS for all origins
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
     Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
@@ -28,10 +27,9 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
-    # --- V2 RESTful API Routing to v2.php ---
-    RewriteRule ^v2(/.*)?$ v2.php [L,QSA]
-    RewriteRule ^health/?$ v2.php [L,QSA]
-    RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2.php [L,QSA]
+    # Route /health to v2/index.php
+    RewriteRule ^health/?$ v2/index.php [L,QSA]
+    RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]
 
     # --- V1 Legacy Endpoint URL Rewriting ---
     RewriteRule ^v1/gradients/?$ gradients.php [L,QSA]

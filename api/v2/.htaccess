@@ -1,4 +1,7 @@
-# ColorMagic V2 Micro-Router
+# ColorMagic V2 Subdirectory Front Controller Rewrite
 <IfModule mod_rewrite.c>
-    RewriteEngine Off
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
