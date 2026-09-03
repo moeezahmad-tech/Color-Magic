@@ -9,7 +9,6 @@ Options -Indexes +FollowSymLinks
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
     Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
-    Header set Cache-Control "max-age=86400, public, stale-while-revalidate=604800"
 </IfModule>
 
 # Ensure proper MIME type for static JSON files
@@ -29,22 +28,35 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
-    # --- V2 RESTful API Routing (Must be routed before directory/file fallthrough) ---
+    # Only process initial requests, avoid internal redirect loops
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^health/?$ v2/index.php [L,QSA]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]
 
     # --- V1 Legacy Endpoint URL Rewriting ---
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/gradients/?$ gradients.php [L,QSA]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/palettes/?$ palettes.php [L,QSA]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/colors/?$ colors.php [L,QSA]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/health/?$ index.php [L,QSA]
 
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^gradients/?$ gradients.php [L,QSA]
-    RewriteRule ^palettes/?$ palettes.php [L,QSA]
-    RewriteRule ^colors/?$ colors.php [L,QSA]
 
-    # Allow direct static file access if physical file exists
-    RewriteCond %{REQUEST_FILENAME} -f
-    RewriteRule ^ - [L]
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^palettes/?$ palettes.php [L,QSA]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^colors/?$ colors.php [L,QSA]
 </IfModule>
