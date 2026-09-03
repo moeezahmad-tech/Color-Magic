@@ -6,8 +6,8 @@
  */
 
 // Error handling
-error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
-ini_set('display_errors', '0');
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
 // PHP 7.0 - 7.4 compatibility polyfills
 if (!function_exists('str_starts_with')) {
@@ -34,11 +34,11 @@ spl_autoload_register(function ($class) {
     }
 
     $relative = substr($class, strlen($prefix));
-    
-    // Check v2/src first, then src
+    $relativeFile = str_replace('\\', '/', $relative) . '.php';
+
     $candidates = [
-        __DIR__ . '/v2/src/' . str_replace('\\', '/', $relative) . '.php',
-        __DIR__ . '/src/' . str_replace('\\', '/', $relative) . '.php',
+        __DIR__ . '/v2/src/' . $relativeFile,
+        __DIR__ . '/src/' . $relativeFile,
     ];
 
     foreach ($candidates as $file) {
@@ -48,6 +48,11 @@ spl_autoload_register(function ($class) {
         }
     }
 });
+
+// Require ResponseHelper eagerly
+if (file_exists(__DIR__ . '/v2/src/Services/ResponseHelper.php')) {
+    require_once __DIR__ . '/v2/src/Services/ResponseHelper.php';
+}
 
 use ColorMagic\Services\ResponseHelper;
 use ColorMagic\Controllers\ColorController;
@@ -79,7 +84,7 @@ try {
 
     // Route matching
     // Health / Root
-    if ($path === '/' || $path === '/health') {
+    if ($path === '/' || $path === '/health' || $path === '/index.php' || $path === '/v2') {
         (new HealthController())->check();
         exit;
     }
