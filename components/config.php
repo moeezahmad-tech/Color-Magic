@@ -49,7 +49,14 @@ foreach ($envFileCandidates as $envFile) {
 }
 
 if (empty($apiBaseUrl)) {
-    $apiBaseUrl = $base . '/api';
+    // On production (non-localhost), use the dedicated API domain.
+    // .env files are gitignored and don't exist on the production server.
+    $isLocal = $isBuiltinServer || (isset($_SERVER['HTTP_HOST']) && preg_match('/^(localhost|127\.0\.0\.1|.*\.test)(:\d+)?$/', $_SERVER['HTTP_HOST']));
+    if ($isLocal) {
+        $apiBaseUrl = $base . '/api';
+    } else {
+        $apiBaseUrl = 'https://colormagic-api.techkreative.com';
+    }
 }
 
 if (!headers_sent()) {

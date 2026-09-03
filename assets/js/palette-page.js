@@ -106,52 +106,53 @@
         return;
     }
 
-    try {
-        // Try direct API lookup by slug first (most efficient)
-        let palette = null;
+    let palette = null;
+    let allPalettes = [];
 
+    try {
+        // Try direct API lookup by slug or ID first
         if (window.ColorMagic && window.ColorMagic.api) {
             try {
                 palette = await window.ColorMagic.api.getPaletteById(paletteSlug);
             } catch (e) {
-                // Direct lookup failed, will try bulk fetch below
+                // Direct lookup failed, will try bulk fetch fallback below
             }
         }
 
         // Fallback: fetch all palettes and match by slug client-side
         if (!palette) {
-            const palPromise = (window.ColorMagic && window.ColorMagic.api)
-                ? window.ColorMagic.api.getPalettes({ limit: 1000 })
-                : fetch('/api/palettes.json').then(r => r.json()).then(d => ({ data: d }));
+            try {
+                const palPromise = (window.ColorMagic && window.ColorMagic.api)
+                    ? window.ColorMagic.api.getPalettes({ limit: 1000 })
+                    : fetch('/api/palettes.json').then(r => r.json()).then(d => ({ data: d }));
 
-            const result = await palPromise;
-            const palettes = (result && result.data) ? result.data : (Array.isArray(result) ? result : []);
+                const result = await palPromise;
+                allPalettes = (result && result.data) ? result.data : (Array.isArray(result) ? result : []);
 
-            // Helper: generate slug from palette name
-            function slugify(name) {
-                return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-            }
+                // Helper: generate slug from palette name
+                function slugify(name) {
+                    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                }
 
-            // Detect duplicate names for slug-with-id resolution
-            const nameCount = {};
-            if (Array.isArray(palettes)) {
-                palettes.forEach(p => {
+                // Detect duplicate names for slug-with-id resolution
+                const nameCount = {};
+                allPalettes.forEach(p => {
                     const s = slugify(p.name || '');
                     nameCount[s] = (nameCount[s] || 0) + 1;
                 });
-            }
 
-            // Match slug (with duplicate ID suffix for duplicate names) or exact ID
-            palette = Array.isArray(palettes)
-                ? palettes.find((item) => {
+                // Match slug (with duplicate ID suffix for duplicate names) or exact ID
+                palette = allPalettes.find((item) => {
                     if (item.id === paletteSlug) return true;
                     let s = slugify(item.name || '');
                     if (nameCount[s] > 1) {
                         s = s + '-' + item.id.replace('palette_', '');
                     }
                     return s === paletteSlug;
-                })
-                : null;
+                }) || null;
+            } catch (fallbackErr) {
+                console.warn("Fallback palette search failed:", fallbackErr);
+            }
         }
 
         if (!palette) {
@@ -479,49 +480,68 @@
         // ── Related Palettes ──────────────────────────────────────────────
         const relatedPalettesGrid = document.getElementById('relatedPalettesGrid');
         if (relatedPalettesGrid) {
-            function colorDistSqP(a, b) {
-                const ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);
-                const br = parseInt(b.substring(0, 2), 16), bg = parseInt(b.substring(2, 4), 16), bb = parseInt(b.substring(4, 6), 16);
-                const dr = ar - br, dg = ag - bg, db = ab - bb;
-                return dr * dr + dg * dg + db * db;
+            function renderRelated(palList) {
+                if (!Array.isArray(palList) || palList.length === 0) return;
+                function colorDistSqP(a, b) {
+                    const ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);
+                    const br = parseInt(b.substring(0, 2), 16), bg = parseInt(b.substring(2, 4), 16), bb = parseInt(b.substring(4, 6), 16);
+                    const dr = ar - br, dg = ag - bg, db = ab - bb;
+                    return dr * dr + dg * dg + db * db;
+                }
+
+                const paletteHexes = colorList.map(c => c.replace('#', '').toLowerCase());
+                const scored = [];
+
+                palList.forEach(p => {
+                    if (!p || p.id === palette.id) return;
+                    const pHexes = (p.colors || []).map(c => c.replace('#', '').toLowerCase());
+                    let matchCount = 0;
+                    let totalDist = 0;
+
+                    paletteHexes.forEach(ph => {
+                        let minD = Infinity;
+                        pHexes.forEach(ch => {
+                            if (ph === ch) { matchCount++; minD = 0; }
+                            else {
+                                const d = colorDistSqP(ph, ch);
+                                if (d < minD) minD = d;
+                            }
+                        });
+                        totalDist += minD;
+                    });
+
+                    if (matchCount > 0 || totalDist / paletteHexes.length < 20000) {
+                        scored.push({ palette: p, score: matchCount * 100000 - totalDist });
+                    }
+                });
+
+                scored.sort((a, b) => b.score - a.score);
+                const relatedPaletteResults = scored.slice(0, 6).map(s => s.palette);
+
+                if (relatedPaletteResults.length > 0 && window.ColorMagic && window.ColorMagic.createPaletteCard) {
+                    window.ColorMagic.markDuplicateSlugs(relatedPaletteResults);
+                    const fragment = document.createDocumentFragment();
+                    relatedPaletteResults.forEach(p => {
+                        fragment.appendChild(window.ColorMagic.createPaletteCard(p));
+                    });
+                    relatedPalettesGrid.innerHTML = '';
+                    relatedPalettesGrid.appendChild(fragment);
+                }
             }
 
-            const paletteHexes = colorList.map(c => c.replace('#', '').toLowerCase());
-            const scored = [];
-
-            palettes.forEach(p => {
-                if (p.id === palette.id) return;
-                const pHexes = (p.colors || []).map(c => c.replace('#', '').toLowerCase());
-                let matchCount = 0;
-                let totalDist = 0;
-
-                paletteHexes.forEach(ph => {
-                    let minD = Infinity;
-                    pHexes.forEach(ch => {
-                        if (ph === ch) { matchCount++; minD = 0; }
-                        else {
-                            const d = colorDistSqP(ph, ch);
-                            if (d < minD) minD = d;
-                        }
-                    });
-                    totalDist += minD;
-                });
-
-                if (matchCount > 0 || totalDist / paletteHexes.length < 20000) {
-                    scored.push({ palette: p, score: matchCount * 100000 - totalDist });
+            try {
+                if (allPalettes && allPalettes.length > 0) {
+                    renderRelated(allPalettes);
+                } else if (window.ColorMagic && window.ColorMagic.api) {
+                    window.ColorMagic.api.getPalettes({ limit: 60 })
+                        .then(res => {
+                            const list = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
+                            renderRelated(list);
+                        })
+                        .catch(() => {});
                 }
-            });
-
-            scored.sort((a, b) => b.score - a.score);
-            const relatedPaletteResults = scored.slice(0, 6).map(s => s.palette);
-
-            if (relatedPaletteResults.length > 0 && window.ColorMagic && window.ColorMagic.createPaletteCard) {
-                window.ColorMagic.markDuplicateSlugs(relatedPaletteResults);
-                const fragment = document.createDocumentFragment();
-                relatedPaletteResults.forEach(p => {
-                    fragment.appendChild(window.ColorMagic.createPaletteCard(p));
-                });
-                relatedPalettesGrid.appendChild(fragment);
+            } catch (e) {
+                console.warn("Related palettes failed:", e);
             }
         }
 
