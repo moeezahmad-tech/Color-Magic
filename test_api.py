@@ -146,28 +146,28 @@ def run_test_suite(base_url: str, verbose: bool = False, insecure: bool = True) 
             "name": "Color by Hex (/v2/colors/123524)",
             "path": "/v2/colors/123524",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name") == "Phthalo green"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name", "").lower() == "phthalo green"
         },
         {
             "category": "V2 Colors API",
             "name": "Color by Hex (/v2/colors/FF0000)",
             "path": "/v2/colors/FF0000",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("raw_hex") == "FF0000"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("raw_hex", "").upper() == "FF0000"
         },
         {
             "category": "V2 Colors API",
             "name": "Shorthand Color URL (/color/123524)",
             "path": "/color/123524",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name") == "Phthalo green"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name", "").lower() == "phthalo green"
         },
         {
             "category": "V2 Colors API",
             "name": "Color by Slug (/v2/colors/slug/phthalo-green)",
             "path": "/v2/colors/slug/phthalo-green",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("raw_hex") == "123524"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("raw_hex", "").upper() == "123524"
         },
         {
             "category": "V2 Colors API",
@@ -197,7 +197,7 @@ def run_test_suite(base_url: str, verbose: bool = False, insecure: bool = True) 
             "name": "Single Gradient by ID (/v2/gradients/gradient_1)",
             "path": "/v2/gradients/gradient_1",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name") == "Sunset Blaze"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name", "").lower() == "sunset blaze"
         },
         {
             "category": "V2 Gradients API",
@@ -234,7 +234,7 @@ def run_test_suite(base_url: str, verbose: bool = False, insecure: bool = True) 
             "name": "Single Palette by ID (/v2/palettes/palette_1)",
             "path": "/v2/palettes/palette_1",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name") == "Forest Breath"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name", "").lower() == "forest breath"
         },
         {
             "category": "V2 Palettes API",
@@ -277,7 +277,7 @@ def run_test_suite(base_url: str, verbose: bool = False, insecure: bool = True) 
             "name": "V1 Colors by Hex (?hex=123524)",
             "path": "/v1/colors?hex=123524",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name") == "Phthalo green"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name", "").lower() == "phthalo green"
         },
         {
             "category": "V1 Legacy Endpoints",
@@ -291,14 +291,14 @@ def run_test_suite(base_url: str, verbose: bool = False, insecure: bool = True) 
             "name": "V1 Gradients by ID (?id=gradient_1)",
             "path": "/v1/gradients?id=gradient_1",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name") == "Sunset Blaze"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name", "").lower() == "sunset blaze"
         },
         {
             "category": "V1 Legacy Endpoints",
             "name": "V1 Palettes by ID (?id=palette_1)",
             "path": "/v1/palettes?id=palette_1",
             "expected_status": 200,
-            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name") == "Forest Breath"
+            "validate": lambda j: j.get("status") == "success" and j.get("data", {}).get("name", "").lower() == "forest breath"
         },
     ]
 

@@ -5,7 +5,6 @@ namespace ColorMagic\Controllers;
 use ColorMagic\Database\Database;
 use ColorMagic\Config\Env;
 use ColorMagic\Services\ResponseHelper;
-use Throwable;
 
 /**
  * Health & Diagnostics Controller (PHP 7.0+ Compatible)
@@ -22,16 +21,26 @@ class HealthController extends BaseController
             'gradients' => 0,
             'palettes'  => 0
         ];
+        $dbSize = 0;
 
         try {
             $dbPath = Database::resolveDbPath();
-            $dbSize = file_exists($dbPath) ? filesize($dbPath) : 0;
+            $dbSize = (@file_exists($dbPath)) ? (int)@filesize($dbPath) : 0;
             $db = Database::getConnection();
-            $stats['colors']    = (int)$db->query("SELECT COUNT(*) FROM colors")->fetchColumn();
-            $stats['gradients'] = (int)$db->query("SELECT COUNT(*) FROM gradients")->fetchColumn();
-            $stats['palettes']  = (int)$db->query("SELECT COUNT(*) FROM palettes")->fetchColumn();
-            $journalMode        = (string)$db->query("PRAGMA journal_mode")->fetchColumn();
-        } catch (Throwable $e) {
+            if ($db instanceof \PDO) {
+                $cStmt = $db->query("SELECT COUNT(*) FROM colors");
+                $stats['colors'] = $cStmt ? (int)$cStmt->fetchColumn() : 0;
+
+                $gStmt = $db->query("SELECT COUNT(*) FROM gradients");
+                $stats['gradients'] = $gStmt ? (int)$gStmt->fetchColumn() : 0;
+
+                $pStmt = $db->query("SELECT COUNT(*) FROM palettes");
+                $stats['palettes'] = $pStmt ? (int)$pStmt->fetchColumn() : 0;
+
+                $jStmt = $db->query("PRAGMA journal_mode");
+                $journalMode = $jStmt ? (string)$jStmt->fetchColumn() : 'wal';
+            }
+        } catch (\Throwable $e) {
             $dbStatus = 'fallback_mode';
             $driver = 'json';
             $journalMode = 'none';
