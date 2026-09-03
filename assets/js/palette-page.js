@@ -411,8 +411,8 @@
         const relatedGradientsGrid = document.getElementById('relatedGradientsGrid');
         if (relatedGradientsGrid) {
             const gradPromise = (window.ColorMagic && window.ColorMagic.api)
-                ? window.ColorMagic.api.getGradients({ limit: 1000 })
-                : fetch('/api/gradients.json').then(r => r.json()).then(d => ({ data: d }));
+                ? window.ColorMagic.api.getGradients({ limit: 100 })
+                : fetch('https://colormagic-api.techkreative.com/data/gradients.json').then(r => r.json()).then(d => ({ data: d }));
 
             gradPromise
                 .then(res => {

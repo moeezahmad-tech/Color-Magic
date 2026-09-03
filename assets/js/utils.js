@@ -7,26 +7,10 @@
 window.ColorMagic = window.ColorMagic || {};
 
 window.ColorMagic.getApiBase = function () {
-    if (typeof window !== 'undefined' && window.location) {
-        var host = window.location.hostname;
-        var isLocal = host === 'localhost' || host === '127.0.0.1' || host.indexOf('.test') !== -1;
-        if (!isLocal) {
-            // Production frontend MUST talk to dedicated API server
-            return (window.COLORMAGIC_API_BASE && window.COLORMAGIC_API_BASE.indexOf('http') === 0)
-                ? window.COLORMAGIC_API_BASE.replace(/\/+$/, '')
-                : 'https://colormagic-api.techkreative.com';
-        }
-    }
-    if (window.COLORMAGIC_API_BASE) {
+    if (typeof window !== 'undefined' && window.COLORMAGIC_API_BASE && window.COLORMAGIC_API_BASE.indexOf('http') === 0) {
         return window.COLORMAGIC_API_BASE.replace(/\/+$/, '');
     }
-    if (window.CM_API_URL) {
-        return window.CM_API_URL.replace(/\/+$/, '');
-    }
-    if (typeof window !== 'undefined' && window.location && window.location.pathname.indexOf('/ColorMagic') === 0) {
-        return '/ColorMagic/api';
-    }
-    return '/api';
+    return 'https://colormagic-api.techkreative.com';
 };
 
 window.ColorMagic.apiBase = window.ColorMagic.getApiBase();
@@ -34,6 +18,11 @@ window.ColorMagic.apiBase = window.ColorMagic.getApiBase();
 window.ColorMagic.getApiUrl = function (endpoint) {
     var base = window.ColorMagic.getApiBase();
     var clean = endpoint.replace(/^\//, '');
+    // Add v=2.1 to bust stale CDN cache containing legacy duplicate CORS headers
+    var sep = clean.indexOf('?') === -1 ? '?' : '&';
+    if (clean.indexOf('v=') === -1) {
+        clean = clean + sep + 'v=2.1';
+    }
     return base + '/' + clean;
 };
 
@@ -58,49 +47,23 @@ window.ColorMagic.api = {
 
         options.headers = headers;
 
-        try {
-            var response = await fetch(url, options);
-            if (!response.ok) {
-                var errJson = null;
-                try { errJson = await response.json(); } catch (_) {}
-                var errMsg = (errJson && errJson.message) ? errJson.message : ('HTTP ' + response.status + ' Error');
-                var err = new Error(errMsg);
-                err.status = response.status;
-                err.details = errJson;
-                throw err;
-            }
-            var data = await response.json();
-            // Unwrap standard V2 envelope { status: 'success', data: ... }
-            if (data && typeof data === 'object' && data.status === 'success' && 'data' in data) {
-                return data;
-            }
-            // Raw json fallback
-            return { status: 'success', data: data };
-        } catch (error) {
-            // If remote API failed with CORS or network error, attempt local relative fallback on local servers
-            var isLocalFallback = url.indexOf('http') !== 0;
-            if (!isLocalFallback && !options._retriedLocal && typeof window !== 'undefined' && window.location) {
-                var host = window.location.hostname;
-                var isLocal = host === 'localhost' || host === '127.0.0.1' || host.indexOf('.test') !== -1;
-                if (isLocal) {
-                    options._retriedLocal = true;
-                    var localBase = (window.location.pathname.indexOf('/ColorMagic') === 0) ? '/ColorMagic/api' : '/api';
-                    var clean = endpoint.replace(/^\//, '');
-                    var localUrl = localBase + '/' + clean;
-                    try {
-                        var localRes = await fetch(localUrl, options);
-                        if (localRes.ok) {
-                            var localData = await localRes.json();
-                            if (localData && typeof localData === 'object' && localData.status === 'success' && 'data' in localData) {
-                                return localData;
-                            }
-                            return { status: 'success', data: localData };
-                        }
-                    } catch (_) {}
-                }
-            }
-            throw error;
+        var response = await fetch(url, options);
+        if (!response.ok) {
+            var errJson = null;
+            try { errJson = await response.json(); } catch (_) {}
+            var errMsg = (errJson && errJson.message) ? errJson.message : ('HTTP ' + response.status + ' Error');
+            var err = new Error(errMsg);
+            err.status = response.status;
+            err.details = errJson;
+            throw err;
         }
+        var data = await response.json();
+        // Unwrap standard V2 envelope { status: 'success', data: ... }
+        if (data && typeof data === 'object' && data.status === 'success' && 'data' in data) {
+            return data;
+        }
+        // Raw json fallback
+        return { status: 'success', data: data };
     },
 
     /**
