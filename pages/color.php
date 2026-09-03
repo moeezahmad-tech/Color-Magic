@@ -924,11 +924,11 @@ $schema = [
         window.CM_PALETTE_BASE  = '<?php echo e($assetBase); ?>/palette/';
         window.CM_GRADIENT_BASE = '<?php echo e($assetBase); ?>/gradient/';
     </script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/utils.js?v=2.1"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/services/favorites.js?v=2.1"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/image-export.js?v=2.1"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js?v=2.1"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/components/gradient-card.js?v=2.1"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/utils.js?v=3.0"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/services/favorites.js?v=3.0"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/image-export.js?v=3.0"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js?v=3.0"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/components/gradient-card.js?v=3.0"></script>
 
     <script>
         // ── Copy HEX / RGB buttons ──────────────────────────────────────────

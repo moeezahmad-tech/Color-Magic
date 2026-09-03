@@ -161,7 +161,7 @@
         }
 
         document.title = `${palette.name} Color Palette | Color Magic`;
-        paletteName.textContent = palette.name;
+        if (paletteName) paletteName.textContent = palette.name;
 
         const paletteBreadcrumb = document.getElementById('paletteBreadcrumb');
         if (paletteBreadcrumb) paletteBreadcrumb.textContent = palette.name;
@@ -182,52 +182,63 @@
         const cssVars = colorList.map((color, index) => `--palette-color-${index + 1}: ${color};`).join('\n');
 
         if (paletteMeta) paletteMeta.textContent = `Palette ID: ${palette.id}`;
-        paletteType.textContent = palette.style || 'General';
-        paletteCount.textContent = String(colorList.length);
+        if (paletteType) paletteType.textContent = palette.style || 'General';
+        if (paletteCount) paletteCount.textContent = String(colorList.length);
 
-        heroPaletteStrips.style.gridTemplateColumns = `repeat(${colorList.length}, minmax(0, 1fr))`;
-        heroPaletteStrips.innerHTML = colorList.map((color) => `
-            <div class="h-full flex items-end justify-center p-3" style="background-color:${color};">
-                <span class="text-[10px] md:text-xs font-bold font-mono px-2 py-1 rounded-lg bg-black/25 text-white">${color}</span>
-            </div>
-        `).join('');
-
-        detailColorList.innerHTML = colorList.map((color) => `
-            <div class="flex items-center justify-between gap-2 rounded-xl bg-slate-50 dark:bg-slate-800 px-3 py-2">
-                <div class="flex items-center gap-2 min-w-0">
-                    <span class="w-6 h-6 rounded-md shrink-0" style="background:${color}"></span>
-                    <span class="font-mono text-xs md:text-sm truncate">${color}</span>
+        if (heroPaletteStrips) {
+            heroPaletteStrips.style.gridTemplateColumns = `repeat(${colorList.length}, minmax(0, 1fr))`;
+            heroPaletteStrips.innerHTML = colorList.map((color) => `
+                <div class="h-full flex items-end justify-center p-3" style="background-color:${color};">
+                    <span class="text-[10px] md:text-xs font-bold font-mono px-2 py-1 rounded-lg bg-black/25 text-white">${color}</span>
                 </div>
-                <button type="button"
-                        class="copy-single-color text-xs font-semibold px-2 py-1 rounded-lg bg-white dark:bg-slate-700 hover:bg-primary hover:text-white transition-colors"
-                        data-color="${color}">
-                    Copy
-                </button>
-            </div>
-        `).join('');
+            `).join('');
+        }
 
-        contrastCardA.style.backgroundColor = firstColor;
-        contrastCardA.style.color = lastColor;
-        contrastCardA.innerHTML = `
-            <p class="text-xs uppercase tracking-wider opacity-80">Contrast Preview A</p>
-            <p class="text-2xl md:text-3xl font-bold">Aa</p>
-            <p class="text-sm">Background: ${firstColor} · Text: ${lastColor}</p>
-        `;
+        if (detailColorList) {
+            detailColorList.innerHTML = colorList.map((color) => `
+                <div class="flex items-center justify-between gap-2 rounded-xl bg-slate-50 dark:bg-slate-800 px-3 py-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span class="w-6 h-6 rounded-md shrink-0" style="background:${color}"></span>
+                        <span class="font-mono text-xs md:text-sm truncate">${color}</span>
+                    </div>
+                    <button type="button"
+                            class="copy-single-color text-xs font-semibold px-2 py-1 rounded-lg bg-white dark:bg-slate-700 hover:bg-primary hover:text-white transition-colors"
+                            data-color="${color}">
+                        Copy
+                    </button>
+                </div>
+            `).join('');
+        }
 
-        contrastCardB.style.backgroundColor = lastColor;
-        contrastCardB.style.color = firstColor;
-        contrastCardB.innerHTML = `
-            <p class="text-xs uppercase tracking-wider opacity-80">Contrast Preview B</p>
-            <p class="text-2xl md:text-3xl font-bold">Aa</p>
-            <p class="text-sm">Background: ${lastColor} · Text: ${firstColor}</p>
-        `;
+        if (contrastCardA) {
+            contrastCardA.style.backgroundColor = firstColor;
+            contrastCardA.style.color = lastColor;
+            contrastCardA.innerHTML = `
+                <p class="text-xs uppercase tracking-wider opacity-80">Contrast Preview A</p>
+                <p class="text-2xl md:text-3xl font-bold">Aa</p>
+                <p class="text-sm">Background: ${firstColor} · Text: ${lastColor}</p>
+            `;
+        }
 
-        darkColorParagraph.style.color = firstColor;
-        darkColorParagraph.textContent = `${palette.name} starts with ${firstColor} as the anchor tone, giving the palette a strong visual base. As the colors progress to ${lastColor}, the composition opens into brighter accents that are great for UI highlights, typography emphasis, and layered backgrounds. This progression creates a clear rhythm that helps designs feel intentional instead of random.`;
+        if (contrastCardB) {
+            contrastCardB.style.backgroundColor = lastColor;
+            contrastCardB.style.color = firstColor;
+            contrastCardB.innerHTML = `
+                <p class="text-xs uppercase tracking-wider opacity-80">Contrast Preview B</p>
+                <p class="text-2xl md:text-3xl font-bold">Aa</p>
+                <p class="text-sm">Background: ${lastColor} · Text: ${firstColor}</p>
+            `;
+        }
+
+        if (darkColorParagraph) {
+            darkColorParagraph.style.color = firstColor;
+            darkColorParagraph.textContent = `${palette.name} starts with ${firstColor} as the anchor tone, giving the palette a strong visual base. As the colors progress to ${lastColor}, the composition opens into brighter accents that are great for UI highlights, typography emphasis, and layered backgrounds. This progression creates a clear rhythm that helps designs feel intentional instead of random.`;
+        }
 
         // Color Information Grid
         const colorRoute = (window.CM_COLOR_BASE || 'color/');
-        colorInfoGrid.innerHTML = colorList.map((color) => {
+        if (colorInfoGrid) {
+            colorInfoGrid.innerHTML = colorList.map((color) => {
             const rgb = hexToRgb(color);
             const hsl = hexToHsl(color);
             const lum = Math.round(getLuminance(color) * 100);
@@ -268,23 +279,26 @@
                 </div>
             `;
         }).join('');
+    }
 
         // Brightness Chart
-        const maxBrightness = Math.max(...colorList.map(c => getLuminance(c)));
-        brightnessChart.innerHTML = colorList.map((color) => {
-            const brightness = (getLuminance(color) / maxBrightness) * 100;
-            return `
-                <div class="flex items-center gap-3">
-                    <span class="font-mono text-xs w-16 shrink-0">${color}</span>
-                    <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-6 overflow-hidden">
-                        <div class="h-full rounded-full transition-all" style="background:${color}; width:${brightness}%"></div>
+        if (brightnessChart && colorList.length > 0) {
+            const maxBrightness = Math.max(...colorList.map(c => getLuminance(c))) || 1;
+            brightnessChart.innerHTML = colorList.map((color) => {
+                const brightness = (getLuminance(color) / maxBrightness) * 100;
+                return `
+                    <div class="flex items-center gap-3">
+                        <span class="font-mono text-xs w-16 shrink-0">${color}</span>
+                        <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-6 overflow-hidden">
+                            <div class="h-full rounded-full transition-all" style="background:${color}; width:${brightness}%"></div>
+                        </div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 w-12 text-right">${Math.round(brightness)}%</span>
                     </div>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 w-12 text-right">${Math.round(brightness)}%</span>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
+        }
 
-        detailColorList.addEventListener('click', async (event) => {
+        detailColorList?.addEventListener('click', async (event) => {
             const btn = event.target.closest('.copy-single-color');
             if (!btn) return;
 
@@ -296,7 +310,7 @@
         });
 
         // Copy color HEX / RGB buttons in color info grid
-        colorInfoGrid.addEventListener('click', async (event) => {
+        colorInfoGrid?.addEventListener('click', async (event) => {
             const hexBtn = event.target.closest('.copy-color-hex-btn');
             if (hexBtn) {
                 const origHTML = hexBtn.innerHTML;
