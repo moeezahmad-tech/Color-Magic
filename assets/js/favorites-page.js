@@ -223,18 +223,20 @@
     }
 
     // ─── Load all data and render ───────────────────────────────────────────────
-    var colorNamesUrl = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('color-names.json') : '/api/color-names.json';
-    var palettesUrl   = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('palettes.json') : '/api/palettes.json';
-    var gradientsUrl  = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('gradients.json') : '/api/gradients.json';
+    var colorPromise = (window.ColorMagic && window.ColorMagic.api)
+        ? window.ColorMagic.api.getColors({ format: 'dict' })
+        : fetch('/api/color-names.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+    var palPromise = (window.ColorMagic && window.ColorMagic.api)
+        ? window.ColorMagic.api.getPalettes({ limit: 1000 })
+        : fetch('/api/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+    var gradPromise = (window.ColorMagic && window.ColorMagic.api)
+        ? window.ColorMagic.api.getGradients({ limit: 1000 })
+        : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
-    Promise.all([
-        fetch(colorNamesUrl).then(function (r) { return r.ok ? r.json() : {}; }),
-        fetch(palettesUrl).then(function (r) { return r.ok ? r.json() : []; }),
-        fetch(gradientsUrl).then(function (r) { return r.ok ? r.json() : []; })
-    ]).then(function (results) {
-        var colorNames     = results[0];
-        var allPalettes    = Array.isArray(results[1]) ? results[1] : [];
-        var allGradients   = Array.isArray(results[2]) ? results[2] : [];
+    Promise.all([colorPromise, palPromise, gradPromise]).then(function (results) {
+        var colorNames     = (results[0] && results[0].data) ? results[0].data : (results[0] || {});
+        var allPalettes    = (results[1] && results[1].data) ? results[1].data : (Array.isArray(results[1]) ? results[1] : []);
+        var allGradients   = (results[2] && results[2].data) ? results[2].data : (Array.isArray(results[2]) ? results[2] : []);
 
         var colorCount    = renderColors(colorNames);
         var paletteCount  = renderPalettes(allPalettes);
@@ -254,8 +256,11 @@
             var hex = colorRemoveBtn.dataset.hex;
             window.ColorMagic.ColorFavorites.toggleFavorite(hex);
             // Re-render colors
-            var cnUrl = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('color-names.json') : '/api/color-names.json';
-            fetch(cnUrl).then(function (r) { return r.json(); }).then(function (data) {
+            var cnPromise = (window.ColorMagic && window.ColorMagic.api)
+                ? window.ColorMagic.api.getColors({ format: 'dict' })
+                : fetch('/api/color-names.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+            cnPromise.then(function (res) {
+                var data = (res && res.data) ? res.data : res;
                 var count = renderColors(data);
                 var paletteCount  = window.ColorMagic.Favorites.getFavorites().length;
                 var gradientCount = window.ColorMagic.GradientFavorites.getFavorites().length;
@@ -289,8 +294,11 @@
             var paletteId = paletteFavBtn.dataset.paletteId;
             window.ColorMagic.Favorites.toggleFavorite(paletteId);
             // Re-render palettes
-            var pUrl = (window.ColorMagic && window.ColorMagic.getApiUrl) ? window.ColorMagic.getApiUrl('palettes.json') : '/api/palettes.json';
-            fetch(pUrl).then(function (r) { return r.json(); }).then(function (data) {
+            var pPromise = (window.ColorMagic && window.ColorMagic.api)
+                ? window.ColorMagic.api.getPalettes({ limit: 1000 })
+                : fetch('/api/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+            pPromise.then(function (res) {
+                var data = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
                 var count = renderPalettes(Array.isArray(data) ? data : []);
                 var colorCount    = window.ColorMagic.ColorFavorites.getFavorites().length;
                 var gradientCount = window.ColorMagic.GradientFavorites.getFavorites().length;

@@ -19,6 +19,39 @@ $base = (!$isBuiltinServer && isset($_SERVER['HTTP_HOST']) && preg_match('/^(loc
     ? '/ColorMagic'
     : '';
 
+// Load API_BASE_URL from .env configuration
+$apiBaseUrl = '';
+$envFileCandidates = [
+    __DIR__ . '/../.env',
+    __DIR__ . '/../.env.local',
+    __DIR__ . '/../.env.api.colormagic',
+    __DIR__ . '/../.env.colormagic'
+];
+
+foreach ($envFileCandidates as $envFile) {
+    if (file_exists($envFile) && is_readable($envFile)) {
+        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines) {
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if ($line === '' || $line[0] === '#') continue;
+                if (strpos($line, '=') !== false) {
+                    list($envKey, $envVal) = explode('=', $line, 2);
+                    $envKey = trim($envKey);
+                    $envVal = trim($envVal, " \t\n\r\0\x0B\"'");
+                    if (in_array($envKey, ['API_BASE_URL', 'API_URL', 'COLORMAGIC_API_URL'], true) && empty($apiBaseUrl)) {
+                        $apiBaseUrl = $envVal;
+                    }
+                }
+            }
+        }
+    }
+}
+
+if (empty($apiBaseUrl)) {
+    $apiBaseUrl = $base . '/api';
+}
+
 if (!headers_sent()) {
     header('Link: <' . $base . '/assets/images/logo.png>; rel="icon"; type="image/png"');
 }

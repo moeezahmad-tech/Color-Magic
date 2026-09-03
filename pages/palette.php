@@ -5,30 +5,32 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script>
-        // Set base href so relative assets resolve correctly under /palette/slug/ URLs
-        (function () {
-            var path = window.location.pathname;
-            var idx = path.indexOf("/palette/");
-            var base =
-                idx !== -1
-                    ? path.substring(0, idx + 1)
-                    : path.substring(0, path.lastIndexOf("/") + 1);
-            document.write('<base href="' + base + '">');
-        })();
-    </script>
+    <base href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/">
     <title>Color Palette | Color Magic</title>
     <meta name="description"
         content="Explore this curated color palette with copy-ready HEX, RGB, and CSS values. Perfect for design projects." />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet" />
+    <link rel="preload" as="image" href="<?= $base ?>/assets/images/logo.png" fetchpriority="high" />
+
+    <!-- Resource Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+    <!-- Preload Fonts & Non-Blocking CSS -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" /></noscript>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
     <style>
+        /* ── Critical Layout Stability (Zero CLS) ── */
+        header {
+            min-height: 64px;
+        }
         /* Swatch hover interactions (same as Explore Palettes) */
         .swatch {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -369,11 +371,11 @@
         window.CM_COLOR_BASE   = '<?= $base ?>/color/';
         window.CM_PALETTE_BASE = '<?= $base ?>/palette/';
     </script>
-    <script src="<?= $base ?>/assets/js/utils.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/image-export.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/palette-page.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js?v=2.0" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js?v=2.0" defer></script>
+    <script src="<?= $base ?>/assets/js/image-export.js?v=2.0" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=2.0" defer></script>
+    <script src="<?= $base ?>/assets/js/palette-page.js?v=2.0" defer></script>
 </body>
 
 </html>

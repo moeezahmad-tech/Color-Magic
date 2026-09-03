@@ -1,10 +1,13 @@
-<?php /** @var string $base */ ?>
+<?php /** @var string $base */ /** @var string $apiBaseUrl */ ?>
+<script>
+    window.COLORMAGIC_API_BASE = "<?= htmlspecialchars($apiBaseUrl ?? ($base . '/api'), ENT_QUOTES, 'UTF-8') ?>";
+</script>
 <header
-        class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+        class="sticky top-0 z-50 w-full min-h-[64px] border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
             <a href="<?= $base ?>/" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                 <img src="<?= $base ?>/assets/images/logo.png" alt="Color Magic by TechKreative Logo"
-                    class="h-8 w-8 object-contain" />
+                    width="32" height="32" class="h-8 w-8 object-contain" loading="eager" fetchpriority="high" />
                 <h2 class="text-xl font-bold tracking-tight">
                     <span class="text-slate-900 dark:text-white">Color</span>
                     <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span>
@@ -19,10 +22,13 @@
                 </a>
                 <div class="relative group">
                     <button
-                        class="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary transition-colors focus:outline-none">
-                        <!-- <i class="bi bi-tools" aria-label="Tools icon"></i> -->
+                        type="button"
+                        aria-label="Color tools and utilities menu"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        class="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                         <span>Tools</span>
-                        <i class="bi bi-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                        <i class="bi bi-chevron-down text-xs transition-transform group-hover:rotate-180" aria-hidden="true"></i>
                     </button>
                     <!-- Dropdown Menu sliding down -->
                     <div

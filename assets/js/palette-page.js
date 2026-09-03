@@ -107,39 +107,40 @@
     }
 
     try {
-        // Compute base path for fetching data (base tag doesn't affect fetch API)
-        const currentPath = window.location.pathname;
-        const palettePathIdx = currentPath.indexOf('/palette/');
-        const fetchBase = palettePathIdx !== -1
-            ? currentPath.substring(0, palettePathIdx + 1)
-            : currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
-
-        const palettesUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
-            ? window.ColorMagic.getApiUrl('palettes.json')
-            : '/api/palettes.json';
-        const response = await fetch(palettesUrl + '?t=' + Date.now());
-        if (!response.ok) {
-            throw new Error(`Failed to fetch palettes (Status: ${response.status})`);
-        }
-
-        const palettes = await response.json();
-
-        // Helper: generate slug from palette name
-        function slugify(name) {
-            return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-        }
-
-        // Detect duplicate names for slug-with-id resolution
-        const nameCount = {};
-        if (Array.isArray(palettes)) {
-            palettes.forEach(p => {
-                const s = slugify(p.name || '');
-                nameCount[s] = (nameCount[s] || 0) + 1;
-            });
-        }
-
+        // Try direct API lookup by slug first (most efficient)
         let palette = null;
-        if (paletteSlug) {
+
+        if (window.ColorMagic && window.ColorMagic.api) {
+            try {
+                palette = await window.ColorMagic.api.getPaletteById(paletteSlug);
+            } catch (e) {
+                // Direct lookup failed, will try bulk fetch below
+            }
+        }
+
+        // Fallback: fetch all palettes and match by slug client-side
+        if (!palette) {
+            const palPromise = (window.ColorMagic && window.ColorMagic.api)
+                ? window.ColorMagic.api.getPalettes({ limit: 1000 })
+                : fetch('/api/palettes.json').then(r => r.json()).then(d => ({ data: d }));
+
+            const result = await palPromise;
+            const palettes = (result && result.data) ? result.data : (Array.isArray(result) ? result : []);
+
+            // Helper: generate slug from palette name
+            function slugify(name) {
+                return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            }
+
+            // Detect duplicate names for slug-with-id resolution
+            const nameCount = {};
+            if (Array.isArray(palettes)) {
+                palettes.forEach(p => {
+                    const s = slugify(p.name || '');
+                    nameCount[s] = (nameCount[s] || 0) + 1;
+                });
+            }
+
             // Match slug (with duplicate ID suffix for duplicate names) or exact ID
             palette = Array.isArray(palettes)
                 ? palettes.find((item) => {
@@ -212,7 +213,7 @@
         darkColorParagraph.textContent = `${palette.name} starts with ${firstColor} as the anchor tone, giving the palette a strong visual base. As the colors progress to ${lastColor}, the composition opens into brighter accents that are great for UI highlights, typography emphasis, and layered backgrounds. This progression creates a clear rhythm that helps designs feel intentional instead of random.`;
 
         // Color Information Grid
-        const colorRoute = fetchBase + 'color/';
+        const colorRoute = (window.CM_COLOR_BASE || 'color/');
         colorInfoGrid.innerHTML = colorList.map((color) => {
             const rgb = hexToRgb(color);
             const hsl = hexToHsl(color);
@@ -386,7 +387,7 @@
                 });
             });
 
-            const colorRoute = fetchBase + 'color/';
+            const colorRoute = (window.CM_COLOR_BASE || 'color/');
             relatedColors.slice(0, 6).forEach(c => {
                 const rgb = hexToRgb(c.hex);
                 const card = document.createElement('a');
@@ -408,13 +409,14 @@
         // ── Related Gradients ─────────────────────────────────────────────
         const relatedGradientsGrid = document.getElementById('relatedGradientsGrid');
         if (relatedGradientsGrid) {
-            const gradientsUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
-                ? window.ColorMagic.getApiUrl('gradients.json')
-                : '/api/gradients.json';
-            fetch(gradientsUrl + '?t=' + Date.now())
-                .then(res => res.json())
-                .then(gradients => {
-                    const gradientBase = fetchBase + 'gradient/';
+            const gradPromise = (window.ColorMagic && window.ColorMagic.api)
+                ? window.ColorMagic.api.getGradients({ limit: 1000 })
+                : fetch('/api/gradients.json').then(r => r.json()).then(d => ({ data: d }));
+
+            gradPromise
+                .then(res => {
+                    const gradients = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
+                    const gradientBase = (window.location.pathname.indexOf('/ColorMagic') === 0) ? '/ColorMagic/gradient/' : '/gradient/';
                     const exact = [];
                     const near = [];
 

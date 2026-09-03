@@ -149,12 +149,17 @@
     function showLoadingState() {
         if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
         if (gradientCountStatus) gradientCountStatus.textContent = '';
-        gradientGrid.innerHTML =
-            '<div class="col-span-full flex flex-col items-center justify-center py-20">'
-            + '<i class="bi bi-hourglass-split text-6xl text-primary animate-pulse mb-4"></i>'
-            + '<p class="text-xl font-bold text-slate-700 dark:text-slate-300">Loading gradients...</p>'
-            + '<p class="text-sm text-slate-500">Please wait while we fetch the data</p>'
-            + '</div>';
+        var skeletonHtml = '';
+        for (var i = 0; i < 12; i++) {
+            skeletonHtml +=
+                '<div class="col-span-1 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 flex flex-col justify-between h-[230px] animate-pulse">'
+                + '<div class="h-32 rounded-2xl bg-slate-100 dark:bg-slate-800 w-full mb-3"></div>'
+                + '<div class="flex items-center justify-between">'
+                + '<div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-1/3"></div>'
+                + '<div class="flex gap-2"><div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800"></div><div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800"></div></div>'
+                + '</div></div>';
+        }
+        gradientGrid.innerHTML = skeletonHtml;
     }
 
     function showErrorState(message) {
@@ -344,16 +349,13 @@
         App.loading = true;
         showLoadingState();
 
-        var apiUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
-            ? window.ColorMagic.getApiUrl('gradients.json')
-            : '/api/gradients.json';
+        var apiPromise = (window.ColorMagic && window.ColorMagic.api)
+            ? window.ColorMagic.api.getGradients({ limit: 1000 })
+            : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
-        fetch(apiUrl + '?t=' + Date.now())
-            .then(function (response) {
-                if (!response.ok) throw new Error('Failed to fetch gradients (Status: ' + response.status + ')');
-                return response.json();
-            })
-            .then(function (data) {
+        apiPromise
+            .then(function (result) {
+                var data = (result && result.data) ? result.data : result;
                 if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid gradient data format');
                 App.gradients = shuffle(data);
 

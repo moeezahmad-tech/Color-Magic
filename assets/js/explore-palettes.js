@@ -37,12 +37,17 @@
     function showLoadingState() {
         if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
         if (paletteCountStatus) paletteCountStatus.textContent = '';
-        paletteGrid.innerHTML =
-            '<div class="col-span-full flex flex-col items-center justify-center py-20">'
-            + '<i class="bi bi-hourglass-split text-6xl text-primary animate-pulse mb-4"></i>'
-            + '<p class="text-xl font-bold text-slate-700 dark:text-slate-300">Loading palettes...</p>'
-            + '<p class="text-sm text-slate-500">Please wait while we fetch the color data</p>'
-            + '</div>';
+        var skeletonHtml = '';
+        for (var i = 0; i < 12; i++) {
+            skeletonHtml +=
+                '<div class="col-span-1 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 flex flex-col justify-between h-[230px] animate-pulse">'
+                + '<div class="h-32 rounded-2xl bg-slate-100 dark:bg-slate-800 w-full mb-3"></div>'
+                + '<div class="flex items-center justify-between">'
+                + '<div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-1/3"></div>'
+                + '<div class="flex gap-2"><div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800"></div><div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800"></div></div>'
+                + '</div></div>';
+        }
+        paletteGrid.innerHTML = skeletonHtml;
     }
 
     function showErrorState(message) {
@@ -145,21 +150,20 @@
         App.error   = null;
         showLoadingState();
 
-        var apiUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
-            ? window.ColorMagic.getApiUrl('palettes.json')
-            : '/api/palettes.json';
+        var apiPromise = (window.ColorMagic && window.ColorMagic.api)
+            ? window.ColorMagic.api.getPalettes({ limit: 1000 })
+            : fetch('/api/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
-        fetch(apiUrl)
-            .then(function (response) {
-                if (!response.ok) throw new Error('Failed to fetch palettes (Status: ' + response.status + ')');
-                return response.json();
-            })
-            .then(function (data) {
+        apiPromise
+            .then(function (result) {
+                var data = (result && result.data) ? result.data : result;
                 if (!Array.isArray(data) || data.length === 0) throw new Error('Invalid palette data format');
 
                 // Shuffle then mark duplicate slugs
                 App.palettes = data.sort(function () { return Math.random() - 0.5; });
-                window.ColorMagic.markDuplicateSlugs(App.palettes);
+                if (window.ColorMagic && window.ColorMagic.markDuplicateSlugs) {
+                    window.ColorMagic.markDuplicateSlugs(App.palettes);
+                }
 
                 App.loading = false;
                 applyFiltersAndRender();

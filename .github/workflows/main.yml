@@ -24,6 +24,11 @@ jobs:
           local-dir: ./ 
           # Usually public_html/ or public_html/colormagic/
           server-dir: ./colormagic/
+          # Exclude the API directory — API is served from colormagic-api.techkreative.com
+          exclude: |
+            **/api/**
+            **/.git*
+            **/.git*/**
 
   purge-cache:
     name: 🧹 Purge Cloudflare Cache

@@ -27,15 +27,28 @@
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
     <link rel="manifest" href="<?= $base ?>/manifest.json" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
+    <link rel="preload" as="image" href="<?= $base ?>/assets/images/logo.png" fetchpriority="high" />
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet" />
+    <!-- Resource Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+    <!-- Preload Fonts & Non-Blocking CSS -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" /></noscript>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
     <style>
+        /* ── Critical Layout Stability (Zero CLS) ── */
+        header {
+            min-height: 64px;
+        }
+
         .card-hover:hover {
             transform: translateY(-6px);
             box-shadow: 0 20px 40px -15px rgba(124, 58, 237, 0.12);
@@ -105,7 +118,7 @@
             animation: fadeIn 0.2s ease both;
         }
 
-        /* Palette scrolling animations */
+        /* Palette scrolling animations with strict layout containment */
         @keyframes scrollUp {
             0% {
                 transform: translateY(0);
@@ -128,13 +141,19 @@
 
         .animate-scroll-up {
             animation: scrollUp 25s linear infinite;
+            will-change: transform;
         }
 
         .animate-scroll-down {
             animation: scrollDown 25s linear infinite;
+            will-change: transform;
         }
 
         .animation-container {
+            contain: strict;
+            content-visibility: auto;
+            contain-intrinsic-size: 350px;
+            height: 350px;
             mask-image: linear-gradient(to bottom,
                     transparent,
                     white 20%,
@@ -163,7 +182,7 @@
         class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
         <div class="flex items-center justify-between mb-6">
             <a href="<?= $base ?>/" class="flex items-center gap-2 text-primary">
-                <img src="<?= $base ?>/assets/images/logo.png" alt="Color Magic Logo" class="h-8 w-8 object-contain" />
+                <img src="<?= $base ?>/assets/images/logo.png" alt="Color Magic Logo" width="32" height="32" class="h-8 w-8 object-contain" />
                 <span class="text-xl font-bold tracking-tight">
                     <span class="text-slate-900 dark:text-white">Color</span>
                     <span class="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Magic</span>

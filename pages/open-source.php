@@ -408,6 +408,92 @@
             </div>
         </div>
 
+        <!-- REST API V2 & Developer Hub -->
+        <div class="mb-16 md:mb-20">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 md:p-12 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-slate-100 dark:border-slate-800 pb-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold mb-3">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                            <span>V2 SQLite Engine &lt; 0.2ms</span>
+                        </div>
+                        <h2 class="text-3xl font-bold flex items-center gap-3">
+                            <i class="bi bi-hdd-network text-primary"></i>
+                            Public REST API
+                        </h2>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
+                            ColorMagic provides a standalone, production-grade REST API powered by SQLite in WAL mode, with HTTP 304 ETag caching, Gzip stream compression, and sub-millisecond lookups.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <a href="https://colormagic-api.techkreative.com/v2/health" target="_blank" rel="noopener noreferrer"
+                            class="px-5 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary font-bold rounded-xl text-sm transition flex items-center gap-2">
+                            <i class="bi bi-activity"></i> API Health
+                        </a>
+                        <a href="https://colormagic-api.techkreative.com/README.md" target="_blank" rel="noopener noreferrer"
+                            class="px-5 py-2.5 bg-gradient-to-r from-secondary to-primary text-white font-bold rounded-xl text-sm transition shadow-lg shadow-primary/20 flex items-center gap-2">
+                            <i class="bi bi-book"></i> Full API Docs
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <!-- Endpoint: Health -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">GET</span>
+                            <h4 class="font-mono text-sm font-bold mt-2 text-slate-800 dark:text-slate-200">/v2/health</h4>
+                            <p class="text-xs text-slate-500 mt-1">Live database status, records & latency stats</p>
+                        </div>
+                        <a href="https://colormagic-api.techkreative.com/v2/health" target="_blank" class="mt-3 text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+                            Test Endpoint <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Endpoint: Colors -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">GET</span>
+                            <h4 class="font-mono text-sm font-bold mt-2 text-slate-800 dark:text-slate-200">/v2/colors</h4>
+                            <p class="text-xs text-slate-500 mt-1">1,027+ named colors with slug & hex lookups</p>
+                        </div>
+                        <a href="https://colormagic-api.techkreative.com/v2/colors" target="_blank" class="mt-3 text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+                            Test Endpoint <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Endpoint: Gradients -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">GET</span>
+                            <h4 class="font-mono text-sm font-bold mt-2 text-slate-800 dark:text-slate-200">/v2/gradients</h4>
+                            <p class="text-xs text-slate-500 mt-1">329+ CSS linear and radial gradient presets</p>
+                        </div>
+                        <a href="https://colormagic-api.techkreative.com/v2/gradients" target="_blank" class="mt-3 text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+                            Test Endpoint <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Endpoint: Palettes -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">GET</span>
+                            <h4 class="font-mono text-sm font-bold mt-2 text-slate-800 dark:text-slate-200">/v2/palettes</h4>
+                            <p class="text-xs text-slate-500 mt-1">833+ curated palettes & community submissions</p>
+                        </div>
+                        <a href="https://colormagic-api.techkreative.com/v2/palettes" target="_blank" class="mt-3 text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+                            Test Endpoint <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 text-slate-100 rounded-xl p-5 font-mono text-xs overflow-x-auto">
+                    <p class="text-slate-400 mb-2">// Example: Query a single color by hex</p>
+                    <span class="text-primary">curl</span> -i https://colormagic-api.techkreative.com/v2/colors/123524
+                </div>
+            </div>
+        </div>
+
         <!-- GitHub Repository -->
         <div class="mb-16 md:mb-20">
             <div class="bg-gradient-to-r from-secondary to-primary rounded-2xl p-8 md:p-12 text-white text-center">

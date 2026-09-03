@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
 :root {
     --cm-bg: #ffffff;
     --cm-ink: #0f172a;
@@ -11,14 +9,63 @@
 body {
     background: var(--cm-bg);
     color: var(--cm-ink);
-    font-family: "Inter", sans-serif;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-optical-sizing: auto;
     height: 100%;
 }
 
 header {
+    min-height: 64px;
     background: rgba(255, 255, 255, 0.86) !important;
     border-color: rgba(236, 72, 153, 0.2) !important;
+}
+
+/* ── Universal Loading Fallbacks (Prevents Black Flash) ── */
+.swatch,
+.gradient-preview,
+.palette-preview {
+    background-color: #f1f5f9;
+}
+
+html.dark .swatch,
+html.dark .gradient-preview,
+html.dark .palette-preview {
+    background-color: #1e293b;
+}
+
+/* Shimmer and skeleton color overrides */
+@keyframes cmPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+    animation: cmPulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-pulse,
+.animate-pulse > div,
+.animate-pulse div[class*="bg-"] {
+    background-color: #f1f5f9 !important;
+}
+
+html.dark .animate-pulse,
+html.dark .animate-pulse > div,
+html.dark .animate-pulse div[class*="bg-"] {
+    background-color: #1e293b !important;
+}
+
+/* Card background baseline */
+.palette-card,
+.gradient-card,
+article.group {
+    background-color: #ffffff;
+}
+
+html.dark .palette-card,
+html.dark .gradient-card,
+html.dark article.group {
+    background-color: #0f172a;
 }
 
 .theme-main-heading {

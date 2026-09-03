@@ -18,12 +18,13 @@
 
     async function fetchColorNames() {
         try {
-            const apiUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
-                ? window.ColorMagic.getApiUrl('color-names.json')
-                : '/api/color-names.json';
-            const res = await fetch(apiUrl);
-            if (!res.ok) throw new Error('Failed to load color database');
-            colorNames = await res.json();
+            if (window.ColorMagic && window.ColorMagic.api) {
+                const res = await window.ColorMagic.api.getColors({ format: 'dict' });
+                colorNames = res.data || res;
+            } else {
+                const res = await fetch('/api/color-names.json');
+                colorNames = await res.json();
+            }
             isColorNamesLoaded = true;
         } catch (err) {
             // Non-fatal — fall back to hex as name
@@ -163,7 +164,15 @@
         try {
             const rgb  = hexToRgb(fullHex);
             const hsl  = hexToHsl(fullHex);
-            const name = getColorName(fullHex);
+            let name = getColorName(fullHex);
+            if (window.ColorMagic && window.ColorMagic.api) {
+                try {
+                    const apiColor = await window.ColorMagic.api.getColorByHex(val);
+                    if (apiColor && apiColor.name) {
+                        name = apiColor.name;
+                    }
+                } catch (_) {}
+            }
             const contrast = getBestContrast(fullHex);
 
             displayColorInfo({ hex: fullHex, rgb, hsl, name, contrast });

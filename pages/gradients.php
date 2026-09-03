@@ -22,14 +22,31 @@
     <link rel="canonical" href="https://colormagic.techkreative.com/gradients" />
     <link rel="manifest" href="<?= $base ?>/manifest.json" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet" />
+    <link rel="preload" as="image" href="<?= $base ?>/assets/images/logo.png" fetchpriority="high" />
+
+    <!-- Resource Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+    <!-- Preload Fonts & Non-Blocking CSS -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" /></noscript>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
     <style>
+        /* ── Critical Layout Stability (Zero CLS) ── */
+        header {
+            min-height: 64px;
+        }
+
+        #gradientGrid {
+            min-height: 800px;
+        }
         /* ── Sidebar nav button styles ── */
         .sb-btn {
             display: flex;
@@ -332,7 +349,20 @@
             </div>
 
             <!-- Grid -->
-            <div id="gradientGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+            <div id="gradientGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                <?php for ($i = 0; $i < 12; $i++): ?>
+                <div class="col-span-1 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 flex flex-col justify-between h-[230px] animate-pulse">
+                    <div class="h-32 rounded-2xl bg-slate-100 dark:bg-slate-800 w-full mb-3"></div>
+                    <div class="flex items-center justify-between">
+                        <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-1/3"></div>
+                        <div class="flex gap-2">
+                            <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800"></div>
+                            <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800"></div>
+                        </div>
+                    </div>
+                </div>
+                <?php endfor; ?>
+            </div>
 
             <!-- Load more -->
             <div class="flex flex-col items-center gap-3 pt-6 mb-12" id="gradientPagination">

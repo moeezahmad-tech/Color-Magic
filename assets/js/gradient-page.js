@@ -405,13 +405,13 @@
 
         var gradientHexes = gradient.colors.map(function (c) { return c.replace('#', '').toLowerCase(); });
 
-        var palettesUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
-            ? window.ColorMagic.getApiUrl('palettes.json')
-            : '/api/palettes.json';
+        var palPromise = (window.ColorMagic && window.ColorMagic.api)
+            ? window.ColorMagic.api.getPalettes({ limit: 1000 })
+            : fetch('/api/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
-        fetch(palettesUrl)
-            .then(function (r) { return r.ok ? r.json() : []; })
-            .then(function (palettes) {
+        palPromise
+            .then(function (res) {
+                var palettes = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
                 var scored = [];
                 palettes.forEach(function (p) {
                     if (!Array.isArray(p.colors)) return;
@@ -525,16 +525,13 @@
         return;
     }
 
-    var gradientsUrl = (window.ColorMagic && window.ColorMagic.getApiUrl)
-        ? window.ColorMagic.getApiUrl('gradients.json')
-        : '/api/gradients.json';
+    var gradPromise = (window.ColorMagic && window.ColorMagic.api)
+        ? window.ColorMagic.api.getGradients({ limit: 1000 })
+        : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
-    fetch(gradientsUrl + '?t=' + Date.now())
+    gradPromise
         .then(function (res) {
-            if (!res.ok) throw new Error('Failed to fetch');
-            return res.json();
-        })
-        .then(function (data) {
+            var data = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
             var gradient = null;
             for (var i = 0; i < data.length; i++) {
                 if (data[i].id === gradientId) { gradient = data[i]; break; }

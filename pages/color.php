@@ -105,52 +105,82 @@ if (!$isValidHex) {
 $hexWithHash = '#' . $normalizedHex;
 
 $colorNames = [];
-$colorNamesPath = __DIR__ . '/../api/color-names.json';
-$jsonContentColor = file_exists($colorNamesPath)
-    ? file_get_contents($colorNamesPath)
-    : @file_get_contents('https://colormagic.techkreative.com/api/color-names.json');
-if ($jsonContentColor !== false) {
-    $decoded = json_decode((string) $jsonContentColor, true);
-    if (is_array($decoded)) {
-        $colorNames = $decoded;
+$paletteData = [];
+
+if (file_exists(__DIR__ . '/../api/v2/src/Repositories/ColorRepository.php')) {
+    try {
+        require_once __DIR__ . '/../api/v2/src/Config/Env.php';
+        require_once __DIR__ . '/../api/v2/src/Database/Database.php';
+        require_once __DIR__ . '/../api/v2/src/Repositories/ColorRepository.php';
+        require_once __DIR__ . '/../api/v2/src/Repositories/PaletteRepository.php';
+
+        $colorRepo = new \ColorMagic\Repositories\ColorRepository();
+        $paletteRepo = new \ColorMagic\Repositories\PaletteRepository();
+
+        if ($slugParam !== '' && $hexParam === '') {
+            $colorItem = $colorRepo->findBySlug($slugParam);
+            if ($colorItem) {
+                $normalizedHex = strtoupper($colorItem['hex']);
+                $isValidHex = true;
+                $hexWithHash = '#' . $normalizedHex;
+                $hexName = $colorItem['name'];
+                $colorSlug = $colorItem['slug'];
+            }
+        } else {
+            $colorItem = $colorRepo->findByHex($normalizedHex);
+            if ($colorItem) {
+                $hexName = $colorItem['name'];
+                $colorSlug = $colorItem['slug'];
+            }
+        }
+        $paletteData = $paletteRepo->all();
+    } catch (\Throwable $t) {
+        // Fall back to JSON files below
     }
 }
 
-// If accessed via slug (?slug=midnight-blue), look up the hex from the slug
-if ($slugParam !== '' && $hexParam === '') {
-    $slugMap = [];
-    foreach ($colorNames as $entry) {
-        if (is_array($entry) && isset($entry['slug'], $entry['hex'])) {
-            $slugMap[$entry['slug']] = $entry['hex'];
+if (empty($hexName)) {
+    if (empty($colorNames)) {
+        $colorNamesPath = __DIR__ . '/../api/data/color-names.json';
+        if (!file_exists($colorNamesPath)) $colorNamesPath = __DIR__ . '/../api/color-names.json';
+        if (file_exists($colorNamesPath)) {
+            $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
+            if (is_array($decoded)) $colorNames = $decoded;
         }
     }
-    if (isset($slugMap[$slugParam])) {
-        $normalizedHex = strtoupper($slugMap[$slugParam]);
-        $isValidHex = true;
-        $hexWithHash = '#' . $normalizedHex;
-    } else {
-        // Unknown slug — fall back to 404-like redirect
-        header('HTTP/1.1 404 Not Found');
-        exit;
+
+    // If accessed via slug (?slug=midnight-blue), look up the hex from the slug
+    if ($slugParam !== '' && $hexParam === '') {
+        $slugMap = [];
+        foreach ($colorNames as $key => $entry) {
+            $cleanHex = is_array($entry) ? ($entry['hex'] ?? $key) : $key;
+            $cleanSlug = is_array($entry) ? ($entry['slug'] ?? strtolower(preg_replace('/[^a-z0-9]+/i', '-', (string)($entry['name'] ?? '')))) : strtolower(preg_replace('/[^a-z0-9]+/i', '-', (string)$entry));
+            $slugMap[$cleanSlug] = $cleanHex;
+        }
+        if (isset($slugMap[$slugParam])) {
+            $normalizedHex = strtoupper(ltrim($slugMap[$slugParam], '#'));
+            $isValidHex = true;
+            $hexWithHash = '#' . $normalizedHex;
+        } else {
+            // Unknown slug — fall back to 404-like redirect
+            header('HTTP/1.1 404 Not Found');
+            exit;
+        }
     }
+
+    $hexNameEntry = $colorNames[strtoupper($normalizedHex)] ?? null;
+    $hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWithHash)) : ('Hex ' . $hexWithHash);
+    $colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
 }
 
-$paletteData = [];
-$palettePath = __DIR__ . '/../api/palettes.json';
-$jsonContentPalette = file_exists($palettePath)
-    ? file_get_contents($palettePath)
-    : @file_get_contents('https://colormagic.techkreative.com/api/palettes.json');
-if ($jsonContentPalette !== false) {
-    $decoded = json_decode((string) $jsonContentPalette, true);
-    if (is_array($decoded)) {
-        $paletteData = $decoded;
+if (empty($paletteData)) {
+    $palettePath = __DIR__ . '/../api/data/palettes.json';
+    if (!file_exists($palettePath)) $palettePath = __DIR__ . '/../api/palettes.json';
+    if (file_exists($palettePath)) {
+        $decoded = json_decode((string) file_get_contents($palettePath), true);
+        if (is_array($decoded)) $paletteData = $decoded;
     }
 }
-
-// Keys in color-names.json are uppercase hex without '#'
-$hexNameEntry = $colorNames[strtoupper($normalizedHex)] ?? null;
-$hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWithHash)) : ('Hex ' . $hexWithHash);
-$colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
 
 // If accessed via hex URL and this color has a named slug, 301 redirect to the slug URL
 if ($slugParam === '' && $colorSlug !== null) {
@@ -413,18 +443,31 @@ $schema = [
 
     <link rel="manifest" href="<?php echo e($manifestUrl); ?>" />
     <link rel="icon" type="image/png" href="<?php echo e($faviconUrl); ?>" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet" />
+    <link rel="preload" as="image" href="<?php echo e($faviconUrl); ?>" fetchpriority="high" />
+
+    <!-- Resource Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+    <!-- Preload Fonts & Non-Blocking CSS -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" /></noscript>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="<?php echo e($siteStylesUrl); ?>" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config" src="<?php echo e($tailwindConfigUrl); ?>"></script>
 
     <script
         type="application/ld+json"><?php echo json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?></script>
 
     <style>
+        /* ── Critical Layout Stability (Zero CLS) ── */
+        header {
+            min-height: 64px;
+        }
         .copy-feedback {
             transition: all 0.25s ease;
         }
@@ -1028,13 +1071,13 @@ $schema = [
 
             if (!grid) return;
 
-            var gradientsApi = (window.ColorMagic && window.ColorMagic.getApiUrl)
-                ? window.ColorMagic.getApiUrl('gradients.json')
-                : '/api/gradients.json';
+            var gradPromise = (window.ColorMagic && window.ColorMagic.api)
+                ? window.ColorMagic.api.getGradients({ limit: 1000 })
+                : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
-            fetch(gradientsApi + '?t=' + Date.now())
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
+            gradPromise
+                .then(function (res) {
+                    var data = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
                     var exact = [];
                     var near = [];
 
