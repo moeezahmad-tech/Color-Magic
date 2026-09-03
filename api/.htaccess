@@ -27,6 +27,9 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
+    # Route /v2/* and /v2 to v2/index.php
+    RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
+
     # Route /health to v2/index.php
     RewriteRule ^health/?$ v2/index.php [L,QSA]
     RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]

@@ -66,11 +66,20 @@ class ResponseHelper
     }
 
     /**
-     * Send standardized JSON error response
+     * Send standardized JSON error response - NEVER CACHE ERRORS
      */
     public static function error(string $message, int $statusCode = 400, array $extra = [])
     {
-        self::sendHeaders($statusCode);
+        if (!headers_sent()) {
+            http_response_code($statusCode);
+            header('Content-Type: application/json; charset=UTF-8');
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+            header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+        }
 
         $response = [
             'status'     => 'error',
@@ -87,7 +96,7 @@ class ResponseHelper
     }
 
     /**
-     * Send standard HTTP headers
+     * Send standard HTTP headers for success
      */
     private static function sendHeaders(int $statusCode = 200)
     {
@@ -101,9 +110,9 @@ class ResponseHelper
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
-        $cacheTtl = (int)Env::get('CACHE_TTL', 86400);
+        $cacheTtl = (int)Env::get('CACHE_TTL', 3600);
         if ($cacheTtl > 0) {
-            header("Cache-Control: public, max-age={$cacheTtl}, stale-while-revalidate=604800");
+            header("Cache-Control: public, max-age={$cacheTtl}, stale-while-revalidate=86400");
         }
     }
 }
