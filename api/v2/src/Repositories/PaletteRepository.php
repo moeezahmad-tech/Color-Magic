@@ -222,9 +222,10 @@ class PaletteRepository
         }
 
         $candidates = [
-            dirname(__DIR__, 2) . '/data/palettes.json',
-            dirname(__DIR__, 2) . '/palettes.json',
             dirname(__DIR__, 3) . '/data/palettes.json',
+            dirname(__DIR__, 2) . '/data/palettes.json',
+            dirname(__DIR__, 3) . '/palettes.json',
+            dirname(__DIR__, 2) . '/palettes.json',
         ];
 
         foreach ($candidates as $cand) {

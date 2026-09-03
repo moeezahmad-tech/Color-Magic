@@ -188,9 +188,10 @@ class GradientRepository
         }
 
         $candidates = [
-            dirname(__DIR__, 2) . '/data/gradients.json',
-            dirname(__DIR__, 2) . '/gradients.json',
             dirname(__DIR__, 3) . '/data/gradients.json',
+            dirname(__DIR__, 2) . '/data/gradients.json',
+            dirname(__DIR__, 3) . '/gradients.json',
+            dirname(__DIR__, 2) . '/gradients.json',
         ];
 
         foreach ($candidates as $cand) {

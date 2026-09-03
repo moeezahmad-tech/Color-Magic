@@ -269,9 +269,10 @@ class ColorRepository
         }
 
         $candidates = [
-            dirname(__DIR__, 2) . '/data/color-names.json',
-            dirname(__DIR__, 2) . '/color-names.json',
             dirname(__DIR__, 3) . '/data/color-names.json',
+            dirname(__DIR__, 2) . '/data/color-names.json',
+            dirname(__DIR__, 3) . '/color-names.json',
+            dirname(__DIR__, 2) . '/color-names.json',
         ];
 
         foreach ($candidates as $cand) {

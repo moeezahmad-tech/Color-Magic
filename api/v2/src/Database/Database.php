@@ -34,13 +34,6 @@ class Database
         Env::load();
         $dbPath = self::resolveDbPath();
 
-        $dir = dirname($dbPath);
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0777, true);
-        }
-
-        $isNewDb = !file_exists($dbPath) || filesize($dbPath) === 0;
-
         try {
             $pdo = new PDO('sqlite:' . $dbPath, null, null, [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -61,23 +54,6 @@ class Database
             }
 
             self::$instance = $pdo;
-
-            // Auto-heal / auto-seed if database is new or empty
-            try {
-                if ($isNewDb) {
-                    $migrator = new MigrationService($pdo);
-                    $migrator->migrate();
-                } else {
-                    $tables = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='colors'")->fetchColumn();
-                    if (!$tables) {
-                        $migrator = new MigrationService($pdo);
-                        $migrator->migrate();
-                    }
-                }
-            } catch (Throwable $t) {
-                // Seeder error safe
-            }
-
             return self::$instance;
         } catch (PDOException $e) {
             throw new Exception("SQLite Connection Error: " . $e->getMessage(), (int)$e->getCode(), $e);
@@ -85,7 +61,7 @@ class Database
     }
 
     /**
-     * Resolve database path - prioritizes self-contained api/data/ folder
+     * Resolve database path - correctly finds api/data/colormagic.sqlite
      */
     public static function resolveDbPath(): string
     {
@@ -109,16 +85,16 @@ class Database
         $baseDir = __DIR__; // api/v2/src/Database
 
         $candidates = [
-            dirname($baseDir, 2) . DIRECTORY_SEPARATOR . $rawPath, // api/data/colormagic.sqlite
-            dirname($baseDir, 3) . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR . $rawPath,
-            dirname($baseDir, 3) . DIRECTORY_SEPARATOR . $rawPath, // monorepo root
-            dirname($baseDir, 4) . DIRECTORY_SEPARATOR . $rawPath, // parent directory
+            dirname($baseDir, 3) . DIRECTORY_SEPARATOR . $rawPath, // api/data/colormagic.sqlite
+            dirname($baseDir, 2) . DIRECTORY_SEPARATOR . $rawPath, // api/v2/data/colormagic.sqlite
+            dirname($baseDir, 4) . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR . $rawPath,
+            dirname($baseDir, 4) . DIRECTORY_SEPARATOR . $rawPath, // root
         ];
 
         if (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] !== '') {
             $docRoot = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\');
             $candidates[] = $docRoot . DIRECTORY_SEPARATOR . $rawPath;
-            $candidates[] = dirname($docRoot) . DIRECTORY_SEPARATOR . $rawPath;
+            $candidates[] = $docRoot . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR . $rawPath;
         }
 
         foreach ($candidates as $cand) {

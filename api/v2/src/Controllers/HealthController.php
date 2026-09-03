@@ -38,9 +38,14 @@ class HealthController extends BaseController
             $dbSize = 0;
 
             // Load counts from JSON
-            $colorPath = dirname(__DIR__, 2) . '/data/color-names.json';
-            $gradPath  = dirname(__DIR__, 2) . '/data/gradients.json';
-            $palPath   = dirname(__DIR__, 2) . '/data/palettes.json';
+            $colorPath = dirname(__DIR__, 3) . '/data/color-names.json';
+            $gradPath  = dirname(__DIR__, 3) . '/data/gradients.json';
+            $palPath   = dirname(__DIR__, 3) . '/data/palettes.json';
+            if (!file_exists($colorPath)) {
+                $colorPath = dirname(__DIR__, 2) . '/data/color-names.json';
+                $gradPath  = dirname(__DIR__, 2) . '/data/gradients.json';
+                $palPath   = dirname(__DIR__, 2) . '/data/palettes.json';
+            }
 
             if (file_exists($colorPath)) {
                 $c = json_decode(file_get_contents($colorPath), true);
