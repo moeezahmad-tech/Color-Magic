@@ -1,42 +1,55 @@
 # ColorMagic Public REST API (V2 SQLite Edition)
 
-Production-grade, ultra-fast, standalone REST API powering ColorMagic color intelligence, palette generation, and gradient rendering.
+Production-grade, ultra-fast, self-contained REST API powering ColorMagic color intelligence, palette discovery, CSS gradient rendering, and community submissions.
 
-- **Base URL:** `https://colormagic-api.techkreative.com/`
+- **Base URL (Production):** `https://colormagic-api.techkreative.com/`
 - **Engine:** SQLite 3 with WAL (Write-Ahead Logging) + Zero-Dependency PHP OOP
 - **Compatibility:** PHP 7.0 - PHP 8.4+
 - **Latency:** `< 0.2 ms` (Single Lookups) | `< 0.8 ms` (Paginated Search)
 - **Caching:** HTTP 304 ETag Negotiation + Public HTTP Cache-Control
+- **Fail-Safe:** Automatic Dual-Layer Fallback to JSON Datasets
 
 ---
 
 ## Table of Contents
 
-1. [Architecture & Directory Structure](#architecture--directory-structure)
+1. [System Architecture & Directory Structure](#system-architecture--directory-structure)
 2. [Key Performance & Reliability Features](#key-performance--reliability-features)
-3. [Quick Start & Root Discovery](#quick-start--root-discovery)
-4. [Complete API Reference](#complete-api-reference)
-   - [Health & Diagnostics](#1-health--diagnostics)
-   - [Colors API](#2-colors-api)
-   - [Gradients API](#3-gradients-api)
-   - [Palettes API](#4-palettes-api)
-   - [Legacy V1 Endpoints](#5-legacy-v1-compatibility-endpoints)
-   - [Direct Static JSON Fallbacks](#6-direct-static-json-datasets)
-5. [Standard Request & Response Envelope](#standard-request--response-envelope)
-6. [HTTP Status Codes & Error Handling](#http-status-codes--error-handling)
-7. [Client Integration Recipes](#client-integration-recipes)
-   - [cURL](#curl-examples)
-   - [JavaScript / TypeScript (Fetch API)](#javascript--typescript-fetch-api)
-   - [Python (requests)](#python-requests)
-8. [CLI Maintenance & Diagnostics](#cli-maintenance--diagnostics)
-9. [Configuration & Environment Variables](#configuration--environment-variables)
-10. [Web Server & Apache Configuration](#web-server--apache-configuration)
+3. [Database Schema & Storage Architecture](#database-schema--storage-architecture)
+4. [Quick Start & Root Discovery](#quick-start--root-discovery)
+5. [Complete API Route & Endpoint Reference](#complete-api-route--endpoint-reference)
+   - [1. Health & System Diagnostics](#1-health--system-diagnostics)
+   - [2. Colors API](#2-colors-api)
+   - [3. Gradients API](#3-gradients-api)
+   - [4. Palettes API](#4-palettes-api)
+   - [5. Community Palette Submission](#5-community-palette-submission)
+   - [6. Legacy V1 Backward Compatibility](#6-legacy-v1-backward-compatibility)
+   - [7. Direct Static JSON Datasets](#7-direct-static-json-datasets)
+6. [Standard Request & Response Envelope](#standard-request--response-envelope)
+7. [HTTP Status Codes & Error Handling](#http-status-codes--error-handling)
+8. [Multi-Language Client Integration Recipes](#multi-language-client-integration-recipes)
+   - [cURL](#1-curl)
+   - [JavaScript / TypeScript (Fetch API)](#2-javascript--typescript-fetch-api)
+   - [Node.js (Axios)](#3-nodejs-axios)
+   - [Python (requests)](#4-python-requests)
+   - [PHP (Native cURL / Client)](#5-php-native-curl)
+   - [Go (net/http)](#6-go-nethttp)
+9. [CLI Maintenance & Automation Tools](#cli-maintenance--automation-tools)
+   - [Database Migrator & Seeder (`cli/migrate.php`)](#database-migrator--seeder-climigratephp)
+   - [Automated Verification & Benchmark Suite (`cli/test_endpoints.php`)](#automated-verification--benchmark-suite-clitest_endpointsphp)
+10. [Configuration & Environment Variables](#configuration--environment-variables)
+11. [Web Server Deployment Guide](#web-server-deployment-guide)
+    - [Apache (.htaccess)](#apache-htaccess-included)
+    - [Nginx Configuration](#nginx-server-block)
+12. [Security & Production Hardening](#security--production-hardening)
+13. [Troubleshooting & FAQ](#troubleshooting--faq)
+14. [License](#license)
 
 ---
 
-## Architecture & Directory Structure
+## System Architecture & Directory Structure
 
-The `api/` directory is **100% self-contained and isolated**. It can be served directly as an independent subdomain (e.g. `https://colormagic-api.techkreative.com/`) or accessed as `/api/` in a monolithic root setup.
+The `api/` directory is **100% self-contained and isolated**. It can be deployed directly to an independent subdomain (e.g. `https://colormagic-api.techkreative.com/`), hosted as a subfolder in a monolithic deployment, or run in containerized environments.
 
 ```
 api/
@@ -52,7 +65,7 @@ api/
 ├── gradients.php                 <-- V1 Backward-Compatible Gradient Route
 ├── palettes.php                  <-- V1 Backward-Compatible Palette Route
 │
-├── cli/                          <-- CLI Operations & Verification Tools
+├── cli/                          <-- CLI Maintenance & Verification Tools
 │   ├── migrate.php               <-- SQLite Schema Migrator & Seeder
 │   └── test_endpoints.php        <-- Automated Verification & Latency Benchmark Suite
 │
@@ -77,7 +90,7 @@ api/
         ├── Database/
         │   └── Database.php      <-- SQLite WAL Connection Pool & PRAGMA Optimizer
         ├── Controllers/
-        │   ├── BaseController.php<-- Query parsing, JSON input reader
+        │   ├── BaseController.php<-- Query parsing, JSON input reader, request context
         │   ├── ColorController.php
         │   ├── GradientController.php
         │   ├── PaletteController.php
@@ -97,85 +110,144 @@ api/
 
 | Feature | Technical Implementation |
 |---|---|
-| **SQLite WAL Mode Engine** | Runs with `PRAGMA journal_mode = WAL`, `synchronous = NORMAL`, `temp_store = MEMORY`, `cache_size = -64000` (64MB cache). Enables concurrent reads without locking writers. |
-| **Indexed Lookups** | B-Tree indexes on `colors(hex)`, `colors(slug)`, `gradients(id)`, `gradients(style)`, `palettes(id)`, and `palettes(style)` yield `< 0.2ms` lookups. |
-| **HTTP 304 ETag Negotiation** | Generates an MD5-based `ETag` on every successful payload. If `If-None-Match` header matches, responds with `304 Not Modified` (0 payload bytes transferred). |
-| **Fail-Safe JSON Fallback** | If the SQLite database file is missing or inaccessible, repositories transparently fall back to reading JSON files without throwing 500 errors. |
-| **Transparent Payload Gzip** | Gzip stream compression via Apache `mod_deflate` / PHP output buffers for JSON responses. |
-| **Zero External Dependencies** | Built using pure PHP PDO and standard libraries without Composer requirements, enabling drop-in deployment to any PHP 7.0+ host. |
+| **SQLite WAL Mode Engine** | Configured with `PRAGMA journal_mode = WAL;`, `synchronous = NORMAL;`, `temp_store = MEMORY;`, `cache_size = -64000;` (64MB memory cache), `mmap_size = 268435456;` (256MB memory mapping), and `busy_timeout = 5000;`. Enables non-blocking concurrent reads during writes. |
+| **B-Tree Database Indexing** | Dedicated indexes on `colors(slug)`, `colors(name)`, `gradients(style)`, `gradients(type)`, `palettes(style)`, and `user_palettes(status)` guarantee sub-millisecond execution. |
+| **HTTP 304 ETag Negotiation** | Computes MD5 checksums for every successful payload. Returns `304 Not Modified` with zero response body when client sends a matching `If-None-Match` header. |
+| **Dual-Layer JSON Fail-Safe** | If SQLite PDO drivers are uninstalled or the database file is temporarily inaccessible, repositories automatically switch to in-memory JSON file streams without service disruption. |
+| **Transparent Gzip Compression** | Payloads are compressed on-the-fly via Apache `mod_deflate` and PHP output buffers, reducing JSON payload transfer size by up to 85%. |
+| **Zero External Dependencies** | Built using pure native PHP (PDO, SPL, JSON) with no Composer dependencies required. Compatible with any shared hosting, VPS, or serverless PHP runtime. |
+
+---
+
+## Database Schema & Storage Architecture
+
+The database is structured as an indexed SQLite schema with dedicated tables for core color entities:
+
+```sql
+-- 1. Colors Table
+CREATE TABLE IF NOT EXISTS colors (
+    hex TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    aliases TEXT NOT NULL DEFAULT '[]',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_colors_slug ON colors(slug);
+CREATE INDEX IF NOT EXISTS idx_colors_name ON colors(name);
+
+-- 2. Gradients Table
+CREATE TABLE IF NOT EXISTS gradients (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    style TEXT NOT NULL,
+    type TEXT NOT NULL,
+    colors TEXT NOT NULL,
+    css TEXT NOT NULL,
+    angle INTEGER DEFAULT NULL,
+    shape TEXT DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_gradients_style ON gradients(style);
+CREATE INDEX IF NOT EXISTS idx_gradients_type ON gradients(type);
+
+-- 3. Curated Palettes Table
+CREATE TABLE IF NOT EXISTS palettes (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    style TEXT NOT NULL,
+    colors TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_palettes_style ON palettes(style);
+
+-- 4. User Submitted Palettes Table
+CREATE TABLE IF NOT EXISTS user_palettes (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT DEFAULT NULL,
+    name TEXT NOT NULL,
+    style TEXT NOT NULL DEFAULT 'Custom',
+    colors TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_palettes_status ON user_palettes(status);
+```
 
 ---
 
 ## Quick Start & Root Discovery
 
-### Root Endpoint
+### Root Discovery Endpoint (`GET /`)
 
-Returns API metadata, discovery endpoints, and documentation links.
+The root endpoint provides machine-readable API discovery, endpoint URL maps, query parameter specifications, and documentation links.
 
-- **URL:** `GET /` or `GET /index.php`
-- **Sample Request:**
-  ```bash
-  curl -i https://colormagic-api.techkreative.com/
-  ```
-- **Sample Response:**
-  ```json
-  {
-    "status": "success",
-    "name": "ColorMagic API",
-    "active_version": "v2",
-    "documentation": "https://colormagic-api.techkreative.com/README.md",
-    "v2_endpoints": {
-      "health": "https://colormagic-api.techkreative.com/v2/health",
-      "colors": {
-        "url": "https://colormagic-api.techkreative.com/v2/colors",
-        "by_hex": "https://colormagic-api.techkreative.com/v2/colors/{hex}",
-        "by_slug": "https://colormagic-api.techkreative.com/v2/colors/slug/{slug}",
-        "query_params": ["q", "hex", "slug", "page", "limit", "format"]
-      },
-      "gradients": {
-        "url": "https://colormagic-api.techkreative.com/v2/gradients",
-        "by_id": "https://colormagic-api.techkreative.com/v2/gradients/{id}",
-        "query_params": ["q", "style", "type", "id", "page", "limit"]
-      },
-      "palettes": {
-        "url": "https://colormagic-api.techkreative.com/v2/palettes",
-        "by_id": "https://colormagic-api.techkreative.com/v2/palettes/{id}",
-        "submit": "POST https://colormagic-api.techkreative.com/v2/palettes",
-        "query_params": ["q", "style", "id", "page", "limit"]
-      }
+- **URL:** `GET https://colormagic-api.techkreative.com/`
+- **Method:** `GET`
+- **Headers:** `Accept: application/json`
+
+#### Response (`200 OK`):
+```json
+{
+  "status": "success",
+  "name": "ColorMagic API",
+  "active_version": "v2",
+  "documentation": "https://colormagic-api.techkreative.com/README.md",
+  "v2_endpoints": {
+    "health": "https://colormagic-api.techkreative.com/v2/health",
+    "colors": {
+      "url": "https://colormagic-api.techkreative.com/v2/colors",
+      "by_hex": "https://colormagic-api.techkreative.com/v2/colors/{hex}",
+      "by_slug": "https://colormagic-api.techkreative.com/v2/colors/slug/{slug}",
+      "query_params": ["q", "hex", "slug", "page", "limit", "format"]
     },
-    "v1_endpoints": {
-      "gradients": "https://colormagic-api.techkreative.com/v1/gradients",
-      "palettes": "https://colormagic-api.techkreative.com/v1/palettes",
-      "colors": "https://colormagic-api.techkreative.com/v1/colors",
-      "direct_json": {
-        "gradients": "https://colormagic-api.techkreative.com/gradients.json",
-        "palettes": "https://colormagic-api.techkreative.com/palettes.json",
-        "colors": "https://colormagic-api.techkreative.com/color-names.json"
-      }
+    "gradients": {
+      "url": "https://colormagic-api.techkreative.com/v2/gradients",
+      "by_id": "https://colormagic-api.techkreative.com/v2/gradients/{id}",
+      "query_params": ["q", "style", "type", "id", "page", "limit"]
     },
-    "timestamp": "2026-09-03T17:30:00+00:00"
-  }
-  ```
+    "palettes": {
+      "url": "https://colormagic-api.techkreative.com/v2/palettes",
+      "by_id": "https://colormagic-api.techkreative.com/v2/palettes/{id}",
+      "submit": "POST https://colormagic-api.techkreative.com/v2/palettes",
+      "query_params": ["q", "style", "id", "page", "limit"]
+    }
+  },
+  "v1_endpoints": {
+    "gradients": "https://colormagic-api.techkreative.com/v1/gradients",
+    "palettes": "https://colormagic-api.techkreative.com/v1/palettes",
+    "colors": "https://colormagic-api.techkreative.com/v1/colors",
+    "direct_json": {
+      "gradients": "https://colormagic-api.techkreative.com/gradients.json",
+      "palettes": "https://colormagic-api.techkreative.com/palettes.json",
+      "colors": "https://colormagic-api.techkreative.com/color-names.json"
+    }
+  },
+  "timestamp": "2026-09-03T17:35:00+00:00"
+}
+```
 
 ---
 
-## Complete API Reference
+## Complete API Route & Endpoint Reference
 
-### 1. Health & Diagnostics
+### 1. Health & System Diagnostics
 
 Inspect database engine health, table statistics, journal mode, and active configuration.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/v2/health` | Full system diagnostic and database metrics |
+| `GET` | `/v2/health` | Full system diagnostic, database metrics & endpoint map |
 | `GET` | `/health` | Shorthand alias to `/v2/health` |
 
-#### Response Example (`200 OK`):
+#### Response (`200 OK`):
 ```json
 {
   "status": "success",
-  "latency_ms": 0.35,
+  "latency_ms": 0.28,
   "data": {
     "status": "healthy",
     "api_name": "ColorMagic REST API",
@@ -202,7 +274,7 @@ Inspect database engine health, table statistics, journal mode, and active confi
       "palettes": "https://colormagic-api.techkreative.com/v2/palettes",
       "pal_id": "https://colormagic-api.techkreative.com/v2/palettes/{id}"
     },
-    "timestamp": "2026-09-03T17:30:00+00:00"
+    "timestamp": "2026-09-03T17:35:00+00:00"
   }
 }
 ```
@@ -211,28 +283,28 @@ Inspect database engine health, table statistics, journal mode, and active confi
 
 ### 2. Colors API
 
-Access the database of 1,027+ curated, named color entries with aliases and search indexing.
+Query the dataset of **1,027+ named colors** with search, pagination, alias resolution, and dictionary exports.
 
 | Method | Route | Description |
 |---|---|---|
-| `GET` | `/v2/colors` | List colors with search & pagination |
-| `GET` | `/v2/colors/{hex}` | Single color lookup by 3-to-8 char hex code |
-| `GET` | `/v2/colors/slug/{slug}` | Single color lookup by URL slug |
+| `GET` | `/v2/colors` | List, search, paginate colors or fetch full dictionary |
+| `GET` | `/v2/colors/{hex}` | Single color lookup by 3-8 char hex code (e.g. `123524`, `FF5733`) |
+| `GET` | `/v2/colors/slug/{slug}` | Single color lookup by URL slug (e.g. `phthalo-green`, `midnight-blue`) |
 
 #### Query Parameters for `GET /v2/colors`
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `q` | `string` | `""` | Search query matching name, hex code, or slug (e.g. `blue`, `emerald`, `123524`) |
-| `page` | `integer` | `1` | Page number for pagination (minimum: `1`) |
-| `limit` | `integer` | `50` | Records per page (minimum: `1`, maximum: `200`) |
-| `format` | `string` | `"list"` | Set to `"dict"` to retrieve the entire dataset keyed by uppercase hex code |
-| `hex` | `string` | `""` | Lookup single color via query parameter instead of path |
-| `slug` | `string` | `""` | Lookup single color via query parameter instead of path |
+| `page` | `integer` | `1` | Page number for pagination (min: `1`) |
+| `limit` | `integer` | `50` | Records per page (min: `1`, max: `200`) |
+| `format` | `string` | `"list"` | Set to `"dict"` to retrieve the entire dataset keyed by hex code |
+| `hex` | `string` | `""` | Lookup single color via query param (`?hex=123524`) |
+| `slug` | `string` | `""` | Lookup single color via query param (`?slug=phthalo-green`) |
 
 #### Color Response Examples
 
-##### Single Color Lookup (`GET /v2/colors/123524` or `GET /v2/colors/slug/phthalo-green`):
+##### Single Color Lookup (`GET /v2/colors/123524`):
 ```json
 {
   "status": "success",
@@ -251,7 +323,7 @@ Access the database of 1,027+ curated, named color entries with aliases and sear
 ```json
 {
   "status": "success",
-  "latency_ms": 0.42,
+  "latency_ms": 0.38,
   "total": 6,
   "page": 1,
   "limit": 2,
@@ -278,7 +350,7 @@ Access the database of 1,027+ curated, named color entries with aliases and sear
 ```json
 {
   "status": "success",
-  "latency_ms": 0.85,
+  "latency_ms": 0.79,
   "total": 1027,
   "format": "dictionary",
   "data": {
@@ -302,23 +374,23 @@ Access the database of 1,027+ curated, named color entries with aliases and sear
 
 ### 3. Gradients API
 
-Search, filter, and retrieve CSS linear and radial gradients with complete CSS output, angles, and color stops.
+Query **329+ hand-crafted CSS gradients** (linear and radial) with full CSS output, angles, color stops, and style categorization.
 
 | Method | Route | Description |
 |---|---|---|
-| `GET` | `/v2/gradients` | List & filter CSS gradients |
-| `GET` | `/v2/gradients/{id}` | Single gradient lookup by unique ID |
+| `GET` | `/v2/gradients` | List, filter, search, and paginate gradients |
+| `GET` | `/v2/gradients/{id}` | Single gradient lookup by unique ID (e.g. `gradient_1`) |
 
 #### Query Parameters for `GET /v2/gradients`
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `q` | `string` | `""` | Search query matching gradient name, style, type, or hex color |
-| `style` | `string` | `null` | Filter by aesthetic style: `Warm`, `Cool`, `Pastel`, `Dark`, `Neon`, `Monochrome`, `Vibrant`, `Subtle`, `Retro` |
+| `q` | `string` | `""` | Search gradient name, style, type, or hex color |
+| `style` | `string` | `null` | Filter by aesthetic style: `Warm`, `Cool`, `Purple`, `Nature`, `Pink`, `Dark`, `Pastel`, `Neon`, `Earth`, `Mono` |
 | `type` | `string` | `null` | Filter by gradient type: `linear` or `radial` |
 | `page` | `integer` | `1` | Page number for pagination |
 | `limit` | `integer` | `50` | Records per page (max: `200`) |
-| `id` | `string` | `""` | Retrieve single gradient via query parameter |
+| `id` | `string` | `""` | Retrieve single gradient via query parameter (`?id=gradient_1`) |
 
 #### Gradient Response Examples
 
@@ -326,7 +398,7 @@ Search, filter, and retrieve CSS linear and radial gradients with complete CSS o
 ```json
 {
   "status": "success",
-  "latency_ms": 0.14,
+  "latency_ms": 0.11,
   "data": {
     "id": "gradient_1",
     "name": "Sunset Blaze",
@@ -343,7 +415,7 @@ Search, filter, and retrieve CSS linear and radial gradients with complete CSS o
 ```json
 {
   "status": "success",
-  "latency_ms": 0.51,
+  "latency_ms": 0.44,
   "total": 45,
   "page": 1,
   "limit": 2,
@@ -374,23 +446,22 @@ Search, filter, and retrieve CSS linear and radial gradients with complete CSS o
 
 ### 4. Palettes API
 
-Access curated color schemes and submit community palettes.
+Explore **833+ curated color palettes** categorized by themes (Eco, Pastel, Vintage, Neon, Monochrome, Earthy, Cyberpunk, Minimal).
 
 | Method | Route | Description |
 |---|---|---|
 | `GET` | `/v2/palettes` | List, search, and filter curated color palettes |
-| `GET` | `/v2/palettes/{id}` | Single palette lookup by unique ID |
-| `POST` | `/v2/palettes` | Submit new palette (community/dashboard) |
+| `GET` | `/v2/palettes/{id}` | Single palette lookup by ID (e.g. `palette_1`) |
 
 #### Query Parameters for `GET /v2/palettes`
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `q` | `string` | `""` | Search query matching palette name, style, or embedded color hex code |
-| `style` | `string` | `null` | Filter by palette mood/style: `Eco`, `Pastel`, `Vintage`, `Neon`, `Monochrome`, `Earthy`, `Cyberpunk`, `Minimal` |
+| `q` | `string` | `""` | Search palette name, style, or embedded color hex code |
+| `style` | `string` | `null` | Filter by palette style: `Eco`, `Pastel`, `Vintage`, `Neon`, `Monochrome`, `Earthy`, `Cyberpunk`, `Minimal` |
 | `page` | `integer` | `1` | Page number for pagination |
 | `limit` | `integer` | `50` | Records per page (max: `200`) |
-| `id` | `string` | `""` | Retrieve single palette via query parameter |
+| `id` | `string` | `""` | Retrieve single palette via query parameter (`?id=palette_1`) |
 
 #### Palette Response Examples
 
@@ -398,7 +469,7 @@ Access curated color schemes and submit community palettes.
 ```json
 {
   "status": "success",
-  "latency_ms": 0.11,
+  "latency_ms": 0.10,
   "data": {
     "id": "palette_1",
     "name": "Forest Breath",
@@ -408,12 +479,36 @@ Access curated color schemes and submit community palettes.
 }
 ```
 
-##### Submit Community Palette (`POST /v2/palettes`):
+##### Filtered Palette Search (`GET /v2/palettes?style=Eco&limit=1`):
+```json
+{
+  "status": "success",
+  "latency_ms": 0.39,
+  "total": 62,
+  "page": 1,
+  "limit": 1,
+  "data": [
+    {
+      "id": "palette_1",
+      "name": "Forest Breath",
+      "style": "Eco",
+      "colors": ["#2D5A27", "#4E8752", "#87B37A", "#D1E2C4", "#F4F7F2"]
+    }
+  ]
+}
+```
 
-**Request Headers:**
-- `Content-Type: application/json`
+---
 
-**Request Body Schema:**
+### 5. Community Palette Submission
+
+Submit user-generated or community palettes to the database for moderation and storage.
+
+- **URL:** `POST https://colormagic-api.techkreative.com/v2/palettes`
+- **Headers:** `Content-Type: application/json`
+
+#### Request Body Schema:
+
 ```json
 {
   "name": "Nordic Aurora",
@@ -423,14 +518,21 @@ Access curated color schemes and submit community palettes.
 }
 ```
 
-**Response (`201 Created`):**
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `name` | `string` | **Yes** | Palette display name (e.g. `"Nordic Aurora"`) |
+| `colors` | `array<string>` | **Yes** | Array of at least 2 valid hex color codes (e.g. `["#2E3440", "#88C0D0"]`) |
+| `style` | `string` | No | Category tag (default: `"Custom"`) |
+| `user_id` | `string` | No | Identifier of the submitting user / session |
+
+#### Response (`201 Created`):
 ```json
 {
   "status": "success",
-  "latency_ms": 0.65,
+  "latency_ms": 0.58,
   "message": "Palette submitted successfully for review",
   "data": {
-    "id": "user_pal_66d74b88d3a12",
+    "id": "user_pal_66d74b88d3a12.98124501",
     "name": "Nordic Aurora",
     "style": "Cool",
     "status": "pending"
@@ -438,36 +540,45 @@ Access curated color schemes and submit community palettes.
 }
 ```
 
+#### Validation Error Response (`422 Unprocessable Entity`):
+```json
+{
+  "status": "error",
+  "message": "A palette must contain at least 2 valid hex color codes",
+  "latency_ms": 0.09
+}
+```
+
 ---
 
-### 5. Legacy V1 Compatibility Endpoints
+### 6. Legacy V1 Backward Compatibility
 
-All V1 routes remain 100% backward compatible and are internally accelerated by the SQLite engine with automatic JSON fail-safe fallback.
+All V1 endpoints remain 100% active, serving the same response schemas as legacy versions while benefiting from the SQLite acceleration engine.
 
-| Endpoint | Method | Supported Query Parameters | Output |
+| Legacy Endpoint | Method | Supported Parameters | Output |
 |---|---|---|---|
-| `/v1/colors` | `GET` | `?hex=123524`, `?slug=phthalo-green`, `?q=blue`, `?page=1&limit=20` | Color records / dictionary |
+| `/v1/colors` | `GET` | `?hex=123524`, `?slug=phthalo-green`, `?q=blue`, `?page=1&limit=20` | Color records / keyed dictionary |
 | `/v1/gradients` | `GET` | `?id=gradient_1`, `?style=Warm`, `?type=linear`, `?q=sunset` | Gradient array / object |
 | `/v1/palettes` | `GET` | `?id=palette_1`, `?style=Eco`, `?q=forest` | Palette array / object |
-| `/v1/health` | `GET` | None | API Status discovery |
+| `/v1/health` | `GET` | None | API root discovery |
 
 ---
 
-### 6. Direct Static JSON Datasets
+### 7. Direct Static JSON Datasets
 
-For offline use, bundle embedding, or static asset caching, datasets are also accessible as raw JSON files:
+For embedded offline bundles, build-step prerendering, or raw file downloads, datasets can be accessed directly:
 
-- `https://colormagic-api.techkreative.com/color-names.json`
-- `https://colormagic-api.techkreative.com/gradients.json`
-- `https://colormagic-api.techkreative.com/palettes.json`
+- `https://colormagic-api.techkreative.com/color-names.json` (1,027 colors)
+- `https://colormagic-api.techkreative.com/gradients.json` (329 gradients)
+- `https://colormagic-api.techkreative.com/palettes.json` (833 palettes)
 
 ---
 
 ## Standard Request & Response Envelope
 
-### Success Envelope Structure
+### Success Envelope
 
-All successful V2 responses use a unified schema:
+All successful responses (2xx) follow a consistent wrapper:
 
 ```json
 {
@@ -480,20 +591,20 @@ All successful V2 responses use a unified schema:
 }
 ```
 
-- `status`: Always `"success"` for 2xx responses.
-- `latency_ms`: Float indicating high-resolution server execution time in milliseconds.
-- `total` / `page` / `limit`: Present on paginated list endpoints.
-- `data`: Payload object or array.
+- `status`: Always `"success"`.
+- `latency_ms`: Execution latency in milliseconds (high-resolution timer).
+- `total` / `page` / `limit`: Included when returning paginated datasets.
+- `data`: Response payload (Object or Array).
 
-### Error Envelope Structure
+### Error Envelope
 
 Errors return appropriate HTTP status codes and never return cached responses:
 
 ```json
 {
   "status": "error",
-  "message": "Color not found for hex code '#INVALID'",
-  "latency_ms": 0.15,
+  "message": "Color not found for hex code '#ZZZZZZ'",
+  "latency_ms": 0.12,
   "details": {
     "available_routes": [
       "GET /v2/health",
@@ -508,74 +619,64 @@ Errors return appropriate HTTP status codes and never return cached responses:
 
 ## HTTP Status Codes & Error Handling
 
-| Code | Meaning | Condition |
+| Code | Status | Trigger Condition |
 |---|---|---|
-| `200 OK` | Request succeeded | Standard GET retrieval |
-| `201 Created` | Resource created | Successful `POST /v2/palettes` |
-| `304 Not Modified` | Cached content valid | `If-None-Match` matches server `ETag` |
-| `400 Bad Request` | Invalid query syntax | Malformed input parameters |
-| `404 Not Found` | Resource does not exist | Unknown hex code, ID, slug, or route |
-| `422 Unprocessable Entity` | Validation failure | Missing required fields or < 2 colors on palette submission |
-| `500 Internal Server Error` | Uncaught server exception | Database read fault without JSON fallback |
+| `200 OK` | Success | Standard GET query or retrieval succeeded |
+| `201 Created` | Created | Palette created via `POST /v2/palettes` |
+| `304 Not Modified` | Not Modified | Client `If-None-Match` header matches response `ETag` |
+| `400 Bad Request` | Client Error | Malformed query parameters or invalid syntax |
+| `404 Not Found` | Not Found | Route, color hex, slug, gradient ID, or palette ID not found |
+| `422 Unprocessable Entity` | Validation Error | Missing required fields or `< 2` valid hex colors on palette submission |
+| `500 Internal Server Error` | Server Fault | Unhandled exception without JSON fallback |
 
 ---
 
-## Client Integration Recipes
+## Multi-Language Client Integration Recipes
 
-### cURL Examples
+### 1. cURL
 
-#### Single Color by Hex:
 ```bash
+# 1. Lookup single color with ETag support
 curl -i https://colormagic-api.techkreative.com/v2/colors/123524
-```
 
-#### Conditional Request using ETag (HTTP 304):
-```bash
+# 2. Conditional request (returns 304 Not Modified if unchanged)
 curl -i https://colormagic-api.techkreative.com/v2/colors/123524 \
   -H 'If-None-Match: "3a8bb68c5b6bda481f33cc26a27e7d7b"'
-```
 
-#### Search Gradients by Style:
-```bash
+# 3. Filter gradients by style
 curl -i "https://colormagic-api.techkreative.com/v2/gradients?style=Warm&limit=10"
-```
 
-#### Submit a Community Palette:
-```bash
+# 4. Submit a new palette
 curl -X POST https://colormagic-api.techkreative.com/v2/palettes \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "Neon Twilight",
-    "style": "Neon",
-    "colors": ["#00F0FF", "#7000FF", "#FF007B", "#FFE600"]
-  }'
+  -d '{"name": "Cyberpunk Neon", "style": "Neon", "colors": ["#00F0FF", "#7000FF", "#FF007B"]}'
 ```
 
 ---
 
-### JavaScript / TypeScript (Fetch API)
+### 2. JavaScript / TypeScript (Fetch API)
 
 ```typescript
 const BASE_URL = 'https://colormagic-api.techkreative.com';
 
-// 1. Fetch Single Color with ETag Caching
-async function fetchColorByHex(hex: string) {
-  const cleanHex = hex.replace('#', '');
-  const res = await fetch(`${BASE_URL}/v2/colors/${cleanHex}`);
-  if (!res.ok) throw new Error(`Color not found (${res.status})`);
-  const json = await res.json();
-  return json.data; // { hex: "#123524", name: "Phthalo green", ... }
+// Lookup color by Hex
+async function getColor(hex: string) {
+  const clean = hex.replace('#', '');
+  const res = await fetch(`${BASE_URL}/v2/colors/${clean}`);
+  if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+  const { data } = await res.json();
+  return data;
 }
 
-// 2. Search Gradients
+// Search Gradients
 async function searchGradients(query: string, style = 'Warm') {
   const params = new URLSearchParams({ q: query, style, limit: '20' });
   const res = await fetch(`${BASE_URL}/v2/gradients?${params}`);
-  const json = await res.json();
-  return json.data;
+  const { data, total } = await res.json();
+  return { gradients: data, total };
 }
 
-// 3. Submit Community Palette
+// Submit Community Palette
 async function submitPalette(name: string, style: string, colors: string[]) {
   const res = await fetch(`${BASE_URL}/v2/palettes`, {
     method: 'POST',
@@ -588,7 +689,34 @@ async function submitPalette(name: string, style: string, colors: string[]) {
 
 ---
 
-### Python (requests)
+### 3. Node.js (Axios)
+
+```javascript
+const axios = require('axios');
+
+const api = axios.create({
+  baseURL: 'https://colormagic-api.techkreative.com',
+  timeout: 5000,
+});
+
+async function run() {
+  // 1. Fetch color
+  const colorRes = await api.get('/v2/colors/50C878');
+  console.log('Color Name:', colorRes.data.data.name);
+
+  // 2. Fetch palettes
+  const palettesRes = await api.get('/v2/palettes', {
+    params: { style: 'Eco', limit: 5 }
+  });
+  console.log('Palettes Count:', palettesRes.data.total);
+}
+
+run().catch(console.error);
+```
+
+---
+
+### 4. Python (requests)
 
 ```python
 import requests
@@ -596,30 +724,113 @@ import requests
 BASE_URL = "https://colormagic-api.techkreative.com"
 
 # 1. Lookup single color
-response = requests.get(f"{BASE_URL}/v2/colors/123524")
-if response.status_code == 200:
-    color = response.json()["data"]
+res = requests.get(f"{BASE_URL}/v2/colors/123524")
+if res.status_code == 200:
+    color = res.json()["data"]
     print(f"Color: {color['name']} ({color['hex']})")
 
-# 2. Search palettes
-params = {"q": "forest", "style": "Eco", "limit": 10}
-response = requests.get(f"{BASE_URL}/v2/palettes", params=params)
-data = response.json()
+# 2. Search Palettes
+res = requests.get(f"{BASE_URL}/v2/palettes", params={"q": "forest", "style": "Eco", "limit": 5})
+data = res.json()
 print(f"Found {data['total']} palettes:")
-for palette in data["data"]:
-    print(f"- {palette['name']}: {', '.join(palette['colors'])}")
+for p in data["data"]:
+    print(f"- {p['name']}: {p['colors']}")
+
+# 3. Submit Palette
+submission = {
+    "name": "Nordic Dusk",
+    "style": "Cool",
+    "colors": ["#2E3440", "#3B4252", "#88C0D0", "#ECEFF4"]
+}
+post_res = requests.post(f"{BASE_URL}/v2/palettes", json=submission)
+print("Submission Result:", post_res.json())
 ```
 
 ---
 
-## CLI Maintenance & Diagnostics
+### 5. PHP (Native cURL)
+
+```php
+<?php
+
+$baseUrl = 'https://colormagic-api.techkreative.com';
+
+// 1. Single Color Lookup
+$ch = curl_init("{$baseUrl}/v2/colors/123524");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+$response = json_decode(curl_exec($ch), true);
+curl_close($ch);
+
+echo "Color: " . $response['data']['name'] . "\n";
+
+// 2. Submit Palette
+$payload = json_encode([
+    'name'   => 'Sunset Glow',
+    'style'  => 'Warm',
+    'colors' => ['#FF4E50', '#F9D423', '#EDE574']
+]);
+
+$ch = curl_init("{$baseUrl}/v2/palettes");
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Accept: application/json'
+]);
+$result = json_decode(curl_exec($ch), true);
+curl_close($ch);
+
+print_r($result);
+```
+
+---
+
+### 6. Go (net/http)
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+type ColorResponse struct {
+	Status string `json:"status"`
+	Data   struct {
+		Hex  string `json:"hex"`
+		Name string `json:"name"`
+		Slug string `json:"slug"`
+	} `json:"data"`
+}
+
+func main() {
+	resp, err := http.Get("https://colormagic-api.techkreative.com/v2/colors/123524")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	var result ColorResponse
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	fmt.Printf("Color: %s (%s)\n", result.Data.Name, result.Data.Hex)
+}
+```
+
+---
+
+## CLI Maintenance & Automation Tools
 
 The `api/cli/` directory provides command-line utilities for maintaining the SQLite database, running migrations, and executing automated verification suites.
 
-### Database Migration & Seeder (`cli/migrate.php`)
+### Database Migrator & Seeder (`cli/migrate.php`)
 
 ```bash
-# Standard migration & seed (skips if tables already contain data)
+# Standard migration & seed (skips seeding if tables already contain data)
 php api/cli/migrate.php
 
 # Force wipe and re-seed from JSON files
@@ -629,7 +840,7 @@ php api/cli/migrate.php --force
 php api/cli/migrate.php --stats
 ```
 
-**Example Output:**
+#### Output Example:
 ```
 ====================================================
   ColorMagic SQLite Database Migration & CLI Tool   
@@ -652,15 +863,15 @@ Status: SUCCESS - SQLite ready for production traffic!
 
 ---
 
-### Automated Verification & Latency Benchmark (`cli/test_endpoints.php`)
+### Automated Verification & Benchmark Suite (`cli/test_endpoints.php`)
 
-Runs end-to-end repository queries, tests indexes, checks WAL mode, verifies lookups, and calculates latency benchmarks.
+Runs assertions across the entire API repository stack, benchmarks latency, and verifies fallback layers.
 
 ```bash
 php api/cli/test_endpoints.php
 ```
 
-**Example Output:**
+#### Output Example:
 ```
 ====================================================
    ColorMagic API V2 Automated Verification Suite   
@@ -690,29 +901,27 @@ All tests passed successfully! ColorMagic V2 API is 100% operational.
 
 ## Configuration & Environment Variables
 
-The API loads configuration from `.env.api.colormagic` in the `api/` directory (or falls back to `.env.api.colormagic` / `.env` in the parent directory).
-
-Copy `.env.api.example` to `.env.api.colormagic`:
+Configuration is loaded from `.env.api.colormagic` in the `api/` directory (or falls back to `.env.api.colormagic` / `.env` in the parent directory).
 
 ```ini
-# Application Setup
+# Application Configuration
 APP_NAME=ColorMagic-API
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://colormagic-api.techkreative.com
 API_VERSION=v2
 
-# SQLite Database Path (relative to api/ directory or absolute path)
+# SQLite Database Storage (relative to api/ directory or absolute path)
 DB_DRIVER=sqlite
 DB_PATH=data/colormagic.sqlite
 
-# Cache & Performance
+# Cache & Performance Tuning
 CACHE_ENABLED=true
 CACHE_TTL=86400
 GZIP_COMPRESSION=true
 
-# Community Palettes Security & Rate Limiting (Future)
-API_SECRET_KEY=your_secure_32_char_secret_key_here
+# Security & Future Rate Limiting
+API_SECRET_KEY=change_me_to_a_random_32_character_secret_key
 RATE_LIMIT_ENABLED=false
 RATE_LIMIT_MAX_REQUESTS=120
 RATE_LIMIT_WINDOW=60
@@ -720,25 +929,27 @@ RATE_LIMIT_WINDOW=60
 
 ---
 
-## Web Server & Apache Configuration
+## Web Server Deployment Guide
 
-The `api/.htaccess` file configures CORS headers, Gzip compression, and URL rewrites for production hosting:
+### Apache (.htaccess Included)
+
+The included `api/.htaccess` file configures CORS, Gzip, and URL rewriting:
 
 ```apache
 DirectoryIndex index.php
 Options -Indexes +FollowSymLinks
 
-# Enable CORS Headers for universal client access
+# Enable CORS Headers
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
     Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
 </IfModule>
 
-# Ensure proper MIME type for static JSON fallback files
+# MIME Type for Static JSON
 AddType application/json .json
 
-# Enable Gzip Compression for JSON responses
+# Enable Gzip Compression for Payloads
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE application/json
     AddOutputFilterByType DEFLATE text/plain
@@ -748,19 +959,19 @@ AddType application/json .json
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Handle HTTP OPTIONS preflight requests immediately
+    # OPTIONS Preflight Handling
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
-    # Serve physical files directly
+    # Serve Existing Files
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
-    # Shorthand route aliases
+    # Shorthand Route Aliases
     RewriteRule ^health/?$ v2/index.php [L,QSA]
     RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]
 
-    # V1 Legacy Endpoint rewrites
+    # V1 Legacy Endpoints
     RewriteRule ^v1/gradients/?$ gradients.php [L,QSA]
     RewriteRule ^v1/palettes/?$ palettes.php [L,QSA]
     RewriteRule ^v1/colors/?$ colors.php [L,QSA]
@@ -772,8 +983,78 @@ AddType application/json .json
 </IfModule>
 ```
 
+### Nginx Server Block
+
+If deploying on an Nginx server, use the following server configuration:
+
+```nginx
+server {
+    listen 80;
+    listen 443 ssl http2;
+    server_name colormagic-api.techkreative.com;
+    root /var/www/colormagic/api;
+    index index.php;
+
+    # Gzip Compression
+    gzip on;
+    gzip_types application/json text/plain text/css;
+
+    # Global CORS Headers
+    add_header Access-Control-Allow-Origin "*" always;
+    add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always;
+    add_header Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With" always;
+
+    # Prevent direct download of SQLite database
+    location ~* \.sqlite$ {
+        deny all;
+        return 404;
+    }
+
+    # Route V2 API requests
+    location /v2/ {
+        try_files $uri $uri/ /v2/index.php?$query_string;
+    }
+
+    # Root and V1 Route handling
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
+```
+
+---
+
+## Security & Production Hardening
+
+1. **SQL Injection Protection:** All database repository lookups use PDO parameterized prepared statements (`:hex`, `:slug`, `:id`, `:style`).
+2. **Database Direct Download Prevention:** `.htaccess` and Nginx rules prevent web access to `.sqlite` or `.sqlite-wal` files.
+3. **Input Sanitization:** Hex codes, slugs, and ID parameters are validated with strict regular expressions (`^[0-9A-Fa-f]{3,8}$`).
+4. **ETag & No-Cache Error Responses:** Error responses explicitly set `Cache-Control: no-store, no-cache` to avoid cache poisoning of transient errors.
+
+---
+
+## Troubleshooting & FAQ
+
+#### Q: What happens if `pdo_sqlite` is not installed in the PHP environment?
+The repositories detect the missing extension and transparently switch to reading the local JSON seed files (`color-names.json`, `gradients.json`, `palettes.json`). API responses remain fully functional.
+
+#### Q: How do I re-seed or rebuild the database after adding new colors?
+Run the CLI migrator with the force flag:
+```bash
+php api/cli/migrate.php --force
+```
+
+#### Q: Why do single-record lookups return 304 Not Modified?
+The API automatically sends `ETag` headers. When a browser or client includes `If-None-Match`, the server returns `304 Not Modified` with zero body transfer for maximum bandwidth savings.
+
 ---
 
 ## License
 
-ColorMagic API is open-source software released under the [MIT License](file:///e:/Coding/color_magic/LICENSE).
+ColorMagic API is open-source software licensed under the [MIT License](file:///e:/Coding/color_magic/LICENSE).
