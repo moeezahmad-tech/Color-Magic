@@ -11,6 +11,10 @@ Options -Indexes +FollowSymLinks
     Header always set Access-Control-Allow-Origin "*"
     Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
     Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+    <If "%{REQUEST_URI} =~ m#^/(v2|api|data)/# && %{REQUEST_METHOD} == 'GET'">
+        Header set Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+    </If>
 </IfModule>
 
 # Ensure proper MIME type for static JSON files

@@ -82,6 +82,11 @@ RewriteRule ^brand-color-lookup/?$ pages/brand-color-lookup.php [L]
     <FilesMatch "\.(html|htm|php)$">
         Header set Cache-Control "no-cache, must-revalidate"
     </FilesMatch>
+
+    <If "%{REQUEST_URI} =~ m#^/(v2|api|data)/# && %{REQUEST_METHOD} == 'GET'">
+        Header set Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+    </If>
+
     # Security Headers for Best Practices
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
