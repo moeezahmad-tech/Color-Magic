@@ -1,4 +1,7 @@
-# Disable subrequest rewrite inside v2 subdirectory to prevent Apache recursion loop
 <IfModule mod_rewrite.c>
-    RewriteEngine Off
+    RewriteEngine On
+    RewriteBase /v2/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
