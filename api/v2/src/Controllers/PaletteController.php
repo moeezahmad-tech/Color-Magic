@@ -20,7 +20,7 @@ class PaletteController extends BaseController
     /**
      * GET /v2/palettes - List, search, and filter curated palettes
      */
-    public function index(): void
+    public function index()
     {
         $id = (string)$this->getQuery('id', '');
         if ($id !== '') {
@@ -44,7 +44,7 @@ class PaletteController extends BaseController
     /**
      * GET /v2/palettes/{id} - Lookup single palette by ID
      */
-    public function getById(string $id): void
+    public function getById(string $id)
     {
         $palette = $this->repository->findById($id);
         if (!$palette) {
@@ -58,7 +58,7 @@ class PaletteController extends BaseController
     /**
      * POST /v2/palettes - Submit community palette
      */
-    public function submit(): void
+    public function submit()
     {
         $body = $this->getJsonBody();
 

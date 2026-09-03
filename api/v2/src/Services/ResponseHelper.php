@@ -14,7 +14,7 @@ class ResponseHelper
     /**
      * Start high-resolution execution timer
      */
-    public static function startTimer(): void
+    public static function startTimer()
     {
         self::$startTime = microtime(true);
     }
@@ -22,7 +22,7 @@ class ResponseHelper
     /**
      * Calculate execution latency
      */
-    public static function getLatencyMs(): float
+    public static function getLatencyMs()
     {
         if (self::$startTime <= 0.0) {
             return 0.0;
@@ -33,7 +33,7 @@ class ResponseHelper
     /**
      * Send standardized JSON success response with ETag and CORS
      */
-    public static function success($data, int $statusCode = 200, array $meta = []): void
+    public static function success($data, int $statusCode = 200, array $meta = [])
     {
         self::sendHeaders($statusCode);
 
@@ -68,7 +68,7 @@ class ResponseHelper
     /**
      * Send standardized JSON error response
      */
-    public static function error(string $message, int $statusCode = 400, array $extra = []): void
+    public static function error(string $message, int $statusCode = 400, array $extra = [])
     {
         self::sendHeaders($statusCode);
 
@@ -89,7 +89,7 @@ class ResponseHelper
     /**
      * Send standard HTTP headers
      */
-    private static function sendHeaders(int $statusCode = 200): void
+    private static function sendHeaders(int $statusCode = 200)
     {
         if (headers_sent()) {
             return;

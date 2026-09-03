@@ -111,7 +111,7 @@ class Database
     /**
      * Reset connection instance
      */
-    public static function reset(): void
+    public static function reset()
     {
         self::$instance = null;
         self::$resolvedDbPath = null;

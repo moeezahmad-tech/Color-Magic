@@ -13,7 +13,7 @@ class Env
     /**
      * Load environment variables from standalone or sibling .env files
      */
-    public static function load(): void
+    public static function load()
     {
         if (self::$loaded) {
             return;
@@ -51,7 +51,7 @@ class Env
     /**
      * Parse key=value lines from .env
      */
-    private static function parseEnvFile(string $filePath): void
+    private static function parseEnvFile(string $filePath)
     {
         $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!$lines) {

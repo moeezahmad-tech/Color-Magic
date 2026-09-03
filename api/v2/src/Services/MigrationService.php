@@ -41,7 +41,7 @@ class MigrationService
     /**
      * Create relational tables
      */
-    public function createTables(): void
+    public function createTables()
     {
         $this->pdo->exec("
             CREATE TABLE IF NOT EXISTS colors (
@@ -87,7 +87,7 @@ class MigrationService
     /**
      * Create composite indexes
      */
-    public function createIndexes(): void
+    public function createIndexes()
     {
         $this->pdo->exec("
             CREATE INDEX IF NOT EXISTS idx_colors_slug ON colors(slug);
@@ -264,9 +264,10 @@ class MigrationService
     private function resolveDataPath(string $fileName): string
     {
         $candidates = [
-            dirname(__DIR__, 2) . '/data/' . $fileName,
-            dirname(__DIR__, 2) . '/' . $fileName,
             dirname(__DIR__, 3) . '/data/' . $fileName,
+            dirname(__DIR__, 2) . '/data/' . $fileName,
+            dirname(__DIR__, 3) . '/' . $fileName,
+            dirname(__DIR__, 2) . '/' . $fileName,
         ];
 
         foreach ($candidates as $cand) {

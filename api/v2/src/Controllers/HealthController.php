@@ -12,7 +12,7 @@ use Throwable;
  */
 class HealthController extends BaseController
 {
-    public function check(): void
+    public function check()
     {
         $dbStatus = 'connected';
         $driver = 'sqlite';

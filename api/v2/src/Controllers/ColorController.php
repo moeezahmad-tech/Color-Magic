@@ -20,7 +20,7 @@ class ColorController extends BaseController
     /**
      * GET /v2/colors - List, search, paginate or return dict format
      */
-    public function index(): void
+    public function index()
     {
         $q      = (string)$this->getQuery('q', '');
         $page   = (int)$this->getQuery('page', 1);
@@ -59,7 +59,7 @@ class ColorController extends BaseController
     /**
      * GET /v2/colors/{hex} - Lookup single color by Hex code
      */
-    public function getByHex(string $hex): void
+    public function getByHex(string $hex)
     {
         $color = $this->repository->findByHex($hex);
         if (!$color) {
@@ -73,7 +73,7 @@ class ColorController extends BaseController
     /**
      * GET /v2/colors/slug/{slug} - Lookup single color by name slug
      */
-    public function getBySlug(string $slug): void
+    public function getBySlug(string $slug)
     {
         $color = $this->repository->findBySlug($slug);
         if (!$color) {

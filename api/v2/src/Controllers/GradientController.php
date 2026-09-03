@@ -20,7 +20,7 @@ class GradientController extends BaseController
     /**
      * GET /v2/gradients - List, search, and filter CSS gradients
      */
-    public function index(): void
+    public function index()
     {
         $id = (string)$this->getQuery('id', '');
         if ($id !== '') {
@@ -45,7 +45,7 @@ class GradientController extends BaseController
     /**
      * GET /v2/gradients/{id} - Lookup single gradient by ID
      */
-    public function getById(string $id): void
+    public function getById(string $id)
     {
         $gradient = $this->repository->findById($id);
         if (!$gradient) {
