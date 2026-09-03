@@ -5,7 +5,7 @@ namespace ColorMagic\Controllers;
 use ColorMagic\Database\Database;
 use ColorMagic\Config\Env;
 use ColorMagic\Services\ResponseHelper;
-use Exception;
+use Throwable;
 
 /**
  * Health & Diagnostics Controller
@@ -16,18 +16,45 @@ class HealthController extends BaseController
     public function check(): void
     {
         $dbStatus = 'connected';
-        $stats = [];
-        $dbPath = Database::resolveDbPath();
-        $dbSize = file_exists($dbPath) ? filesize($dbPath) : 0;
+        $driver = 'sqlite';
+        $journalMode = 'wal';
+        $stats = [
+            'colors'    => 0,
+            'gradients' => 0,
+            'palettes'  => 0
+        ];
 
         try {
+            $dbPath = Database::resolveDbPath();
+            $dbSize = file_exists($dbPath) ? filesize($dbPath) : 0;
             $db = Database::getConnection();
-            $stats['colors_count']    = (int)$db->query("SELECT COUNT(*) FROM colors")->fetchColumn();
-            $stats['gradients_count'] = (int)$db->query("SELECT COUNT(*) FROM gradients")->fetchColumn();
-            $stats['palettes_count']  = (int)$db->query("SELECT COUNT(*) FROM palettes")->fetchColumn();
-            $stats['journal_mode']    = (string)$db->query("PRAGMA journal_mode")->fetchColumn();
-        } catch (Exception $e) {
-            $dbStatus = 'error: ' . $e->getMessage();
+            $stats['colors']    = (int)$db->query("SELECT COUNT(*) FROM colors")->fetchColumn();
+            $stats['gradients'] = (int)$db->query("SELECT COUNT(*) FROM gradients")->fetchColumn();
+            $stats['palettes']  = (int)$db->query("SELECT COUNT(*) FROM palettes")->fetchColumn();
+            $journalMode        = (string)$db->query("PRAGMA journal_mode")->fetchColumn();
+        } catch (Throwable $e) {
+            $dbStatus = 'fallback_mode';
+            $driver = 'json';
+            $journalMode = 'none';
+            $dbSize = 0;
+
+            // Load counts from JSON
+            $colorPath = dirname(__DIR__, 2) . '/data/color-names.json';
+            $gradPath  = dirname(__DIR__, 2) . '/data/gradients.json';
+            $palPath   = dirname(__DIR__, 2) . '/data/palettes.json';
+
+            if (file_exists($colorPath)) {
+                $c = json_decode(file_get_contents($colorPath), true);
+                if (is_array($c)) $stats['colors'] = count($c);
+            }
+            if (file_exists($gradPath)) {
+                $g = json_decode(file_get_contents($gradPath), true);
+                if (is_array($g)) $stats['gradients'] = count($g);
+            }
+            if (file_exists($palPath)) {
+                $p = json_decode(file_get_contents($palPath), true);
+                if (is_array($p)) $stats['palettes'] = count($p);
+            }
         }
 
         $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -41,14 +68,10 @@ class HealthController extends BaseController
             'environment' => Env::get('APP_ENV', 'production'),
             'database'    => [
                 'status'       => $dbStatus,
-                'driver'       => 'sqlite',
-                'journal_mode' => $stats['journal_mode'] ?? 'unknown',
+                'driver'       => $driver,
+                'journal_mode' => $journalMode,
                 'size_bytes'   => $dbSize,
-                'records'      => [
-                    'colors'    => $stats['colors_count'] ?? 0,
-                    'gradients' => $stats['gradients_count'] ?? 0,
-                    'palettes'  => $stats['palettes_count'] ?? 0,
-                ]
+                'records'      => $stats
             ],
             'endpoints' => [
                 'health'    => "{$baseUrl}/v2/health",

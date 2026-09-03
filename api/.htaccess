@@ -1,5 +1,5 @@
 # ColorMagic High-Performance API .htaccess
-# Serves colormagic-api.techkreative.com
+# Serves colormagic-api.techkreative.com and local subfolder /api/
 
 <IfModule mod_headers.c>
     # Enable CORS for all origins
@@ -26,14 +26,14 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
+    # If physical file or directory exists, serve directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
     # --- V2 RESTful API Routing ---
-    # Route all /v2/* requests to v2/index.php
     RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
-
-    # Route /health to v2/index.php
     RewriteRule ^health/?$ v2/index.php [L,QSA]
-
-    # Route direct /color/{hex} or /colors/{hex} to v2/index.php
     RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]
 
     # --- V1 Legacy Endpoint URL Rewriting ---
