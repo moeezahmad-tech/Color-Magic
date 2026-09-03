@@ -5,6 +5,7 @@ namespace ColorMagic\Database;
 use PDO;
 use PDOException;
 use Exception;
+use Throwable;
 use ColorMagic\Config\Env;
 use ColorMagic\Services\MigrationService;
 
@@ -26,6 +27,11 @@ class Database
             return self::$instance;
         }
 
+        // Check if PDO SQLite extension is installed
+        if (!extension_loaded('pdo_sqlite') && !in_array('sqlite', PDO::getAvailableDrivers(), true)) {
+            throw new Exception("PHP PDO SQLite extension (pdo_sqlite) is not enabled on this server.");
+        }
+
         Env::load();
         $dbPath = self::resolveDbPath();
 
@@ -41,29 +47,36 @@ class Database
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
-                PDO::ATTR_PERSISTENT         => true,
             ]);
 
-            // High-performance SQLite PRAGMA tuning
-            $pdo->exec("PRAGMA journal_mode = WAL;");
-            $pdo->exec("PRAGMA synchronous = NORMAL;");
-            $pdo->exec("PRAGMA cache_size = -64000;"); // 64MB Cache
-            $pdo->exec("PRAGMA temp_store = MEMORY;");
-            $pdo->exec("PRAGMA mmap_size = 268435456;"); // 256MB Memory-mapped I/O
-            $pdo->exec("PRAGMA busy_timeout = 5000;");
+            // High-performance SQLite PRAGMA tuning (Safely executed)
+            try {
+                $pdo->exec("PRAGMA journal_mode = WAL;");
+                $pdo->exec("PRAGMA synchronous = NORMAL;");
+                $pdo->exec("PRAGMA cache_size = -64000;");
+                $pdo->exec("PRAGMA temp_store = MEMORY;");
+                $pdo->exec("PRAGMA mmap_size = 268435456;");
+                $pdo->exec("PRAGMA busy_timeout = 5000;");
+            } catch (Throwable $t) {
+                // Ignore pragma failures on restricted/read-only hosts
+            }
 
             self::$instance = $pdo;
 
             // Auto-heal / auto-seed if database is new or empty
-            if ($isNewDb) {
-                $migrator = new MigrationService($pdo);
-                $migrator->migrate();
-            } else {
-                $tables = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='colors'")->fetchColumn();
-                if (!$tables) {
+            try {
+                if ($isNewDb) {
                     $migrator = new MigrationService($pdo);
                     $migrator->migrate();
+                } else {
+                    $tables = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='colors'")->fetchColumn();
+                    if (!$tables) {
+                        $migrator = new MigrationService($pdo);
+                        $migrator->migrate();
+                    }
                 }
+            } catch (Throwable $t) {
+                // If seeder fails, connection is still valid
             }
 
             return self::$instance;

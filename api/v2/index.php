@@ -6,6 +6,10 @@
 
 declare(strict_types=1);
 
+// Set error reporting to catch issues gracefully
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+ini_set('display_errors', '0');
+
 // Autoloader for ColorMagic namespace
 spl_autoload_register(static function (string $class): void {
     $prefix = 'ColorMagic\\';
@@ -122,6 +126,9 @@ try {
         ]
     ]);
 
-} catch (Exception $e) {
-    ResponseHelper::error("Internal Server Error: " . $e->getMessage(), 500);
+} catch (\Throwable $e) {
+    ResponseHelper::error("Internal Server Error: " . $e->getMessage(), 500, [
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ]);
 }

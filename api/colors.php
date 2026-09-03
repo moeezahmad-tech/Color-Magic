@@ -142,9 +142,11 @@ if ($hex !== '') {
 if ($slug !== '') {
     foreach ($data as $key => $entry) {
         if (is_array($entry) && isset($entry['slug']) && strtolower((string)$entry['slug']) === $slug) {
+            $formattedHex = '#' . ltrim((string)($entry['hex'] ?? $key), '#');
+            $responseItem = array_merge($entry, ['hex' => $formattedHex]);
             echo json_encode([
                 'status' => 'success',
-                'data' => array_merge(['hex' => '#' . $key], $entry)
+                'data' => $responseItem
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             exit;
         }
