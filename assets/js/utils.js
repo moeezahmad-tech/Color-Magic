@@ -331,12 +331,45 @@ window.ColorMagic.animateCopy = function (btn, text, label) {
     btn.classList.add('scale-95', 'transition-all', 'duration-150');
     setTimeout(function () { btn.classList.remove('scale-95'); }, 150);
 
-    return navigator.clipboard.writeText(text).then(function () {
-        btn.innerHTML = '<i class="bi bi-check-circle-fill text-emerald-500 animate-bounce"></i> <span>' + (label || 'Copied!') + '</span>';
-        btn.classList.add('ring-2', 'ring-emerald-500/50');
+    var isPrimary = btn.classList.contains('bg-primary') || btn.classList.contains('btn-primary') || btn.classList.contains('text-white');
+
+    var copyPromise;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        copyPromise = navigator.clipboard.writeText(text).catch(function () {
+            return fallbackCopy(text);
+        });
+    } else {
+        copyPromise = fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        try {
+            var ta = document.createElement('textarea');
+            ta.value = str;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            return Promise.resolve();
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    }
+
+    return copyPromise.then(function () {
+        if (isPrimary) {
+            btn.innerHTML = '<i class="bi bi-check2 text-lg text-white"></i> <span class="text-white">' + (label || 'Copied!') + '</span>';
+            btn.classList.add('ring-2', 'ring-white/40');
+        } else {
+            btn.innerHTML = '<i class="bi bi-check2 text-emerald-600 dark:text-emerald-400 text-base"></i> <span>' + (label || 'Copied!') + '</span>';
+            btn.classList.add('ring-2', 'ring-emerald-500/30');
+        }
         setTimeout(function () {
             btn.innerHTML = origHTML;
-            btn.classList.remove('ring-2', 'ring-emerald-500/50');
+            btn.classList.remove('ring-2', 'ring-emerald-500/50', 'ring-emerald-500/30', 'ring-white/40');
         }, 1600);
     }).catch(function () {
         btn.innerHTML = '<i class="bi bi-x-circle text-red-500"></i> <span>Failed</span>';

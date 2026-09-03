@@ -422,12 +422,12 @@
         window.CM_PALETTE_BASE  = '<?= $base ?>/palette/';
         window.CM_GRADIENT_BASE = '<?= $base ?>/gradient/';
     </script>
-    <script src="<?= $base ?>/assets/js/utils.js?v=3.0" defer></script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js?v=3.0" defer></script>
-    <script src="<?= $base ?>/assets/js/image-export.js?v=3.0" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=3.0" defer></script>
-    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=3.0" defer></script>
-    <script src="<?= $base ?>/assets/js/palette-page.js?v=3.0" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js?v=3.1" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js?v=3.1" defer></script>
+    <script src="<?= $base ?>/assets/js/image-export.js?v=3.1" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=3.1" defer></script>
+    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=3.1" defer></script>
+    <script src="<?= $base ?>/assets/js/palette-page.js?v=3.1" defer></script>
 </body>
 
 </html>
