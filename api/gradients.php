@@ -1,7 +1,7 @@
 <?php
 /**
  * ColorMagic Gradients API Endpoint (V1 with V2 SQLite Acceleration)
- * Base URL: https://api.colormagic.techkreative.com/v1/gradients
+ * Base URL: https://colormagic-api.techkreative.com/v1/gradients
  */
 
 header('Content-Type: application/json; charset=UTF-8');

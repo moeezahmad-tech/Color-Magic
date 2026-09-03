@@ -1,6 +1,6 @@
 # ColorMagic Public REST API (V2 SQLite Edition)
 
-Production-grade, ultra-fast, self-contained REST API for ColorMagic color datasets, hosted at `https://api.colormagic.techkreative.com/`.
+Production-grade, ultra-fast, self-contained REST API for ColorMagic color datasets, hosted at `https://colormagic-api.techkreative.com/`.
 
 Built with modern PHP OOP architecture, **SQLite in WAL (Write-Ahead Logging) mode**, HTTP ETags (304 Not Modified caching), and sub-millisecond query execution.
 
@@ -93,51 +93,51 @@ api.colormagic/ (or api/ directory)
 
 ```bash
 # Direct single color by Hex
-curl -i https://api.colormagic.techkreative.com/v2/colors/123524
+curl -i https://colormagic-api.techkreative.com/v2/colors/123524
 
 # Direct single color by Slug
-curl -i https://api.colormagic.techkreative.com/v2/colors/slug/phthalo-green
+curl -i https://colormagic-api.techkreative.com/v2/colors/slug/phthalo-green
 
 # Search colors with pagination
-curl -i "https://api.colormagic.techkreative.com/v2/colors?q=blue&page=1&limit=20"
+curl -i "https://colormagic-api.techkreative.com/v2/colors?q=blue&page=1&limit=20"
 
 # Fetch all colors as a keyed dictionary
-curl -i "https://api.colormagic.techkreative.com/v2/colors?format=dict"
+curl -i "https://colormagic-api.techkreative.com/v2/colors?format=dict"
 ```
 
 ### 2. Gradients
 
 ```bash
 # Get all gradients (paginated)
-curl -i "https://api.colormagic.techkreative.com/v2/gradients?page=1&limit=20"
+curl -i "https://colormagic-api.techkreative.com/v2/gradients?page=1&limit=20"
 
 # Filter by style (e.g. Warm, Cool, Pastel, Dark, Neon)
-curl -i "https://api.colormagic.techkreative.com/v2/gradients?style=Warm"
+curl -i "https://colormagic-api.techkreative.com/v2/gradients?style=Warm"
 
 # Filter by gradient type (linear, radial)
-curl -i "https://api.colormagic.techkreative.com/v2/gradients?type=radial"
+curl -i "https://colormagic-api.techkreative.com/v2/gradients?type=radial"
 
 # Get single gradient by ID
-curl -i https://api.colormagic.techkreative.com/v2/gradients/gradient_1
+curl -i https://colormagic-api.techkreative.com/v2/gradients/gradient_1
 ```
 
 ### 3. Palettes
 
 ```bash
 # Get curated palettes
-curl -i "https://api.colormagic.techkreative.com/v2/palettes?page=1&limit=20"
+curl -i "https://colormagic-api.techkreative.com/v2/palettes?page=1&limit=20"
 
 # Filter by style (Eco, Pastel, Vintage, Neon, Monochrome, Earthy)
-curl -i "https://api.colormagic.techkreative.com/v2/palettes?style=Eco"
+curl -i "https://colormagic-api.techkreative.com/v2/palettes?style=Eco"
 
 # Search palettes
-curl -i "https://api.colormagic.techkreative.com/v2/palettes?q=forest"
+curl -i "https://colormagic-api.techkreative.com/v2/palettes?q=forest"
 
 # Get single palette by ID
-curl -i https://api.colormagic.techkreative.com/v2/palettes/palette_1
+curl -i https://colormagic-api.techkreative.com/v2/palettes/palette_1
 
 # Submit new community palette (User Dashboard)
-curl -X POST https://api.colormagic.techkreative.com/v2/palettes \
+curl -X POST https://colormagic-api.techkreative.com/v2/palettes \
   -H "Content-Type: application/json" \
   -d '{"name": "Nordic Dusk", "style": "Cool", "colors": ["#2E3440", "#3B4252", "#88C0D0", "#ECEFF4"]}'
 ```

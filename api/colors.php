@@ -1,7 +1,7 @@
 <?php
 /**
  * ColorMagic Colors API Endpoint (V1 with V2 SQLite Acceleration)
- * Base URL: https://api.colormagic.techkreative.com/v1/colors
+ * Base URL: https://colormagic-api.techkreative.com/v1/colors
  */
 
 header('Content-Type: application/json; charset=UTF-8');

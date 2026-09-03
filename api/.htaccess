@@ -1,5 +1,5 @@
 # ColorMagic High-Performance API .htaccess
-# Serves api.colormagic.techkreative.com
+# Serves colormagic-api.techkreative.com
 
 <IfModule mod_headers.c>
     # Enable CORS for all origins

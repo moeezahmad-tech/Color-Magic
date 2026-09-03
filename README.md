@@ -194,7 +194,7 @@ ColorMagic/
 
 ## Data Formats & API
 
-Data is fetched via `https://api.colormagic.techkreative.com/`. The physical files reside in the `api/` directory.
+Data is fetched via `https://colormagic-api.techkreative.com/`. The physical files reside in the `api/` directory.
 
 ### `api/palettes.json`
 

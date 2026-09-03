@@ -1,7 +1,7 @@
 <?php
 /**
  * ColorMagic REST API V2 Entry Point & Router
- * Base URL: https://api.colormagic.techkreative.com/v2/
+ * Base URL: https://colormagic-api.techkreative.com/v2/
  */
 
 declare(strict_types=1);

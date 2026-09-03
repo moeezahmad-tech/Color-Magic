@@ -1,7 +1,7 @@
 <?php
 /**
  * ColorMagic Public REST API Root Index
- * Base URL: https://api.colormagic.techkreative.com/
+ * Base URL: https://colormagic-api.techkreative.com/
  */
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host = (string)($_SERVER['HTTP_HOST'] ?? 'api.colormagic.techkreative.com');
+$host = (string)($_SERVER['HTTP_HOST'] ?? 'colormagic-api.techkreative.com');
 $baseUrl = $scheme . '://' . $host;
 
 $response = [

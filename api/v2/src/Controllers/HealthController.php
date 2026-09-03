@@ -31,7 +31,7 @@ class HealthController extends BaseController
         }
 
         $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host = (string)($_SERVER['HTTP_HOST'] ?? 'api.colormagic.techkreative.com');
+        $host = (string)($_SERVER['HTTP_HOST'] ?? 'colormagic-api.techkreative.com');
         $baseUrl = $scheme . '://' . $host;
 
         $response = [
