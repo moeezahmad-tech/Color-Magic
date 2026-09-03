@@ -64,8 +64,10 @@
     function renderGradient(g) {
         var detail = document.getElementById('gradientDetail');
         var error  = document.getElementById('gradientError');
+        var skeleton = document.getElementById('gradientSkeleton');
         if (!detail || !error) return;
 
+        if (skeleton) skeleton.classList.add('hidden');
         detail.classList.remove('hidden');
 
         // ID text
@@ -531,6 +533,8 @@
                 if (data[i].id === gradientId) { gradient = data[i]; break; }
             }
             if (!gradient) {
+                var skel1 = document.getElementById('gradientSkeleton');
+                if (skel1) skel1.classList.add('hidden');
                 document.getElementById('gradientError').classList.remove('hidden');
                 return;
             }
@@ -540,6 +544,8 @@
             renderRelatedPalettes(gradient);
         })
         .catch(function () {
+            var skel2 = document.getElementById('gradientSkeleton');
+            if (skel2) skel2.classList.add('hidden');
             document.getElementById('gradientError').classList.remove('hidden');
         });
 

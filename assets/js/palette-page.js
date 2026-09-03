@@ -11,6 +11,7 @@
     }
 
     const paletteDetail = document.getElementById('paletteDetail');
+    const paletteSkeleton = document.getElementById('paletteSkeleton');
     const paletteError = document.getElementById('paletteError');
     const paletteName = document.getElementById('paletteName');
     const paletteMeta = document.getElementById('paletteMeta');
@@ -156,6 +157,7 @@
         }
 
         if (!palette) {
+            paletteSkeleton?.classList.add('hidden');
             paletteError?.classList.remove('hidden');
             return;
         }
@@ -592,9 +594,11 @@
             });
         }
 
+        paletteSkeleton?.classList.add('hidden');
         paletteDetail?.classList.remove('hidden');
     } catch (err) {
         console.error("Error loading palette page:", err);
+        paletteSkeleton?.classList.add('hidden');
         paletteError?.classList.remove('hidden');
     }
 })();

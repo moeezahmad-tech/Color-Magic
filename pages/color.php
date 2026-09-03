@@ -873,6 +873,22 @@ $schema = [
             <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                 CSS gradients that contain or closely match <?php echo e($hexWithHash); ?>.
             </p>
+            <!-- Skeleton Loader (visible while fetching API) -->
+            <div id="relatedGradientsSkeleton" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 animate-pulse">
+                <div class="h-64 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+                    <div class="h-44 rounded-xl bg-slate-100 dark:bg-slate-800 w-full"></div>
+                    <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-1/2"></div>
+                </div>
+                <div class="h-64 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+                    <div class="h-44 rounded-xl bg-slate-100 dark:bg-slate-800 w-full"></div>
+                    <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-1/2"></div>
+                </div>
+                <div class="h-64 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+                    <div class="h-44 rounded-xl bg-slate-100 dark:bg-slate-800 w-full"></div>
+                    <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-1/2"></div>
+                </div>
+            </div>
+
             <div id="relatedGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
             <div id="relatedGradientsEmpty"
                 class="hidden rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
@@ -1106,8 +1122,10 @@ $schema = [
                     });
 
                     near.sort(function (a, b) { return a._dist - b._dist; });
-
                     var results = exact.concat(near).slice(0, 6);
+
+                    var skeleton = document.getElementById('relatedGradientsSkeleton');
+                    if (skeleton) skeleton.classList.add('hidden');
 
                     if (results.length === 0) {
                         grid.classList.add('hidden');
@@ -1124,6 +1142,8 @@ $schema = [
                     });
                 })
                 .catch(function () {
+                    var skeleton = document.getElementById('relatedGradientsSkeleton');
+                    if (skeleton) skeleton.classList.add('hidden');
                     grid.classList.add('hidden');
                     if (emptyEl) emptyEl.classList.remove('hidden');
                 });

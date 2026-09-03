@@ -86,6 +86,47 @@
             </nav>
         </div>
 
+        <!-- Skeleton Loader (visible until API loads) -->
+        <div id="paletteSkeleton" class="flex flex-col gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800 animate-pulse">
+                <div class="h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] bg-slate-200/80 dark:bg-slate-800 rounded-2xl"></div>
+                <div class="flex flex-col gap-5 justify-between">
+                    <div class="space-y-3">
+                        <div class="h-9 w-3/4 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-5 w-1/2 bg-slate-200/80 dark:bg-slate-800 rounded-lg"></div>
+                        <div class="h-4 w-full bg-slate-200/80 dark:bg-slate-800 rounded"></div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div class="h-10 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-10 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
+                <div class="h-44 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6"></div>
+                <div class="h-44 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6"></div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 border border-slate-200/60 dark:border-slate-800 animate-pulse">
+                <div class="h-6 w-40 bg-slate-200/80 dark:bg-slate-800 rounded mb-4"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="h-32 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+                    <div class="h-32 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+                    <div class="h-32 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+                </div>
+            </div>
+        </div>
+
         <section id="paletteDetail" class="hidden flex flex-col gap-8">
             <div id="paletteTopSection"
                 class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
