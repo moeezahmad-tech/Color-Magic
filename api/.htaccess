@@ -28,35 +28,18 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
-    # Only process initial requests, avoid internal redirect loops
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
-    RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
-
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
-    RewriteRule ^health/?$ v2/index.php [L,QSA]
-
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
-    RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]
+    # --- V2 RESTful API Routing to v2.php ---
+    RewriteRule ^v2(/.*)?$ v2.php [L,QSA]
+    RewriteRule ^health/?$ v2.php [L,QSA]
+    RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2.php [L,QSA]
 
     # --- V1 Legacy Endpoint URL Rewriting ---
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/gradients/?$ gradients.php [L,QSA]
-
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/palettes/?$ palettes.php [L,QSA]
-
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/colors/?$ colors.php [L,QSA]
-
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^v1/health/?$ index.php [L,QSA]
 
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^gradients/?$ gradients.php [L,QSA]
-
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^palettes/?$ palettes.php [L,QSA]
-
-    RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^colors/?$ colors.php [L,QSA]
 </IfModule>
