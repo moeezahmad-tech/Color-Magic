@@ -163,13 +163,25 @@
         document.title = `${palette.name} Color Palette | Color Magic`;
         paletteName.textContent = palette.name;
 
+        const paletteBreadcrumb = document.getElementById('paletteBreadcrumb');
+        if (paletteBreadcrumb) paletteBreadcrumb.textContent = palette.name;
+
+        const paletteSubheading = document.getElementById('paletteSubheading');
+        if (paletteSubheading) paletteSubheading.textContent = `Curated ${(palette.style || 'Custom')} Color Scheme`;
+
+        const paletteDescription = document.getElementById('paletteDescription');
+        if (paletteDescription) {
+            const count = Array.isArray(palette.colors) ? palette.colors.length : 0;
+            paletteDescription.textContent = `Complete ${count}-color palette profile with copy-ready HEX, RGB, and CSS variable values.`;
+        }
+
         const colorList = Array.isArray(palette.colors) ? palette.colors : [];
         const firstColor = colorList[0] || '#111111';
         const lastColor = colorList[colorList.length - 1] || '#f8fafc';
         const allColors = colorList.join(', ');
         const cssVars = colorList.map((color, index) => `--palette-color-${index + 1}: ${color};`).join('\n');
 
-        paletteMeta.textContent = `Palette ID: ${palette.id}`;
+        if (paletteMeta) paletteMeta.textContent = `Palette ID: ${palette.id}`;
         paletteType.textContent = palette.style || 'General';
         paletteCount.textContent = String(colorList.length);
 
@@ -342,14 +354,12 @@
             });
         });
 
-        copyAllBtn?.addEventListener('click', async () => {
-            const resetText = '<i class="bi bi-clipboard me-1"></i>Copy All Colors';
-            await copyText(allColors, copyAllBtn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', resetText);
+        copyAllBtn?.addEventListener('click', () => {
+            window.ColorMagic.animateCopy(copyAllBtn, allColors, 'Copied All!');
         });
 
-        copyCssVarsBtn?.addEventListener('click', async () => {
-            const resetText = '<i class="bi bi-code-slash me-1"></i>Copy CSS Variables';
-            await copyText(cssVars, copyCssVarsBtn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', resetText);
+        copyCssVarsBtn?.addEventListener('click', () => {
+            window.ColorMagic.animateCopy(copyCssVarsBtn, cssVars, 'Copied CSS Vars!');
         });
 
         // Related Colors — derive complementary, analogous, triadic from palette colors
@@ -454,24 +464,9 @@
                     const results = exact.concat(near).slice(0, 6);
 
                     results.forEach(g => {
-                        const angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.shape || g.type);
-                        const card = document.createElement('div');
-                        card.className = 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
-                        card.innerHTML =
-                            '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
-                            + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
-                            +   '<p class="font-bold text-sm">' + g.name + '</p>'
-                            +   '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
-                            +   '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
-                            +     g.colors.map(c => '<div class="flex-1" style="background:' + c + '"></div>').join('')
-                            +   '</div>'
-                            +   '<div class="flex items-center justify-end gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
-                            +     '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient">'
-                            +       '<i class="bi bi-box-arrow-up-right text-base"></i>'
-                            +     '</a>'
-                            +   '</div>'
-                            + '</div>';
-                        relatedGradientsGrid.appendChild(card);
+                        if (window.ColorMagic && window.ColorMagic.createGradientCard) {
+                            relatedGradientsGrid.appendChild(window.ColorMagic.createGradientCard(g));
+                        }
                     });
                 })
                 .catch(() => {});
@@ -555,11 +550,17 @@
                 const span = favPaletteBtn.querySelector('span');
                 if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill text-red-500' : 'bi-heart');
                 if (span) span.textContent = isFav ? 'Favorited' : 'Favorite';
+                favPaletteBtn.classList.toggle('text-red-500', isFav);
             }
             updateFavPaletteBtn();
             favPaletteBtn.addEventListener('click', () => {
                 Favorites.toggleFavorite(palette.id);
-                updateFavPaletteBtn();
+                const isFav = Favorites.isFavorite(palette.id);
+                if (window.ColorMagic.animateFavorite) {
+                    window.ColorMagic.animateFavorite(favPaletteBtn, isFav);
+                } else {
+                    updateFavPaletteBtn();
+                }
             });
         }
 
@@ -567,7 +568,13 @@
         const downloadPngBtn = document.getElementById('downloadPalettePngBtn');
         if (downloadPngBtn && window.ColorMagic && window.ColorMagic.exportPaletteImage) {
             downloadPngBtn.addEventListener('click', () => {
-                window.ColorMagic.exportPaletteImage(palette);
+                if (window.ColorMagic.animateDownload) {
+                    window.ColorMagic.animateDownload(downloadPngBtn, () => {
+                        window.ColorMagic.exportPaletteImage(palette);
+                    });
+                } else {
+                    window.ColorMagic.exportPaletteImage(palette);
+                }
             });
         }
 

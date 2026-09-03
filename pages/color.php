@@ -677,18 +677,22 @@ $schema = [
     </div>
 
     <main class="w-full max-w-7xl mx-auto pt-24 px-6 py-8 md:py-10">
+        <!-- Top Navigation: Breadcrumb -->
         <div class="mb-6">
-            <p class="text-sm text-slate-500 dark:text-slate-400">
+            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                 <a class="hover:text-primary transition-colors" href="<?php echo e($homePageUrl); ?>">Home</a>
-                <span class="mx-2">/</span>
-                <span>Color <?php echo e($hexWithHash); ?></span>
-            </p>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <a class="hover:text-primary transition-colors" href="<?php echo e($assetBase); ?>/find-color">Colors</a>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-slate-900 dark:text-white font-medium"><?php echo e($hexName); ?> (<?php echo e($hexWithHash); ?>)</span>
+            </nav>
         </div>
 
         <section
-            class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
-            <div class="grid grid-cols-1 lg:grid-cols-[420px,1fr]">
-                <div class="relative min-h-[280px] md:min-h-[360px] p-6 flex items-end overflow-hidden"
+            class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
+            <!-- Large color preview -->
+            <div class="h-full">
+                <div class="relative h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] p-6 flex items-end overflow-hidden rounded-2xl shadow-xl shadow-black/10 dark:shadow-black/30"
                     style="background-color: <?php echo e($hexWithHash); ?>;">
                     <img src="<?php echo e($dynamicColorImageUrl); ?>"
                         alt="Color palette preview for hex code <?php echo e(strtolower($normalizedHex)); ?> featuring complementary design rules"
@@ -700,74 +704,67 @@ $schema = [
                         <p class="text-3xl font-bold"><?php echo e($hexWithHash); ?></p>
                     </div>
                 </div>
+            </div>
 
-                <div class="p-6 md:p-8">
-                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-3"><?php echo e($hexName); ?> Color
-                        Details</h1>
-                    <h2 class="text-xl md:text-2xl font-semibold tracking-tight mb-3">Explore Hex Code Details with the
-                        Color Magic Design Tool</h2>
-                    <p class="text-slate-500 dark:text-slate-400 text-base md:text-lg mb-6">
-                        Complete color profile for <?php echo e($hexWithHash); ?> with copy-ready values and related
-                        palettes.
+            <!-- Info panel: Consistent Hierarchy -->
+            <div class="flex flex-col gap-5 justify-between">
+                <!-- 1. Heading, 2. Subheading, 3. Label / Description text -->
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight"><?php echo e($hexName); ?> Color Details</h1>
+                    <h2 class="text-lg md:text-xl font-semibold text-slate-700 dark:text-slate-300 mt-1"><?php echo e($hexWithHash); ?> · RGB(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                        Complete color profile for <?php echo e($hexWithHash); ?> with copy-ready values, harmonies, and related palettes.
                     </p>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div
-                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
-                            <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">Hex</p>
-                            <p class="font-mono font-bold text-lg mb-3"><?php echo e($hexWithHash); ?></p>
-                            <button
-                                class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20"
-                                data-copy="<?php echo e($hexWithHash); ?>">Copy HEX</button>
-                        </div>
-
-                        <div
-                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
-                            <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">RGB</p>
-                            <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $rgb['r']); ?>,
-                                <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
-                            <button
-                                class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20"
-                                data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)">Copy
-                                RGB</button>
-                        </div>
-
-                        <div
-                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
-                            <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">HSL</p>
-                            <p class="font-mono font-bold text-lg mb-3"><?php echo e((string) $hsl['h']); ?>,
-                                <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%</p>
-                            <button
-                                class="copy-btn px-3 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-all hover:opacity-95 shadow-lg shadow-primary/20"
-                                data-copy="hsl(<?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%)">Copy
-                                HSL</button>
-                        </div>
-
-                        <div
-                            class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/60">
-                            <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">Best Contrast</p>
-                            <p class="font-semibold text-lg">
-                                <?php echo $contrast === '#FFFFFF' ? 'White text' : 'Dark text'; ?></p>
-                            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
-                                <?php echo e((string) count($relatedPalettes)); ?> related palettes found</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 mt-4">
-                        <button id="favColorHeroBtn"
-                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
-                            <i class="bi bi-heart"></i>
-                            <span>Favorite Color</span>
-                        </button>
-                        <button id="downloadColorPngBtn"
-                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
-                            <i class="bi bi-download"></i>
-                            <span>Download PNG</span>
-                        </button>
-                    </div>
-                    <p id="copyFeedback"
-                        class="copy-feedback opacity-0 -translate-y-1 mt-4 text-sm font-semibold text-emerald-600">
-                        Copied to clipboard</p>
                 </div>
+
+                <!-- 4. Action Buttons (2x2 on desktop, 1x4 on mobile) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                        class="copy-btn w-full px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                        data-copy="<?php echo e($hexWithHash); ?>">
+                        <i class="bi bi-clipboard"></i>
+                        <span>Copy HEX</span>
+                    </button>
+                    <button
+                        class="copy-btn w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                        data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)">
+                        <i class="bi bi-code-slash"></i>
+                        <span>Copy RGB</span>
+                    </button>
+                    <button id="downloadColorPngBtn"
+                        class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                        <i class="bi bi-download"></i>
+                        <span>Download PNG</span>
+                    </button>
+                    <button id="favColorHeroBtn"
+                        class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                        <i class="bi bi-heart"></i>
+                        <span>Favorite</span>
+                    </button>
+                </div>
+
+                <!-- 5. Details: Metric Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-400">HEX</p>
+                        <p class="font-mono font-bold text-base mt-1"><?php echo e($hexWithHash); ?></p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-400">RGB</p>
+                        <p class="font-mono font-bold text-base mt-1"><?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-400">HSL</p>
+                        <p class="font-mono font-bold text-base mt-1"><?php echo e((string) $hsl['h']); ?>°, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-400">Best Contrast</p>
+                        <p class="font-bold text-base mt-1"><?php echo $contrast === '#FFFFFF' ? 'White text' : 'Dark text'; ?></p>
+                    </div>
+                </div>
+                <p id="copyFeedback"
+                    class="copy-feedback opacity-0 -translate-y-1 text-sm font-semibold text-emerald-600">
+                    Copied to clipboard</p>
             </div>
         </section>
 
@@ -923,34 +920,27 @@ $schema = [
     <!-- Shared palette component (same as explore page) -->
     <script>
         // Base paths must be set before component scripts read them
-        window.CM_COLOR_BASE = '<?php echo e($colorRouteBase); ?>';
-        window.CM_PALETTE_BASE = '<?php echo e($assetBase); ?>/palette/';
+        window.CM_COLOR_BASE    = '<?php echo e($colorRouteBase); ?>';
+        window.CM_PALETTE_BASE  = '<?php echo e($assetBase); ?>/palette/';
+        window.CM_GRADIENT_BASE = '<?php echo e($assetBase); ?>/gradient/';
     </script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/utils.js"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/services/favorites.js"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/image-export.js"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/utils.js?v=2.1"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/services/favorites.js?v=2.1"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/image-export.js?v=2.1"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js?v=2.1"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/components/gradient-card.js?v=2.1"></script>
 
     <script>
-        // ── Copy HEX / RGB / HSL buttons ─────────────────────────────────────
-        var copyFeedback = document.getElementById('copyFeedback');
-
+        // ── Copy HEX / RGB buttons ──────────────────────────────────────────
         document.querySelectorAll('.copy-btn').forEach(function (button) {
             button.addEventListener('click', function () {
                 var text = button.getAttribute('data-copy') || '';
-                navigator.clipboard.writeText(text).then(function () {
-                    if (copyFeedback) {
-                        copyFeedback.classList.add('show');
-                        copyFeedback.textContent = text + ' copied';
-                        setTimeout(function () { copyFeedback.classList.remove('show'); }, 1200);
-                    }
-                }).catch(function () {
-                    if (copyFeedback) {
-                        copyFeedback.classList.add('show');
-                        copyFeedback.textContent = 'Copy failed. Please copy manually.';
-                        setTimeout(function () { copyFeedback.classList.remove('show'); }, 1500);
-                    }
-                });
+                var label = text.indexOf('rgb') === 0 ? 'Copied RGB!' : 'Copied HEX!';
+                if (window.ColorMagic && window.ColorMagic.animateCopy) {
+                    window.ColorMagic.animateCopy(button, text, label);
+                } else {
+                    navigator.clipboard.writeText(text);
+                }
             });
         });
 
@@ -964,12 +954,18 @@ $schema = [
                 var icon = favBtn.querySelector('i');
                 var span = favBtn.querySelector('span');
                 if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill text-red-500' : 'bi-heart');
-                if (span) span.textContent = isFav ? 'Favorited' : 'Favorite Color';
+                if (span) span.textContent = isFav ? 'Favorited' : 'Favorite';
+                favBtn.classList.toggle('text-red-500', isFav);
             }
             updateBtn();
             favBtn.addEventListener('click', function () {
                 window.ColorMagic.ColorFavorites.toggleFavorite(hex);
-                updateBtn();
+                var isFav = window.ColorMagic.ColorFavorites.isFavorite(hex);
+                if (window.ColorMagic.animateFavorite) {
+                    window.ColorMagic.animateFavorite(favBtn, isFav);
+                } else {
+                    updateBtn();
+                }
             });
         })();
 
@@ -982,7 +978,13 @@ $schema = [
             var rgb = { r: <?php echo $rgb['r']; ?>, g: <?php echo $rgb['g']; ?>, b: <?php echo $rgb['b']; ?> };
             var hsl = { h: <?php echo $hsl['h']; ?>, s: <?php echo $hsl['s']; ?>, l: <?php echo $hsl['l']; ?> };
             downloadBtn.addEventListener('click', function () {
-                window.ColorMagic.exportColorImage({ hex: hex, name: name, rgb: rgb, hsl: hsl });
+                if (window.ColorMagic.animateDownload) {
+                    window.ColorMagic.animateDownload(downloadBtn, function () {
+                        window.ColorMagic.exportColorImage({ hex: hex, name: name, rgb: rgb, hsl: hsl });
+                    });
+                } else {
+                    window.ColorMagic.exportColorImage({ hex: hex, name: name, rgb: rgb, hsl: hsl });
+                }
             });
         })();
 
@@ -1116,66 +1118,15 @@ $schema = [
                     var isFavFn = window.ColorMagic && window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite;
 
                     results.forEach(function (g) {
-                        var angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.type === 'mesh' ? 'mesh' : (g.shape || g.type));
-                        var isFav = isFavFn ? window.ColorMagic.GradientFavorites.isFavorite(g.id) : false;
-                        var heartIcon = isFav ? 'bi-heart-fill text-red-500' : 'bi-heart';
-
-                        var card = document.createElement('div');
-                        card.className = 'gradient-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
-
-                        card.innerHTML =
-                            '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
-                            + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
-                            + '<p class="font-bold text-sm">' + g.name + '</p>'
-                            + '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
-                            + '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
-                            + g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
-                            + '</div>'
-                            + '<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
-                            + '<button class="fav-gradient-btn p-1.5 text-slate-400 hover:text-red-500 transition-colors" data-gradient-id="' + g.id + '" title="' + (isFav ? 'Remove from' : 'Add to') + ' favorites">'
-                            + '<i class="bi ' + heartIcon + ' text-base"></i>'
-                            + '</button>'
-                            + '<button class="copy-gradient-css-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-css="' + g.css.replace(/"/g, '&quot;') + '" title="Copy CSS">'
-                            + '<i class="bi bi-clipboard text-lg"></i>'
-                            + '</button>'
-                            + '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient" target="_blank" rel="noopener">'
-                            + '<i class="bi bi-box-arrow-up-right text-base"></i>'
-                            + '</a>'
-                            + '</div>'
-                            + '</div>';
-
-                        grid.appendChild(card);
+                        if (window.ColorMagic && window.ColorMagic.createGradientCard) {
+                            grid.appendChild(window.ColorMagic.createGradientCard(g));
+                        }
                     });
                 })
                 .catch(function () {
                     grid.classList.add('hidden');
                     if (emptyEl) emptyEl.classList.remove('hidden');
                 });
-
-            // Delegated click handlers for gradient cards
-            grid.addEventListener('click', function (e) {
-                // Favorite gradient
-                var favBtn = e.target.closest('.fav-gradient-btn');
-                if (favBtn && window.ColorMagic && window.ColorMagic.GradientFavorites) {
-                    var gid = favBtn.dataset.gradientId;
-                    window.ColorMagic.GradientFavorites.toggleFavorite(gid);
-                    var icon = favBtn.querySelector('i');
-                    var nowFav = window.ColorMagic.GradientFavorites.isFavorite(gid);
-                    if (icon) icon.className = 'bi ' + (nowFav ? 'bi-heart-fill text-red-500' : 'bi-heart') + ' text-base';
-                    return;
-                }
-                // Copy CSS
-                var copyBtn = e.target.closest('.copy-gradient-css-btn');
-                if (copyBtn) {
-                    var css = copyBtn.dataset.css;
-                    var icon = copyBtn.querySelector('i');
-                    var origClass = icon ? icon.className : '';
-                    navigator.clipboard.writeText(css).then(function () {
-                        if (icon) icon.className = 'bi bi-check-circle-fill text-lg text-green-500';
-                        setTimeout(function () { if (icon) icon.className = origClass; }, 2000);
-                    });
-                }
-            });
 
             function colorDist(a, b) {
                 var ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);

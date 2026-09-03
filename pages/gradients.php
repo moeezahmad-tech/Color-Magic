@@ -395,7 +395,9 @@
             });
         })();
     </script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=2.1" defer></script>
     <script src="<?= $base ?>/assets/js/gradients-page.js?v=3" defer></script>
 </body>
 

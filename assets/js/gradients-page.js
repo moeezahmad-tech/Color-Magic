@@ -45,102 +45,12 @@
     // ─── Card Builder ─────────────────────────────────────────────────────────
 
     function buildGradientCard(g) {
+        if (window.ColorMagic && window.ColorMagic.createGradientCard) {
+            return window.ColorMagic.createGradientCard(g);
+        }
         var card = document.createElement('div');
         card.className =
             'gradient-card bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
-
-        // Preview area — wraps in link to detail page
-        var previewLink = document.createElement('a');
-        previewLink.href = (document.querySelector('base') ? '' : '/') + 'gradient/' + g.id + '/';
-        previewLink.className = 'gradient-preview h-44 w-full rounded-t-2xl relative block';
-        previewLink.style.background = g.css;
-        previewLink.setAttribute('aria-label', 'View ' + g.name + ' gradient details');
-
-        // Copy CSS overlay button
-        var copyBtn = document.createElement('button');
-        copyBtn.className =
-            'copy-css-btn border-none absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-900 shadow-sm backdrop-blur-sm';
-        copyBtn.dataset.css = g.css;
-        copyBtn.innerHTML =
-            '<i class="bi bi-clipboard text-sm"></i>'
-            + '<span>Copy CSS</span>';
-        previewLink.appendChild(copyBtn);
-
-        card.appendChild(previewLink);
-
-        // Info body
-        var body = document.createElement('div');
-        body.className = 'p-4 flex flex-col gap-2.5 flex-1';
-
-        // Name + badge row
-        var header = document.createElement('div');
-        header.className = 'flex items-start justify-between gap-2';
-
-        var name = document.createElement('h3');
-        name.className = 'text-base font-bold text-slate-800 dark:text-white leading-tight';
-        name.textContent = g.name;
-
-        var headerRight = document.createElement('div');
-        headerRight.className = 'flex items-center gap-1.5 flex-shrink-0';
-
-        var typeBadge = document.createElement('span');
-        typeBadge.className =
-            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border '
-            + (g.type === 'linear'
-                ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300 border-violet-200 dark:border-violet-700'
-                : g.type === 'radial'
-                ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border-amber-200 dark:border-amber-700'
-                : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700');
-        var typeIcon = g.type === 'linear' ? 'arrow-right' : (g.type === 'radial' ? 'circle' : 'grid-3x3-gap');
-        typeBadge.innerHTML =
-            '<i class="bi bi-' + typeIcon + ' text-[9px]"></i>'
-            + g.type;
-
-        var gradientBase = (document.querySelector('base') ? '' : '/') + 'gradient/';
-        var viewBtn = document.createElement('a');
-        viewBtn.href = gradientBase + g.id + '/';
-        viewBtn.className = 'p-1 rounded-md text-slate-400 hover:text-secondary transition-colors';
-        viewBtn.title = 'View ' + g.name + ' details';
-        viewBtn.setAttribute('aria-label', 'Open ' + g.name + ' gradient details');
-        viewBtn.innerHTML = '<i class="bi bi-box-arrow-up-right text-base"></i>';
-
-        var isFav = window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
-        var favBtn = document.createElement('button');
-        favBtn.className = 'gradient-fav-btn border-none bg-transparent p-1 rounded-md transition-colors ' + (isFav ? 'text-red-500' : 'text-slate-400 hover:text-red-500');
-        favBtn.dataset.gradientId = g.id;
-        favBtn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
-        favBtn.innerHTML = '<i class="bi ' + (isFav ? 'bi-heart-fill' : 'bi-heart') + ' text-base"></i>';
-
-        headerRight.appendChild(typeBadge);
-        headerRight.appendChild(viewBtn);
-        headerRight.appendChild(favBtn);
-        header.appendChild(name);
-        header.appendChild(headerRight);
-        body.appendChild(header);
-
-        // Meta line
-        var meta = document.createElement('p');
-        meta.className = 'text-xs text-slate-400 dark:text-slate-500';
-        var angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.type === 'mesh' ? 'mesh' : g.shape);
-        meta.textContent = g.style + ' · ' + g.colors.length + ' colors · ' + angleOrShape;
-        body.appendChild(meta);
-
-        // Color swatches row
-        var swatches = document.createElement('div');
-        swatches.className = 'flex gap-1.5 h-5 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 mt-auto';
-        g.colors.forEach(function (hex) {
-            var sw = document.createElement('div');
-            sw.className = 'flex-1 cursor-pointer relative group/sw';
-            sw.style.backgroundColor = hex;
-            sw.title = hex;
-            sw.innerHTML =
-                '<span class="swatch-hex absolute inset-0 flex items-center justify-center text-[9px] font-mono font-bold text-white drop-shadow bg-black/30 opacity-0 group-hover/sw:opacity-100 transition-opacity rounded">'
-                + hex + '</span>';
-            swatches.appendChild(sw);
-        });
-        body.appendChild(swatches);
-
-        card.appendChild(body);
         return card;
     }
 

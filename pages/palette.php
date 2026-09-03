@@ -75,30 +75,61 @@
 
 
     <main class="w-full max-w-7xl mx-auto pt-24 p-5 md:p-8 flex flex-col gap-8">
-        <div class="flex items-center justify-between flex-wrap gap-3">
-            <a href="<?= $base ?>/palettes"
-                class="inline-flex items-center gap-2 text-primary font-semibold hover:opacity-90 transition-opacity">
-                <i class="bi bi-arrow-left"></i>
-                Back to Explore
-            </a>
-            <p id="paletteIdText" class="text-xs text-slate-500 dark:text-slate-400 font-mono"></p>
+        <!-- Top Navigation: Breadcrumb -->
+        <div>
+            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                <a href="<?= $base ?>/" class="hover:text-primary transition-colors">Home</a>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <a href="<?= $base ?>/palettes" class="hover:text-primary transition-colors">Palettes</a>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span id="paletteBreadcrumb" class="text-slate-900 dark:text-white font-medium">Palette Details</span>
+            </nav>
         </div>
 
         <section id="paletteDetail" class="hidden flex flex-col gap-8">
             <div id="paletteTopSection"
                 class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
-                <div>
+                <div class="h-full">
                     <div id="heroPaletteStrips"
-                        class="grid h-full rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30">
+                        class="grid h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30">
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-5">
+                    <!-- 1. Heading, 2. Subheading, 3. Label / Description text -->
                     <div>
                         <h1 id="paletteName" class="text-3xl md:text-4xl font-bold tracking-tight"></h1>
-                        <p id="paletteMeta" class="text-sm text-slate-500 dark:text-slate-400 mt-2"></p>
+                        <h2 id="paletteSubheading" class="text-lg md:text-xl font-semibold text-slate-700 dark:text-slate-300 mt-1"></h2>
+                        <p id="paletteDescription" class="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                            Complete color palette with copy-ready HEX, RGB, and CSS variable values.
+                        </p>
                     </div>
 
+                    <!-- 4. Action Buttons (2x2 on desktop, 1x4 on mobile) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button id="copyAllBtn"
+                            class="w-full px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+                            <i class="bi bi-clipboard"></i>
+                            <span>Copy All Colors</span>
+                        </button>
+                        <button id="copyCssVarsBtn"
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="bi bi-code-slash"></i>
+                            <span>Copy CSS Variables</span>
+                        </button>
+                        <button id="downloadPalettePngBtn"
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="bi bi-download"></i>
+                            <span>Download PNG</span>
+                        </button>
+                        <button id="favPaletteBtn"
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="bi bi-heart"></i>
+                            <span>Favorite</span>
+                        </button>
+                    </div>
+
+                    <!-- 5. Details / Metric Chips -->
                     <div class="grid grid-cols-3 gap-3">
                         <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
                             <p class="text-[11px] uppercase tracking-wider text-slate-400">
@@ -120,29 +151,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3 flex-wrap">
-                        <button id="copyAllBtn"
-                            class="px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors">
-                            <i class="bi bi-clipboard me-1"></i>
-                            Copy All Colors
-                        </button>
-                        <button id="copyCssVarsBtn"
-                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors">
-                            <i class="bi bi-code-slash me-1"></i>
-                            Copy CSS Variables
-                        </button>
-                        <button id="downloadPalettePngBtn"
-                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
-                            <i class="bi bi-download"></i>
-                            <span>Download PNG</span>
-                        </button>
-                        <button id="favPaletteBtn"
-                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors">
-                            <i class="bi bi-heart"></i>
-                            <span>Favorite</span>
-                        </button>
-                    </div>
-
+                    <!-- Color Swatches list with inline copy -->
                     <div id="detailColorList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1"></div>
                 </div>
             </div>
@@ -368,13 +377,15 @@
 
 
     <script>
-        window.CM_COLOR_BASE   = '<?= $base ?>/color/';
-        window.CM_PALETTE_BASE = '<?= $base ?>/palette/';
+        window.CM_COLOR_BASE    = '<?= $base ?>/color/';
+        window.CM_PALETTE_BASE  = '<?= $base ?>/palette/';
+        window.CM_GRADIENT_BASE = '<?= $base ?>/gradient/';
     </script>
     <script src="<?= $base ?>/assets/js/utils.js?v=2.1" defer></script>
     <script src="<?= $base ?>/assets/js/services/favorites.js?v=2.1" defer></script>
     <script src="<?= $base ?>/assets/js/image-export.js?v=2.1" defer></script>
     <script src="<?= $base ?>/assets/js/components/palette-card.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=2.1" defer></script>
     <script src="<?= $base ?>/assets/js/palette-page.js?v=2.1" defer></script>
 </body>
 

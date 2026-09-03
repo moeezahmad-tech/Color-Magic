@@ -73,9 +73,27 @@
         if (idText) idText.textContent = 'ID: ' + g.id;
 
         // Name & meta
-        document.getElementById('gradientName').textContent = g.name;
-        document.getElementById('gradientMeta').textContent =
-            g.style + ' · ' + g.type.charAt(0).toUpperCase() + g.type.slice(1) + ' gradient';
+        var nameEl = document.getElementById('gradientName');
+        if (nameEl) nameEl.textContent = g.name;
+
+        var breadcrumbEl = document.getElementById('gradientBreadcrumb');
+        if (breadcrumbEl) breadcrumbEl.textContent = g.name;
+
+        var subheadEl = document.getElementById('gradientSubheading');
+        if (subheadEl) {
+            subheadEl.textContent = (g.style || 'Modern') + ' · ' + g.type.charAt(0).toUpperCase() + g.type.slice(1) + ' Gradient';
+        }
+
+        var descEl = document.getElementById('gradientDescription');
+        if (descEl) {
+            var stopCount = Array.isArray(g.colors) ? g.colors.length : 2;
+            descEl.textContent = 'CSS ' + g.type + ' gradient blending ' + stopCount + ' curated colors with copy-ready code and visual stops.';
+        }
+
+        var metaEl = document.getElementById('gradientMeta');
+        if (metaEl) {
+            metaEl.textContent = 'Gradient ID: ' + g.id + ' · ' + g.style;
+        }
 
         // Type chip
         document.getElementById('gradientType').textContent = g.type.charAt(0).toUpperCase() + g.type.slice(1);
@@ -179,17 +197,35 @@
 
         // Copy CSS button
         var copyCssBtn = document.getElementById('copyCssBtn');
-        var copyCssOrig = copyCssBtn.innerHTML;
         copyCssBtn.addEventListener('click', function () {
-            copyToClipboard(g.css, copyCssBtn, copyCssOrig);
+            if (window.ColorMagic.animateCopy) {
+                window.ColorMagic.animateCopy(copyCssBtn, g.css, 'Copied CSS!');
+            } else {
+                copyToClipboard(g.css, copyCssBtn, copyCssBtn.innerHTML);
+            }
         });
+
+        // Copy Colors button
+        var copyColorsBtn = document.getElementById('copyGradientColorsBtn');
+        if (copyColorsBtn) {
+            copyColorsBtn.addEventListener('click', function () {
+                var colorsStr = (g.colors || []).join(', ');
+                if (window.ColorMagic.animateCopy) {
+                    window.ColorMagic.animateCopy(copyColorsBtn, colorsStr, 'Copied Colors!');
+                } else {
+                    copyToClipboard(colorsStr, copyColorsBtn, copyColorsBtn.innerHTML);
+                }
+            });
+        }
 
         // Copy CSS block button
         var copyBlockBtn = document.getElementById('copyCssBlockBtn');
-        var copyBlockOrig = copyBlockBtn.innerHTML;
-        copyBlockBtn.addEventListener('click', function () {
-            copyToClipboard(cssCode, copyBlockBtn, copyBlockOrig);
-        });
+        if (copyBlockBtn) {
+            var copyBlockOrig = copyBlockBtn.innerHTML;
+            copyBlockBtn.addEventListener('click', function () {
+                copyToClipboard(cssCode, copyBlockBtn, copyBlockOrig);
+            });
+        }
 
         // Copy color HEX / RGB buttons (delegated on color info grid)
         var colorInfoGrid = document.getElementById('colorInfoGrid');
@@ -215,7 +251,7 @@
             var isFav = window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
             var icon = favBtn.querySelector('i');
             var span = favBtn.querySelector('span');
-            if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill' : 'bi-heart');
+            if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill text-red-500' : 'bi-heart');
             if (span) span.textContent = isFav ? 'Favorited' : 'Favorite';
             favBtn.classList.toggle('text-red-500', isFav);
         }
@@ -223,7 +259,12 @@
         favBtn.addEventListener('click', function () {
             if (window.ColorMagic.GradientFavorites) {
                 window.ColorMagic.GradientFavorites.toggleFavorite(g.id);
-                updateFavBtn();
+                var isFav = window.ColorMagic.GradientFavorites.isFavorite(g.id);
+                if (window.ColorMagic.animateFavorite) {
+                    window.ColorMagic.animateFavorite(favBtn, isFav);
+                } else {
+                    updateFavBtn();
+                }
             }
         });
 
@@ -231,7 +272,13 @@
         var downloadPngBtn = document.getElementById('downloadGradientPngBtn');
         if (downloadPngBtn && window.ColorMagic && window.ColorMagic.exportGradientImage) {
             downloadPngBtn.addEventListener('click', function () {
-                window.ColorMagic.exportGradientImage(g);
+                if (window.ColorMagic.animateDownload) {
+                    window.ColorMagic.animateDownload(downloadPngBtn, function () {
+                        window.ColorMagic.exportGradientImage(g);
+                    });
+                } else {
+                    window.ColorMagic.exportGradientImage(g);
+                }
             });
         }
 
@@ -332,62 +379,9 @@
             return;
         }
 
-        var gradientBase = (document.querySelector('base') ? '' : '/') + 'gradient/';
-
         related.forEach(function (g) {
-            var angleOrShape = g.type === 'linear' ? (g.angle + '°') : (g.type === 'mesh' ? 'mesh' : (g.shape || g.type));
-            var isFav = window.ColorMagic && window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
-            var heartIcon = isFav ? 'bi-heart-fill text-red-500' : 'bi-heart';
-
-            var card = document.createElement('div');
-            card.className = 'gradient-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
-
-            card.innerHTML =
-                '<div class="h-28 w-full" style="background:' + g.css + '"></div>'
-                + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
-                +   '<p class="font-bold text-sm">' + g.name + '</p>'
-                +   '<p class="text-xs text-slate-400">' + g.style + ' · ' + g.type + ' · ' + angleOrShape + '</p>'
-                +   '<div class="flex gap-1 h-4 rounded-lg overflow-hidden mt-1">'
-                +     g.colors.map(function (c) { return '<div class="flex-1" style="background:' + c + '"></div>'; }).join('')
-                +   '</div>'
-                +   '<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">'
-                +     '<button class="fav-gradient-btn p-1.5 text-slate-400 hover:text-red-500 transition-colors" data-gradient-id="' + g.id + '" title="' + (isFav ? 'Remove from' : 'Add to') + ' favorites">'
-                +       '<i class="bi ' + heartIcon + ' text-base"></i>'
-                +     '</button>'
-                +     '<button class="copy-gradient-css-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-css="' + g.css.replace(/"/g, '&quot;') + '" title="Copy CSS">'
-                +       '<i class="bi bi-clipboard text-lg"></i>'
-                +     '</button>'
-                +     '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient" target="_blank" rel="noopener">'
-                +       '<i class="bi bi-box-arrow-up-right text-base"></i>'
-                +     '</a>'
-                +   '</div>'
-                + '</div>';
-
-            grid.appendChild(card);
-        });
-
-        // Delegated click handlers for gradient cards
-        grid.addEventListener('click', function (e) {
-            // Favorite gradient
-            var favBtn = e.target.closest('.fav-gradient-btn');
-            if (favBtn && window.ColorMagic && window.ColorMagic.GradientFavorites) {
-                var gid = favBtn.dataset.gradientId;
-                window.ColorMagic.GradientFavorites.toggleFavorite(gid);
-                var icon = favBtn.querySelector('i');
-                var nowFav = window.ColorMagic.GradientFavorites.isFavorite(gid);
-                if (icon) icon.className = 'bi ' + (nowFav ? 'bi-heart-fill text-red-500' : 'bi-heart') + ' text-base';
-                return;
-            }
-            // Copy CSS
-            var copyBtn = e.target.closest('.copy-gradient-css-btn');
-            if (copyBtn) {
-                var css = copyBtn.dataset.css;
-                var icon = copyBtn.querySelector('i');
-                var origClass = icon ? icon.className : '';
-                navigator.clipboard.writeText(css).then(function () {
-                    if (icon) icon.className = 'bi bi-check-circle-fill text-lg text-green-500';
-                    setTimeout(function () { if (icon) icon.className = origClass; }, 2000);
-                });
+            if (window.ColorMagic && window.ColorMagic.createGradientCard) {
+                grid.appendChild(window.ColorMagic.createGradientCard(g));
             }
         });
     }

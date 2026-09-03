@@ -368,13 +368,15 @@
     <?php include '../components/footer.php'; ?>
 
     <script>
-        window.CM_ACTIVE_PAGE = "favorites";
-        window.CM_COLOR_BASE = "color/";
-        window.CM_PALETTE_BASE = "palette/";
+        window.CM_ACTIVE_PAGE   = "favorites";
+        window.CM_COLOR_BASE    = "color/";
+        window.CM_PALETTE_BASE  = "palette/";
+        window.CM_GRADIENT_BASE = "gradient/";
     </script>
     <script src="<?= $base ?>/assets/js/utils.js?v=<?= time() ?>" defer></script>
     <script src="<?= $base ?>/assets/js/services/favorites.js?v=<?= time() ?>" defer></script>
     <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= time() ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=<?= time() ?>" defer></script>
     <script src="<?= $base ?>/assets/js/favorites-page.js?v=<?= time() ?>" defer></script>
 </body>
 

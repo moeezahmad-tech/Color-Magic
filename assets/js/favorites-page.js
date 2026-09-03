@@ -101,43 +101,11 @@
 
     // ─── Gradient card builder ──────────────────────────────────────────────────
     function buildGradientCard(g) {
-        var gradientBase = (document.querySelector('base') ? '' : '/') + 'gradient/';
-        var typeBadgeCls = g.type === 'linear'
-            ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300 border-violet-200 dark:border-violet-700'
-            : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border-amber-200 dark:border-amber-700';
-        var typeIcon = g.type === 'linear' ? 'arrow-right' : 'circle';
-        var angleOrShape = g.type === 'linear' ? (g.angle + '°') : g.shape;
-        var swatchesHtml = g.colors.map(function (hex) {
-            return '<div class="flex-1 cursor-pointer relative group/sw" style="background-color:' + hex + '" title="' + hex + '">'
-                + '<span class="swatch-hex absolute inset-0 flex items-center justify-center text-[9px] font-mono font-bold text-white drop-shadow bg-black/30 opacity-0 group-hover/sw:opacity-100 transition-opacity rounded">' + hex + '</span>'
-                + '</div>';
-        }).join('');
-
+        if (window.ColorMagic && window.ColorMagic.createGradientCard) {
+            return window.ColorMagic.createGradientCard(g);
+        }
         var card = document.createElement('div');
         card.className = 'gradient-card bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
-
-        card.innerHTML =
-            '<div class="h-44 w-full" style="background:' + g.css + '"></div>'
-            + '<div class="p-4 flex flex-col gap-2.5 flex-1">'
-            +   '<div class="flex items-start justify-between gap-2">'
-            +     '<h3 class="text-base font-bold text-slate-800 dark:text-white leading-tight">' + g.name + '</h3>'
-            +     '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ' + typeBadgeCls + '"><i class="bi bi-' + typeIcon + ' text-[9px]"></i>' + g.type + '</span>'
-            +   '</div>'
-            +   '<p class="text-xs text-slate-400 dark:text-slate-500">' + g.style + ' · ' + g.colors.length + ' colors · ' + angleOrShape + '</p>'
-            +   '<div class="flex gap-1.5 h-5 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 mt-auto">' + swatchesHtml + '</div>'
-            +   '<div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">'
-            +     '<button class="fav-gradient-btn p-1.5 text-red-500 hover:text-slate-400 transition-colors" data-gradient-id="' + g.id + '" title="Remove from favorites">'
-            +       '<i class="bi bi-heart-fill text-base"></i>'
-            +     '</button>'
-            +     '<button class="copy-gradient-css-btn p-1.5 text-slate-400 hover:text-primary transition-colors" data-css="' + g.css.replace(/"/g, '&quot;') + '" title="Copy CSS">'
-            +       '<i class="bi bi-clipboard text-lg"></i>'
-            +     '</button>'
-            +     '<a href="' + gradientBase + g.id + '/" class="p-1.5 text-slate-400 hover:text-secondary transition-colors" title="Open gradient" target="_blank" rel="noopener">'
-            +       '<i class="bi bi-box-arrow-up-right text-base"></i>'
-            +     '</a>'
-            +   '</div>'
-            + '</div>';
-
         return card;
     }
 

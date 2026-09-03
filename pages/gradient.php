@@ -111,39 +111,70 @@
     <?php include '../components/navbar.php'; ?>
 
     <main class="w-full max-w-7xl mx-auto pt-24 p-5 md:p-8 flex flex-col gap-8">
-        <!-- Back link -->
-        <div class="flex items-center justify-between flex-wrap gap-3">
-            <a href="<?= $base ?>/gradients"
-                class="inline-flex items-center gap-2 text-primary font-semibold hover:opacity-90 transition-opacity">
-                <i class="bi bi-arrow-left"></i>
-                Back to Gradients
-            </a>
-            <p id="gradientIdText" class="text-xs text-slate-500 dark:text-slate-400 font-mono"></p>
+        <!-- Top Navigation: Breadcrumb -->
+        <div>
+            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                <a href="<?= $base ?>/" class="hover:text-primary transition-colors">Home</a>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <a href="<?= $base ?>/gradients" class="hover:text-primary transition-colors">Gradients</a>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span id="gradientBreadcrumb" class="text-slate-900 dark:text-white font-medium">Gradient Details</span>
+            </nav>
         </div>
 
         <!-- Gradient detail (hidden until loaded) -->
         <section id="gradientDetail" class="hidden flex flex-col gap-8">
 
             <!-- Hero: Preview + Info -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
+            <div class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
                 <!-- Large gradient preview -->
-                <div id="heroGradientPreview"
-                    class="gradient-hero h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30 relative cursor-pointer group">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 backdrop-blur-[2px]">
-                        <span class="px-4 py-2 bg-white/90 dark:bg-slate-900/90 rounded-xl text-sm font-semibold shadow-lg flex items-center gap-2">
-                            <i class="bi bi-clipboard"></i> Click to copy CSS
-                        </span>
+                <div class="h-full">
+                    <div id="heroGradientPreview"
+                        class="gradient-hero h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30 relative cursor-pointer group">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 backdrop-blur-[2px]">
+                            <span class="px-4 py-2 bg-white/90 dark:bg-slate-900/90 rounded-xl text-sm font-semibold shadow-lg flex items-center gap-2">
+                                <i class="bi bi-clipboard"></i> Click to copy CSS
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Info panel -->
-                <div class="flex flex-col gap-4">
+                <!-- Info panel: Consistent Order -->
+                <div class="flex flex-col gap-5">
+                    <!-- 1. Heading, 2. Subheading, 3. Label / Description text -->
                     <div>
                         <h1 id="gradientName" class="text-3xl md:text-4xl font-bold tracking-tight"></h1>
-                        <p id="gradientMeta" class="text-sm text-slate-500 dark:text-slate-400 mt-2"></p>
+                        <h2 id="gradientSubheading" class="text-lg md:text-xl font-semibold text-slate-700 dark:text-slate-300 mt-1"></h2>
+                        <p id="gradientDescription" class="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                            CSS gradient with copy-ready code, color stops breakdown, and related palettes.
+                        </p>
                     </div>
 
-                    <!-- Info chips -->
+                    <!-- 4. Action Buttons (2x2 on desktop, 1x4 on mobile) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button id="copyCssBtn"
+                            class="w-full px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+                            <i class="bi bi-clipboard"></i>
+                            <span>Copy CSS</span>
+                        </button>
+                        <button id="copyGradientColorsBtn"
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="bi bi-palette"></i>
+                            <span>Copy Colors</span>
+                        </button>
+                        <button id="downloadGradientPngBtn"
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="bi bi-download"></i>
+                            <span>Download PNG</span>
+                        </button>
+                        <button id="favGradientBtn"
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="bi bi-heart"></i>
+                            <span>Favorite</span>
+                        </button>
+                    </div>
+
+                    <!-- 5. Details: Info chips -->
                     <div class="grid grid-cols-3 gap-3">
                         <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
                             <p class="text-[11px] uppercase tracking-wider text-slate-400">Type</p>
@@ -157,25 +188,6 @@
                             <p class="text-[11px] uppercase tracking-wider text-slate-400" id="angleShapeLabel">Angle</p>
                             <p id="gradientAngleShape" class="font-bold mt-1"></p>
                         </div>
-                    </div>
-
-                    <!-- Copy CSS button -->
-                    <div class="flex items-center gap-3">
-                        <button id="copyCssBtn"
-                            class="px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
-                            <i class="bi bi-clipboard"></i>
-                            Copy CSS
-                        </button>
-                        <button id="downloadGradientPngBtn"
-                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
-                            <i class="bi bi-download"></i>
-                            <span>Download PNG</span>
-                        </button>
-                        <button id="favGradientBtn"
-                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
-                            <i class="bi bi-heart"></i>
-                            <span>Favorite</span>
-                        </button>
                     </div>
 
                     <!-- Color swatches list -->
@@ -249,14 +261,16 @@
     <?php include '../components/footer.php'; ?>
 
     <script>
-        window.CM_COLOR_BASE   = '<?= $base ?>/color/';
-        window.CM_PALETTE_BASE = '<?= $base ?>/palette/';
+        window.CM_COLOR_BASE    = '<?= $base ?>/color/';
+        window.CM_PALETTE_BASE  = '<?= $base ?>/palette/';
+        window.CM_GRADIENT_BASE = '<?= $base ?>/gradient/';
     </script>
-    <script src="<?= $base ?>/assets/js/utils.js" defer></script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js" defer></script>
-    <script src="<?= $base ?>/assets/js/image-export.js" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js" defer></script>
-    <script src="<?= $base ?>/assets/js/gradient-page.js" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/image-export.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/gradient-page.js?v=2.1" defer></script>
 </body>
 
 </html>

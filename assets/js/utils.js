@@ -315,3 +315,106 @@ window.ColorMagic.copyToClipboard = function (text, button, successHTML, failHTM
         }
     });
 };
+
+/**
+ * Animated visual feedback for Copy buttons
+ * @param {HTMLElement} btn
+ * @param {string} text
+ * @param {string} [label]
+ */
+window.ColorMagic.animateCopy = function (btn, text, label) {
+    if (!btn) return Promise.resolve();
+    var origHTML = btn.dataset.origHtml || btn.innerHTML;
+    btn.dataset.origHtml = origHTML;
+
+    // Pop scale animation
+    btn.classList.add('scale-95', 'transition-all', 'duration-150');
+    setTimeout(function () { btn.classList.remove('scale-95'); }, 150);
+
+    return navigator.clipboard.writeText(text).then(function () {
+        btn.innerHTML = '<i class="bi bi-check-circle-fill text-emerald-500 animate-bounce"></i> <span>' + (label || 'Copied!') + '</span>';
+        btn.classList.add('ring-2', 'ring-emerald-500/50');
+        setTimeout(function () {
+            btn.innerHTML = origHTML;
+            btn.classList.remove('ring-2', 'ring-emerald-500/50');
+        }, 1600);
+    }).catch(function () {
+        btn.innerHTML = '<i class="bi bi-x-circle text-red-500"></i> <span>Failed</span>';
+        setTimeout(function () {
+            btn.innerHTML = origHTML;
+        }, 1600);
+    });
+};
+
+/**
+ * Animated visual feedback for Favorite buttons
+ * @param {HTMLElement} btn
+ * @param {boolean} isFav
+ */
+window.ColorMagic.animateFavorite = function (btn, isFav) {
+    if (!btn) return;
+    var icon = btn.querySelector('i');
+    var span = btn.querySelector('span');
+
+    // Pop spring animation
+    btn.classList.add('scale-95', 'transition-all', 'duration-150');
+    setTimeout(function () { btn.classList.remove('scale-95'); }, 150);
+
+    if (icon) {
+        icon.classList.add('transition-transform', 'duration-300', 'scale-125');
+        setTimeout(function () { icon.classList.remove('scale-125'); }, 300);
+    }
+
+    if (isFav) {
+        if (icon) icon.className = 'bi bi-heart-fill text-red-500 transition-transform duration-300';
+        if (span) span.textContent = 'Added to Favorites!';
+        btn.classList.add('ring-2', 'ring-red-500/40', 'text-red-500');
+        setTimeout(function () {
+            if (span) span.textContent = 'Favorited';
+            btn.classList.remove('ring-2', 'ring-red-500/40');
+        }, 1500);
+    } else {
+        if (icon) icon.className = 'bi bi-heart transition-transform duration-300';
+        if (span) span.textContent = 'Removed';
+        btn.classList.remove('text-red-500');
+        setTimeout(function () {
+            if (span) span.textContent = 'Favorite';
+        }, 1200);
+    }
+};
+
+/**
+ * Animated visual feedback for Download PNG buttons
+ * @param {HTMLElement} btn
+ * @param {Function} downloadFn
+ */
+window.ColorMagic.animateDownload = function (btn, downloadFn) {
+    if (!btn) return;
+    var origHTML = btn.dataset.origHtml || btn.innerHTML;
+    btn.dataset.origHtml = origHTML;
+    btn.disabled = true;
+
+    // Show spinner & Downloading state
+    btn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin text-primary"></i> <span>Downloading...</span>';
+    btn.classList.add('scale-95', 'transition-all', 'duration-150');
+    setTimeout(function () { btn.classList.remove('scale-95'); }, 150);
+
+    setTimeout(function () {
+        try {
+            if (typeof downloadFn === 'function') downloadFn();
+        } catch (e) {
+            console.error('Download error:', e);
+        }
+
+        // Show Downloaded checkmark
+        btn.innerHTML = '<i class="bi bi-check2-circle text-emerald-500 text-lg"></i> <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Downloaded!</span>';
+        btn.classList.add('ring-2', 'ring-emerald-500/50');
+
+        setTimeout(function () {
+            btn.innerHTML = origHTML;
+            btn.classList.remove('ring-2', 'ring-emerald-500/50');
+            btn.disabled = false;
+        }, 1800);
+    }, 450);
+};
+
