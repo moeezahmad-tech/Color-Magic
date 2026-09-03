@@ -27,7 +27,11 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
-    # Route /v2/* and /v2 to v2/index.php
+    # Don't rewrite existing physical files
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Route /v2 and /v2/* to v2/index.php
     RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
 
     # Route /health to v2/index.php

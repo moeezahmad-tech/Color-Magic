@@ -1,7 +1,4 @@
-# ColorMagic V2 Subdirectory Front Controller Rewrite
+# Disable subrequest rewrite inside v2 subdirectory to prevent Apache recursion loop
 <IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php [L,QSA]
+    RewriteEngine Off
 </IfModule>
