@@ -170,15 +170,21 @@ ColorMagic/
 │       ├── Inter-Italic-VariableFont_opsz,wght.ttf
 │       └── static/                     ← Individual weight .ttf files
 │
-├── api/                                ← API Subdomain Files & Data
-│   ├── index.php                       ← API info/health endpoints
-│   ├── palettes.json                   ← 150+ curated palettes (Served via API)
-│   ├── gradients.json                  ← 100 CSS gradients (Served via API)
-│   ├── color-names.json                ← 300+ named colors keyed by hex
-│   ├── README.md                       ← API documentation
-│   └── v1/                             ← API v1 PHP Endpoints
-│
-├── data/                               ← Legacy static data files (Pre-API)
+├── api/                                ← Standalone API Subdomain Files & Engine
+│   ├── .env.api.colormagic             ← Isolated API Environment Config
+│   ├── .htaccess                       ← Apache routing & caching rules
+│   ├── index.php                       ← API discovery index
+│   ├── README.md                       ← API documentation & route specs
+│   ├── data/                           ← SQLite & JSON Datasets
+│   │   ├── colormagic.sqlite           ← SQLite Database (WAL mode, indexed)
+│   │   ├── color-names.json            ← 1,027 named colors
+│   │   ├── gradients.json              ← 329 CSS gradients
+│   │   └── palettes.json               ← 833 curated palettes
+│   ├── cli/                            ← CLI Migration & Verification Tools
+│   │   ├── migrate.php
+│   │   └── test_endpoints.php
+│   ├── v1/                             ← API v1 Legacy Endpoints
+│   └── v2/                             ← API v2 High-Performance REST Architecture
 │
 └── sitemaps/                           ← Sub-sitemaps for SEO
     ├── pages.xml                       ← Static page URLs

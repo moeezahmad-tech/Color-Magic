@@ -1,16 +1,23 @@
-# ColorMagic API .htaccess
+# ColorMagic High-Performance API .htaccess
 # Serves api.colormagic.techkreative.com
 
 <IfModule mod_headers.c>
     # Enable CORS for all origins
     Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
     Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
-    Header set Cache-Control "max-age=86400, public"
+    Header set Cache-Control "max-age=86400, public, stale-while-revalidate=604800"
 </IfModule>
 
 # Ensure proper MIME type for static JSON files
 AddType application/json .json
+
+# Enable Gzip Compression for JSON payloads
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+</IfModule>
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
@@ -19,14 +26,17 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
-    # Endpoint URL Rewriting
-    # /gradients -> gradients.php
-    # /palettes -> palettes.php
-    # /colors -> colors.php
-    # /v1/gradients -> gradients.php
-    # /v1/palettes -> palettes.php
-    # /v1/colors -> colors.php
-    # /v1/health -> index.php
+    # --- V2 RESTful API Routing ---
+    # Route all /v2/* requests to v2/index.php
+    RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
+
+    # Route /health to v2/index.php
+    RewriteRule ^health/?$ v2/index.php [L,QSA]
+
+    # Route direct /color/{hex} or /colors/{hex} to v2/index.php
+    RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]
+
+    # --- V1 Legacy Endpoint URL Rewriting ---
     RewriteRule ^v1/gradients/?$ gradients.php [L,QSA]
     RewriteRule ^v1/palettes/?$ palettes.php [L,QSA]
     RewriteRule ^v1/colors/?$ colors.php [L,QSA]
