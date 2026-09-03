@@ -28,7 +28,17 @@ class PaletteRepository
     }
 
     /**
-     * Find single palette by ID
+     * Generate URL slug from palette name
+     */
+    private function slugify(string $name): string
+    {
+        $slug = strtolower(trim($name));
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        return trim($slug, '-');
+    }
+
+    /**
+     * Find single palette by ID or by URL slug
      */
     public function findById(string $id)
     {
@@ -37,6 +47,7 @@ class PaletteRepository
             return null;
         }
 
+        // 1. Try exact ID match first (e.g. "palette_760")
         if ($this->db !== null) {
             try {
                 $stmt = $this->db->prepare("
@@ -55,6 +66,7 @@ class PaletteRepository
             }
         }
 
+        // 2. Try exact ID in fallback JSON
         $data = $this->getFallbackData();
         foreach ($data as $item) {
             if (is_array($item) && isset($item['id']) && $item['id'] === $id) {
@@ -62,7 +74,68 @@ class PaletteRepository
             }
         }
 
+        // 3. If id looks like a slug (not palette_NNN), try slug-based lookup
+        if (strpos($id, 'palette_') !== 0 && strpos($id, 'user_pal_') !== 0) {
+            return $this->findBySlug($id);
+        }
+
         return null;
+    }
+
+    /**
+     * Find a palette by its URL slug (derived from name).
+     * Handles duplicate names by checking slug-with-id suffix (e.g. "taxbuzz-palette-760").
+     */
+    public function findBySlug(string $slug)
+    {
+        $slug = trim($slug);
+        if ($slug === '') {
+            return null;
+        }
+
+        $data = $this->getAllForSlugLookup();
+
+        // Build slug -> name count map to detect duplicates
+        $nameCount = [];
+        foreach ($data as $item) {
+            if (!is_array($item) || !isset($item['name'])) continue;
+            $s = $this->slugify($item['name']);
+            $nameCount[$s] = ($nameCount[$s] ?? 0) + 1;
+        }
+
+        // Match: exact slug, or slug-with-id-suffix for duplicates
+        foreach ($data as $item) {
+            if (!is_array($item) || !isset($item['name'], $item['id'])) continue;
+            $s = $this->slugify($item['name']);
+            if ($s === $slug) {
+                return $item;
+            }
+            // For duplicate names, check slug + "-" + numeric ID suffix
+            if (isset($nameCount[$s]) && $nameCount[$s] > 1) {
+                $numericId = str_replace('palette_', '', $item['id']);
+                if ($s . '-' . $numericId === $slug) {
+                    return $item;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get all palette data for slug lookups (prefers DB, falls back to JSON)
+     */
+    private function getAllForSlugLookup(): array
+    {
+        if ($this->db !== null) {
+            try {
+                $stmt = $this->db->query("SELECT id, name, style, colors FROM palettes ORDER BY id ASC");
+                return array_map([$this, 'formatPalette'], $stmt->fetchAll());
+            } catch (Throwable $t) {
+                // Fall through
+            }
+        }
+        return $this->getFallbackData();
     }
 
     /**

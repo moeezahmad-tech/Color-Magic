@@ -73,6 +73,7 @@ class ResponseHelper
         if (!headers_sent()) {
             http_response_code($statusCode);
             header('Content-Type: application/json; charset=UTF-8');
+            header_remove('Access-Control-Allow-Origin');
             header('Access-Control-Allow-Origin: *');
             header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
             header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
@@ -106,6 +107,7 @@ class ResponseHelper
 
         http_response_code($statusCode);
         header('Content-Type: application/json; charset=UTF-8');
+        header_remove('Access-Control-Allow-Origin');
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');

@@ -114,7 +114,13 @@ try {
         exit;
     }
 
-    // GET /palettes/{id} (e.g. /palettes/palette_1)
+    // GET /palettes/slug/{slug} (e.g. /palettes/slug/taxbuzz-palette)
+    if (preg_match('#^/(?:palettes|palette)/slug/([^/]+)$#i', $path, $matches)) {
+        (new PaletteController())->getBySlug($matches[1]);
+        exit;
+    }
+
+    // GET /palettes/{id} (e.g. /palettes/palette_1 or /palettes/taxbuzz-palette)
     if (preg_match('#^/(?:palettes|palette)/([^/]+)$#i', $path, $matches)) {
         (new PaletteController())->getById($matches[1]);
         exit;

@@ -42,13 +42,27 @@ class PaletteController extends BaseController
     }
 
     /**
-     * GET /v2/palettes/{id} - Lookup single palette by ID
+     * GET /v2/palettes/{id} - Lookup single palette by ID or slug
      */
     public function getById(string $id)
     {
         $palette = $this->repository->findById($id);
         if (!$palette) {
             ResponseHelper::error("Palette not found for ID '{$id}'", 404);
+            return;
+        }
+
+        ResponseHelper::success($palette);
+    }
+
+    /**
+     * GET /v2/palettes/slug/{slug} - Lookup single palette by URL slug
+     */
+    public function getBySlug(string $slug)
+    {
+        $palette = $this->repository->findBySlug($slug);
+        if (!$palette) {
+            ResponseHelper::error("Palette not found for slug '{$slug}'", 404);
             return;
         }
 

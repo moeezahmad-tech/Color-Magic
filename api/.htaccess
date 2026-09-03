@@ -5,9 +5,12 @@ DirectoryIndex index.php
 Options -Indexes +FollowSymLinks
 
 <IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
-    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header unset Access-Control-Allow-Origin
+    Header unset Access-Control-Allow-Methods
+    Header unset Access-Control-Allow-Headers
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
 </IfModule>
 
 # Ensure proper MIME type for static JSON files
@@ -30,6 +33,9 @@ AddType application/json .json
     # Don't rewrite existing physical files
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
+
+    # Route all V2 REST requests to v2/index.php
+    RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
 
     # Route shorthand /health and /color/{hex} to v2/index.php
     RewriteRule ^health/?$ v2/index.php [L,QSA]
