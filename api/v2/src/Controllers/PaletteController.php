@@ -6,65 +6,47 @@ use ColorMagic\Repositories\PaletteRepository;
 use ColorMagic\Services\ResponseHelper;
 
 /**
- * Palette Controller
- * Endpoints for curated color palettes, search queries, and community submissions.
+ * Palette REST Controller (PHP 7.0+ Compatible)
  */
 class PaletteController extends BaseController
 {
-    private PaletteRepository $repository;
+    private $repository;
 
-    public function __construct(?PaletteRepository $repository = null)
+    public function __construct($repository = null)
     {
         $this->repository = $repository ?? new PaletteRepository();
     }
 
     /**
-     * Handle index route: list, search, or ID query param
+     * GET /v2/palettes - List, search, and filter curated palettes
      */
     public function index(): void
     {
-        $id = $this->getStringParam('id');
+        $id = (string)$this->getQuery('id', '');
         if ($id !== '') {
             $this->getById($id);
             return;
         }
 
-        $style = $this->getStringParam('style');
-        $q     = $this->getStringParam('q');
+        $q     = (string)$this->getQuery('q', '');
+        $style = $this->getQuery('style');
+        $page  = (int)$this->getQuery('page', 1);
+        $limit = (int)$this->getQuery('limit', 50);
 
-        $page  = $this->getIntParam('page', 1, 1);
-        $limit = isset($_GET['limit']) ? $this->getIntParam('limit', 50, 1, 200) : (isset($_GET['page']) ? 50 : 0);
-
-        // Bulk full fetch if no filter and no limit
-        if ($limit === 0 && $style === '' && $q === '') {
-            $all = $this->repository->all();
-            ResponseHelper::success($all, ['total' => count($all)]);
-            return;
-        }
-
-        $effectiveLimit = $limit > 0 ? $limit : 50;
-        $result = $this->repository->search($q, $style, $page, $effectiveLimit);
-
-        $meta = [];
-        if ($style !== '') $meta['style'] = $style;
-        if ($q !== '')     $meta['query'] = $q;
-
-        ResponseHelper::paginated(
-            $result['items'],
-            $result['total'],
-            $result['page'],
-            $result['limit'],
-            $meta
-        );
+        $result = $this->repository->search($q, $style, $page, $limit);
+        ResponseHelper::success($result['items'], 200, [
+            'total' => $result['total'],
+            'page'  => $result['page'],
+            'limit' => $result['limit']
+        ]);
     }
 
     /**
-     * Get single palette by ID
+     * GET /v2/palettes/{id} - Lookup single palette by ID
      */
     public function getById(string $id): void
     {
         $palette = $this->repository->findById($id);
-
         if (!$palette) {
             ResponseHelper::error("Palette not found for ID '{$id}'", 404);
             return;
@@ -74,37 +56,38 @@ class PaletteController extends BaseController
     }
 
     /**
-     * Submit community palette (Future User Dashboard & Monetization feature)
+     * POST /v2/palettes - Submit community palette
      */
     public function submit(): void
     {
         $body = $this->getJsonBody();
 
-        if (empty($body['colors']) || !is_array($body['colors']) || count($body['colors']) < 2) {
-            ResponseHelper::error("Palette must contain at least 2 colors", 422);
+        if (empty($body['name']) || empty($body['colors']) || !is_array($body['colors'])) {
+            ResponseHelper::error("Missing required fields: 'name' and 'colors' (array of hex strings)", 422);
             return;
         }
 
-        $cleanColors = [];
+        // Validate hex colors
+        $cleanedColors = [];
         foreach ($body['colors'] as $c) {
-            $hex = '#' . strtoupper(ltrim(trim((string)$c), '#'));
-            if (preg_match('/^#[0-9A-F]{3,8}$/i', $hex)) {
-                $cleanColors[] = $hex;
+            $hex = ltrim(trim((string)$c), '#');
+            if (preg_match('/^[0-9A-Fa-f]{3,8}$/', $hex)) {
+                $cleanedColors[] = '#' . strtoupper($hex);
             }
         }
 
-        if (count($cleanColors) < 2) {
-            ResponseHelper::error("Invalid hex color codes provided", 422);
+        if (count($cleanedColors) < 2) {
+            ResponseHelper::error("A palette must contain at least 2 valid hex color codes", 422);
             return;
         }
 
-        $created = $this->repository->submitUserPalette([
+        $submission = $this->repository->submitUserPalette([
             'user_id' => $body['user_id'] ?? null,
-            'name'    => $body['name'] ?? 'Custom Palette',
-            'style'   => $body['style'] ?? 'Custom',
-            'colors'  => $cleanColors
+            'name'    => (string)$body['name'],
+            'style'   => (string)($body['style'] ?? 'Custom'),
+            'colors'  => $cleanedColors
         ]);
 
-        ResponseHelper::success($created, ['message' => 'Palette submitted successfully for review'], 201);
+        ResponseHelper::success($submission, 201, ['message' => 'Palette submitted successfully for review']);
     }
 }

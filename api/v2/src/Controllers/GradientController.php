@@ -6,67 +6,48 @@ use ColorMagic\Repositories\GradientRepository;
 use ColorMagic\Services\ResponseHelper;
 
 /**
- * Gradient Controller
- * Endpoints for CSS gradient queries, style filtering, and ID lookups.
+ * Gradient REST Controller (PHP 7.0+ Compatible)
  */
 class GradientController extends BaseController
 {
-    private GradientRepository $repository;
+    private $repository;
 
-    public function __construct(?GradientRepository $repository = null)
+    public function __construct($repository = null)
     {
         $this->repository = $repository ?? new GradientRepository();
     }
 
     /**
-     * Handle index route: list, search, or ID query param
+     * GET /v2/gradients - List, search, and filter CSS gradients
      */
     public function index(): void
     {
-        $id = $this->getStringParam('id');
+        $id = (string)$this->getQuery('id', '');
         if ($id !== '') {
             $this->getById($id);
             return;
         }
 
-        $style = $this->getStringParam('style');
-        $type  = $this->getStringParam('type');
-        $q     = $this->getStringParam('q');
+        $q     = (string)$this->getQuery('q', '');
+        $style = $this->getQuery('style');
+        $type  = $this->getQuery('type');
+        $page  = (int)$this->getQuery('page', 1);
+        $limit = (int)$this->getQuery('limit', 50);
 
-        $page  = $this->getIntParam('page', 1, 1);
-        $limit = isset($_GET['limit']) ? $this->getIntParam('limit', 50, 1, 200) : (isset($_GET['page']) ? 50 : 0);
-
-        // Bulk full fetch if no filter and no limit
-        if ($limit === 0 && $style === '' && $type === '' && $q === '') {
-            $all = $this->repository->all();
-            ResponseHelper::success($all, ['total' => count($all)]);
-            return;
-        }
-
-        $effectiveLimit = $limit > 0 ? $limit : 50;
-        $result = $this->repository->search($q, $style, $type, $page, $effectiveLimit);
-
-        $meta = [];
-        if ($style !== '') $meta['style'] = $style;
-        if ($type !== '')  $meta['type']  = $type;
-        if ($q !== '')     $meta['query'] = $q;
-
-        ResponseHelper::paginated(
-            $result['items'],
-            $result['total'],
-            $result['page'],
-            $result['limit'],
-            $meta
-        );
+        $result = $this->repository->search($q, $style, $type, $page, $limit);
+        ResponseHelper::success($result['items'], 200, [
+            'total' => $result['total'],
+            'page'  => $result['page'],
+            'limit' => $result['limit']
+        ]);
     }
 
     /**
-     * Get single gradient by ID
+     * GET /v2/gradients/{id} - Lookup single gradient by ID
      */
     public function getById(string $id): void
     {
         $gradient = $this->repository->findById($id);
-
         if (!$gradient) {
             ResponseHelper::error("Gradient not found for ID '{$id}'", 404);
             return;

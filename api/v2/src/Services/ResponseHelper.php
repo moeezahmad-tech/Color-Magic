@@ -2,16 +2,17 @@
 
 namespace ColorMagic\Services;
 
+use ColorMagic\Config\Env;
+
 /**
- * Ultra-fast HTTP JSON Response & Performance Engine
- * Supports ETag 304 caching, execution timing, CORS, Gzip compression, and uniform formatting.
+ * Standardized REST API Response Formatter (PHP 7.0+ Compatible)
  */
 class ResponseHelper
 {
-    private static float $startTime = 0.0;
+    private static $startTime = 0.0;
 
     /**
-     * Start execution timer
+     * Start high-resolution execution timer
      */
     public static function startTimer(): void
     {
@@ -19,9 +20,9 @@ class ResponseHelper
     }
 
     /**
-     * Get elapsed execution time in milliseconds
+     * Calculate execution latency
      */
-    public static function getElapsedTimeMs(): float
+    public static function getLatencyMs(): float
     {
         if (self::$startTime <= 0.0) {
             return 0.0;
@@ -30,58 +31,34 @@ class ResponseHelper
     }
 
     /**
-     * Send JSON response with ETags and caching
+     * Send standardized JSON success response with ETag and CORS
      */
-    public static function json(array $data, int $statusCode = 200, array $extraHeaders = []): void
+    public static function success($data, int $statusCode = 200, array $meta = []): void
     {
-        // Safe Header Emission
-        if (!headers_sent()) {
-            header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-            header('Content-Type: application/json; charset=UTF-8');
+        self::sendHeaders($statusCode);
 
-            $elapsedMs = self::getElapsedTimeMs();
-            header("X-Response-Time: {$elapsedMs}ms");
-            header("X-Powered-By: ColorMagic-V2-Engine");
+        $response = [
+            'status'     => 'success',
+            'latency_ms' => self::getLatencyMs(),
+        ];
 
-            foreach ($extraHeaders as $name => $value) {
-                header("{$name}: {$value}");
+        if (!empty($meta)) {
+            foreach ($meta as $k => $v) {
+                $response[$k] = $v;
             }
         }
 
-        // Generate JSON payload
-        $json = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $response['data'] = $data;
 
-        // HTTP ETag & 304 Not Modified validation for GET requests
-        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && $statusCode === 200) {
-            $etag = '"' . md5($json) . '"';
-            if (!headers_sent()) {
-                header("ETag: {$etag}");
-                header("Cache-Control: public, max-age=86400, stale-while-revalidate=604800");
-            }
+        $json = json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        
+        // ETag 304 handling
+        $etag = '"' . md5($json) . '"';
+        header("ETag: {$etag}");
 
-            if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
-                if (!headers_sent()) {
-                    http_response_code(304);
-                }
-                exit;
-            }
-        }
-
-        if (!headers_sent()) {
-            http_response_code($statusCode);
-        }
-
-        // Gzip compression if supported and beneficial
-        if (
-            strlen($json) > 1024 &&
-            !headers_sent() &&
-            extension_loaded('zlib') &&
-            isset($_SERVER['HTTP_ACCEPT_ENCODING']) &&
-            str_contains($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
-        ) {
-            ob_start('ob_gzhandler');
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
+            http_response_code(304);
+            exit;
         }
 
         echo $json;
@@ -89,55 +66,44 @@ class ResponseHelper
     }
 
     /**
-     * Standard success response
+     * Send standardized JSON error response
      */
-    public static function success(mixed $data, array $meta = [], int $statusCode = 200): void
+    public static function error(string $message, int $statusCode = 400, array $extra = []): void
     {
+        self::sendHeaders($statusCode);
+
         $response = [
-            'status' => 'success',
-            'data'   => $data
+            'status'     => 'error',
+            'message'    => $message,
+            'latency_ms' => self::getLatencyMs(),
         ];
 
-        if (!empty($meta)) {
-            $response = array_merge($response, $meta);
+        if (!empty($extra)) {
+            $response['details'] = $extra;
         }
 
-        self::json($response, $statusCode);
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
-     * Standard paginated response
+     * Send standard HTTP headers
      */
-    public static function paginated(array $items, int $total, int $page, int $limit, array $extraMeta = []): void
+    private static function sendHeaders(int $statusCode = 200): void
     {
-        $totalPages = $limit > 0 ? (int)ceil($total / $limit) : 1;
-
-        $response = array_merge([
-            'status'      => 'success',
-            'page'        => $page,
-            'limit'       => $limit,
-            'total'       => $total,
-            'total_pages' => $totalPages,
-            'data'        => $items
-        ], $extraMeta);
-
-        self::json($response, 200);
-    }
-
-    /**
-     * Standard error response
-     */
-    public static function error(string $message, int $statusCode = 400, array $errors = []): void
-    {
-        $response = [
-            'status'  => 'error',
-            'message' => $message
-        ];
-
-        if (!empty($errors)) {
-            $response['errors'] = $errors;
+        if (headers_sent()) {
+            return;
         }
 
-        self::json($response, $statusCode);
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=UTF-8');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+
+        $cacheTtl = (int)Env::get('CACHE_TTL', 86400);
+        if ($cacheTtl > 0) {
+            header("Cache-Control: public, max-age={$cacheTtl}, stale-while-revalidate=604800");
+        }
     }
 }

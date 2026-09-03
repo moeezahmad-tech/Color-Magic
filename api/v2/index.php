@@ -4,16 +4,31 @@
  * Base URL: https://colormagic-api.techkreative.com/v2/
  */
 
-declare(strict_types=1);
-
-// Set error reporting to catch issues gracefully
+// Error handling
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 ini_set('display_errors', '0');
 
+// PHP 7.0 - 7.4 compatibility polyfills
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($haystack, $needle) {
+        return (string)$needle === '' || strncmp((string)$haystack, (string)$needle, strlen((string)$needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle) {
+        return (string)$needle === '' || substr((string)$haystack, -strlen((string)$needle)) === (string)$needle;
+    }
+}
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return (string)$needle === '' || strpos((string)$haystack, (string)$needle) !== false;
+    }
+}
+
 // Autoloader for ColorMagic namespace
-spl_autoload_register(static function (string $class): void {
+spl_autoload_register(function ($class) {
     $prefix = 'ColorMagic\\';
-    if (!str_starts_with($class, $prefix)) {
+    if (strncmp($class, $prefix, strlen($prefix)) !== 0) {
         return;
     }
 

@@ -10,13 +10,12 @@ use ColorMagic\Config\Env;
 use ColorMagic\Services\MigrationService;
 
 /**
- * High-Performance SQLite Connection Manager
- * Configured with WAL mode, memory mapping, query caching, and auto-provisioning.
+ * High-Performance SQLite Connection Manager (PHP 7.0+ Compatible)
  */
 class Database
 {
-    private static ?PDO $instance = null;
-    private static ?string $resolvedDbPath = null;
+    private static $instance = null;
+    private static $resolvedDbPath = null;
 
     /**
      * Get or initialize the PDO SQLite connection singleton
@@ -49,7 +48,7 @@ class Database
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ]);
 
-            // High-performance SQLite PRAGMA tuning (Safely executed)
+            // Safe PRAGMAs
             try {
                 $pdo->exec("PRAGMA journal_mode = WAL;");
                 $pdo->exec("PRAGMA synchronous = NORMAL;");
@@ -58,7 +57,7 @@ class Database
                 $pdo->exec("PRAGMA mmap_size = 268435456;");
                 $pdo->exec("PRAGMA busy_timeout = 5000;");
             } catch (Throwable $t) {
-                // Ignore pragma failures on restricted/read-only hosts
+                // Ignore pragma failures on restricted hosts
             }
 
             self::$instance = $pdo;
@@ -76,7 +75,7 @@ class Database
                     }
                 }
             } catch (Throwable $t) {
-                // If seeder fails, connection is still valid
+                // Seeder error safe
             }
 
             return self::$instance;
@@ -99,8 +98,8 @@ class Database
 
         // If rawPath is absolute
         if (
-            str_starts_with($rawPath, '/') ||
-            str_starts_with($rawPath, '\\') ||
+            strncmp($rawPath, '/', 1) === 0 ||
+            strncmp($rawPath, '\\', 1) === 0 ||
             (strlen($rawPath) > 2 && $rawPath[1] === ':')
         ) {
             self::$resolvedDbPath = $rawPath;
@@ -110,7 +109,7 @@ class Database
         $baseDir = __DIR__; // api/v2/src/Database
 
         $candidates = [
-            dirname($baseDir, 2) . DIRECTORY_SEPARATOR . $rawPath, // api/data/colormagic.sqlite (Self-contained)
+            dirname($baseDir, 2) . DIRECTORY_SEPARATOR . $rawPath, // api/data/colormagic.sqlite
             dirname($baseDir, 3) . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR . $rawPath,
             dirname($baseDir, 3) . DIRECTORY_SEPARATOR . $rawPath, // monorepo root
             dirname($baseDir, 4) . DIRECTORY_SEPARATOR . $rawPath, // parent directory
@@ -122,7 +121,6 @@ class Database
             $candidates[] = dirname($docRoot) . DIRECTORY_SEPARATOR . $rawPath;
         }
 
-        // Return first existing path, or default to candidate[0] (api/data/colormagic.sqlite)
         foreach ($candidates as $cand) {
             if (file_exists($cand)) {
                 self::$resolvedDbPath = $cand;
@@ -135,7 +133,7 @@ class Database
     }
 
     /**
-     * Reset connection instance (useful for testing or migrations)
+     * Reset connection instance
      */
     public static function reset(): void
     {

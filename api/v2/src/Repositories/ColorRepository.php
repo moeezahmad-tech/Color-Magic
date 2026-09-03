@@ -7,15 +7,14 @@ use Throwable;
 use ColorMagic\Database\Database;
 
 /**
- * Color Repository
- * Provides indexed O(1) lookups and sub-millisecond paginated queries, with fail-safe JSON fallback.
+ * Color Repository (PHP 7.0+ Compatible)
  */
 class ColorRepository
 {
-    private ?PDO $db = null;
-    private ?array $fallbackData = null;
+    private $db = null;
+    private $fallbackData = null;
 
-    public function __construct(?PDO $db = null)
+    public function __construct($db = null)
     {
         if ($db !== null) {
             $this->db = $db;
@@ -31,7 +30,7 @@ class ColorRepository
     /**
      * Find single color by Hex code
      */
-    public function findByHex(string $hex): ?array
+    public function findByHex(string $hex)
     {
         $cleanHex = strtoupper(ltrim(trim($hex), '#'));
         if ($cleanHex === '') {
@@ -52,7 +51,7 @@ class ColorRepository
                     return $this->formatColor($row);
                 }
             } catch (Throwable $t) {
-                // Fall through to JSON fallback
+                // Fall through
             }
         }
 
@@ -78,7 +77,7 @@ class ColorRepository
     /**
      * Find single color by Slug
      */
-    public function findBySlug(string $slug): ?array
+    public function findBySlug(string $slug)
     {
         $cleanSlug = strtolower(trim($slug));
         if ($cleanSlug === '') {
@@ -99,7 +98,7 @@ class ColorRepository
                     return $this->formatColor($row);
                 }
             } catch (Throwable $t) {
-                // Fall through to JSON fallback
+                // Fall through
             }
         }
 
@@ -166,7 +165,7 @@ class ColorRepository
                     'items' => array_map([$this, 'formatColor'], $rows)
                 ];
             } catch (Throwable $t) {
-                // Fall through to JSON fallback
+                // Fall through
             }
         }
 
@@ -181,9 +180,9 @@ class ColorRepository
 
             if ($q !== '') {
                 $qLower = strtolower($q);
-                $nameMatch = str_contains(strtolower($name), $qLower);
-                $hexMatch  = str_contains(strtolower($cleanHex), $qLower);
-                $slugMatch = str_contains(strtolower($slug), $qLower);
+                $nameMatch = strpos(strtolower($name), $qLower) !== false;
+                $hexMatch  = strpos(strtolower($cleanHex), $qLower) !== false;
+                $slugMatch = strpos(strtolower($slug), $qLower) !== false;
                 if (!$nameMatch && !$hexMatch && !$slugMatch) {
                     continue;
                 }
@@ -233,7 +232,7 @@ class ColorRepository
                 }
                 return array_map([$this, 'formatColor'], $rows);
             } catch (Throwable $t) {
-                // Fall through to JSON fallback
+                // Fall through
             }
         }
 

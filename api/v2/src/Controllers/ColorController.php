@@ -6,70 +6,64 @@ use ColorMagic\Repositories\ColorRepository;
 use ColorMagic\Services\ResponseHelper;
 
 /**
- * Color Controller
- * Fast endpoints for color lookup by hex/slug, query search, and pagination.
+ * Colors REST Controller (PHP 7.0+ Compatible)
  */
 class ColorController extends BaseController
 {
-    private ColorRepository $repository;
+    private $repository;
 
-    public function __construct(?ColorRepository $repository = null)
+    public function __construct($repository = null)
     {
         $this->repository = $repository ?? new ColorRepository();
     }
 
     /**
-     * Handle index route: list, search, or query param lookup
+     * GET /v2/colors - List, search, paginate or return dict format
      */
     public function index(): void
     {
-        $hex  = $this->getStringParam('hex');
-        $slug = $this->getStringParam('slug');
+        $q      = (string)$this->getQuery('q', '');
+        $page   = (int)$this->getQuery('page', 1);
+        $limit  = (int)$this->getQuery('limit', 50);
+        $format = (string)$this->getQuery('format', 'list');
 
+        // Check if user requested dictionary format (format=dict)
+        if ($format === 'dict') {
+            $dict = $this->repository->all(true);
+            ResponseHelper::success($dict, 200, ['total' => count($dict), 'format' => 'dictionary']);
+            return;
+        }
+
+        // Support query by hex in query param (?hex=123524)
+        $hex = (string)$this->getQuery('hex', '');
         if ($hex !== '') {
             $this->getByHex($hex);
             return;
         }
 
+        // Support query by slug in query param (?slug=phthalo-green)
+        $slug = (string)$this->getQuery('slug', '');
         if ($slug !== '') {
             $this->getBySlug($slug);
             return;
         }
 
-        $q     = $this->getStringParam('q');
-        $page  = $this->getIntParam('page', 1, 1);
-        $limit = isset($_GET['limit']) ? $this->getIntParam('limit', 50, 1, 200) : (isset($_GET['page']) ? 50 : 0);
-
-        // If no limit or page specified, return all (backward compatible / bulk consumption)
-        if ($limit === 0 && $q === '') {
-            $format = $this->getStringParam('format');
-            $all = $this->repository->all($format === 'dict');
-            ResponseHelper::success($all, ['total' => count($all)]);
-            return;
-        }
-
-        $effectiveLimit = $limit > 0 ? $limit : 50;
-        $result = $this->repository->search($q, $page, $effectiveLimit);
-
-        ResponseHelper::paginated(
-            $result['items'],
-            $result['total'],
-            $result['page'],
-            $result['limit'],
-            ['query' => $q]
-        );
+        $result = $this->repository->search($q, $page, $limit);
+        ResponseHelper::success($result['items'], 200, [
+            'total' => $result['total'],
+            'page'  => $result['page'],
+            'limit' => $result['limit']
+        ]);
     }
 
     /**
-     * Get single color by Hex code
+     * GET /v2/colors/{hex} - Lookup single color by Hex code
      */
     public function getByHex(string $hex): void
     {
         $color = $this->repository->findByHex($hex);
-
         if (!$color) {
-            $clean = strtoupper(ltrim(trim($hex), '#'));
-            ResponseHelper::error("Color not found for hex #{$clean}", 404);
+            ResponseHelper::error("Color not found for hex code '#{$hex}'", 404);
             return;
         }
 
@@ -77,12 +71,11 @@ class ColorController extends BaseController
     }
 
     /**
-     * Get single color by Slug
+     * GET /v2/colors/slug/{slug} - Lookup single color by name slug
      */
     public function getBySlug(string $slug): void
     {
         $color = $this->repository->findBySlug($slug);
-
         if (!$color) {
             ResponseHelper::error("Color not found for slug '{$slug}'", 404);
             return;

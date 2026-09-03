@@ -7,15 +7,14 @@ use Throwable;
 use ColorMagic\Database\Database;
 
 /**
- * Gradient Repository
- * Provides fast indexed retrieval and filtering for CSS gradients with fail-safe JSON fallback.
+ * Gradient Repository (PHP 7.0+ Compatible)
  */
 class GradientRepository
 {
-    private ?PDO $db = null;
-    private ?array $fallbackData = null;
+    private $db = null;
+    private $fallbackData = null;
 
-    public function __construct(?PDO $db = null)
+    public function __construct($db = null)
     {
         if ($db !== null) {
             $this->db = $db;
@@ -31,7 +30,7 @@ class GradientRepository
     /**
      * Find single gradient by ID
      */
-    public function findById(string $id): ?array
+    public function findById(string $id)
     {
         $id = trim($id);
         if ($id === '') {
@@ -52,7 +51,7 @@ class GradientRepository
                     return $this->formatGradient($row);
                 }
             } catch (Throwable $t) {
-                // Fall through to JSON fallback
+                // Fall through
             }
         }
 
@@ -71,8 +70,8 @@ class GradientRepository
      */
     public function search(
         string $q = '',
-        ?string $style = null,
-        ?string $type = null,
+        $style = null,
+        $type = null,
         int $page = 1,
         int $limit = 50
     ): array {
@@ -127,13 +126,13 @@ class GradientRepository
                     'items' => array_map([$this, 'formatGradient'], $rows)
                 ];
             } catch (Throwable $t) {
-                // Fall through to JSON fallback
+                // Fall through
             }
         }
 
         // JSON Fallback
         $data = $this->getFallbackData();
-        $filtered = array_values(array_filter($data, static function ($item) use ($q, $style, $type) {
+        $filtered = array_values(array_filter($data, function ($item) use ($q, $style, $type) {
             if (!is_array($item)) return false;
             if ($style !== null && trim($style) !== '' && strtolower((string)($item['style'] ?? '')) !== strtolower(trim($style))) {
                 return false;
@@ -143,9 +142,9 @@ class GradientRepository
             }
             if (trim($q) !== '') {
                 $qLower = strtolower(trim($q));
-                $nameMatch = str_contains(strtolower((string)($item['name'] ?? '')), $qLower);
-                $styleMatch = str_contains(strtolower((string)($item['style'] ?? '')), $qLower);
-                $typeMatch = str_contains(strtolower((string)($item['type'] ?? '')), $qLower);
+                $nameMatch = strpos(strtolower((string)($item['name'] ?? '')), $qLower) !== false;
+                $styleMatch = strpos(strtolower((string)($item['style'] ?? '')), $qLower) !== false;
+                $typeMatch = strpos(strtolower((string)($item['type'] ?? '')), $qLower) !== false;
                 if (!$nameMatch && !$styleMatch && !$typeMatch) return false;
             }
             return true;

@@ -8,8 +8,7 @@ use ColorMagic\Services\ResponseHelper;
 use Throwable;
 
 /**
- * Health & Diagnostics Controller
- * Provides system status, database statistics, and latency metrics.
+ * Health & Diagnostics Controller (PHP 7.0+ Compatible)
  */
 class HealthController extends BaseController
 {
@@ -65,6 +64,7 @@ class HealthController extends BaseController
             'status'      => 'healthy',
             'api_name'    => 'ColorMagic REST API',
             'version'     => 'v2',
+            'php_version' => PHP_VERSION,
             'environment' => Env::get('APP_ENV', 'production'),
             'database'    => [
                 'status'       => $dbStatus,

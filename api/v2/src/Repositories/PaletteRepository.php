@@ -7,15 +7,14 @@ use Throwable;
 use ColorMagic\Database\Database;
 
 /**
- * Palette Repository
- * Handles curated color palettes and community submissions with fail-safe JSON fallback.
+ * Palette Repository (PHP 7.0+ Compatible)
  */
 class PaletteRepository
 {
-    private ?PDO $db = null;
-    private ?array $fallbackData = null;
+    private $db = null;
+    private $fallbackData = null;
 
-    public function __construct(?PDO $db = null)
+    public function __construct($db = null)
     {
         if ($db !== null) {
             $this->db = $db;
@@ -31,7 +30,7 @@ class PaletteRepository
     /**
      * Find single palette by ID
      */
-    public function findById(string $id): ?array
+    public function findById(string $id)
     {
         $id = trim($id);
         if ($id === '') {
@@ -71,7 +70,7 @@ class PaletteRepository
      */
     public function search(
         string $q = '',
-        ?string $style = null,
+        $style = null,
         int $page = 1,
         int $limit = 50
     ): array {
@@ -126,18 +125,18 @@ class PaletteRepository
 
         // JSON Fallback
         $data = $this->getFallbackData();
-        $filtered = array_values(array_filter($data, static function ($item) use ($q, $style) {
+        $filtered = array_values(array_filter($data, function ($item) use ($q, $style) {
             if (!is_array($item)) return false;
             if ($style !== null && trim($style) !== '' && strtolower((string)($item['style'] ?? '')) !== strtolower(trim($style))) {
                 return false;
             }
             if (trim($q) !== '') {
                 $qLower = strtolower(trim($q));
-                $nameMatch = str_contains(strtolower((string)($item['name'] ?? '')), $qLower);
+                $nameMatch = strpos(strtolower((string)($item['name'] ?? '')), $qLower) !== false;
                 $colorMatch = false;
                 if (isset($item['colors']) && is_array($item['colors'])) {
                     foreach ($item['colors'] as $c) {
-                        if (str_contains(strtolower((string)$c), $qLower)) {
+                        if (strpos(strtolower((string)$c), $qLower) !== false) {
                             $colorMatch = true;
                             break;
                         }
