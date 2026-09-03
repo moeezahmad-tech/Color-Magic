@@ -125,7 +125,7 @@ class ColorRepository
     /**
      * Search and paginate colors
      */
-    public function search(string $q = '', int $page = 1, int $limit = 50): array
+    public function search(string $q = '', int $page = 1, int $limit = 50)
     {
         $page   = max(1, $page);
         $limit  = max(1, min(200, $limit));
@@ -211,7 +211,7 @@ class ColorRepository
     /**
      * Get all colors
      */
-    public function all(bool $asDictionary = false): array
+    public function all(bool $asDictionary = false)
     {
         if ($this->db !== null) {
             try {
@@ -262,7 +262,7 @@ class ColorRepository
     /**
      * Load JSON dataset fallback
      */
-    private function getFallbackData(): array
+    private function getFallbackData()
     {
         if ($this->fallbackData !== null) {
             return $this->fallbackData;
@@ -292,7 +292,7 @@ class ColorRepository
     /**
      * Format database row
      */
-    private function formatColor(array $row): array
+    private function formatColor(array $row)
     {
         $aliases = json_decode($row['aliases'] ?? '[]', true);
         if (!is_array($aliases)) {

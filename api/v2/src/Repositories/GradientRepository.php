@@ -74,7 +74,7 @@ class GradientRepository
         $type = null,
         int $page = 1,
         int $limit = 50
-    ): array {
+    ) {
         $page   = max(1, $page);
         $limit  = max(1, min(200, $limit));
         $offset = ($page - 1) * $limit;
@@ -164,7 +164,7 @@ class GradientRepository
     /**
      * Get all gradients
      */
-    public function all(): array
+    public function all()
     {
         if ($this->db !== null) {
             try {
@@ -181,7 +181,7 @@ class GradientRepository
     /**
      * Load fallback dataset
      */
-    private function getFallbackData(): array
+    private function getFallbackData()
     {
         if ($this->fallbackData !== null) {
             return $this->fallbackData;
@@ -211,7 +211,7 @@ class GradientRepository
     /**
      * Format row
      */
-    private function formatGradient(array $row): array
+    private function formatGradient(array $row)
     {
         $colors = json_decode($row['colors'] ?? '[]', true);
         if (!is_array($colors)) {

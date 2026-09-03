@@ -73,7 +73,7 @@ class PaletteRepository
         $style = null,
         int $page = 1,
         int $limit = 50
-    ): array {
+    ) {
         $page   = max(1, $page);
         $limit  = max(1, min(200, $limit));
         $offset = ($page - 1) * $limit;
@@ -161,7 +161,7 @@ class PaletteRepository
     /**
      * Get all curated palettes
      */
-    public function all(): array
+    public function all()
     {
         if ($this->db !== null) {
             try {
@@ -178,7 +178,7 @@ class PaletteRepository
     /**
      * Submit community palette
      */
-    public function submitUserPalette(array $data): array
+    public function submitUserPalette(array $data)
     {
         $id      = 'user_pal_' . uniqid('', true);
         $userId  = $data['user_id'] ?? null;
@@ -215,7 +215,7 @@ class PaletteRepository
     /**
      * Load fallback dataset
      */
-    private function getFallbackData(): array
+    private function getFallbackData()
     {
         if ($this->fallbackData !== null) {
             return $this->fallbackData;
@@ -245,7 +245,7 @@ class PaletteRepository
     /**
      * Format database row
      */
-    private function formatPalette(array $row): array
+    private function formatPalette(array $row)
     {
         $colors = json_decode($row['colors'] ?? '[]', true);
         if (!is_array($colors)) {

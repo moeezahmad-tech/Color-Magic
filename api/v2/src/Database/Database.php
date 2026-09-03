@@ -20,7 +20,7 @@ class Database
     /**
      * Get or initialize the PDO SQLite connection singleton
      */
-    public static function getConnection(): PDO
+    public static function getConnection()
     {
         if (self::$instance !== null) {
             return self::$instance;
@@ -63,7 +63,7 @@ class Database
     /**
      * Resolve database path - correctly finds api/data/colormagic.sqlite
      */
-    public static function resolveDbPath(): string
+    public static function resolveDbPath()
     {
         if (self::$resolvedDbPath !== null) {
             return self::$resolvedDbPath;

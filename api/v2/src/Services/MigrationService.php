@@ -21,7 +21,7 @@ class MigrationService
     /**
      * Run full database migration and seed data
      */
-    public function migrate(): array
+    public function migrate()
     {
         $this->createTables();
         $this->createIndexes();
@@ -104,7 +104,7 @@ class MigrationService
     /**
      * Seed colors from color-names.json
      */
-    private function seedColors(): int
+    private function seedColors()
     {
         $filePath = $this->resolveDataPath('color-names.json');
         if (!file_exists($filePath)) {
@@ -153,7 +153,7 @@ class MigrationService
     /**
      * Seed gradients from gradients.json
      */
-    private function seedGradients(): int
+    private function seedGradients()
     {
         $filePath = $this->resolveDataPath('gradients.json');
         if (!file_exists($filePath)) {
@@ -203,7 +203,7 @@ class MigrationService
     /**
      * Seed palettes from palettes.json
      */
-    private function seedPalettes(): int
+    private function seedPalettes()
     {
         $filePath = $this->resolveDataPath('palettes.json');
         if (!file_exists($filePath)) {
@@ -249,7 +249,7 @@ class MigrationService
     /**
      * Generate URL slug
      */
-    private function slugify(string $text): string
+    private function slugify(string $text)
     {
         $text = preg_replace('~[^\pL\d]+~u', '-', $text);
         $text = trim($text, '-');
@@ -261,7 +261,7 @@ class MigrationService
     /**
      * Resolve data file path
      */
-    private function resolveDataPath(string $fileName): string
+    private function resolveDataPath(string $fileName)
     {
         $candidates = [
             dirname(__DIR__, 3) . '/data/' . $fileName,
