@@ -1,5 +1,8 @@
 # ColorMagic High-Performance API .htaccess
-# Serves colormagic-api.techkreative.com and local subfolder /api/
+# Serves colormagic-api.techkreative.com
+
+DirectoryIndex index.php
+Options -Indexes +FollowSymLinks
 
 <IfModule mod_headers.c>
     # Enable CORS for all origins
@@ -26,12 +29,7 @@ AddType application/json .json
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ - [R=200,L]
 
-    # If physical file or directory exists, serve directly
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # --- V2 RESTful API Routing ---
+    # --- V2 RESTful API Routing (Must be routed before directory/file fallthrough) ---
     RewriteRule ^v2(/.*)?$ v2/index.php [L,QSA]
     RewriteRule ^health/?$ v2/index.php [L,QSA]
     RewriteRule ^colors?/([0-9A-Fa-f]{3,8})/?$ v2/index.php [L,QSA]
@@ -45,4 +43,8 @@ AddType application/json .json
     RewriteRule ^gradients/?$ gradients.php [L,QSA]
     RewriteRule ^palettes/?$ palettes.php [L,QSA]
     RewriteRule ^colors/?$ colors.php [L,QSA]
+
+    # Allow direct static file access if physical file exists
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
 </IfModule>

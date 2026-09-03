@@ -55,7 +55,7 @@ try {
 
     // Route matching
     // Health / Root
-    if ($path === '/' || $path === '/health') {
+    if ($path === '/' || $path === '/health' || $path === '/index.php') {
         (new HealthController())->check();
         exit;
     }
