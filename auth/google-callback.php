@@ -17,6 +17,7 @@ if (isset($_GET['code'])) {
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
     $response = curl_exec($ch);
+    $curlErr = curl_error($ch);
     curl_close($ch);
 
     $tokenData = json_decode($response, true);
@@ -45,6 +46,11 @@ if (isset($_GET['code'])) {
             header('Location: ' . $base . '/');
             exit();
         }
+    } else {
+        error_log("Google OAuth Token Failure: " . ($response ?: $curlErr));
+        $desc = urlencode($tokenData['error_description'] ?? ($tokenData['error'] ?? ($curlErr ?: 'token_exchange_failed')));
+        header('Location: ' . $base . '/login?error=auth_failed&reason=' . $desc);
+        exit();
     }
 }
 

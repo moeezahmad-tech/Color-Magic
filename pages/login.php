@@ -30,6 +30,9 @@ include '../components/config.php';
             <?php if (isset($_GET['error']) && $_GET['error'] === 'auth_failed'): ?>
                 <div class="bg-red-50 text-red-700 p-4 rounded-lg mb-6 text-sm border border-red-100 text-center">
                     Authentication failed. Please try again.
+                    <?php if (!empty($_GET['reason'])): ?>
+                        <div class="mt-1 text-xs opacity-80"><?= htmlspecialchars($_GET['reason']) ?></div>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
             
