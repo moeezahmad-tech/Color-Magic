@@ -286,11 +286,13 @@
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
                 <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2 flex items-center gap-3">
-                    <?php if (isset($_SESSION['user']['picture'])): ?>
-                        <img src="<?= htmlspecialchars($_SESSION['user']['picture']) ?>" alt="Profile" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                    <?php else: ?>
-                        <i class="bi bi-person-circle text-indigo-500"></i>
-                    <?php endif; ?>
+                    <span id="profileUserAvatar">
+                        <?php if (isset($_SESSION['user']['picture'])): ?>
+                            <img src="<?= htmlspecialchars($_SESSION['user']['picture']) ?>" alt="Profile" class="w-10 h-10 rounded-full object-cover shadow-sm">
+                        <?php else: ?>
+                            <i class="bi bi-person-circle text-indigo-500"></i>
+                        <?php endif; ?>
+                    </span>
                     Your Profile
                 </h1>
                 <p class="text-slate-500 dark:text-slate-400 text-base max-w-xl">
@@ -346,7 +348,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <p class="text-sm text-slate-500 dark:text-slate-400 font-semibold mb-1">SIGNED IN AS</p>
-                    <p class="text-lg font-medium text-slate-900 dark:text-white">
+                    <p id="profileUserEmail" class="text-lg font-medium text-slate-900 dark:text-white">
                         <?= htmlspecialchars($_SESSION['user']['email'] ?? 'Not logged in') ?>
                     </p>
                 </div>
@@ -378,6 +380,26 @@
     <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= time() ?>" defer></script>
     <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=<?= time() ?>" defer></script>
     <script src="<?= $base ?>/assets/js/favorites-page.js?v=<?= time() ?>" defer></script>
+    <script>
+        (function() {
+            try {
+                const raw = localStorage.getItem('cm_user') || sessionStorage.getItem('cm_user');
+                if (raw) {
+                    const user = JSON.parse(raw);
+                    const emailEl = document.getElementById('profileUserEmail');
+                    const avatarEl = document.getElementById('profileUserAvatar');
+                    if (user && user.email) {
+                        if (emailEl && emailEl.textContent.trim() === 'Not logged in') {
+                            emailEl.textContent = user.email;
+                        }
+                        if (avatarEl && user.picture && !avatarEl.querySelector('img')) {
+                            avatarEl.innerHTML = `<img src="${user.picture}" alt="Profile" class="w-10 h-10 rounded-full object-cover shadow-sm">`;
+                        }
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
 </body>
 
 </html>

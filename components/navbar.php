@@ -113,27 +113,59 @@
                     <span class="text-xs font-semibold">Open Source</span>
                 </a>
                 
+                <div id="navAuthSlot" class="hidden lg:flex items-center gap-2">
                 <?php if (isset($_SESSION['user'])): ?>
-                    <div class="hidden lg:flex items-center gap-2">
-                        <a href="<?= $base ?>/profile"
-                            class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 rounded-full transition-all shadow-sm font-medium border border-indigo-100 dark:border-indigo-800">
-                            <?php if(!empty($_SESSION['user']['picture'])): ?>
-                                <img src="<?= htmlspecialchars($_SESSION['user']['picture']) ?>" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">
-                            <?php else: ?>
-                                <div class="w-6 h-6 rounded-full bg-indigo-200 text-indigo-700 flex items-center justify-center text-xs font-bold shadow-sm">
-                                    <?= strtoupper(substr($_SESSION['user']['email'], 0, 1)) ?>
-                                </div>
-                            <?php endif; ?>
-                            <span class="text-xs pr-1 truncate max-w-[100px]"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Profile') ?></span>
-                        </a>
-                    </div>
+                    <a href="<?= $base ?>/profile"
+                        class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 rounded-full transition-all shadow-sm font-medium border border-indigo-100 dark:border-indigo-800">
+                        <?php if(!empty($_SESSION['user']['picture'])): ?>
+                            <img src="<?= htmlspecialchars($_SESSION['user']['picture']) ?>" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">
+                        <?php else: ?>
+                            <div class="w-6 h-6 rounded-full bg-indigo-200 text-indigo-700 flex items-center justify-center text-xs font-bold shadow-sm">
+                                <?= strtoupper(substr($_SESSION['user']['email'], 0, 1)) ?>
+                            </div>
+                        <?php endif; ?>
+                        <span class="text-xs pr-1 truncate max-w-[100px]"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Profile') ?></span>
+                    </a>
+                    <script>
+                        try {
+                            const u = <?= json_encode($_SESSION['user']) ?>;
+                            localStorage.setItem('cm_user', JSON.stringify(u));
+                            sessionStorage.setItem('cm_user', JSON.stringify(u));
+                        } catch(e) {}
+                    </script>
                 <?php else: ?>
-                    <a href="<?= $base ?>/login"
-                        class="hidden lg:flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-md rounded-lg transition-all shadow-sm font-medium">
+                    <a id="navLoginBtn" href="<?= $base ?>/login"
+                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-md rounded-lg transition-all shadow-sm font-medium">
                         <i class="bi bi-google text-sm"></i>
                         <span class="text-sm">Login</span>
                     </a>
                 <?php endif; ?>
+                </div>
+                <script>
+                    (function() {
+                        try {
+                            const raw = localStorage.getItem('cm_user') || sessionStorage.getItem('cm_user');
+                            const slot = document.getElementById('navAuthSlot');
+                            const loginBtn = document.getElementById('navLoginBtn');
+                            if (raw && slot && loginBtn) {
+                                const user = JSON.parse(raw);
+                                if (user && user.email) {
+                                    const name = user.name || user.email.split('@')[0];
+                                    const pic = user.picture
+                                        ? `<img src="${user.picture}" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">`
+                                        : `<div class="w-6 h-6 rounded-full bg-indigo-200 text-indigo-700 flex items-center justify-center text-xs font-bold shadow-sm">${(user.email[0] || 'U').toUpperCase()}</div>`;
+                                    slot.innerHTML = `
+                                        <a href="<?= $base ?>/profile"
+                                            class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 rounded-full transition-all shadow-sm font-medium border border-indigo-100 dark:border-indigo-800">
+                                            ${pic}
+                                            <span class="text-xs pr-1 truncate max-w-[100px]">${name}</span>
+                                        </a>
+                                    `;
+                                }
+                            }
+                        } catch (err) {}
+                    })();
+                </script>
             </div>
         </div>
     </header>

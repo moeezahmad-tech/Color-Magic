@@ -23,13 +23,29 @@ window.ColorMagic.Favorites = (function () {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
     }
 
+    // Background DB sync helper
+    function syncToDatabase(type, id, action) {
+        try {
+            const hasUser = localStorage.getItem('cm_user') || sessionStorage.getItem('cm_user');
+            if (!hasUser) return;
+            const authBase = (window.CM_AUTH_BASE || '/auth');
+            fetch(authBase + '/favorites.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action || 'toggle', type: type, id: id })
+            }).catch(function () {});
+        } catch (_) {}
+    }
+
     function toggleFavorite(paletteId) {
         const favorites = getFavorites();
         const index = favorites.indexOf(paletteId);
         if (index > -1) {
             favorites.splice(index, 1);
+            syncToDatabase('palette', paletteId, 'remove');
         } else {
             favorites.push(paletteId);
+            syncToDatabase('palette', paletteId, 'add');
         }
         saveFavorites(favorites);
     }
@@ -54,7 +70,7 @@ window.ColorMagic.Favorites = (function () {
         }
     }
 
-    return { getFavorites, saveFavorites, toggleFavorite, isFavorite, updateFavoriteButton };
+    return { getFavorites, saveFavorites, toggleFavorite, isFavorite, updateFavoriteButton, syncToDatabase };
 })();
 
 // ─── Color Favorites ──────────────────────────────────────────────────────────
@@ -81,8 +97,10 @@ window.ColorMagic.ColorFavorites = (function () {
         const idx  = favs.indexOf(key);
         if (idx > -1) {
             favs.splice(idx, 1);
+            window.ColorMagic.Favorites.syncToDatabase('color', key, 'remove');
         } else {
             favs.push(key);
+            window.ColorMagic.Favorites.syncToDatabase('color', key, 'add');
         }
         saveFavorites(favs);
         return idx === -1; // true = was added
@@ -93,7 +111,7 @@ window.ColorMagic.ColorFavorites = (function () {
         return getFavorites().includes(key);
     }
 
-    return { getFavorites, toggleFavorite, isFavorite };
+    return { getFavorites, saveFavorites, toggleFavorite, isFavorite };
 })();
 
 // ─── Gradient Favorites ───────────────────────────────────────────────────────
@@ -118,8 +136,10 @@ window.ColorMagic.GradientFavorites = (function () {
         const idx  = favs.indexOf(gradientId);
         if (idx > -1) {
             favs.splice(idx, 1);
+            window.ColorMagic.Favorites.syncToDatabase('gradient', gradientId, 'remove');
         } else {
             favs.push(gradientId);
+            window.ColorMagic.Favorites.syncToDatabase('gradient', gradientId, 'add');
         }
         saveFavorites(favs);
         return idx === -1; // true = was added
@@ -129,5 +149,48 @@ window.ColorMagic.GradientFavorites = (function () {
         return getFavorites().includes(gradientId);
     }
 
-    return { getFavorites, toggleFavorite, isFavorite };
+    return { getFavorites, saveFavorites, toggleFavorite, isFavorite };
 })();
+
+// ─── Bi-directional DB Sync for Google Logged-In Users ───────────────────────
+window.ColorMagic.syncFavoritesWithServer = function () {
+    try {
+        const hasUser = localStorage.getItem('cm_user') || sessionStorage.getItem('cm_user');
+        if (!hasUser) return Promise.resolve();
+        const authBase = (window.CM_AUTH_BASE || '/auth');
+        const localPalettes = window.ColorMagic.Favorites.getFavorites();
+        const localColors   = window.ColorMagic.ColorFavorites.getFavorites();
+        const localGrads    = window.ColorMagic.GradientFavorites.getFavorites();
+
+        return fetch(authBase + '/favorites.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'sync',
+                palettes: localPalettes,
+                colors: localColors,
+                gradients: localGrads
+            })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+            if (res && res.success && res.data) {
+                if (Array.isArray(res.data.palettes)) window.ColorMagic.Favorites.saveFavorites(res.data.palettes);
+                if (Array.isArray(res.data.colors)) window.ColorMagic.ColorFavorites.saveFavorites(res.data.colors);
+                if (Array.isArray(res.data.gradients)) window.ColorMagic.GradientFavorites.saveFavorites(res.data.gradients);
+            }
+        })
+        .catch(function () {});
+    } catch (_) {
+        return Promise.resolve();
+    }
+};
+
+// Automatically sync when script loads if user is authenticated
+if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', function () {
+        if (window.ColorMagic && window.ColorMagic.syncFavoritesWithServer) {
+            window.ColorMagic.syncFavoritesWithServer();
+        }
+    });
+}
