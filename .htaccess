@@ -1,24 +1,22 @@
-Options -MultiViews
+Options -MultiViews -Indexes
 RewriteEngine On
 
-# ── SECURITY: Redirect /pages/... URLs to clean /... URLs ───────────────────────
-# Prevents /pages/ prefix from appearing in URLs (SEO canonical enforcement)
-
+# ── SECURITY & SEO: Redirect /pages/... and extensions to clean HTTPS URLs ────
 # /pages/X.php → /X
 RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)\.(php|html) [NC]
-RewriteRule ^pages/(.+)\.(php|html)$ /$1 [R=301,L,NC]
+RewriteRule ^pages/(.+)\.(php|html)$ https://%{HTTP_HOST}/$1 [R=301,L,NC]
 
 # /pages/X → /X (extensionless direct access)
 RewriteCond %{THE_REQUEST} \s/+pages/([^\s?]+)[\s?] [NC]
-RewriteRule ^pages/(.+)$ /$1 [R=301,L,NC]
+RewriteRule ^pages/(.+)$ https://%{HTTP_HOST}/$1 [R=301,L,NC]
 
 # Redirect index.php / index.html → /
 RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
-RewriteRule ^(.*)index\.(php|html)$ /$1 [R=301,L,NC]
+RewriteRule ^(.*)index\.(php|html)$ https://%{HTTP_HOST}/$1 [R=301,L,NC]
 
 # Redirect .php and .html extensions → extensionless
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
-RewriteRule ^(.+)\.(php|html)$ /$1 [R=301,L,NC]
+RewriteRule ^(.+)\.(php|html)$ https://%{HTTP_HOST}/$1 [R=301,L,NC]
 
 # Homepage
 RewriteRule ^$ pages/index.php [L]

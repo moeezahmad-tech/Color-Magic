@@ -1,6 +1,4 @@
 <?php
-
-header('X-Robots-Tag: noindex, nofollow');
 header('Cache-Control: public, max-age=31536000, immutable');
 header('Vary: Accept');
 
