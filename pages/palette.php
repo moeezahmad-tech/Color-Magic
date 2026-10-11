@@ -96,20 +96,23 @@
                         <div class="h-5 w-1/2 bg-slate-200/80 dark:bg-slate-800 rounded-lg"></div>
                         <div class="h-4 w-full bg-slate-200/80 dark:bg-slate-800 rounded"></div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
-                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
-                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
-                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3">
+                    <!-- 2. Details: Metric Chips -->
+                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
                         <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                         <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                         <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                     </div>
+                    <!-- 3. Swatches list -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div class="h-10 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
-                        <div class="h-10 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-12 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-12 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-12 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-12 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                    </div>
+                    <!-- 4. Action buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="h-12 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                        <div class="h-12 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                     </div>
                 </div>
             </div>
@@ -180,16 +183,6 @@
                             title="Download palette image">
                             <i class="bi bi-download text-base"></i>
                             <span>Download Image</span>
-                        </button>
-                        <button id="copyAllBtn"
-                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
-                            <i class="bi bi-clipboard text-base"></i>
-                            <span>Copy All Colors</span>
-                        </button>
-                        <button id="copyCssVarsBtn"
-                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
-                            <i class="bi bi-code-slash text-sm"></i>
-                            <span>Copy CSS Vars</span>
                         </button>
                         <button id="favPaletteBtn"
                             class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">

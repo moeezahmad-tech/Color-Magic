@@ -25,8 +25,7 @@
     const colorInfoGrid = document.getElementById('colorInfoGrid');
     const brightnessChart = document.getElementById('brightnessChart');
     const paletteIdText = document.getElementById('paletteIdText');
-    const copyAllBtn = document.getElementById('copyAllBtn');
-    const copyCssVarsBtn = document.getElementById('copyCssVarsBtn');
+
 
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -450,14 +449,6 @@
             btn?.addEventListener('click', async () => {
                 await copyText(data, btn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', copyIconHTML);
             });
-        });
-
-        copyAllBtn?.addEventListener('click', () => {
-            window.ColorMagic.animateCopy(copyAllBtn, allColors, 'Copied All!');
-        });
-
-        copyCssVarsBtn?.addEventListener('click', () => {
-            window.ColorMagic.animateCopy(copyCssVarsBtn, cssVars, 'Copied CSS Vars!');
         });
 
         // Related Colors — derive complementary, analogous, triadic from palette colors
