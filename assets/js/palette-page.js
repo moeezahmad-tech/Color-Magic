@@ -372,20 +372,6 @@
         }
 
 
-        // Copy color HEX / RGB buttons in color info grid
-        colorInfoGrid?.addEventListener('click', async (event) => {
-            const hexBtn = event.target.closest('.copy-color-hex-btn');
-            if (hexBtn) {
-                const origHTML = hexBtn.innerHTML;
-                await copyText(hexBtn.dataset.hex, hexBtn, '<i class="bi bi-check-circle text-xs"></i> HEX', '<i class="bi bi-x-circle text-xs"></i> HEX', origHTML);
-                return;
-            }
-            const rgbBtn = event.target.closest('.copy-color-rgb-btn');
-            if (rgbBtn) {
-                const origHTML = rgbBtn.innerHTML;
-                await copyText(rgbBtn.dataset.rgb, rgbBtn, '<i class="bi bi-check-circle text-xs"></i> RGB', '<i class="bi bi-x-circle text-xs"></i> RGB', origHTML);
-            }
-        });
 
         // --- Export Format Data ---
         const hexArrayFormat = `[\n  ${colorList.map(c => `'${c}'`).join(',\n  ')}\n]`;
