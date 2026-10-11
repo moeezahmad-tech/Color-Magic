@@ -204,9 +204,8 @@
                 var item = document.createElement('span');
                 item.className = 'inline-flex items-center gap-1.5';
                 item.innerHTML =
-                    '<span class="w-2.5 h-2.5 rounded-full inline-block shadow-sm ring-1 ring-white/50" style="background:' + hex + '"></span>'
-                    + '<span class="font-bold">' + name + '</span>'
-                    + (name !== hex ? '<span class="font-mono text-xs opacity-85">(' + hex + ')</span>' : '');
+                    '<span class="font-bold">' + name + '</span>'
+                    + (name !== hex ? '<span class="font-mono text-xs opacity-85 ml-0.5">(' + hex + ')</span>' : '');
                 heroColorsEl.appendChild(item);
                 if (idx < g.colors.length - 1) {
                     var arrow = document.createElement('span');
