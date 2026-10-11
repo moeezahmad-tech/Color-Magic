@@ -1,4 +1,10 @@
-<?php include '../components/config.php'; /** @var string $base */ ?>
+<?php
+if (!headers_sent()) {
+    header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+}
+include '../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -11,6 +17,22 @@
         content="Explore this curated color palette with copy-ready HEX, RGB, and CSS values. Perfect for design projects." />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
     <link rel="preload" as="image" href="<?= $base ?>/assets/images/logo.png" fetchpriority="high" />
+
+    <script>
+        // Force clear any stale service workers or browser cache storage
+        try {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function (r) {
+                    r.forEach(function (w) { w.unregister(); });
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(function (k) {
+                    k.forEach(function (n) { caches.delete(n); });
+                });
+            }
+        } catch (_) {}
+    </script>
 
     <!-- Resource Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -297,13 +319,14 @@
         window.CM_COLOR_BASE    = '<?= $base ?>/color/';
         window.CM_PALETTE_BASE  = '<?= $base ?>/palette/';
         window.CM_GRADIENT_BASE = '<?= $base ?>/gradient/';
+        window.CM_CACHE_KEY     = '<?= cm_asset_v("assets/js/palette-page.js") ?>';
     </script>
-    <script src="<?= $base ?>/assets/js/utils.js?v=3.1" defer></script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js?v=3.1" defer></script>
-    <script src="<?= $base ?>/assets/js/image-export.js?v=3.1" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=3.1" defer></script>
-    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=3.1" defer></script>
-    <script src="<?= $base ?>/assets/js/palette-page.js?v=3.1" defer></script>
+    <script src="<?= $base ?>/assets/js/utils.js?v=<?= cm_asset_v('assets/js/utils.js') ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/services/favorites.js?v=<?= cm_asset_v('assets/js/services/favorites.js') ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/image-export.js?v=<?= cm_asset_v('assets/js/image-export.js') ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= cm_asset_v('assets/js/components/palette-card.js') ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=<?= cm_asset_v('assets/js/components/gradient-card.js') ?>" defer></script>
+    <script src="<?= $base ?>/assets/js/palette-page.js?v=<?= cm_asset_v('assets/js/palette-page.js') ?>" defer></script>
 </body>
 
 </html>

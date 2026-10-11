@@ -56,3 +56,18 @@ if (empty($apiBaseUrl)) {
 if (!headers_sent()) {
     header('Link: <' . $base . '/assets/images/logo.png>; rel="icon"; type="image/png"');
 }
+
+/**
+ * Dynamic asset versioning helper to prevent stale browser & CDN cache.
+ * Returns file modification time or current timestamp.
+ */
+if (!function_exists('cm_asset_v')) {
+    function cm_asset_v(string $relPath): string {
+        $fullPath = dirname(__DIR__) . '/' . ltrim($relPath, '/\\');
+        if (file_exists($fullPath)) {
+            return (string) filemtime($fullPath);
+        }
+        return (string) time();
+    }
+}
+

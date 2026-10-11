@@ -31,7 +31,8 @@ window.ColorMagic.getApiUrl = function (endpoint) {
         if (_cache[file]) {
             return _cache[file];
         }
-        var url = '/api/' + file + '.json';
+        var cacheKey = window.CM_CACHE_KEY || Date.now();
+        var url = '/api/' + file + '.json?t=' + cacheKey;
         var res = await fetch(url);
         if (!res.ok) {
             throw new Error('Failed to load ' + url);

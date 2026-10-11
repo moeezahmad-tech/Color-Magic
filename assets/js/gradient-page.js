@@ -51,18 +51,23 @@
     // ─── URL ID extraction ───────────────────────────────────────────────────
 
     function getGradientId() {
-        // /gradient/gradient_1/ or /gradient/gradient_1
-        var match = window.location.pathname.match(/\/gradient\/([^\/\?]+)/);
-        if (match) return decodeURIComponent(match[1]);
-        // Fallback to query param
+        // Fallback to query param first (?id=... or ?slug=...)
         var params = new URLSearchParams(window.location.search);
-        return params.get('id') || '';
+        var qId = params.get('id') || params.get('slug');
+        if (qId) return decodeURIComponent(qId).trim();
+
+        // Match /gradient/{id}/ or /ColorMagic/gradient/{id}/
+        var match = window.location.pathname.match(/\/gradient\/([^\/\?]+)/i);
+        if (match) return decodeURIComponent(match[1]).trim();
+
+        return '';
     }
 
     var colorDictCache = null;
     function loadColorDict() {
         if (colorDictCache) return Promise.resolve(colorDictCache);
-        return fetch('/api/color-names.json')
+        var t = window.CM_CACHE_KEY || Date.now();
+        return fetch('/api/color-names.json?t=' + t)
             .then(function (r) { return r.json(); })
             .then(function (dict) {
                 colorDictCache = dict;
@@ -147,28 +152,36 @@
         }
 
         // Type chip
-        document.getElementById('gradientType').textContent = g.type.charAt(0).toUpperCase() + g.type.slice(1);
+        var typeEl = document.getElementById('gradientType');
+        if (typeEl && g.type) {
+            typeEl.textContent = g.type.charAt(0).toUpperCase() + g.type.slice(1);
+        }
 
         // Color count
-        document.getElementById('gradientColorCount').textContent = g.colors.length;
+        var countEl = document.getElementById('gradientColorCount');
+        if (countEl && g.colors) {
+            countEl.textContent = g.colors.length;
+        }
 
         // Angle or shape
         var angleShapeLabel = document.getElementById('angleShapeLabel');
         var angleShapeValue = document.getElementById('gradientAngleShape');
-        if (g.type === 'linear' && g.angle !== undefined) {
-            angleShapeLabel.textContent = 'Angle';
-            angleShapeValue.textContent = g.angle + '°';
-        } else if (g.shape) {
-            angleShapeLabel.textContent = 'Shape';
-            angleShapeValue.textContent = g.shape.charAt(0).toUpperCase() + g.shape.slice(1);
-        } else {
-            angleShapeLabel.textContent = 'Style';
-            angleShapeValue.textContent = g.type.charAt(0).toUpperCase() + g.type.slice(1);
+        if (angleShapeLabel && angleShapeValue) {
+            if (g.type === 'linear' && g.angle !== undefined) {
+                angleShapeLabel.textContent = 'Angle';
+                angleShapeValue.textContent = g.angle + '°';
+            } else if (g.shape) {
+                angleShapeLabel.textContent = 'Shape';
+                angleShapeValue.textContent = g.shape.charAt(0).toUpperCase() + g.shape.slice(1);
+            } else {
+                angleShapeLabel.textContent = 'Style';
+                angleShapeValue.textContent = g.type.charAt(0).toUpperCase() + g.type.slice(1);
+            }
         }
 
         // Hero preview background
         var hero = document.getElementById('heroGradientPreview');
-        hero.style.background = g.css;
+        if (hero) hero.style.background = g.css;
 
         // Contrast calculation for hero text overlay
         var totalLum = 0;
@@ -266,16 +279,18 @@
         });
 
         // Copy CSS (hero click)
-        hero.addEventListener('click', function () {
-            copyToClipboard(g.css, hero, null);
-            var overlay = hero.querySelector('.group-hover\\:opacity-100 span');
-            if (overlay) {
-                overlay.innerHTML = '<i class="bi bi-check-circle-fill"></i> Copied!';
-                setTimeout(function () {
-                    overlay.innerHTML = '<i class="bi bi-clipboard"></i> Click to copy CSS';
-                }, 2000);
-            }
-        });
+        if (hero) {
+            hero.addEventListener('click', function () {
+                copyToClipboard(g.css, hero, null);
+                var overlay = hero.querySelector('.group-hover\\:opacity-100 span');
+                if (overlay) {
+                    overlay.innerHTML = '<i class="bi bi-check-circle-fill"></i> Copied!';
+                    setTimeout(function () {
+                        overlay.innerHTML = '<i class="bi bi-clipboard"></i> Click to copy CSS';
+                    }, 2000);
+                }
+            });
+        }
 
         // --- Export Format Data ---
         var slugName = (g.name || 'gradient').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -417,26 +432,28 @@
 
         // Favorite button
         var favBtn = document.getElementById('favGradientBtn');
-        function updateFavBtn() {
-            var isFav = window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
-            var icon = favBtn.querySelector('i');
-            var span = favBtn.querySelector('span');
-            if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill text-red-500' : 'bi-heart');
-            if (span) span.textContent = isFav ? 'Favorited' : 'Favorite';
-            favBtn.classList.toggle('text-red-500', isFav);
-        }
-        updateFavBtn();
-        favBtn.addEventListener('click', function () {
-            if (window.ColorMagic.GradientFavorites) {
-                window.ColorMagic.GradientFavorites.toggleFavorite(g.id);
-                var isFav = window.ColorMagic.GradientFavorites.isFavorite(g.id);
-                if (window.ColorMagic.animateFavorite) {
-                    window.ColorMagic.animateFavorite(favBtn, isFav);
-                } else {
-                    updateFavBtn();
-                }
+        if (favBtn) {
+            function updateFavBtn() {
+                var isFav = window.ColorMagic.GradientFavorites && window.ColorMagic.GradientFavorites.isFavorite(g.id);
+                var icon = favBtn.querySelector('i');
+                var span = favBtn.querySelector('span');
+                if (icon) icon.className = 'bi ' + (isFav ? 'bi-heart-fill text-red-500' : 'bi-heart');
+                if (span) span.textContent = isFav ? 'Favorited' : 'Favorite';
+                favBtn.classList.toggle('text-red-500', isFav);
             }
-        });
+            updateFavBtn();
+            favBtn.addEventListener('click', function () {
+                if (window.ColorMagic.GradientFavorites) {
+                    window.ColorMagic.GradientFavorites.toggleFavorite(g.id);
+                    var isFav = window.ColorMagic.GradientFavorites.isFavorite(g.id);
+                    if (window.ColorMagic.animateFavorite) {
+                        window.ColorMagic.animateFavorite(favBtn, isFav);
+                    } else {
+                        updateFavBtn();
+                    }
+                }
+            });
+        }
 
         // Download PNG button
         var downloadPngBtn = document.getElementById('downloadGradientPngBtn');
@@ -703,36 +720,76 @@
 
     var gradientId = getGradientId();
     if (!gradientId) {
-        document.getElementById('gradientError').classList.remove('hidden');
+        var skel = document.getElementById('gradientSkeleton');
+        if (skel) skel.classList.add('hidden');
+        var errEl = document.getElementById('gradientError');
+        if (errEl) errEl.classList.remove('hidden');
         return;
     }
 
+    function slugify(name) {
+        return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    var cacheKey = window.CM_CACHE_KEY || Date.now();
     var gradPromise = (window.ColorMagic && window.ColorMagic.api)
         ? window.ColorMagic.api.getGradients({ limit: 1000 })
-        : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+        : fetch('/api/gradients.json?t=' + cacheKey).then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
     gradPromise
         .then(function (res) {
             var data = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
             var gradient = null;
+            var target = gradientId.toLowerCase().trim();
+
             for (var i = 0; i < data.length; i++) {
-                if (data[i].id === gradientId) { gradient = data[i]; break; }
+                var g = data[i];
+                if (!g) continue;
+                var gId = (g.id || '').toLowerCase();
+                var gSlug = slugify(g.name || '');
+                var gIdNorm = gId.replace(/_/g, '-');
+                var targetNorm = target.replace(/_/g, '-');
+
+                if (gId === target || gIdNorm === targetNorm || gSlug === target) {
+                    gradient = g;
+                    break;
+                }
             }
+
             if (!gradient) {
                 var skel1 = document.getElementById('gradientSkeleton');
                 if (skel1) skel1.classList.add('hidden');
-                document.getElementById('gradientError').classList.remove('hidden');
+                var err1 = document.getElementById('gradientError');
+                if (err1) err1.classList.remove('hidden');
                 return;
             }
-            renderGradient(gradient);
-            renderRelatedColors(gradient);
-            renderRelatedGradients(gradient, data);
-            renderRelatedPalettes(gradient);
+
+            try {
+                renderGradient(gradient);
+            } catch (rErr) {
+                console.error("renderGradient error:", rErr);
+                var skelFix = document.getElementById('gradientSkeleton');
+                if (skelFix) skelFix.classList.add('hidden');
+                var detFix = document.getElementById('gradientDetail');
+                if (detFix) detFix.classList.remove('hidden');
+            }
+            try {
+                renderRelatedColors(gradient);
+            } catch (e) { console.warn("renderRelatedColors failed:", e); }
+            try {
+                renderRelatedGradients(gradient, data);
+            } catch (e) { console.warn("renderRelatedGradients failed:", e); }
+            try {
+                renderRelatedPalettes(gradient);
+            } catch (e) { console.warn("renderRelatedPalettes failed:", e); }
         })
-        .catch(function () {
+        .catch(function (err) {
+            console.error("Gradient load failed:", err);
             var skel2 = document.getElementById('gradientSkeleton');
             if (skel2) skel2.classList.add('hidden');
-            document.getElementById('gradientError').classList.remove('hidden');
+            var err2 = document.getElementById('gradientError');
+            if (err2) err2.classList.remove('hidden');
         });
 
 })();
+
