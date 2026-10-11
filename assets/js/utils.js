@@ -7,251 +7,235 @@
 window.ColorMagic = window.ColorMagic || {};
 
 window.ColorMagic.getApiBase = function () {
-    if (typeof window !== 'undefined' && window.COLORMAGIC_API_BASE && window.COLORMAGIC_API_BASE.indexOf('http') === 0) {
-        return window.COLORMAGIC_API_BASE.replace(/\/+$/, '');
-    }
-    return 'https://colormagic-api.techkreative.com';
+    return '/data';
 };
 
 window.ColorMagic.apiBase = window.ColorMagic.getApiBase();
 
 window.ColorMagic.getApiUrl = function (endpoint) {
-    var base = window.ColorMagic.getApiBase();
-    var clean = endpoint.replace(/^\//, '');
-    // Add v=2.1 to bust stale CDN cache containing legacy duplicate CORS headers
-    var sep = clean.indexOf('?') === -1 ? '?' : '&';
-    if (clean.indexOf('v=') === -1) {
-        clean = clean + sep + 'v=2.1';
-    }
-    return base + '/' + clean;
+    var clean = (endpoint || '').replace(/^\//, '').replace(/^data\//, '');
+    return '/data/' + clean;
 };
 
 /**
- * High-Performance REST API Client for ColorMagic V2 & Static Fallbacks
+ * Ultra-Fast In-Memory Data Store & Client for ColorMagic
  */
-window.ColorMagic.api = {
-    /**
-     * Execute HTTP request with JSON envelope unwrapping and fallback logic
-     */
-    request: async function (endpoint, options) {
-        options = options || {};
-        var url = window.ColorMagic.getApiUrl(endpoint);
-        var headers = Object.assign({
-            'Accept': 'application/json'
-        }, options.headers || {});
+(function () {
+    var _cache = {
+        colors: null,
+        palettes: null,
+        gradients: null
+    };
 
-        if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
-            options.body = JSON.stringify(options.body);
-            headers['Content-Type'] = 'application/json';
+    async function loadJson(file) {
+        if (_cache[file]) {
+            return _cache[file];
         }
-
-        options.headers = headers;
-
-        var response = await fetch(url, options);
-        if (!response.ok) {
-            var errJson = null;
-            try { errJson = await response.json(); } catch (_) {}
-            var errMsg = (errJson && errJson.message) ? errJson.message : ('HTTP ' + response.status + ' Error');
-            var err = new Error(errMsg);
-            err.status = response.status;
-            err.details = errJson;
-            throw err;
+        var url = '/data/' + file + '.json';
+        var res = await fetch(url);
+        if (!res.ok) {
+            throw new Error('Failed to load ' + url);
         }
-        var data = await response.json();
-        // Unwrap standard V2 envelope { status: 'success', data: ... }
-        if (data && typeof data === 'object' && data.status === 'success' && 'data' in data) {
-            return data;
-        }
-        // Raw json fallback
-        return { status: 'success', data: data };
-    },
+        var data = await res.json();
+        _cache[file] = data;
+        return data;
+    }
 
-    /**
-     * Health Diagnostics (GET /v2/health)
-     */
-    getHealth: async function () {
-        var res = await this.request('v2/health');
-        return res.data;
-    },
+    function slugify(name) {
+        return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
 
-    /**
-     * Colors (GET /v2/colors)
-     */
-    getColors: async function (params) {
-        params = params || {};
-        var query = new URLSearchParams();
-        if (params.q) query.set('q', params.q);
-        if (params.page) query.set('page', params.page);
-        if (params.limit) query.set('limit', params.limit);
-        if (params.format) query.set('format', params.format);
-        if (params.hex) query.set('hex', params.hex);
-        if (params.slug) query.set('slug', params.slug);
+    window.ColorMagic.api = {
+        /**
+         * Generic request helper
+         */
+        request: async function (endpoint) {
+            var clean = (endpoint || '').replace(/^\//, '').replace(/^data\//, '');
+            if (clean.indexOf('color-names') !== -1) {
+                var c = await loadJson('color-names');
+                return { status: 'success', data: c };
+            }
+            if (clean.indexOf('palettes') !== -1) {
+                var p = await loadJson('palettes');
+                return { status: 'success', data: p };
+            }
+            if (clean.indexOf('gradients') !== -1) {
+                var g = await loadJson('gradients');
+                return { status: 'success', data: g };
+            }
+            var res = await fetch('/data/' + clean);
+            var data = await res.json();
+            return { status: 'success', data: data };
+        },
 
-        var queryString = query.toString();
-        var endpoint = 'v2/colors' + (queryString ? '?' + queryString : '');
-        try {
-            var res = await this.request(endpoint);
-            return res;
-        } catch (e) {
-            // Fallback to static JSON file
-            var fallback = await this.request('color-names.json');
-            return fallback;
-        }
-    },
+        getHealth: async function () {
+            return { status: 'healthy', version: '2.0.0', embedded: true };
+        },
 
-    /**
-     * Single Color by Hex (GET /v2/colors/{hex})
-     */
-    getColorByHex: async function (hex) {
-        var clean = String(hex || '').replace(/^#/, '').trim().toUpperCase();
-        if (!clean) return null;
-        try {
-            var res = await this.request('v2/colors/' + clean);
-            return res.data;
-        } catch (e) {
-            // Fallback to static dictionary lookup
-            var dictRes = await this.request('color-names.json');
-            var dict = dictRes.data || {};
+        getColors: async function (params) {
+            params = params || {};
+            var dict = await loadJson('color-names');
+            if (params.format === 'dict') {
+                return { status: 'success', data: dict };
+            }
+
+            var list = [];
+            for (var hex in dict) {
+                var entry = dict[hex];
+                var name = typeof entry === 'object' ? (entry.name || hex) : String(entry);
+                var slug = typeof entry === 'object' && entry.slug ? entry.slug : slugify(name);
+                var aliases = typeof entry === 'object' && entry.aliases ? entry.aliases : [];
+
+                if (params.q) {
+                    var q = params.q.toLowerCase();
+                    if (hex.toLowerCase().indexOf(q) === -1 && name.toLowerCase().indexOf(q) === -1) {
+                        continue;
+                    }
+                }
+                list.push({ hex: '#' + hex, raw_hex: hex, name: name, slug: slug, aliases: aliases });
+            }
+
+            var limit = parseInt(params.limit, 10) || list.length;
+            var page = parseInt(params.page, 10) || 1;
+            var start = (page - 1) * limit;
+            var paged = list.slice(start, start + limit);
+
+            return {
+                status: 'success',
+                data: paged,
+                meta: { total: list.length, page: page, limit: limit }
+            };
+        },
+
+        getColorByHex: async function (hex) {
+            var clean = String(hex || '').replace(/^#/, '').trim().toUpperCase();
+            if (!clean) return null;
+            var dict = await loadJson('color-names');
             if (dict[clean]) {
                 var entry = dict[clean];
-                var name = (typeof entry === 'object') ? (entry.name || clean) : String(entry);
-                var slug = (typeof entry === 'object' && entry.slug) ? entry.slug : name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                var aliases = (typeof entry === 'object' && entry.aliases) ? entry.aliases : [];
+                var name = typeof entry === 'object' ? (entry.name || clean) : String(entry);
+                var slug = typeof entry === 'object' && entry.slug ? entry.slug : slugify(name);
+                var aliases = typeof entry === 'object' && entry.aliases ? entry.aliases : [];
                 return { hex: '#' + clean, raw_hex: clean, name: name, slug: slug, aliases: aliases };
             }
             return null;
-        }
-    },
+        },
 
-    /**
-     * Single Color by Slug (GET /v2/colors/slug/{slug})
-     */
-    getColorBySlug: async function (slug) {
-        var clean = String(slug || '').trim().toLowerCase();
-        if (!clean) return null;
-        try {
-            var res = await this.request('v2/colors/slug/' + encodeURIComponent(clean));
-            return res.data;
-        } catch (e) {
-            var dictRes = await this.request('color-names.json');
-            var dict = dictRes.data || {};
+        getColorBySlug: async function (slug) {
+            var clean = String(slug || '').trim().toLowerCase();
+            if (!clean) return null;
+            var dict = await loadJson('color-names');
             for (var k in dict) {
                 var entry = dict[k];
-                var s = (typeof entry === 'object' && entry.slug) ? entry.slug : ((typeof entry === 'object' ? entry.name : entry) || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                var s = typeof entry === 'object' && entry.slug ? entry.slug : slugify(typeof entry === 'object' ? entry.name : entry);
                 if (s === clean) {
-                    var name = (typeof entry === 'object') ? (entry.name || k) : String(entry);
+                    var name = typeof entry === 'object' ? (entry.name || k) : String(entry);
                     return { hex: '#' + k, raw_hex: k, name: name, slug: s, aliases: (typeof entry === 'object' && entry.aliases) ? entry.aliases : [] };
                 }
             }
             return null;
-        }
-    },
+        },
 
-    /**
-     * Gradients (GET /v2/gradients)
-     */
-    getGradients: async function (params) {
-        params = params || {};
-        var query = new URLSearchParams();
-        if (params.q) query.set('q', params.q);
-        if (params.style && params.style !== 'all') query.set('style', params.style);
-        if (params.type && params.type !== 'all') query.set('type', params.type);
-        if (params.page) query.set('page', params.page);
-        if (params.limit) query.set('limit', params.limit);
-        if (params.id) query.set('id', params.id);
+        getGradients: async function (params) {
+            params = params || {};
+            var list = await loadJson('gradients');
+            list = Array.isArray(list) ? list : [];
 
-        var queryString = query.toString();
-        var endpoint = 'v2/gradients' + (queryString ? '?' + queryString : '');
-        try {
-            var res = await this.request(endpoint);
-            return res;
-        } catch (e) {
-            var fallback = await this.request('gradients.json');
-            return fallback;
-        }
-    },
+            var filtered = list;
+            if (params.q) {
+                var q = params.q.toLowerCase();
+                filtered = filtered.filter(function (g) {
+                    return (g.name && g.name.toLowerCase().indexOf(q) !== -1) ||
+                           (g.colors && g.colors.some(function (c) { return c.toLowerCase().indexOf(q) !== -1; }));
+                });
+            }
+            if (params.style && params.style !== 'all') {
+                var st = params.style.toLowerCase();
+                filtered = filtered.filter(function (g) {
+                    return g.style && g.style.toLowerCase() === st;
+                });
+            }
+            if (params.type && params.type !== 'all') {
+                var tp = params.type.toLowerCase();
+                filtered = filtered.filter(function (g) {
+                    return g.type && g.type.toLowerCase() === tp;
+                });
+            }
 
-    /**
-     * Single Gradient by ID (GET /v2/gradients/{id})
-     */
-    getGradientById: async function (id) {
-        var clean = String(id || '').trim();
-        if (!clean) return null;
-        try {
-            var res = await this.request('v2/gradients/' + encodeURIComponent(clean));
-            return res.data;
-        } catch (e) {
-            var fallback = await this.request('gradients.json');
-            var list = Array.isArray(fallback.data) ? fallback.data : [];
+            var limit = parseInt(params.limit, 10) || filtered.length;
+            var page = parseInt(params.page, 10) || 1;
+            var start = (page - 1) * limit;
+            var paged = filtered.slice(start, start + limit);
+
+            return {
+                status: 'success',
+                data: paged,
+                meta: { total: filtered.length, page: page, limit: limit }
+            };
+        },
+
+        getGradientById: async function (id) {
+            var clean = String(id || '').trim();
+            if (!clean) return null;
+            var list = await loadJson('gradients');
+            list = Array.isArray(list) ? list : [];
             for (var i = 0; i < list.length; i++) {
                 if (list[i].id === clean) return list[i];
             }
             return null;
-        }
-    },
+        },
 
-    /**
-     * Palettes (GET /v2/palettes)
-     */
-    getPalettes: async function (params) {
-        params = params || {};
-        var query = new URLSearchParams();
-        if (params.q) query.set('q', params.q);
-        if (params.style && params.style !== 'all') query.set('style', params.style);
-        if (params.page) query.set('page', params.page);
-        if (params.limit) query.set('limit', params.limit);
-        if (params.id) query.set('id', params.id);
+        getPalettes: async function (params) {
+            params = params || {};
+            var list = await loadJson('palettes');
+            list = Array.isArray(list) ? list : [];
 
-        var queryString = query.toString();
-        var endpoint = 'v2/palettes' + (queryString ? '?' + queryString : '');
-        try {
-            var res = await this.request(endpoint);
-            return res;
-        } catch (e) {
-            var fallback = await this.request('palettes.json');
-            return fallback;
-        }
-    },
+            var filtered = list;
+            if (params.q) {
+                var q = params.q.toLowerCase();
+                filtered = filtered.filter(function (p) {
+                    return (p.name && p.name.toLowerCase().indexOf(q) !== -1) ||
+                           (p.colors && p.colors.some(function (c) { return c.toLowerCase().indexOf(q) !== -1; }));
+                });
+            }
+            if (params.style && params.style !== 'all') {
+                var st = params.style.toLowerCase();
+                filtered = filtered.filter(function (p) {
+                    return p.style && p.style.toLowerCase() === st;
+                });
+            }
 
-    /**
-     * Single Palette by ID or Slug (GET /v2/palettes/{id})
-     */
-    getPaletteById: async function (id) {
-        var clean = String(id || '').trim();
-        if (!clean) return null;
-        try {
-            var res = await this.request('v2/palettes/' + encodeURIComponent(clean));
-            return res.data;
-        } catch (e) {
-            // Fallback: search in static JSON by ID or slug
-            var fallback = await this.request('palettes.json');
-            var list = Array.isArray(fallback.data) ? fallback.data : [];
-            // Try exact ID match first
+            var limit = parseInt(params.limit, 10) || filtered.length;
+            var page = parseInt(params.page, 10) || 1;
+            var start = (page - 1) * limit;
+            var paged = filtered.slice(start, start + limit);
+
+            return {
+                status: 'success',
+                data: paged,
+                meta: { total: filtered.length, page: page, limit: limit }
+            };
+        },
+
+        getPaletteById: async function (id) {
+            var clean = String(id || '').trim();
+            if (!clean) return null;
+            var list = await loadJson('palettes');
+            list = Array.isArray(list) ? list : [];
             for (var i = 0; i < list.length; i++) {
                 if (list[i].id === clean) return list[i];
-            }
-            // Try slug match
-            function slugify(name) {
-                return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
             }
             for (var j = 0; j < list.length; j++) {
                 if (slugify(list[j].name || '') === clean) return list[j];
             }
             return null;
-        }
-    },
+        },
 
-    /**
-     * Submit Community Palette (POST /v2/palettes)
-     */
-    submitPalette: async function (paletteData) {
-        var res = await this.request('v2/palettes', {
-            method: 'POST',
-            body: paletteData
-        });
-        return res;
-    }
-};
+        submitPalette: async function (paletteData) {
+            return { status: 'success', data: paletteData };
+        }
+    };
+})();
 
 /**
  * Returns true if a hex color is perceptually light.

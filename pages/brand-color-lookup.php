@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Brand Color Lookup — Find Hex Codes for Popular Brand Colors | Color Magic</title>
+    <title>Brand Color Lookup — Hex Codes for Top Brands | Color Magic</title>
     <meta name="description"
         content="Find exact hex codes and RGB values for popular brand colors. Google, Apple, Spotify, Netflix, Meta, and 25+ more brand color palettes." />
     <meta name="keywords"

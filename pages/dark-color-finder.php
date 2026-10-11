@@ -2,14 +2,10 @@
 include '../components/config.php';
 /** @var string $base */
 
-// Load color names and filter for dark colors (lightness < 40%)
 $colorNames = [];
-$colorNamesPath = __DIR__ . '/../api/color-names.json';
-$jsonContent = file_exists($colorNamesPath)
-    ? file_get_contents($colorNamesPath)
-    : @file_get_contents('https://colormagic.techkreative.com/api/color-names.json');
-if ($jsonContent !== false) {
-    $decoded = json_decode((string) $jsonContent, true);
+$colorNamesPath = __DIR__ . '/../data/color-names.json';
+if (file_exists($colorNamesPath)) {
+    $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
     if (is_array($decoded)) {
         $colorNames = $decoded;
     }
@@ -86,7 +82,7 @@ ksort($grouped);
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Dark Color Name Finder — Discover Deep & Dark Shade Names | Color Magic</title>
+    <title>Dark Color Name Finder — Deep & Dark Shades | Color Magic</title>
     <meta name="description"
         content="Find names for dark and deep color shades. Browse 50+ dark colors organized by hue family — dark reds, blues, greens, purples, and more." />
     <meta name="keywords"

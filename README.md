@@ -170,21 +170,10 @@ ColorMagic/
 │       ├── Inter-Italic-VariableFont_opsz,wght.ttf
 │       └── static/                     ← Individual weight .ttf files
 │
-├── api/                                ← Standalone API Subdomain Files & Engine
-│   ├── .env.api.colormagic             ← Isolated API Environment Config
-│   ├── .htaccess                       ← Apache routing & caching rules
-│   ├── index.php                       ← API discovery index
-│   ├── README.md                       ← API documentation & route specs
-│   ├── data/                           ← SQLite & JSON Datasets
-│   │   ├── colormagic.sqlite           ← SQLite Database (WAL mode, indexed)
-│   │   ├── color-names.json            ← 1,027 named colors
-│   │   ├── gradients.json              ← 329 CSS gradients
-│   │   └── palettes.json               ← 833 curated palettes
-│   ├── cli/                            ← CLI Migration & Verification Tools
-│   │   ├── migrate.php
-│   │   └── test_endpoints.php
-│   ├── v1/                             ← API v1 Legacy Endpoints
-│   └── v2/                             ← API v2 High-Performance REST Architecture
+├── data/                               ← Authoritative JSON Datasets (Embedded & Cached)
+│   ├── color-names.json                ← 1,027 named colors
+│   ├── gradients.json                  ← 329 CSS gradients
+│   └── palettes.json                   ← 833 curated palettes
 │
 └── sitemaps/                           ← Sub-sitemaps for SEO
     ├── pages.xml                       ← Static page URLs
@@ -192,11 +181,11 @@ ColorMagic/
     └── colors.xml                      ← All color detail URLs
 ```
 
-## Data Formats & API
+## Data Formats
 
-Data is fetched via `https://colormagic-api.techkreative.com/`. The physical files reside in the `api/` directory.
+Static datasets reside directly in the `data/` directory and are cached in-memory and by browsers for maximum speed.
 
-### `api/palettes.json`
+### `data/palettes.json`
 
 Array of palette objects:
 
@@ -244,7 +233,7 @@ To regenerate `gradients.json`, run the Python script:
 python generate_gradients.py
 ```
 
-### `api/color-names.json`
+### `data/color-names.json`
 
 Object keyed by 6-digit lowercase hex (no `#`). Each entry has a name and optional aliases:
 
@@ -268,14 +257,12 @@ Object keyed by 6-digit lowercase hex (no `#`). Each entry has a name and option
 ### Run Locally
 
 ```bash
-git clone https://github.com/moeezahmad-tech/Color-Magic.git ColorMagic
-cd ColorMagic
-php -S localhost:8000
+git clone https://github.com/moeezahmad-tech/Color-Magic.git
+cd Color-Magic
+php -S localhost:8080 router.php
 ```
 
-Then visit `http://localhost:8000/ColorMagic/`
-
-> The `.htaccess` detects local hosts and prepends `/ColorMagic/` to all redirect targets. On production it strips the prefix automatically.
+Then visit `http://localhost:8080/` in your browser. All clean routes (e.g. `/palettes`, `/color/3498db/`, `/colors/3498db.webp`) and local datasets are automatically routed.
 
 ## SEO & Search Engines
 

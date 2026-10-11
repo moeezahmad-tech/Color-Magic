@@ -125,7 +125,7 @@
             try {
                 const palPromise = (window.ColorMagic && window.ColorMagic.api)
                     ? window.ColorMagic.api.getPalettes({ limit: 1000 })
-                    : fetch('/api/palettes.json').then(r => r.json()).then(d => ({ data: d }));
+                    : fetch('/data/palettes.json').then(r => r.json()).then(d => ({ data: d }));
 
                 const result = await palPromise;
                 allPalettes = (result && result.data) ? result.data : (Array.isArray(result) ? result : []);

@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Hex to RGB Converter — Free Online Color Code Conversion | Color Magic</title>
+    <title>Hex to RGB Converter — Free Online Color Tool | Color Magic</title>
     <meta name="description"
         content="Free hex to RGB converter. Instantly convert hex color codes to RGB values and vice versa. Live color preview, conversion formula, and example conversions table." />
     <meta name="keywords"

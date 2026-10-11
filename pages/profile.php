@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Color Magic | Your Favorites — Saved Colors, Palettes &amp; Gradients</title>
+    <title>Saved Colors, Palettes &amp; Gradients | Color Magic</title>
     <meta name="description"
         content="View all your saved colors, palettes and gradients in one place. Your personal collection on Color Magic." />
     <meta name="keywords" content="saved colors, favorite palettes, saved gradients, design tool, TechKreative" />

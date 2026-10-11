@@ -107,78 +107,41 @@ $hexWithHash = '#' . $normalizedHex;
 $colorNames = [];
 $paletteData = [];
 
-if (file_exists(__DIR__ . '/../api/v2/src/Repositories/ColorRepository.php')) {
-    try {
-        require_once __DIR__ . '/../api/v2/src/Config/Env.php';
-        require_once __DIR__ . '/../api/v2/src/Database/Database.php';
-        require_once __DIR__ . '/../api/v2/src/Repositories/ColorRepository.php';
-        require_once __DIR__ . '/../api/v2/src/Repositories/PaletteRepository.php';
-
-        $colorRepo = new \ColorMagic\Repositories\ColorRepository();
-        $paletteRepo = new \ColorMagic\Repositories\PaletteRepository();
-
-        if ($slugParam !== '' && $hexParam === '') {
-            $colorItem = $colorRepo->findBySlug($slugParam);
-            if ($colorItem) {
-                $normalizedHex = strtoupper($colorItem['hex']);
-                $isValidHex = true;
-                $hexWithHash = '#' . $normalizedHex;
-                $hexName = $colorItem['name'];
-                $colorSlug = $colorItem['slug'];
-            }
-        } else {
-            $colorItem = $colorRepo->findByHex($normalizedHex);
-            if ($colorItem) {
-                $hexName = $colorItem['name'];
-                $colorSlug = $colorItem['slug'];
-            }
-        }
-        $paletteData = $paletteRepo->all();
-    } catch (\Throwable $t) {
-        // Fall back to JSON files below
+$colorNamesPath = __DIR__ . '/../data/color-names.json';
+if (file_exists($colorNamesPath)) {
+    $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
+    if (is_array($decoded)) {
+        $colorNames = $decoded;
     }
 }
 
-if (empty($hexName)) {
-    if (empty($colorNames)) {
-        $colorNamesPath = __DIR__ . '/../api/data/color-names.json';
-        if (!file_exists($colorNamesPath)) $colorNamesPath = __DIR__ . '/../api/color-names.json';
-        if (file_exists($colorNamesPath)) {
-            $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
-            if (is_array($decoded)) $colorNames = $decoded;
-        }
+// If accessed via slug (?slug=midnight-blue), look up the hex from the slug
+if ($slugParam !== '' && $hexParam === '') {
+    $slugMap = [];
+    foreach ($colorNames as $key => $entry) {
+        $cleanHex = is_array($entry) ? ($entry['hex'] ?? $key) : $key;
+        $cleanSlug = is_array($entry) ? ($entry['slug'] ?? strtolower(preg_replace('/[^a-z0-9]+/i', '-', (string)($entry['name'] ?? '')))) : strtolower(preg_replace('/[^a-z0-9]+/i', '-', (string)$entry));
+        $slugMap[$cleanSlug] = $cleanHex;
     }
-
-    // If accessed via slug (?slug=midnight-blue), look up the hex from the slug
-    if ($slugParam !== '' && $hexParam === '') {
-        $slugMap = [];
-        foreach ($colorNames as $key => $entry) {
-            $cleanHex = is_array($entry) ? ($entry['hex'] ?? $key) : $key;
-            $cleanSlug = is_array($entry) ? ($entry['slug'] ?? strtolower(preg_replace('/[^a-z0-9]+/i', '-', (string)($entry['name'] ?? '')))) : strtolower(preg_replace('/[^a-z0-9]+/i', '-', (string)$entry));
-            $slugMap[$cleanSlug] = $cleanHex;
-        }
-        if (isset($slugMap[$slugParam])) {
-            $normalizedHex = strtoupper(ltrim($slugMap[$slugParam], '#'));
-            $isValidHex = true;
-            $hexWithHash = '#' . $normalizedHex;
-        } else {
-            // Unknown slug — fall back to 404-like redirect
-            header('HTTP/1.1 404 Not Found');
-            exit;
-        }
+    if (isset($slugMap[$slugParam])) {
+        $normalizedHex = strtoupper(ltrim($slugMap[$slugParam], '#'));
+        $isValidHex = true;
+        $hexWithHash = '#' . $normalizedHex;
+    } else {
+        header('HTTP/1.1 404 Not Found');
+        exit;
     }
-
-    $hexNameEntry = $colorNames[strtoupper($normalizedHex)] ?? null;
-    $hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWithHash)) : ('Hex ' . $hexWithHash);
-    $colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
 }
 
-if (empty($paletteData)) {
-    $palettePath = __DIR__ . '/../api/data/palettes.json';
-    if (!file_exists($palettePath)) $palettePath = __DIR__ . '/../api/palettes.json';
-    if (file_exists($palettePath)) {
-        $decoded = json_decode((string) file_get_contents($palettePath), true);
-        if (is_array($decoded)) $paletteData = $decoded;
+$hexNameEntry = $colorNames[strtoupper($normalizedHex)] ?? null;
+$hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWithHash)) : ('Hex ' . $hexWithHash);
+$colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
+
+$palettePath = __DIR__ . '/../data/palettes.json';
+if (file_exists($palettePath)) {
+    $decoded = json_decode((string) file_get_contents($palettePath), true);
+    if (is_array($decoded)) {
+        $paletteData = $decoded;
     }
 }
 
@@ -295,8 +258,8 @@ $styleSnippet = $styles !== [] ? implode(', ', array_slice($styles, 0, 3)) : 'cu
 
 $hasColorName = isset($colorNames[strtoupper($normalizedHex)]) && is_array($colorNames[strtoupper($normalizedHex)]);
 $metaTitle = $hasColorName
-    ? $hexName . ' ' . $hexWithHash . ' Color Details, RGB, HSL and Related Palettes | Color Magic'
-    : $hexName . ' Color Details, RGB, HSL and Related Palettes | Color Magic';
+    ? $hexName . ' (' . $hexWithHash . ') Hex Code & Palettes | Color Magic'
+    : $hexName . ' Hex Code & Palettes | Color Magic';
 $metaDescription = 'Explore ' . $hexName . ' (' . $hexWithHash . ') with RGB(' . $rgb['r'] . ', ' . $rgb['g'] . ', ' . $rgb['b'] . ') and HSL(' . $hsl['h'] . ', ' . $hsl['s'] . '%, ' . $hsl['l'] . '%). Discover ' . count($relatedPalettes) . ' related ' . $styleSnippet . ' color palettes from our colors library.';
 
 $baseUrl = 'https://colormagic.techkreative.com';
@@ -1096,7 +1059,7 @@ $schema = [
 
             var gradPromise = (window.ColorMagic && window.ColorMagic.api)
                 ? window.ColorMagic.api.getGradients({ limit: 1000 })
-                : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+                : fetch('/data/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
             gradPromise
                 .then(function (res) {

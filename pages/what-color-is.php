@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>What Color Is This Code? — Online Hex Color Identifier | Color Magic</title>
+    <title>What Color Is This Hex Code? Color Identifier | Color Magic</title>
     <meta name="description"
         content="Paste any hex code and we'll tell you exactly what color it is. Free online hex color identifier with 20 common examples organized by category." />
     <meta name="keywords"

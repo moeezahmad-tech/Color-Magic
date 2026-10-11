@@ -261,7 +261,7 @@
 
         var apiPromise = (window.ColorMagic && window.ColorMagic.api)
             ? window.ColorMagic.api.getGradients({ limit: 1000 })
-            : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+            : fetch('/data/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
         apiPromise
             .then(function (result) {

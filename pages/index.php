@@ -6,7 +6,7 @@
     <meta name="yandex-verification" content="797f9c11121b55d1" />
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Color Name Finder & Palette Generator | Hex to Color Name — Color Magic</title>
+    <title>Color Name Finder & Palette Generator | Color Magic</title>
     <meta name="description"
         content="Free color name finder — convert any hex code to its color name, RGB, and HSL values. Generate professional color palettes and explore 150+ curated schemes." />
     <meta name="keywords"

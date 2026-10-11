@@ -36,6 +36,9 @@ RewriteRule ^auth/google-callback/?$ auth/google-callback.php [L]
 RewriteRule ^auth/logout/?$ auth/logout.php [L]
 RewriteRule ^auth/delete-account/?$ auth/delete-account.php [L]
 
+# Legacy API compatibility — map /api/*.json directly to /data/*.json
+RewriteRule ^api/([a-zA-Z0-9_-]+\.json)$ data/$1 [L]
+
 # Static pages (explicit routes — no file-existence check needed)
 RewriteRule ^palettes/?$ pages/palettes.php [L]
 RewriteRule ^gradients/?$ pages/gradients.php [L]

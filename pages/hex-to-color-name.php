@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Hex to Color Name Converter — Find What Color is Your Hex Code | Color Magic</title>
+    <title>Hex to Color Name Converter & Identifier | Color Magic</title>
     <meta name="description"
         content="Free hex to color name converter. Enter any hex code to instantly find its human-readable color name. Browse 1000+ named colors with hex, RGB, and HSL values." />
     <meta name="keywords"

@@ -6,9 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>
-        Open Source | Color Magic - Professional Color Palette Generator
-    </title>
+    <title>Open Source Color Palette Generator | Color Magic</title>
     <meta name="description"
         content="Color Magic is an open-source color palette generator and explorer. Browse the code, contribute, and help make color selection easier for designers worldwide." />
     <meta name="keywords"

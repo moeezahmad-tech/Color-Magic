@@ -2,9 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /components/
 Disallow: /auth/
-Disallow: /api/
-Disallow: /sitemaps/
-Disallow: /pages/
 Disallow: /profile
 
 Sitemap: https://colormagic.techkreative.com/sitemap.xml
