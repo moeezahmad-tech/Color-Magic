@@ -621,7 +621,7 @@
                     <i class="bi bi-arrow-up-right text-slate-400 group-hover:text-pink-600 ml-auto transition-colors"></i>
                 </a>
 
-                <a href="https://pin.it/1q46mYukG" target="_blank" rel="noopener noreferrer"
+                <a href="https://www.pinterest.com/colormagic_techkreative/" target="_blank" rel="noopener noreferrer"
                     class="flex items-center gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all group">
                     <div class="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center text-white shrink-0 shadow-md">
                         <i class="bi bi-pinterest text-2xl"></i>

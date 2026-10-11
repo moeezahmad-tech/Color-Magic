@@ -63,7 +63,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="https://pin.it/1q46mYukG" target="_blank"
+                        <a href="https://www.pinterest.com/colormagic_techkreative/" target="_blank"
                             rel="noopener noreferrer"
                             class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-red-600 transition-colors group">
                             <i class="bi bi-pinterest text-base text-red-500 group-hover:scale-110 transition-transform"></i>
@@ -100,7 +100,7 @@
                     aria-label="Follow Color Magic on Instagram" title="Instagram">
                     <i class="bi bi-instagram text-xl"></i>
                 </a>
-                <a href="https://pin.it/1q46mYukG" target="_blank" rel="noopener noreferrer"
+                <a href="https://www.pinterest.com/colormagic_techkreative/" target="_blank" rel="noopener noreferrer"
                     class="text-slate-500 hover:text-red-600 transition-colors"
                     aria-label="Follow Color Magic on Pinterest" title="Pinterest">
                     <i class="bi bi-pinterest text-xl"></i>

@@ -276,7 +276,7 @@ Then visit `http://localhost:8080/` in your browser. All clean routes (e.g. `/pa
 ## Connect & Social Media
 
 - **Instagram:** [@colormagic.techkreative](https://www.instagram.com/colormagic.techkreative/)
-- **Pinterest:** [Color Magic on Pinterest](https://pin.it/1q46mYukG)
+- **Pinterest:** [Color Magic on Pinterest](https://www.pinterest.com/colormagic_techkreative/)
 - **GitHub:** [moeezahmad-tech/Color-Magic](https://github.com/moeezahmad-tech/Color-Magic)
 
 ## Contributing
