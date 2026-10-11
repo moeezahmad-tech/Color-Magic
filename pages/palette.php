@@ -97,8 +97,7 @@
                         <div class="h-4 w-full bg-slate-200/80 dark:bg-slate-800 rounded"></div>
                     </div>
                     <!-- 2. Details: Metric Chips -->
-                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
-                        <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
+                    <div class="grid grid-cols-2 gap-2 sm:gap-3">
                         <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                         <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                     </div>
@@ -151,7 +150,7 @@
                     </div>
 
                     <!-- 2. Details: Metric Chips -->
-                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
+                    <div class="grid grid-cols-2 gap-2 sm:gap-3">
                         <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
                             <p class="text-[11px] uppercase tracking-wider text-slate-400">Style</p>
                             <p id="paletteType" class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight"></p>
@@ -159,10 +158,6 @@
                         <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
                             <p class="text-[11px] uppercase tracking-wider text-slate-400">Colors</p>
                             <p id="paletteCount" class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight"></p>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
-                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Format</p>
-                            <p class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight">HEX · RGB</p>
                         </div>
                     </div>
 
