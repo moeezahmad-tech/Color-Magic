@@ -130,26 +130,9 @@
         <section id="paletteDetail" class="hidden flex flex-col gap-8">
             <div id="paletteTopSection"
                 class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
-                <!-- Large palette preview with color strips background and overlay -->
                 <div class="h-full">
-                    <div id="heroPaletteContainer"
-                        class="relative h-72 md:h-80 lg:h-full min-h-[300px] md:min-h-[380px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30 flex items-end cursor-pointer group">
-                        <!-- Vertical color strips background -->
-                        <div id="heroPaletteStrips" class="absolute inset-0 grid w-full h-full"></div>
-
-                        <!-- Overlay Content (matches color and gradient pages) -->
-                        <div id="heroPaletteOverlay" class="relative z-10 select-none p-6 md:p-8 flex flex-col justify-end w-full pointer-events-none transition-colors duration-200" style="color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.65);">
-                            <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] opacity-85 mb-1.5">COLOR MAGIC</p>
-                            <h2 id="heroPaletteName" class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-2"></h2>
-                            <div id="heroPaletteColors" class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-semibold tracking-tight opacity-95"></div>
-                        </div>
-
-                        <!-- Hover copy hint -->
-                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
-                            <span class="px-3 py-1.5 bg-black/40 backdrop-blur-md text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm">
-                                <i class="bi bi-clipboard"></i> Click to copy colors
-                            </span>
-                        </div>
+                    <div id="heroPaletteStrips"
+                        class="grid h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30">
                     </div>
                 </div>
 

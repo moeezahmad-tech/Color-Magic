@@ -236,78 +236,30 @@
         if (paletteType) paletteType.textContent = palette.style || 'Curated';
         if (paletteCount) paletteCount.textContent = String(colorList.length);
 
-        // Render Hero Preview (vertical strips background + text overlay)
+        // Render Hero Preview (clean vertical color strips with hex label at bottom)
         if (heroPaletteStrips) {
             heroPaletteStrips.style.gridTemplateColumns = `repeat(${colorList.length}, minmax(0, 1fr))`;
             heroPaletteStrips.innerHTML = colorList.map((color) => `
-                <div class="h-full flex items-end justify-center p-3 relative group/strip transition-opacity hover:opacity-95" style="background-color:${color};">
-                    <span class="text-[10px] md:text-xs font-bold font-mono px-2 py-1 rounded-lg bg-black/35 text-white backdrop-blur-sm opacity-0 group-hover/strip:opacity-100 transition-opacity mb-24 md:mb-28 z-20 pointer-events-none">${color}</span>
+                <div class="h-full flex items-end justify-center p-3 cursor-pointer group/strip transition-opacity hover:opacity-95" style="background-color:${color};" data-color="${color}" title="Click to copy ${color}">
+                    <span class="text-[10px] md:text-xs font-bold font-mono px-2 py-1 rounded-lg bg-black/25 text-white shadow-sm group-hover/strip:bg-black/45 transition-colors">${color}</span>
                 </div>
             `).join('');
-        }
 
-        // Contrast calculation for hero text overlay
-        let totalLum = 0;
-        colorList.forEach(c => {
-            totalLum += getLuminance(c);
-        });
-        const avgLum = totalLum / Math.max(colorList.length, 1);
-        const isLight = avgLum > 0.62;
-        const heroOverlay = document.getElementById('heroPaletteOverlay');
-        if (heroOverlay) {
-            if (isLight) {
-                heroOverlay.style.color = '#0f172a';
-                heroOverlay.style.textShadow = '0 1px 3px rgba(255,255,255,0.75)';
-            } else {
-                heroOverlay.style.color = '#FFFFFF';
-                heroOverlay.style.textShadow = '0 2px 10px rgba(0,0,0,0.65)';
-            }
-        }
-
-        // Hero Palette Name
-        const heroNameEl = document.getElementById('heroPaletteName');
-        if (heroNameEl) {
-            heroNameEl.textContent = palette.name;
-        }
-
-        // Hero Palette Color stops with color names
-        function renderHeroColorStops(names) {
-            const heroColorsEl = document.getElementById('heroPaletteColors');
-            if (!heroColorsEl) return;
-            heroColorsEl.innerHTML = '';
-            colorList.forEach((hex, idx) => {
-                const name = (names && names[idx]) ? names[idx] : hex;
-                const item = document.createElement('span');
-                item.className = 'inline-flex items-center gap-1.5';
-                item.innerHTML =
-                    `<span class="w-2.5 h-2.5 rounded-full inline-block shadow-sm ring-1 ring-white/50" style="background:${hex}"></span>`
-                    + `<span class="font-bold">${name}</span>`
-                    + (name !== hex ? `<span class="font-mono text-xs opacity-85">(${hex})</span>` : '');
-                heroColorsEl.appendChild(item);
-                if (idx < colorList.length - 1) {
-                    const arrow = document.createElement('span');
-                    arrow.className = 'opacity-60 text-xs mx-0.5';
-                    arrow.innerHTML = '\u2192';
-                    heroColorsEl.appendChild(arrow);
+            heroPaletteStrips.addEventListener('click', (e) => {
+                const strip = e.target.closest('[data-color]');
+                if (!strip) return;
+                const c = strip.dataset.color;
+                if (c) {
+                    navigator.clipboard.writeText(c).then(() => {
+                        showFloatingToast(`Copied ${c}!`);
+                        const span = strip.querySelector('span');
+                        if (span) {
+                            const orig = span.textContent;
+                            span.textContent = 'Copied!';
+                            setTimeout(() => { span.textContent = orig; }, 1200);
+                        }
+                    });
                 }
-            });
-        }
-        renderHeroColorStops(palette.colorNames || null);
-
-        // Click on hero preview to copy all colors
-        const heroContainer = document.getElementById('heroPaletteContainer');
-        if (heroContainer) {
-            heroContainer.addEventListener('click', () => {
-                navigator.clipboard.writeText(allColors).then(() => {
-                    showFloatingToast(`Copied all ${colorList.length} colors!`);
-                    const hintSpan = heroContainer.querySelector('.group-hover\\:opacity-100 span');
-                    if (hintSpan) {
-                        hintSpan.innerHTML = '<i class="bi bi-check-circle-fill"></i> Copied!';
-                        setTimeout(() => {
-                            hintSpan.innerHTML = '<i class="bi bi-clipboard"></i> Click to copy colors';
-                        }, 2000);
-                    }
-                });
             });
         }
 
@@ -344,12 +296,11 @@
         }
         renderDetailSwatches(palette.colorNames || null);
 
-        // Async resolve color names to populate overlay and swatch list
+        // Async resolve color names to populate swatch list
         loadColorDict().then(dict => {
             if (!dict) return;
             const names = colorList.map(hex => findColorName(hex, dict));
             palette.colorNames = names;
-            renderHeroColorStops(names);
             renderDetailSwatches(names);
         });
 
