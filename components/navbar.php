@@ -93,10 +93,16 @@
                         </a>
                         <!-- Section: Other -->
                         <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
-                        <a href="<?= $base ?>/profile"
-                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-indigo-500 transition-colors">
-                            <i class="bi bi-person-circle text-base text-indigo-500"></i>
-                            <span>Profile</span>
+                        <p class="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Community</p>
+                        <a href="https://www.instagram.com/colormagic.techkreative/" target="_blank" rel="noopener noreferrer"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-pink-600 transition-colors">
+                            <i class="bi bi-instagram text-base text-pink-500"></i>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://pin.it/1q46mYukG" target="_blank" rel="noopener noreferrer"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-600 transition-colors">
+                            <i class="bi bi-pinterest text-base text-red-500"></i>
+                            <span>Pinterest</span>
                         </a>
                         <a href="<?= $base ?>/open-source"
                             class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-slate-600 transition-colors">
@@ -105,6 +111,16 @@
                         </a>
                     </div>
                 </div>
+                <a href="https://www.instagram.com/colormagic.techkreative/" target="_blank" rel="noopener noreferrer"
+                    class="hidden md:flex items-center justify-center w-8 h-8 text-slate-500 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-slate-800 rounded-lg transition-all"
+                    title="Follow Color Magic on Instagram" aria-label="Instagram">
+                    <i class="bi bi-instagram text-lg"></i>
+                </a>
+                <a href="https://pin.it/1q46mYukG" target="_blank" rel="noopener noreferrer"
+                    class="hidden md:flex items-center justify-center w-8 h-8 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800 rounded-lg transition-all"
+                    title="Follow Color Magic on Pinterest" aria-label="Pinterest">
+                    <i class="bi bi-pinterest text-lg"></i>
+                </a>
                 <a href="<?= $base ?>/open-source"
                     class="hidden lg:flex items-center gap-2 px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-all hover:scale-105 active:scale-95 group"
                     title="View on GitHub">

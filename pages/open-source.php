@@ -600,6 +600,41 @@
             </div>
         </div>
 
+        <!-- Community & Social Inspiration -->
+        <div class="mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-3 text-center">
+                ✨ Follow &amp; Connect
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400 text-center mb-8 max-w-xl mx-auto text-sm md:text-base">
+                Explore color palettes, design aesthetics, and daily creative inspiration across our official social channels.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                <a href="https://www.instagram.com/colormagic.techkreative/" target="_blank" rel="noopener noreferrer"
+                    class="flex items-center gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/10 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-md">
+                        <i class="bi bi-instagram text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base group-hover:text-pink-600 transition-colors">Instagram</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">@colormagic.techkreative</p>
+                    </div>
+                    <i class="bi bi-arrow-up-right text-slate-400 group-hover:text-pink-600 ml-auto transition-colors"></i>
+                </a>
+
+                <a href="https://pin.it/1q46mYukG" target="_blank" rel="noopener noreferrer"
+                    class="flex items-center gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center text-white shrink-0 shadow-md">
+                        <i class="bi bi-pinterest text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base group-hover:text-red-600 transition-colors">Pinterest</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Color Magic Pins &amp; Boards</p>
+                    </div>
+                    <i class="bi bi-arrow-up-right text-slate-400 group-hover:text-red-600 ml-auto transition-colors"></i>
+                </a>
+            </div>
+        </div>
+
         <!-- Contributing -->
         <div class="mb-16 md:mb-20">
             <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">

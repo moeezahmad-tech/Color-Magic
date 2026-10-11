@@ -273,6 +273,12 @@ Then visit `http://localhost:8080/` in your browser. All clean routes (e.g. `/pa
 - **Bing**: `BingSiteAuth.xml` for verification
 - **Yandex**: `yandex_13ee0143663b95c8.html` for verification
 
+## Connect & Social Media
+
+- **Instagram:** [@colormagic.techkreative](https://www.instagram.com/colormagic.techkreative/)
+- **Pinterest:** [Color Magic on Pinterest](https://pin.it/1q46mYukG)
+- **GitHub:** [moeezahmad-tech/Color-Magic](https://github.com/moeezahmad-tech/Color-Magic)
+
 ## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
