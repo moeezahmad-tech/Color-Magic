@@ -152,7 +152,7 @@
 
         var apiPromise = (window.ColorMagic && window.ColorMagic.api)
             ? window.ColorMagic.api.getPalettes({ limit: 1000 })
-            : fetch('/data/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+            : fetch('/api/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
         apiPromise
             .then(function (result) {

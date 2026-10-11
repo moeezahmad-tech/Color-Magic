@@ -1128,7 +1128,7 @@ $schema = [
 
             var gradPromise = (window.ColorMagic && window.ColorMagic.api)
                 ? window.ColorMagic.api.getGradients({ limit: 1000 })
-                : fetch('/data/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+                : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
             gradPromise
                 .then(function (res) {

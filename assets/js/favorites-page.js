@@ -193,13 +193,13 @@
     // ─── Load all data and render ───────────────────────────────────────────────
     var colorPromise = (window.ColorMagic && window.ColorMagic.api)
         ? window.ColorMagic.api.getColors({ format: 'dict' })
-        : fetch('/data/color-names.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+        : fetch('/api/color-names.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
     var palPromise = (window.ColorMagic && window.ColorMagic.api)
         ? window.ColorMagic.api.getPalettes({ limit: 1000 })
-        : fetch('/data/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+        : fetch('/api/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
     var gradPromise = (window.ColorMagic && window.ColorMagic.api)
         ? window.ColorMagic.api.getGradients({ limit: 1000 })
-        : fetch('/data/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+        : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
 
     Promise.all([colorPromise, palPromise, gradPromise]).then(function (results) {
         var colorNames     = (results[0] && results[0].data) ? results[0].data : (results[0] || {});
@@ -226,7 +226,7 @@
             // Re-render colors
             var cnPromise = (window.ColorMagic && window.ColorMagic.api)
                 ? window.ColorMagic.api.getColors({ format: 'dict' })
-                : fetch('/data/color-names.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+                : fetch('/api/color-names.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
             cnPromise.then(function (res) {
                 var data = (res && res.data) ? res.data : res;
                 var count = renderColors(data);
@@ -264,7 +264,7 @@
             // Re-render palettes
             var pPromise = (window.ColorMagic && window.ColorMagic.api)
                 ? window.ColorMagic.api.getPalettes({ limit: 1000 })
-                : fetch('/data/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+                : fetch('/api/palettes.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
             pPromise.then(function (res) {
                 var data = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
                 var count = renderPalettes(Array.isArray(data) ? data : []);

@@ -7,14 +7,14 @@
 window.ColorMagic = window.ColorMagic || {};
 
 window.ColorMagic.getApiBase = function () {
-    return '/data';
+    return '/api';
 };
 
 window.ColorMagic.apiBase = window.ColorMagic.getApiBase();
 
 window.ColorMagic.getApiUrl = function (endpoint) {
-    var clean = (endpoint || '').replace(/^\//, '').replace(/^data\//, '');
-    return '/data/' + clean;
+    var clean = (endpoint || '').replace(/^\//, '').replace(/^data\//, '').replace(/^api\//, '');
+    return '/api/' + clean;
 };
 
 /**
@@ -31,7 +31,7 @@ window.ColorMagic.getApiUrl = function (endpoint) {
         if (_cache[file]) {
             return _cache[file];
         }
-        var url = '/data/' + file + '.json';
+        var url = '/api/' + file + '.json';
         var res = await fetch(url);
         if (!res.ok) {
             throw new Error('Failed to load ' + url);
@@ -50,7 +50,7 @@ window.ColorMagic.getApiUrl = function (endpoint) {
          * Generic request helper
          */
         request: async function (endpoint) {
-            var clean = (endpoint || '').replace(/^\//, '').replace(/^data\//, '');
+            var clean = (endpoint || '').replace(/^\//, '').replace(/^data\//, '').replace(/^api\//, '');
             if (clean.indexOf('color-names') !== -1) {
                 var c = await loadJson('color-names');
                 return { status: 'success', data: c };
@@ -63,7 +63,7 @@ window.ColorMagic.getApiUrl = function (endpoint) {
                 var g = await loadJson('gradients');
                 return { status: 'success', data: g };
             }
-            var res = await fetch('/data/' + clean);
+            var res = await fetch('/api/' + clean);
             var data = await res.json();
             return { status: 'success', data: data };
         },

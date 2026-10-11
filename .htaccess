@@ -38,6 +38,7 @@ RewriteRule ^auth/google-login/?$ auth/google-login.php [L]
 RewriteRule ^auth/google-callback/?$ auth/google-callback.php [L]
 RewriteRule ^auth/logout/?$ auth/logout.php [L]
 RewriteRule ^auth/delete-account/?$ auth/delete-account.php [L]
+RewriteRule ^auth/favorites/?$ auth/favorites.php [L]
 
 # Legacy API compatibility — map /api/*.json directly to /data/*.json
 RewriteRule ^api/([a-zA-Z0-9_-]+\.json)$ data/$1 [L]

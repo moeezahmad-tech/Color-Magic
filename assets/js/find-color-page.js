@@ -22,7 +22,7 @@
                 const res = await window.ColorMagic.api.getColors({ format: 'dict' });
                 colorNames = res.data || res;
             } else {
-                const res = await fetch('/data/color-names.json');
+                const res = await fetch('/api/color-names.json');
                 colorNames = await res.json();
             }
             isColorNamesLoaded = true;

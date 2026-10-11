@@ -125,7 +125,7 @@
             try {
                 const palPromise = (window.ColorMagic && window.ColorMagic.api)
                     ? window.ColorMagic.api.getPalettes({ limit: 1000 })
-                    : fetch('/data/palettes.json').then(r => r.json()).then(d => ({ data: d }));
+                    : fetch('/api/palettes.json').then(r => r.json()).then(d => ({ data: d }));
 
                 const result = await palPromise;
                 allPalettes = (result && result.data) ? result.data : (Array.isArray(result) ? result : []);
@@ -438,7 +438,7 @@
         if (relatedGradientsGrid) {
             const gradPromise = (window.ColorMagic && window.ColorMagic.api)
                 ? window.ColorMagic.api.getGradients({ limit: 100 })
-                : fetch('https://colormagic-api.techkreative.com/data/gradients.json').then(r => r.json()).then(d => ({ data: d }));
+                : fetch('/api/gradients.json').then(r => r.json()).then(d => ({ data: d }));
 
             gradPromise
                 .then(res => {

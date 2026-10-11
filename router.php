@@ -97,6 +97,7 @@ $authRoutes = [
     'auth/google-callback' => __DIR__ . '/auth/google-callback.php',
     'auth/logout'          => __DIR__ . '/auth/logout.php',
     'auth/delete-account'  => __DIR__ . '/auth/delete-account.php',
+    'auth/favorites'       => __DIR__ . '/auth/favorites.php',
 ];
 if (isset($authRoutes[$path])) {
     dispatch($authRoutes[$path]);
