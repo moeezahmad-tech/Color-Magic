@@ -335,53 +335,83 @@
             + '    endPoint: .bottomTrailing\n'
             + ')';
 
-        // Populate each export section's code block (JSON on top, followed by other formats)
-        var exportSections = [
-            { codeEl: 'jsonCode',            copyBtnId: 'copyJsonBtn',          data: jsonFormat },
-            { codeEl: 'cssCodeBlock',        copyBtnId: 'copyCssBlockBtn',      data: cssCodeFormat },
-            { codeEl: 'cssVarsCode',         copyBtnId: 'copyCssVarsExportBtn', data: cssVarsFormat },
-            { codeEl: 'scssCode',            copyBtnId: 'copyScssBtn',          data: scssFormat },
-            { codeEl: 'tailwindCode',        copyBtnId: 'copyTailwindBtn',      data: tailwindFormat },
-            { codeEl: 'hexArrayCode',        copyBtnId: 'copyHexArrayBtn',      data: hexArrayFormat },
-            { codeEl: 'svgGradientCode',     copyBtnId: 'copySvgGradientBtn',   data: svgFormat },
-            { codeEl: 'androidCode',         copyBtnId: 'copyAndroidBtn',       data: androidFormat },
-            { codeEl: 'swiftCode',           copyBtnId: 'copySwiftBtn',         data: swiftFormat }
-        ];
-
-        var copyIconHTML = '<i class="bi bi-clipboard me-1"></i>Copy';
-
-        exportSections.forEach(function (sec) {
-            var codeBlock = document.getElementById(sec.codeEl);
-            var btn = document.getElementById(sec.copyBtnId);
-            if (codeBlock) codeBlock.textContent = sec.data;
-            if (btn) {
-                var origHTML = btn.innerHTML;
-                btn.addEventListener('click', function () {
-                    copyToClipboard(sec.data, btn, origHTML);
-                });
+        // Tabbed Export Data & Switcher
+        var exportFormats = {
+            json: {
+                desc: 'Structured JSON format for APIs, AI prompts, and data exchange',
+                code: jsonFormat
+            },
+            css: {
+                desc: 'CSS background declarations with fallback color',
+                code: cssCodeFormat
+            },
+            cssVars: {
+                desc: 'CSS variables for stylesheets with individual color stops',
+                code: cssVarsFormat
+            },
+            tailwind: {
+                desc: 'Extend backgroundImage in tailwind.config.js',
+                code: tailwindFormat
+            },
+            scss: {
+                desc: 'Sass/SCSS gradient variable and reusable mixin',
+                code: scssFormat
+            },
+            hex: {
+                desc: 'Array of hex color stops for JavaScript or canvas',
+                code: hexArrayFormat
+            },
+            svg: {
+                desc: 'Vector SVG gradient definition with color stops',
+                code: svgFormat
+            },
+            android: {
+                desc: 'Android shape drawable XML gradient',
+                code: androidFormat
+            },
+            swift: {
+                desc: 'SwiftUI LinearGradient declaration for iOS/macOS',
+                code: swiftFormat
             }
+        };
+
+        var activeTab = 'json';
+        var codePre = document.getElementById('gradientExportActiveCode');
+        var descEl = document.getElementById('gradientExportDescription');
+        var copyBtn = document.getElementById('copyGradientActiveExportBtn');
+        var tabBtns = document.querySelectorAll('#gradientExportTabs .export-tab-btn');
+
+        function updateExportTab(key) {
+            if (!exportFormats[key]) return;
+            activeTab = key;
+            if (codePre) codePre.textContent = exportFormats[key].code;
+            if (descEl) descEl.textContent = exportFormats[key].desc;
+
+            tabBtns.forEach(function (btn) {
+                var isActive = btn.dataset.tab === key;
+                if (isActive) {
+                    btn.className = 'export-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-primary text-white shadow-sm flex items-center gap-1.5';
+                } else {
+                    btn.className = 'export-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 flex items-center gap-1.5';
+                }
+            });
+        }
+
+        // Initialize with JSON
+        updateExportTab('json');
+
+        tabBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                updateExportTab(btn.dataset.tab);
+            });
         });
 
-        // Toggle additional export formats (See More / See Less)
-        var toggleMoreFormatsBtn = document.getElementById('toggleMoreFormatsBtn');
-        var moreExportFormats = document.getElementById('moreExportFormats');
-        var toggleMoreFormatsText = document.getElementById('toggleMoreFormatsText');
-        var toggleMoreFormatsIcon = document.getElementById('toggleMoreFormatsIcon');
-
-        if (toggleMoreFormatsBtn && moreExportFormats) {
-            toggleMoreFormatsBtn.addEventListener('click', function () {
-                var isHidden = moreExportFormats.classList.contains('hidden');
-                if (isHidden) {
-                    moreExportFormats.classList.remove('hidden');
-                    moreExportFormats.classList.add('flex');
-                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See Less';
-                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-up transition-transform group-hover:-translate-y-0.5';
-                } else {
-                    moreExportFormats.classList.add('hidden');
-                    moreExportFormats.classList.remove('flex');
-                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See More';
-                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-down transition-transform group-hover:translate-y-0.5';
-                }
+        // Copy button copies active code
+        if (copyBtn) {
+            var origCopyHTML = copyBtn.innerHTML;
+            copyBtn.addEventListener('click', function () {
+                var activeData = exportFormats[activeTab] ? exportFormats[activeTab].code : '';
+                copyToClipboard(activeData, copyBtn, origCopyHTML);
             });
         }
 

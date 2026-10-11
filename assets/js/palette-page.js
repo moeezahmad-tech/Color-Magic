@@ -393,50 +393,89 @@
             return `    static let palette${i + 1} = UIColor(red: ${(rgb.r / 255).toFixed(3)}, green: ${(rgb.g / 255).toFixed(3)}, blue: ${(rgb.b / 255).toFixed(3)}, alpha: 1.0)`;
         }).join('\n')}\n}`;
 
-        // Populate each export section's code block (JSON on top, followed by other formats)
-        const exportSections = [
-            { codeEl: 'jsonCode',     copyBtnId: 'copyJsonBtn', data: jsonFormat },
-            { codeEl: 'hexArrayCode', copyBtnId: 'copyHexArrayBtn', data: hexArrayFormat },
-            { codeEl: 'cssVarsCode',  copyBtnId: 'copyCssVarsExportBtn', data: cssVarsFullFormat },
-            { codeEl: 'scssCode',     copyBtnId: 'copyScssBtn', data: scssFormat },
-            { codeEl: 'tailwindCode', copyBtnId: 'copyTailwindBtn', data: tailwindFormat },
-            { codeEl: 'rgbArrayCode', copyBtnId: 'copyRgbArrayBtn', data: rgbArrayFormat },
-            { codeEl: 'hslArrayCode', copyBtnId: 'copyHslArrayBtn', data: hslArrayFormat },
-            { codeEl: 'androidCode',  copyBtnId: 'copyAndroidBtn', data: androidFormat },
-            { codeEl: 'swiftCode',    copyBtnId: 'copySwiftBtn', data: swiftFormat }
-        ];
+        // Tabbed Export Data & Switcher
+        const exportFormats = {
+            json: {
+                desc: 'Structured JSON format for APIs, AI prompts, and data exchange',
+                code: jsonFormat
+            },
+            hex: {
+                desc: 'Standard hex color array for JavaScript and CSS',
+                code: hexArrayFormat
+            },
+            css: {
+                desc: 'CSS custom properties for use in stylesheets with :root declaration',
+                code: cssVarsFullFormat
+            },
+            tailwind: {
+                desc: 'Extend your tailwind.config.js theme with custom palette colors',
+                code: tailwindFormat
+            },
+            scss: {
+                desc: 'Sass/SCSS variable declarations for preprocessor workflows',
+                code: scssFormat
+            },
+            rgb: {
+                desc: 'RGB functional notation for CSS and canvas rendering',
+                code: rgbArrayFormat
+            },
+            hsl: {
+                desc: 'HSL notation for dynamic color manipulation in CSS',
+                code: hslArrayFormat
+            },
+            android: {
+                desc: 'Android resource file format for colors.xml',
+                code: androidFormat
+            },
+            swift: {
+                desc: 'Swift extension for iOS/macOS UIColor declarations',
+                code: swiftFormat
+            }
+        };
 
-        const copyIconHTML = '<i class="bi bi-clipboard me-1"></i>Copy';
+        let activeTab = 'json';
+        const codePre = document.getElementById('paletteExportActiveCode');
+        const descEl = document.getElementById('paletteExportDescription');
+        const copyBtn = document.getElementById('copyPaletteActiveExportBtn');
+        const tabBtns = document.querySelectorAll('#paletteExportTabs .export-tab-btn');
 
-        exportSections.forEach(({ codeEl, copyBtnId, data }) => {
-            const codeBlock = document.getElementById(codeEl);
-            const btn = document.getElementById(copyBtnId);
-            if (codeBlock) codeBlock.textContent = data;
-            btn?.addEventListener('click', async () => {
-                await copyText(data, btn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', copyIconHTML);
+        function updateExportTab(key) {
+            if (!exportFormats[key]) return;
+            activeTab = key;
+            if (codePre) codePre.textContent = exportFormats[key].code;
+            if (descEl) descEl.textContent = exportFormats[key].desc;
+
+            tabBtns.forEach(btn => {
+                const isActive = btn.dataset.tab === key;
+                if (isActive) {
+                    btn.className = 'export-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-primary text-white shadow-sm flex items-center gap-1.5';
+                } else {
+                    btn.className = 'export-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 flex items-center gap-1.5';
+                }
+            });
+        }
+
+        // Initialize with JSON
+        updateExportTab('json');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                updateExportTab(btn.dataset.tab);
             });
         });
 
-        // Toggle additional export formats (See More / See Less)
-        const toggleMoreFormatsBtn = document.getElementById('toggleMoreFormatsBtn');
-        const moreExportFormats = document.getElementById('moreExportFormats');
-        const toggleMoreFormatsText = document.getElementById('toggleMoreFormatsText');
-        const toggleMoreFormatsIcon = document.getElementById('toggleMoreFormatsIcon');
-
-        if (toggleMoreFormatsBtn && moreExportFormats) {
-            toggleMoreFormatsBtn.addEventListener('click', () => {
-                const isHidden = moreExportFormats.classList.contains('hidden');
-                if (isHidden) {
-                    moreExportFormats.classList.remove('hidden');
-                    moreExportFormats.classList.add('flex');
-                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See Less';
-                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-up transition-transform group-hover:-translate-y-0.5';
-                } else {
-                    moreExportFormats.classList.add('hidden');
-                    moreExportFormats.classList.remove('flex');
-                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See More';
-                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-down transition-transform group-hover:translate-y-0.5';
-                }
+        // Copy button copies active code
+        if (copyBtn) {
+            const origCopyHTML = copyBtn.innerHTML;
+            copyBtn.addEventListener('click', async () => {
+                const activeData = exportFormats[activeTab] ? exportFormats[activeTab].code : '';
+                await copyText(
+                    activeData,
+                    copyBtn,
+                    '<i class="bi bi-check-circle-fill"></i><span>Copied!</span>',
+                    '<i class="bi bi-x-circle"></i><span>Failed</span>',
+                    origCopyHTML
+                );
             });
         }
 
