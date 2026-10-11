@@ -457,9 +457,9 @@
             curSwatchX += swatchR * 2 + textW + 48;
         });
 
-        // 4. Technical Specs Block (TYPE, STOPS, STYLE, CSS)
-        var specY = 1940;
-        var lineH = 74;
+        // 4. Technical Specs Block (TYPE, STOPS, STYLE)
+        var specY = 1950;
+        var lineH = 78;
         var labelX = startX;
         var valueX = startX + 280;
 
@@ -469,7 +469,6 @@
         drawSpacedText(ctx, 'TYPE', labelX, specY, 4, 'left');
         drawSpacedText(ctx, 'STOPS', labelX, specY + lineH, 4, 'left');
         drawSpacedText(ctx, 'STYLE', labelX, specY + lineH * 2, 4, 'left');
-        drawSpacedText(ctx, 'CSS', labelX, specY + lineH * 3, 4, 'left');
 
         // Values Column
         ctx.font = '500 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -478,10 +477,6 @@
         drawSpacedText(ctx, typeValue, valueX, specY, 2, 'left');
         drawSpacedText(ctx, colors.length + ' COLORS (' + colors.join(', ') + ')', valueX, specY + lineH, 2, 'left');
         drawSpacedText(ctx, (gradient.style || 'MODERN').toUpperCase(), valueX, specY + lineH * 2, 2, 'left');
-        
-        var cssShort = (gradient.css || '').replace(/\s+/g, ' ');
-        if (cssShort.length > 46) cssShort = cssShort.substring(0, 44) + '...';
-        drawSpacedText(ctx, cssShort, valueX, specY + lineH * 3, 1, 'left');
 
         // 5. Subtle Branding URL (Bottom Right)
         ctx.font = '500 26px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
