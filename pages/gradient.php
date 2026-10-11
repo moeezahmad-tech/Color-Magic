@@ -135,8 +135,6 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                         <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
-                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
-                        <div class="h-11 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
                     </div>
                     <div class="grid grid-cols-3 gap-3">
                         <div class="h-16 bg-slate-200/80 dark:bg-slate-800 rounded-xl"></div>
@@ -229,16 +227,6 @@
                             title="Download gradient image">
                             <i class="bi bi-download text-base"></i>
                             <span>Download Image</span>
-                        </button>
-                        <button id="copyCssBtn"
-                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
-                            <i class="bi bi-clipboard text-base"></i>
-                            <span>Copy CSS</span>
-                        </button>
-                        <button id="copyGradientColorsBtn"
-                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
-                            <i class="bi bi-palette text-sm"></i>
-                            <span>Copy Colors</span>
                         </button>
                         <button id="favGradientBtn"
                             class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">

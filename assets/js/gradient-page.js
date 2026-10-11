@@ -328,28 +328,6 @@
             }
         });
 
-        // Copy CSS button
-        var copyCssBtn = document.getElementById('copyCssBtn');
-        copyCssBtn.addEventListener('click', function () {
-            if (window.ColorMagic.animateCopy) {
-                window.ColorMagic.animateCopy(copyCssBtn, g.css, 'Copied CSS!');
-            } else {
-                copyToClipboard(g.css, copyCssBtn, copyCssBtn.innerHTML);
-            }
-        });
-
-        // Copy Colors button
-        var copyColorsBtn = document.getElementById('copyGradientColorsBtn');
-        if (copyColorsBtn) {
-            copyColorsBtn.addEventListener('click', function () {
-                var colorsStr = (g.colors || []).join(', ');
-                if (window.ColorMagic.animateCopy) {
-                    window.ColorMagic.animateCopy(copyColorsBtn, colorsStr, 'Copied Colors!');
-                } else {
-                    copyToClipboard(colorsStr, copyColorsBtn, copyColorsBtn.innerHTML);
-                }
-            });
-        }
 
         // Copy CSS block button
         var copyBlockBtn = document.getElementById('copyCssBlockBtn');
