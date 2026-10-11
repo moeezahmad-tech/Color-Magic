@@ -14,7 +14,10 @@ RewriteRule ^pages/(.+)$ https://%{HTTP_HOST}/$1 [R=301,L,NC]
 RewriteCond %{THE_REQUEST} \s/+(.*)index\.(php|html)[\s?] [NC]
 RewriteRule ^(.*)index\.(php|html)$ https://%{HTTP_HOST}/$1 [R=301,L,NC]
 
-# Redirect .php and .html extensions → extensionless
+# Redirect .php and .html extensions → extensionless (exclude verification files)
+RewriteCond %{REQUEST_URI} !^/pinterest-.*\.html$ [NC]
+RewriteCond %{REQUEST_URI} !^/yandex_.*\.html$ [NC]
+RewriteCond %{REQUEST_URI} !^/google.*\.html$ [NC]
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.(php|html)[\s?] [NC]
 RewriteRule ^(.+)\.(php|html)$ https://%{HTTP_HOST}/$1 [R=301,L,NC]
 

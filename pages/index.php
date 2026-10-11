@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+    <meta name="p:domain_verify" content="938654d30b38c1ce54405b051fff4560"/>
     <meta name="yandex-verification" content="797f9c11121b55d1" />
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
