@@ -59,6 +59,55 @@
         return params.get('id') || '';
     }
 
+    var colorDictCache = null;
+    function loadColorDict() {
+        if (colorDictCache) return Promise.resolve(colorDictCache);
+        return fetch('/api/color-names.json')
+            .then(function (r) { return r.json(); })
+            .then(function (dict) {
+                colorDictCache = dict;
+                return dict;
+            })
+            .catch(function () { return null; });
+    }
+
+    function findColorName(hex, dict) {
+        if (!hex) return '';
+        var clean = hex.replace('#', '').toUpperCase();
+        if (dict && dict[clean]) {
+            var entry = dict[clean];
+            return typeof entry === 'object' ? (entry.name || clean) : String(entry);
+        }
+        if (!dict) return hex;
+        var target = hexToRgb(clean);
+        var minD = Infinity;
+        var bestName = hex;
+        for (var k in dict) {
+            var rgb = hexToRgb(k);
+            var d = (rgb.r - target.r) * (rgb.r - target.r) + (rgb.g - target.g) * (rgb.g - target.g) + (rgb.b - target.b) * (rgb.b - target.b);
+            if (d < minD) {
+                minD = d;
+                var e = dict[k];
+                bestName = typeof e === 'object' ? (e.name || k) : String(e);
+                if (d === 0) break;
+            }
+        }
+        return bestName;
+    }
+
+    function showCopyFeedback(msg) {
+        var fb = document.getElementById('copyFeedback');
+        if (!fb) return;
+        fb.textContent = msg || 'Copied to clipboard';
+        fb.classList.remove('opacity-0', '-translate-y-1');
+        fb.classList.add('opacity-100', 'translate-y-0');
+        clearTimeout(fb._timer);
+        fb._timer = setTimeout(function () {
+            fb.classList.remove('opacity-100', 'translate-y-0');
+            fb.classList.add('opacity-0', '-translate-y-1');
+        }, 2000);
+    }
+
     // ─── Render functions ─────────────────────────────────────────────────────
 
     function renderGradient(g) {
@@ -117,22 +166,101 @@
             angleShapeValue.textContent = g.type.charAt(0).toUpperCase() + g.type.slice(1);
         }
 
-        // Hero preview
+        // Hero preview background
         var hero = document.getElementById('heroGradientPreview');
         hero.style.background = g.css;
 
-        // Color list (small chips in info panel)
-        var colorList = document.getElementById('gradientColorList');
-        colorList.innerHTML = '';
+        // Contrast calculation for hero text overlay
+        var totalLum = 0;
         g.colors.forEach(function (hex) {
-            var rgb = hexToRgb(hex);
-            var item = document.createElement('div');
-            item.className = 'flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-lg px-3 py-2';
-            item.innerHTML =
-                '<span class="w-5 h-5 rounded-md shrink-0 shadow-sm" style="background:' + hex + '"></span>'
-                + '<span class="text-sm font-mono font-semibold">' + hex + '</span>'
-                + '<span class="text-xs text-slate-400 ml-auto">' + rgb.r + ',' + rgb.g + ',' + rgb.b + '</span>';
-            colorList.appendChild(item);
+            totalLum += getLuminance(hex);
+        });
+        var avgLum = totalLum / Math.max(g.colors.length, 1);
+        var isLight = avgLum > 62;
+        var heroOverlay = document.getElementById('heroOverlayText');
+        if (heroOverlay) {
+            if (isLight) {
+                heroOverlay.style.color = '#0f172a';
+                heroOverlay.style.textShadow = '0 1px 3px rgba(255,255,255,0.75)';
+            } else {
+                heroOverlay.style.color = '#FFFFFF';
+                heroOverlay.style.textShadow = '0 2px 10px rgba(0,0,0,0.55)';
+            }
+        }
+
+        // Write Gradient Name on the gradient (matches color page style)
+        var heroNameEl = document.getElementById('heroGradientName');
+        if (heroNameEl) {
+            heroNameEl.textContent = g.name;
+        }
+
+        // Small text with color names on the gradient
+        function renderHeroColorStops(names) {
+            var heroColorsEl = document.getElementById('heroGradientColors');
+            if (!heroColorsEl) return;
+            heroColorsEl.innerHTML = '';
+            g.colors.forEach(function (hex, idx) {
+                var name = (names && names[idx]) ? names[idx] : hex;
+                var item = document.createElement('span');
+                item.className = 'inline-flex items-center gap-1.5';
+                item.innerHTML =
+                    '<span class="w-2.5 h-2.5 rounded-full inline-block shadow-sm ring-1 ring-white/50" style="background:' + hex + '"></span>'
+                    + '<span class="font-bold">' + name + '</span>'
+                    + (name !== hex ? '<span class="font-mono text-xs opacity-85">(' + hex + ')</span>' : '');
+                heroColorsEl.appendChild(item);
+                if (idx < g.colors.length - 1) {
+                    var arrow = document.createElement('span');
+                    arrow.className = 'opacity-60 text-xs mx-0.5';
+                    arrow.innerHTML = '\u2192';
+                    heroColorsEl.appendChild(arrow);
+                }
+            });
+        }
+        renderHeroColorStops(g.colorNames || null);
+
+        // Color swatches breakdown (1-click copy chips with toast feedback)
+        function renderColorList(names) {
+            var colorList = document.getElementById('gradientColorList');
+            if (!colorList) return;
+            colorList.innerHTML = '';
+            g.colors.forEach(function (hex, idx) {
+                var rgb = hexToRgb(hex);
+                var name = (names && names[idx]) ? names[idx] : '';
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'copy-swatch-chip group flex items-center gap-2.5 bg-slate-50 hover:bg-white dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl px-3 py-2.5 border border-slate-200 hover:border-primary/50 dark:border-slate-700/60 dark:hover:border-primary/50 transition-all shadow-sm hover:shadow text-left min-w-0';
+                btn.title = 'Click to copy ' + hex;
+                btn.innerHTML =
+                    '<span class="w-6 h-6 rounded-lg shrink-0 shadow-sm border border-black/10" style="background:' + hex + '"></span>'
+                    + '<div class="min-w-0 flex-1">'
+                    +   '<div class="flex items-center gap-1.5">'
+                    +     '<span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-100">' + hex + '</span>'
+                    +     (name && name !== hex ? '<span class="text-[11px] text-slate-400 truncate font-medium">' + name + '</span>' : '')
+                    +   '</div>'
+                    +   '<span class="text-[10px] text-slate-400 font-mono">RGB(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')</span>'
+                    + '</div>'
+                    + '<i class="bi bi-clipboard text-slate-400 group-hover:text-primary text-xs transition-colors shrink-0"></i>';
+                btn.addEventListener('click', function () {
+                    navigator.clipboard.writeText(hex).then(function () {
+                        showCopyFeedback('Copied ' + hex + '!');
+                        btn.classList.add('ring-2', 'ring-emerald-500');
+                        setTimeout(function () { btn.classList.remove('ring-2', 'ring-emerald-500'); }, 1200);
+                    });
+                });
+                colorList.appendChild(btn);
+            });
+        }
+        renderColorList(g.colorNames || null);
+
+        // Async resolve color names to populate gradient overlay and swatches
+        loadColorDict().then(function (dict) {
+            if (!dict) return;
+            var names = g.colors.map(function (hex) {
+                return findColorName(hex, dict);
+            });
+            g.colorNames = names;
+            renderHeroColorStops(names);
+            renderColorList(names);
         });
 
         // CSS code block

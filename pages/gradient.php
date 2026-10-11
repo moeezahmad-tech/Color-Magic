@@ -167,9 +167,18 @@
                 <!-- Large gradient preview -->
                 <div class="h-full">
                     <div id="heroGradientPreview"
-                        class="gradient-hero h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30 relative cursor-pointer group">
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 backdrop-blur-[2px]">
-                            <span class="px-4 py-2 bg-white/90 dark:bg-slate-900/90 rounded-xl text-sm font-semibold shadow-lg flex items-center gap-2">
+                        class="gradient-hero h-72 md:h-80 lg:h-full min-h-[300px] md:min-h-[380px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30 relative flex items-end cursor-pointer group">
+                        
+                        <!-- Overlay Content (matches color page style) -->
+                        <div id="heroOverlayText" class="relative z-10 select-none p-6 md:p-8 flex flex-col justify-end w-full pointer-events-none transition-colors duration-200" style="color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.45);">
+                            <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] opacity-85 mb-1.5">COLOR MAGIC</p>
+                            <h2 id="heroGradientName" class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-2"></h2>
+                            <div id="heroGradientColors" class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-semibold tracking-tight opacity-95"></div>
+                        </div>
+
+                        <!-- Hover copy hint -->
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
+                            <span class="px-3 py-1.5 bg-black/40 backdrop-blur-md text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm">
                                 <i class="bi bi-clipboard"></i> Click to copy CSS
                             </span>
                         </div>
@@ -177,7 +186,7 @@
                 </div>
 
                 <!-- Info panel: Consistent Order -->
-                <div class="flex flex-col gap-5">
+                <div class="flex flex-col gap-5 justify-between">
                     <!-- 1. Heading, 2. Subheading, 3. Label / Description text -->
                     <div>
                         <h1 id="gradientName" class="text-3xl md:text-4xl font-bold tracking-tight"></h1>
@@ -187,48 +196,56 @@
                         </p>
                     </div>
 
-                    <!-- 4. Action Buttons (2x2 on desktop, 1x4 on mobile) -->
+                    <!-- 2. Details: Info chips -->
+                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
+                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Type</p>
+                            <p id="gradientType" class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight"></p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
+                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Colors</p>
+                            <p id="gradientColorCount" class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight"></p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
+                            <p class="text-[11px] uppercase tracking-wider text-slate-400" id="angleShapeLabel">Angle</p>
+                            <p id="gradientAngleShape" class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight"></p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Color swatches breakdown (1-click copy) -->
+                    <div>
+                        <div id="gradientColorList" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                        <div class="h-4 mt-1">
+                            <p id="copyFeedback"
+                                class="copy-feedback opacity-0 -translate-y-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 transition-all">
+                                Copied to clipboard</p>
+                        </div>
+                    </div>
+
+                    <!-- 4. Primary Action Buttons -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button id="downloadGradientPngBtn"
+                            class="w-full px-5 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 active:scale-[0.99]"
+                            title="Download gradient image">
+                            <i class="bi bi-download text-base"></i>
+                            <span>Download Image</span>
+                        </button>
                         <button id="copyCssBtn"
-                            class="w-full px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
-                            <i class="bi bi-clipboard"></i>
+                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
+                            <i class="bi bi-clipboard text-base"></i>
                             <span>Copy CSS</span>
                         </button>
                         <button id="copyGradientColorsBtn"
-                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                            <i class="bi bi-palette"></i>
+                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
+                            <i class="bi bi-palette text-sm"></i>
                             <span>Copy Colors</span>
                         </button>
-                        <button id="downloadGradientPngBtn"
-                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                            <i class="bi bi-download"></i>
-                            <span>Download PNG</span>
-                        </button>
                         <button id="favGradientBtn"
-                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                            <i class="bi bi-heart"></i>
+                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
+                            <i class="bi bi-heart text-sm"></i>
                             <span>Favorite</span>
                         </button>
                     </div>
-
-                    <!-- 5. Details: Info chips -->
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
-                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Type</p>
-                            <p id="gradientType" class="font-bold mt-1"></p>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
-                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Colors</p>
-                            <p id="gradientColorCount" class="font-bold mt-1"></p>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
-                            <p class="text-[11px] uppercase tracking-wider text-slate-400" id="angleShapeLabel">Angle</p>
-                            <p id="gradientAngleShape" class="font-bold mt-1"></p>
-                        </div>
-                    </div>
-
-                    <!-- Color swatches list -->
-                    <div id="gradientColorList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1"></div>
                 </div>
             </div>
 

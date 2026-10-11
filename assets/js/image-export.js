@@ -355,35 +355,33 @@
     // ─── Gradient Image Export ─────────────────────────────────────────────────
 
     /**
-     * Renders a gradient as a PNG image and triggers download.
+     * Renders a gradient card canvas in Pantone Swatch / high-res portrait style (4:5).
      * @param {Object} gradient - { id, name, css, colors, type, style, angle, shape }
-     * @param {string} [filename] - Optional filename
+     * @returns {HTMLCanvasElement}
      */
-    window.ColorMagic.exportGradientImage = function (gradient, filename) {
+    window.ColorMagic.renderGradientCanvas = function (gradient) {
         var canvas = document.createElement('canvas');
-        var W = 4800, H = 3200;
+        var W = 2000, H = 2500; // 4:5 vertical portrait ratio
         canvas.width = W;
         canvas.height = H;
         var ctx = canvas.getContext('2d');
 
-        var name = gradient.name || 'CSS Gradient';
-        var css = gradient.css || '';
-        var colors = gradient.colors || [];
-        var type = gradient.type || 'linear';
-        var angle = gradient.angle || 135;
+        var name = (gradient.name || 'Gradient').toUpperCase();
+        var colors = gradient.colors || ['#000000', '#ffffff'];
+        var type = (gradient.type || 'linear').toLowerCase();
+        var angle = (typeof gradient.angle === 'number') ? gradient.angle : 135;
 
-        // Gradient fill (top 60%)
-        var gradH = 1920;
+        // Render high-res gradient
         var grad;
         if (type === 'linear') {
             var rad = (angle - 90) * Math.PI / 180;
-            var cx = W / 2, cy = gradH / 2;
-            var len = Math.max(W, gradH);
+            var cx = W / 2, cy = H / 2;
+            var len = Math.sqrt(W * W + H * H);
             var dx = Math.cos(rad) * len / 2;
             var dy = Math.sin(rad) * len / 2;
             grad = ctx.createLinearGradient(cx - dx, cy - dy, cx + dx, cy + dy);
         } else {
-            grad = ctx.createRadialGradient(W / 2, gradH / 2, 0, W / 2, gradH / 2, Math.max(W, gradH) / 2);
+            grad = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) / 1.5);
         }
 
         colors.forEach(function (hex, i) {
@@ -391,80 +389,118 @@
         });
 
         ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, W, gradH);
+        ctx.fillRect(0, 0, W, H);
 
-        // Gradient name on gradient area
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
-        ctx.shadowBlur = 48;
-        ctx.font = 'bold 168px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(name, W / 2, gradH / 2 - 80);
+        // Calculate average perceived luminance
+        var totalLum = 0;
+        colors.forEach(function (hex) {
+            totalLum += getLuminance(hex);
+        });
+        var avgLum = totalLum / Math.max(colors.length, 1);
+        var isLight = avgLum > 0.62;
 
-        // CSS code below name
-        ctx.shadowBlur = 32;
-        ctx.font = '500 72px Inter, system-ui, sans-serif';
-        ctx.globalAlpha = 0.9;
-        var cssShort = css.length > 80 ? css.substring(0, 77) + '...' : css;
-        ctx.fillText('background: ' + cssShort + ';', W / 2, gradH / 2 + 120);
-        ctx.globalAlpha = 1;
-        ctx.shadowBlur = 0;
-        ctx.shadowColor = 'transparent';
+        var textPrimary = isLight ? '#111827' : '#FFFFFF';
+        var textSecondary = isLight ? 'rgba(17, 24, 39, 0.88)' : 'rgba(255, 255, 255, 0.92)';
+        var textMuted = isLight ? 'rgba(17, 24, 39, 0.55)' : 'rgba(255, 255, 255, 0.60)';
 
-        // Bottom info area
-        var infoY = gradH;
+        // ─── Swatch Card Layout ─────────────────────────────────────────────
+        var startX = 220;
 
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, infoY, W, H - infoY);
+        // 1. Brand Tag (moderate size, clean letter-spacing, NO (R) symbol)
+        ctx.fillStyle = textSecondary;
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '700 48px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        drawSpacedText(ctx, 'COLOR MAGIC', startX, 1500, 6, 'left');
 
-        // Divider
-        ctx.strokeStyle = '#e2e8f0';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(160, infoY);
-        ctx.lineTo(W - 160, infoY);
-        ctx.stroke();
+        // 2. Large Gradient Name
+        ctx.fillStyle = textPrimary;
+        var maxHeroW = 1560;
+        ctx.font = '900 136px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        if (ctx.measureText(name).width > maxHeroW) {
+            var scale = maxHeroW / ctx.measureText(name).width;
+            ctx.font = '900 ' + Math.max(64, Math.floor(136 * scale)) + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        }
+        drawSpacedText(ctx, name, startX, 1660, 2, 'left');
 
-        // Info text
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 112px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-        ctx.fillText(name, 200, infoY + 120);
+        // 3. Color stops subtitle
+        ctx.fillStyle = textSecondary;
+        ctx.font = '700 68px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        var stopsSummary = colors.map(function (c) { return c.toUpperCase(); }).join('  \u2192  ');
+        if (ctx.measureText(stopsSummary).width > maxHeroW) {
+            var sScale = maxHeroW / ctx.measureText(stopsSummary).width;
+            ctx.font = '700 ' + Math.max(36, Math.floor(68 * sScale)) + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        }
+        drawSpacedText(ctx, stopsSummary, startX, 1770, 3, 'left');
 
-        var angleOrShape = type === 'linear' ? (angle + '\u00b0') : (gradient.shape || type);
-        ctx.fillStyle = '#64748b';
-        ctx.font = '500 64px Inter, system-ui, sans-serif';
-        ctx.fillText(gradient.style + ' \u00b7 ' + type + ' \u00b7 ' + angleOrShape + ' \u00b7 ' + colors.length + ' colors', 200, infoY + 280);
-
-        // Color swatches
-        var swatchSize = 280;
-        var swatchGap = 64;
-        var swatchesY = infoY + 480;
-        colors.forEach(function (hex, i) {
-            var x = 200 + i * (swatchSize + swatchGap);
-
-            roundRect(ctx, x, swatchesY, swatchSize, swatchSize, 48);
-            ctx.fillStyle = hex;
+        // 3b. Visual Color Swatch Chips with Color Names
+        var swatchY = 1836;
+        var swatchR = 18;
+        var curSwatchX = startX + swatchR;
+        colors.forEach(function (cHex, idx) {
+            if (curSwatchX > startX + maxHeroW - 100) return; // avoid overflow
+            ctx.beginPath();
+            ctx.arc(curSwatchX, swatchY, swatchR, 0, Math.PI * 2);
+            ctx.fillStyle = cHex;
             ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.5)';
+            ctx.stroke();
 
-            ctx.fillStyle = '#475569';
-            ctx.font = '600 52px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
-            ctx.fillText(hex.toUpperCase(), x + swatchSize / 2, swatchesY + swatchSize + 40);
+            var cName = (gradient.colorNames && gradient.colorNames[idx]) ? gradient.colorNames[idx] : cHex.toUpperCase();
+            ctx.font = '600 36px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillStyle = textSecondary;
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'left';
+            ctx.fillText(cName, curSwatchX + swatchR + 14, swatchY);
+
+            var textW = ctx.measureText(cName).width;
+            curSwatchX += swatchR * 2 + textW + 48;
         });
 
-        // Branding
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 56px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText('Color Magic \u00b7 colormagic.techkreative.com', W - 200, H - 120);
+        // 4. Technical Specs Block (TYPE, STOPS, STYLE, CSS)
+        var specY = 1940;
+        var lineH = 74;
+        var labelX = startX;
+        var valueX = startX + 280;
 
-        // Download
-        var fname = filename || name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+        // Labels Column
+        ctx.font = '700 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textSecondary;
+        drawSpacedText(ctx, 'TYPE', labelX, specY, 4, 'left');
+        drawSpacedText(ctx, 'STOPS', labelX, specY + lineH, 4, 'left');
+        drawSpacedText(ctx, 'STYLE', labelX, specY + lineH * 2, 4, 'left');
+        drawSpacedText(ctx, 'CSS', labelX, specY + lineH * 3, 4, 'left');
+
+        // Values Column
+        ctx.font = '500 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textPrimary;
+        var typeValue = (type === 'linear' ? (type.toUpperCase() + ' \u00b7 ' + angle + '\u00b0') : (type.toUpperCase() + ' \u00b7 CIRCLE'));
+        drawSpacedText(ctx, typeValue, valueX, specY, 2, 'left');
+        drawSpacedText(ctx, colors.length + ' COLORS (' + colors.join(', ') + ')', valueX, specY + lineH, 2, 'left');
+        drawSpacedText(ctx, (gradient.style || 'MODERN').toUpperCase(), valueX, specY + lineH * 2, 2, 'left');
+        
+        var cssShort = (gradient.css || '').replace(/\s+/g, ' ');
+        if (cssShort.length > 46) cssShort = cssShort.substring(0, 44) + '...';
+        drawSpacedText(ctx, cssShort, valueX, specY + lineH * 3, 1, 'left');
+
+        // 5. Subtle Branding URL (Bottom Right)
+        ctx.font = '500 26px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textMuted;
+        drawSpacedText(ctx, 'colormagic.techkreative.com', 1780, 2360, 3, 'right');
+
+        return canvas;
+    };
+
+    /**
+     * Renders a gradient as a high-res PNG image and triggers download.
+     * @param {Object} gradient - { id, name, css, colors, type, style, angle, shape }
+     * @param {string} [filename] - Optional filename
+     */
+    window.ColorMagic.exportGradientImage = function (gradient, filename) {
+        var canvas = window.ColorMagic.renderGradientCanvas(gradient);
+        var name = gradient.name || 'gradient';
+        var cleanName = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        var fname = filename || cleanName + '-gradient.png';
         downloadCanvas(canvas, fname);
     };
 
