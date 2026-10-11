@@ -438,11 +438,13 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, W, gradientH);
 
-        // Top-Left: Gradient Title in bold uppercase
+        // Top Header: Gradient Title (Left) and Website Name (Right)
         var topPadX = 92;
         var topPadY = 104;
         var firstColorLum = getLuminance(colors[0]);
+        var lastColorLum = getLuminance(colors[colors.length - 1]);
         var topTitleColor = firstColorLum > 0.85 ? '#111827' : '#FFFFFF';
+        var topBrandColor = lastColorLum > 0.85 ? '#111827' : '#FFFFFF';
 
         ctx.save();
         ctx.shadowColor = firstColorLum > 0.85 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.22)';
@@ -452,7 +454,21 @@
         ctx.fillStyle = topTitleColor;
         ctx.font = '800 36px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.textBaseline = 'top';
+
+        // Auto-fit gradient name if long so it never collides with website name
+        var maxNameW = W - topPadX * 2 - 360;
+        var measuredNameW = ctx.measureText(name).width;
+        if (measuredNameW > maxNameW) {
+            var scaledFontSize = Math.max(22, Math.floor(36 * (maxNameW / measuredNameW)));
+            ctx.font = '800 ' + scaledFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        }
         drawSpacedText(ctx, name, topPadX, topPadY, 3, 'left');
+
+        // Top-Right: Website Name
+        ctx.fillStyle = topBrandColor;
+        ctx.shadowColor = lastColorLum > 0.85 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.22)';
+        ctx.font = '800 32px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        drawSpacedText(ctx, 'COLOR MAGIC', W - topPadX, topPadY, 3, 'right');
         ctx.restore();
 
         // 2. Bottom Section: Color Blocks (bottom ~33.2% of total height)
