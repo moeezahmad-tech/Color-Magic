@@ -5,3 +5,4 @@ Disallow: /auth/
 Disallow: /profile
 
 Sitemap: https://colormagic.techkreative.com/sitemap.xml
+Sitemap: https://colormagic.techkreative.com/sitemap.php

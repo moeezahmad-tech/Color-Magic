@@ -9,6 +9,15 @@ $uriPath = parse_url($rawUri, PHP_URL_PATH) ?? '/';
 $uriPath = rawurldecode($uriPath);
 $path = trim($uriPath, '/');
 
+// Intercept sitemap requests to generate dynamically
+if ($path === 'sitemap.xml' || $path === 'sitemap.php') {
+    $targetType = $_GET['type'] ?? 'all';
+    dispatch(__DIR__ . '/sitemap.php', ['type' => $targetType]);
+}
+if (preg_match('#^sitemaps/([a-zA-Z0-9_-]+)\.xml$#i', $path, $matches)) {
+    dispatch(__DIR__ . '/sitemap.php', ['type' => $matches[1]]);
+}
+
 // 1. Serve physical static files directly (CSS, JS, images, fonts, txt, xml, json)
 $filePath = __DIR__ . '/' . $path;
 if ($path !== '' && file_exists($filePath) && !is_dir($filePath)) {

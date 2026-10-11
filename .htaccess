@@ -39,6 +39,10 @@ RewriteRule ^auth/delete-account/?$ auth/delete-account.php [L]
 # Legacy API compatibility — map /api/*.json directly to /data/*.json
 RewriteRule ^api/([a-zA-Z0-9_-]+\.json)$ data/$1 [L]
 
+# Dynamic Sitemap Routing
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+RewriteRule ^sitemaps/([a-zA-Z0-9_-]+)\.xml$ sitemap.php?type=$1 [L]
+
 # Static pages (explicit routes — no file-existence check needed)
 RewriteRule ^palettes/?$ pages/palettes.php [L]
 RewriteRule ^gradients/?$ pages/gradients.php [L]
