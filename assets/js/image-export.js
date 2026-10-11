@@ -59,94 +59,130 @@
     // ─── Palette Image Export ──────────────────────────────────────────────────
 
     /**
-     * Renders a palette as a PNG image and triggers download.
-     * @param {Object} palette - { name: string, colors: string[], style: string }
-     * @param {string} [filename] - Optional filename (defaults to palette-name.png)
+     * Renders a palette as a high-res PNG image (2000x2500 portrait) and triggers download.
+     * @param {Object} palette - { name: string, colors: string[], style: string, colorNames?: string[] }
+     * @param {string} [filename] - Optional filename
      */
     window.ColorMagic.exportPaletteImage = function (palette, filename) {
         var canvas = document.createElement('canvas');
-        var W = 4800, H = 3200;
+        var W = 2000, H = 2500; // 4:5 vertical portrait ratio
         canvas.width = W;
         canvas.height = H;
         var ctx = canvas.getContext('2d');
 
-        var colors = palette.colors || [];
-        var name = palette.name || 'Color Palette';
-        var style = palette.style || 'curated';
+        var colors = palette.colors || ['#000000', '#ffffff'];
+        var name = (palette.name || 'Color Palette').toUpperCase();
+        var style = (palette.style || 'Curated').toUpperCase();
 
-        // Background
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(0, 0, W, H);
-
-        // Color strips (top 65%)
-        var stripWidth = W / colors.length;
-        var stripHeight = 2080;
+        // 1. Draw full-bleed vertical color strips
+        var colW = W / colors.length;
         colors.forEach(function (hex, i) {
             ctx.fillStyle = hex;
-            ctx.fillRect(i * stripWidth, 0, stripWidth + 1, stripHeight);
-
-            // Hex label at bottom of strip
-            var textColor = bestTextColor(hex);
-            ctx.fillStyle = textColor;
-            ctx.font = 'bold 64px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(hex.toUpperCase(), i * stripWidth + stripWidth / 2, stripHeight - 80);
+            ctx.fillRect(Math.floor(i * colW), 0, Math.ceil(colW) + 1, H);
         });
 
-        // Bottom info area
-        var infoY = stripHeight;
+        // 2. Average luminance calculation for text legibility
+        var totalLum = 0;
+        colors.forEach(function (hex) {
+            totalLum += getLuminance(hex);
+        });
+        var avgLum = totalLum / Math.max(colors.length, 1);
+        var isLight = avgLum > 0.62;
 
-        // White background for info area
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, infoY, W, H - infoY);
+        var textPrimary = isLight ? '#111827' : '#FFFFFF';
+        var textSecondary = isLight ? 'rgba(17, 24, 39, 0.88)' : 'rgba(255, 255, 255, 0.92)';
+        var textMuted = isLight ? 'rgba(17, 24, 39, 0.55)' : 'rgba(255, 255, 255, 0.60)';
 
-        // Divider line
-        ctx.strokeStyle = '#e2e8f0';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(160, infoY);
-        ctx.lineTo(W - 160, infoY);
-        ctx.stroke();
+        // Gentle text backdrop shadow for contrast over multi-colored vertical strips
+        ctx.shadowColor = isLight ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.55)';
+        ctx.shadowBlur = 14;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 4;
 
-        // Palette name
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 144px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-        ctx.fillText(name, 200, infoY + 120);
+        // ─── Swatch Card Layout ─────────────────────────────────────────────
+        var startX = 220;
+        var maxHeroW = 1560;
 
-        // Style tag
-        ctx.fillStyle = '#64748b';
-        ctx.font = '500 72px Inter, system-ui, sans-serif';
-        ctx.fillText(style + ' palette \u00b7 ' + colors.length + ' colors', 200, infoY + 320);
+        // 1. Brand Tag (moderate size, clean letter-spacing, NO (R) symbol)
+        ctx.fillStyle = textSecondary;
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '700 48px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        drawSpacedText(ctx, 'COLOR MAGIC', startX, 1500, 6, 'left');
 
-        // Color swatches row
-        var swatchSize = 240;
-        var swatchGap = 48;
-        var swatchesY = infoY + 520;
-        colors.forEach(function (hex, i) {
-            var x = 200 + i * (swatchSize + swatchGap);
-            roundRect(ctx, x, swatchesY, swatchSize, swatchSize, 40);
-            ctx.fillStyle = hex;
+        // 2. Large Palette Name
+        ctx.fillStyle = textPrimary;
+        ctx.font = '900 136px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        if (ctx.measureText(name).width > maxHeroW) {
+            var scale = maxHeroW / ctx.measureText(name).width;
+            ctx.font = '900 ' + Math.max(64, Math.floor(136 * scale)) + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        }
+        drawSpacedText(ctx, name, startX, 1660, 2, 'left');
+
+        // 3. Color stops subtitle
+        ctx.fillStyle = textSecondary;
+        ctx.font = '700 68px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        var stopsSummary = colors.map(function (c) { return c.toUpperCase(); }).join('  \u2192  ');
+        if (ctx.measureText(stopsSummary).width > maxHeroW) {
+            var sScale = maxHeroW / ctx.measureText(stopsSummary).width;
+            ctx.font = '700 ' + Math.max(32, Math.floor(68 * sScale)) + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        }
+        drawSpacedText(ctx, stopsSummary, startX, 1770, 3, 'left');
+
+        // Clear shadow for clean swatch circles
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
+
+        // 3b. Visual Color Swatch Chips with Color Names
+        var swatchY = 1836;
+        var swatchR = 18;
+        var curSwatchX = startX + swatchR;
+        colors.forEach(function (cHex, idx) {
+            if (curSwatchX > startX + maxHeroW - 80) return;
+            ctx.beginPath();
+            ctx.arc(curSwatchX, swatchY, swatchR, 0, Math.PI * 2);
+            ctx.fillStyle = cHex;
             ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.5)';
+            ctx.stroke();
 
-            ctx.fillStyle = '#475569';
-            ctx.font = '600 52px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
-            ctx.fillText(hex.toUpperCase(), x + swatchSize / 2, swatchesY + swatchSize + 32);
+            var cName = (palette.colorNames && palette.colorNames[idx]) ? palette.colorNames[idx] : cHex.toUpperCase();
+            ctx.font = '600 36px Inter, system-ui, sans-serif';
+            ctx.fillStyle = textSecondary;
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'left';
+            ctx.fillText(cName, curSwatchX + swatchR + 14, swatchY);
+
+            var textW = ctx.measureText(cName).width;
+            curSwatchX += swatchR * 2 + textW + 44;
         });
 
-        // Branding
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 56px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText('Color Magic \u00b7 colormagic.techkreative.com', W - 200, H - 120);
+        // 4. Technical Specs Block (STYLE, COLORS, FORMAT)
+        var specY = 1950;
+        var lineH = 78;
+        var labelX = startX;
+        var valueX = startX + 280;
+
+        ctx.font = '700 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textSecondary;
+        drawSpacedText(ctx, 'STYLE', labelX, specY, 4, 'left');
+        drawSpacedText(ctx, 'COLORS', labelX, specY + lineH, 4, 'left');
+        drawSpacedText(ctx, 'FORMAT', labelX, specY + lineH * 2, 4, 'left');
+
+        ctx.font = '500 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textPrimary;
+        drawSpacedText(ctx, style, valueX, specY, 2, 'left');
+        drawSpacedText(ctx, colors.length + ' CURATED COLORS (' + colors.join(', ') + ')', valueX, specY + lineH, 2, 'left');
+        drawSpacedText(ctx, 'HEX \u00b7 RGB \u00b7 CSS VARIABLES', valueX, specY + lineH * 2, 2, 'left');
+
+        // 5. Subtle Branding URL (Bottom Right)
+        ctx.font = '500 26px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textMuted;
+        drawSpacedText(ctx, 'colormagic.techkreative.com', 1780, 2360, 3, 'right');
 
         // Download
-        var fname = filename || name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+        var cleanName = (palette.name || 'palette').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        var fname = filename || cleanName + '-palette.png';
         downloadCanvas(canvas, fname);
     };
 

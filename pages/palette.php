@@ -130,13 +130,31 @@
         <section id="paletteDetail" class="hidden flex flex-col gap-8">
             <div id="paletteTopSection"
                 class="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-6 md:gap-8 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-5 md:p-7 shadow-sm border border-pink-100 dark:border-slate-800">
+                <!-- Large palette preview with color strips background and overlay -->
                 <div class="h-full">
-                    <div id="heroPaletteStrips"
-                        class="grid h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30">
+                    <div id="heroPaletteContainer"
+                        class="relative h-72 md:h-80 lg:h-full min-h-[300px] md:min-h-[380px] rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30 flex items-end cursor-pointer group">
+                        <!-- Vertical color strips background -->
+                        <div id="heroPaletteStrips" class="absolute inset-0 grid w-full h-full"></div>
+
+                        <!-- Overlay Content (matches color and gradient pages) -->
+                        <div id="heroPaletteOverlay" class="relative z-10 select-none p-6 md:p-8 flex flex-col justify-end w-full pointer-events-none transition-colors duration-200" style="color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.65);">
+                            <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] opacity-85 mb-1.5">COLOR MAGIC</p>
+                            <h2 id="heroPaletteName" class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-2"></h2>
+                            <div id="heroPaletteColors" class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-semibold tracking-tight opacity-95"></div>
+                        </div>
+
+                        <!-- Hover copy hint -->
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
+                            <span class="px-3 py-1.5 bg-black/40 backdrop-blur-md text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm">
+                                <i class="bi bi-clipboard"></i> Click to copy colors
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-5">
+                <!-- Info panel: Consistent Hierarchy -->
+                <div class="flex flex-col gap-5 justify-between">
                     <!-- 1. Heading, 2. Subheading, 3. Label / Description text -->
                     <div>
                         <h1 id="paletteName" class="text-3xl md:text-4xl font-bold tracking-tight"></h1>
@@ -146,54 +164,56 @@
                         </p>
                     </div>
 
-                    <!-- 4. Action Buttons (2x2 on desktop, 1x4 on mobile) -->
+                    <!-- 2. Details: Metric Chips -->
+                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
+                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Style</p>
+                            <p id="paletteType" class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight"></p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
+                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Colors</p>
+                            <p id="paletteCount" class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight"></p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0">
+                            <p class="text-[11px] uppercase tracking-wider text-slate-400">Format</p>
+                            <p class="font-bold text-xs sm:text-sm mt-1 whitespace-nowrap tracking-tight">HEX · RGB</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Color Swatches list (1-click interactive copy chips) -->
+                    <div>
+                        <div id="detailColorList" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                        <div class="h-4 mt-1">
+                            <p id="copyFeedback"
+                                class="copy-feedback opacity-0 -translate-y-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 transition-all">
+                                Copied to clipboard</p>
+                        </div>
+                    </div>
+
+                    <!-- 4. Primary Action Buttons -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button id="downloadPalettePngBtn"
+                            class="w-full px-5 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 active:scale-[0.99]"
+                            title="Download palette image">
+                            <i class="bi bi-download text-base"></i>
+                            <span>Download Image</span>
+                        </button>
                         <button id="copyAllBtn"
-                            class="w-full px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
-                            <i class="bi bi-clipboard"></i>
+                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
+                            <i class="bi bi-clipboard text-base"></i>
                             <span>Copy All Colors</span>
                         </button>
                         <button id="copyCssVarsBtn"
-                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                            <i class="bi bi-code-slash"></i>
-                            <span>Copy CSS Variables</span>
-                        </button>
-                        <button id="downloadPalettePngBtn"
-                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                            <i class="bi bi-download"></i>
-                            <span>Download PNG</span>
+                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
+                            <i class="bi bi-code-slash text-sm"></i>
+                            <span>Copy CSS Vars</span>
                         </button>
                         <button id="favPaletteBtn"
-                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                            <i class="bi bi-heart"></i>
+                            class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-700/80 active:scale-[0.99]">
+                            <i class="bi bi-heart text-sm"></i>
                             <span>Favorite</span>
                         </button>
                     </div>
-
-                    <!-- 5. Details / Metric Chips -->
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
-                            <p class="text-[11px] uppercase tracking-wider text-slate-400">
-                                Type
-                            </p>
-                            <p id="paletteType" class="font-bold mt-1"></p>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
-                            <p class="text-[11px] uppercase tracking-wider text-slate-400">
-                                Total Colors
-                            </p>
-                            <p id="paletteCount" class="font-bold mt-1"></p>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
-                            <p class="text-[11px] uppercase tracking-wider text-slate-400">
-                                Format
-                            </p>
-                            <p class="font-bold mt-1">HEX</p>
-                        </div>
-                    </div>
-
-                    <!-- Color Swatches list with inline copy -->
-                    <div id="detailColorList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1"></div>
                 </div>
             </div>
 

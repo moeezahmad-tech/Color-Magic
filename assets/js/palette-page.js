@@ -75,6 +75,56 @@
         return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     }
 
+    let colorDictCache = null;
+    async function loadColorDict() {
+        if (colorDictCache) return colorDictCache;
+        try {
+            const res = await fetch('/api/color-names.json');
+            if (res.ok) {
+                colorDictCache = await res.json();
+                return colorDictCache;
+            }
+        } catch (_) {}
+        return null;
+    }
+
+    function findColorName(hex, dict) {
+        if (!hex) return '';
+        const clean = hex.replace('#', '').toUpperCase();
+        if (dict && dict[clean]) {
+            const entry = dict[clean];
+            return typeof entry === 'object' ? (entry.name || clean) : String(entry);
+        }
+        if (!dict) return hex;
+        const target = hexToRgb(clean);
+        let minD = Infinity;
+        let bestName = hex;
+        for (const k in dict) {
+            const rgb = hexToRgb(k);
+            const d = (rgb.r - target.r) * (rgb.r - target.r) + (rgb.g - target.g) * (rgb.g - target.g) + (rgb.b - target.b) * (rgb.b - target.b);
+            if (d < minD) {
+                minD = d;
+                const e = dict[k];
+                bestName = typeof e === 'object' ? (e.name || k) : String(e);
+                if (d === 0) break;
+            }
+        }
+        return bestName;
+    }
+
+    function showFloatingToast(msg) {
+        const fb = document.getElementById('copyFeedback');
+        if (!fb) return;
+        fb.textContent = msg || 'Copied to clipboard';
+        fb.classList.remove('opacity-0', '-translate-y-1');
+        fb.classList.add('opacity-100', 'translate-y-0');
+        clearTimeout(fb._timer);
+        fb._timer = setTimeout(() => {
+            fb.classList.remove('opacity-100', 'translate-y-0');
+            fb.classList.add('opacity-0', '-translate-y-1');
+        }, 2000);
+    }
+
     function showCopyFeedback(button, successText, failText, resetText) {
         if (!button) return;
         button.innerHTML = successText;
@@ -100,7 +150,6 @@
     if (paletteIdText && paletteSlug) {
         paletteIdText.textContent = `slug: ${paletteSlug}`;
     }
-
 
     if (!paletteSlug) {
         paletteError?.classList.remove('hidden');
@@ -184,33 +233,125 @@
         const cssVars = colorList.map((color, index) => `--palette-color-${index + 1}: ${color};`).join('\n');
 
         if (paletteMeta) paletteMeta.textContent = `Palette ID: ${palette.id}`;
-        if (paletteType) paletteType.textContent = palette.style || 'General';
+        if (paletteType) paletteType.textContent = palette.style || 'Curated';
         if (paletteCount) paletteCount.textContent = String(colorList.length);
 
+        // Render Hero Preview (vertical strips background + text overlay)
         if (heroPaletteStrips) {
             heroPaletteStrips.style.gridTemplateColumns = `repeat(${colorList.length}, minmax(0, 1fr))`;
             heroPaletteStrips.innerHTML = colorList.map((color) => `
-                <div class="h-full flex items-end justify-center p-3" style="background-color:${color};">
-                    <span class="text-[10px] md:text-xs font-bold font-mono px-2 py-1 rounded-lg bg-black/25 text-white">${color}</span>
+                <div class="h-full flex items-end justify-center p-3 relative group/strip transition-opacity hover:opacity-95" style="background-color:${color};">
+                    <span class="text-[10px] md:text-xs font-bold font-mono px-2 py-1 rounded-lg bg-black/35 text-white backdrop-blur-sm opacity-0 group-hover/strip:opacity-100 transition-opacity mb-24 md:mb-28 z-20 pointer-events-none">${color}</span>
                 </div>
             `).join('');
         }
 
-        if (detailColorList) {
-            detailColorList.innerHTML = colorList.map((color) => `
-                <div class="flex items-center justify-between gap-2 rounded-xl bg-slate-50 dark:bg-slate-800 px-3 py-2">
-                    <div class="flex items-center gap-2 min-w-0">
-                        <span class="w-6 h-6 rounded-md shrink-0" style="background:${color}"></span>
-                        <span class="font-mono text-xs md:text-sm truncate">${color}</span>
-                    </div>
-                    <button type="button"
-                            class="copy-single-color text-xs font-semibold px-2 py-1 rounded-lg bg-white dark:bg-slate-700 hover:bg-primary hover:text-white transition-colors"
-                            data-color="${color}">
-                        Copy
-                    </button>
-                </div>
-            `).join('');
+        // Contrast calculation for hero text overlay
+        let totalLum = 0;
+        colorList.forEach(c => {
+            totalLum += getLuminance(c);
+        });
+        const avgLum = totalLum / Math.max(colorList.length, 1);
+        const isLight = avgLum > 0.62;
+        const heroOverlay = document.getElementById('heroPaletteOverlay');
+        if (heroOverlay) {
+            if (isLight) {
+                heroOverlay.style.color = '#0f172a';
+                heroOverlay.style.textShadow = '0 1px 3px rgba(255,255,255,0.75)';
+            } else {
+                heroOverlay.style.color = '#FFFFFF';
+                heroOverlay.style.textShadow = '0 2px 10px rgba(0,0,0,0.65)';
+            }
         }
+
+        // Hero Palette Name
+        const heroNameEl = document.getElementById('heroPaletteName');
+        if (heroNameEl) {
+            heroNameEl.textContent = palette.name;
+        }
+
+        // Hero Palette Color stops with color names
+        function renderHeroColorStops(names) {
+            const heroColorsEl = document.getElementById('heroPaletteColors');
+            if (!heroColorsEl) return;
+            heroColorsEl.innerHTML = '';
+            colorList.forEach((hex, idx) => {
+                const name = (names && names[idx]) ? names[idx] : hex;
+                const item = document.createElement('span');
+                item.className = 'inline-flex items-center gap-1.5';
+                item.innerHTML =
+                    `<span class="w-2.5 h-2.5 rounded-full inline-block shadow-sm ring-1 ring-white/50" style="background:${hex}"></span>`
+                    + `<span class="font-bold">${name}</span>`
+                    + (name !== hex ? `<span class="font-mono text-xs opacity-85">(${hex})</span>` : '');
+                heroColorsEl.appendChild(item);
+                if (idx < colorList.length - 1) {
+                    const arrow = document.createElement('span');
+                    arrow.className = 'opacity-60 text-xs mx-0.5';
+                    arrow.innerHTML = '\u2192';
+                    heroColorsEl.appendChild(arrow);
+                }
+            });
+        }
+        renderHeroColorStops(palette.colorNames || null);
+
+        // Click on hero preview to copy all colors
+        const heroContainer = document.getElementById('heroPaletteContainer');
+        if (heroContainer) {
+            heroContainer.addEventListener('click', () => {
+                navigator.clipboard.writeText(allColors).then(() => {
+                    showFloatingToast(`Copied all ${colorList.length} colors!`);
+                    const hintSpan = heroContainer.querySelector('.group-hover\\:opacity-100 span');
+                    if (hintSpan) {
+                        hintSpan.innerHTML = '<i class="bi bi-check-circle-fill"></i> Copied!';
+                        setTimeout(() => {
+                            hintSpan.innerHTML = '<i class="bi bi-clipboard"></i> Click to copy colors';
+                        }, 2000);
+                    }
+                });
+            });
+        }
+
+        // Color Swatches list with 1-click interactive copy chips
+        function renderDetailSwatches(names) {
+            if (!detailColorList) return;
+            detailColorList.innerHTML = '';
+            colorList.forEach((color, idx) => {
+                const rgb = hexToRgb(color);
+                const name = (names && names[idx]) ? names[idx] : '';
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'copy-swatch-chip group flex items-center gap-2.5 bg-slate-50 hover:bg-white dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl px-3 py-2.5 border border-slate-200 hover:border-primary/50 dark:border-slate-700/60 dark:hover:border-primary/50 transition-all shadow-sm hover:shadow text-left min-w-0';
+                btn.title = `Click to copy ${color}`;
+                btn.innerHTML =
+                    `<span class="w-6 h-6 rounded-lg shrink-0 shadow-sm border border-black/10" style="background:${color}"></span>`
+                    + `<div class="min-w-0 flex-1">`
+                    +   `<div class="flex items-center gap-1.5">`
+                    +     `<span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-100">${color}</span>`
+                    +     (name && name !== color ? `<span class="text-[11px] text-slate-400 truncate font-medium">${name}</span>` : '')
+                    +   `</div>`
+                    +   `<span class="text-[10px] text-slate-400 font-mono">RGB(${rgb.r}, ${rgb.g}, ${rgb.b})</span>`
+                    + `</div>`
+                    + `<i class="bi bi-clipboard text-slate-400 group-hover:text-primary text-xs transition-colors shrink-0"></i>`;
+                btn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(color).then(() => {
+                        showFloatingToast(`Copied ${color}!`);
+                        btn.classList.add('ring-2', 'ring-emerald-500');
+                        setTimeout(() => { btn.classList.remove('ring-2', 'ring-emerald-500'); }, 1200);
+                    });
+                });
+                detailColorList.appendChild(btn);
+            });
+        }
+        renderDetailSwatches(palette.colorNames || null);
+
+        // Async resolve color names to populate overlay and swatch list
+        loadColorDict().then(dict => {
+            if (!dict) return;
+            const names = colorList.map(hex => findColorName(hex, dict));
+            palette.colorNames = names;
+            renderHeroColorStops(names);
+            renderDetailSwatches(names);
+        });
 
         if (contrastCardA) {
             contrastCardA.style.backgroundColor = firstColor;
@@ -300,16 +441,6 @@
             }).join('');
         }
 
-        detailColorList?.addEventListener('click', async (event) => {
-            const btn = event.target.closest('.copy-single-color');
-            if (!btn) return;
-
-            const color = btn.dataset.color || '';
-            if (!color) return;
-
-            const resetText = 'Copy';
-            await copyText(color, btn, 'Copied', 'Failed', resetText);
-        });
 
         // Copy color HEX / RGB buttons in color info grid
         colorInfoGrid?.addEventListener('click', async (event) => {
