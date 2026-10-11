@@ -199,41 +199,7 @@
                 <div id="brightnessChart" class="space-y-2"></div>
             </section>
 
-            <!-- Export: HEX Array -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">HEX Array</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Standard hex color array for JavaScript and CSS</p>
-                    </div>
-                    <button id="copyHexArrayBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="hexArrayCode"></pre>
-                </div>
-            </section>
-
-            <!-- Export: CSS Variables -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">CSS Custom Properties</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">CSS variables for use in stylesheets with :root declaration</p>
-                    </div>
-                    <button id="copyCssVarsExportBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="cssVarsCode"></pre>
-                </div>
-            </section>
-
-            <!-- Export: JSON -->
+            <!-- Export: JSON (Primary on top) -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
                 <div class="flex items-center justify-between mb-3">
                     <div>
@@ -250,107 +216,153 @@
                 </div>
             </section>
 
-            <!-- Export: SCSS Variables -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">SCSS Variables</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Sass/SCSS variable declarations for preprocessor workflows</p>
-                    </div>
-                    <button id="copyScssBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="scssCode"></pre>
-                </div>
-            </section>
+            <!-- See More Export Formats Button -->
+            <div class="text-center">
+                <button id="toggleMoreFormatsBtn" type="button"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-semibold text-sm border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:border-primary/50 group">
+                    <span id="toggleMoreFormatsText">See More</span>
+                    <i id="toggleMoreFormatsIcon" class="bi bi-chevron-down transition-transform group-hover:translate-y-0.5"></i>
+                </button>
+            </div>
 
-            <!-- Export: Tailwind Config -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">Tailwind CSS Config</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Extend your tailwind.config.js theme with custom palette colors</p>
+            <!-- Additional Export Formats (Collapsible) -->
+            <div id="moreExportFormats" class="hidden flex-col gap-8">
+                <!-- Export: HEX Array -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">HEX Array</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Standard hex color array for JavaScript and CSS</p>
+                        </div>
+                        <button id="copyHexArrayBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
                     </div>
-                    <button id="copyTailwindBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="tailwindCode"></pre>
-                </div>
-            </section>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="hexArrayCode"></pre>
+                    </div>
+                </section>
 
-            <!-- Export: RGB Array -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">RGB Array</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">RGB functional notation for CSS and canvas rendering</p>
+                <!-- Export: CSS Variables -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">CSS Custom Properties</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">CSS variables for use in stylesheets with :root declaration</p>
+                        </div>
+                        <button id="copyCssVarsExportBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
                     </div>
-                    <button id="copyRgbArrayBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="rgbArrayCode"></pre>
-                </div>
-            </section>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="cssVarsCode"></pre>
+                    </div>
+                </section>
 
-            <!-- Export: HSL Array -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">HSL Array</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">HSL notation for dynamic color manipulation in CSS</p>
+                <!-- Export: SCSS Variables -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">SCSS Variables</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Sass/SCSS variable declarations for preprocessor workflows</p>
+                        </div>
+                        <button id="copyScssBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
                     </div>
-                    <button id="copyHslArrayBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="hslArrayCode"></pre>
-                </div>
-            </section>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="scssCode"></pre>
+                    </div>
+                </section>
 
-            <!-- Export: Android XML -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">Android XML</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Android resource file format for colors.xml</p>
+                <!-- Export: Tailwind Config -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">Tailwind CSS Config</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Extend your tailwind.config.js theme with custom palette colors</p>
+                        </div>
+                        <button id="copyTailwindBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
                     </div>
-                    <button id="copyAndroidBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="androidCode"></pre>
-                </div>
-            </section>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="tailwindCode"></pre>
+                    </div>
+                </section>
 
-            <!-- Export: Swift UIColor -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold">Swift UIColor</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Swift extension for iOS/macOS UIColor declarations</p>
+                <!-- Export: RGB Array -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">RGB Array</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">RGB functional notation for CSS and canvas rendering</p>
+                        </div>
+                        <button id="copyRgbArrayBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
                     </div>
-                    <button id="copySwiftBtn"
-                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
-                        <i class="bi bi-clipboard me-1"></i>Copy
-                    </button>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
-                    <pre id="swiftCode"></pre>
-                </div>
-            </section>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="rgbArrayCode"></pre>
+                    </div>
+                </section>
+
+                <!-- Export: HSL Array -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">HSL Array</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">HSL notation for dynamic color manipulation in CSS</p>
+                        </div>
+                        <button id="copyHslArrayBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="hslArrayCode"></pre>
+                    </div>
+                </section>
+
+                <!-- Export: Android XML -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">Android XML</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Android resource file format for colors.xml</p>
+                        </div>
+                        <button id="copyAndroidBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="androidCode"></pre>
+                    </div>
+                </section>
+
+                <!-- Export: Swift UIColor -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">Swift UIColor</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Swift extension for iOS/macOS UIColor declarations</p>
+                        </div>
+                        <button id="copySwiftBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="swiftCode"></pre>
+                    </div>
+                </section>
+            </div>
 
             <!-- Related Colors -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">

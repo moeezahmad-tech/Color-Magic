@@ -393,11 +393,11 @@
             return `    static let palette${i + 1} = UIColor(red: ${(rgb.r / 255).toFixed(3)}, green: ${(rgb.g / 255).toFixed(3)}, blue: ${(rgb.b / 255).toFixed(3)}, alpha: 1.0)`;
         }).join('\n')}\n}`;
 
-        // Populate each export section's code block
+        // Populate each export section's code block (JSON on top, followed by other formats)
         const exportSections = [
+            { codeEl: 'jsonCode',     copyBtnId: 'copyJsonBtn', data: jsonFormat },
             { codeEl: 'hexArrayCode', copyBtnId: 'copyHexArrayBtn', data: hexArrayFormat },
             { codeEl: 'cssVarsCode',  copyBtnId: 'copyCssVarsExportBtn', data: cssVarsFullFormat },
-            { codeEl: 'jsonCode',     copyBtnId: 'copyJsonBtn', data: jsonFormat },
             { codeEl: 'scssCode',     copyBtnId: 'copyScssBtn', data: scssFormat },
             { codeEl: 'tailwindCode', copyBtnId: 'copyTailwindBtn', data: tailwindFormat },
             { codeEl: 'rgbArrayCode', copyBtnId: 'copyRgbArrayBtn', data: rgbArrayFormat },
@@ -416,6 +416,29 @@
                 await copyText(data, btn, '<i class="bi bi-check-circle me-1"></i>Copied', '<i class="bi bi-x-circle me-1"></i>Failed', copyIconHTML);
             });
         });
+
+        // Toggle additional export formats (See More / See Less)
+        const toggleMoreFormatsBtn = document.getElementById('toggleMoreFormatsBtn');
+        const moreExportFormats = document.getElementById('moreExportFormats');
+        const toggleMoreFormatsText = document.getElementById('toggleMoreFormatsText');
+        const toggleMoreFormatsIcon = document.getElementById('toggleMoreFormatsIcon');
+
+        if (toggleMoreFormatsBtn && moreExportFormats) {
+            toggleMoreFormatsBtn.addEventListener('click', () => {
+                const isHidden = moreExportFormats.classList.contains('hidden');
+                if (isHidden) {
+                    moreExportFormats.classList.remove('hidden');
+                    moreExportFormats.classList.add('flex');
+                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See Less';
+                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-up transition-transform group-hover:-translate-y-0.5';
+                } else {
+                    moreExportFormats.classList.add('hidden');
+                    moreExportFormats.classList.remove('flex');
+                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See More';
+                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-down transition-transform group-hover:translate-y-0.5';
+                }
+            });
+        }
 
         // Related Colors — derive complementary, analogous, triadic from palette colors
         const relatedColorsGrid = document.getElementById('relatedColorsGrid');
