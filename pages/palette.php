@@ -119,14 +119,6 @@
                 <div class="h-44 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6"></div>
                 <div class="h-44 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6"></div>
             </div>
-            <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 border border-slate-200/60 dark:border-slate-800 animate-pulse">
-                <div class="h-6 w-40 bg-slate-200/80 dark:bg-slate-800 rounded mb-4"></div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="h-32 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
-                    <div class="h-32 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
-                    <div class="h-32 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
-                </div>
-            </div>
         </div>
 
         <section id="paletteDetail" class="hidden flex flex-col gap-8">
@@ -198,13 +190,6 @@
                 <p id="darkColorParagraph" class="text-base md:text-lg leading-relaxed font-medium"></p>
             </section>
 
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <h2 class="text-xl md:text-2xl font-bold mb-4">Color Information</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                    Detailed breakdown of each color's RGB, HSL, and brightness values
-                </p>
-                <div id="colorInfoGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-            </section>
 
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
                 <h2 class="text-xl md:text-2xl font-bold mb-4">Brightness Levels</h2>

@@ -22,7 +22,6 @@
     const contrastCardA = document.getElementById('contrastCardA');
     const contrastCardB = document.getElementById('contrastCardB');
     const darkColorParagraph = document.getElementById('darkColorParagraph');
-    const colorInfoGrid = document.getElementById('colorInfoGrid');
     const brightnessChart = document.getElementById('brightnessChart');
     const paletteIdText = document.getElementById('paletteIdText');
 
@@ -303,23 +302,50 @@
             renderDetailSwatches(names);
         });
 
+        // Contrast Preview Cards
+        // Check if both colors are dark; if so, pick a white/light color from the palette,
+        // or fall back to white (#FFFFFF). Symmetrically handle if both colors are light.
+        const isFirstDark = getLuminance(firstColor) < 0.45;
+        const isLastDark = getLuminance(lastColor) < 0.45;
+
+        let textA = lastColor;
+        let textB = firstColor;
+
+        if (isFirstDark && isLastDark) {
+            const lightColorInPalette = colorList
+                .filter(c => getLuminance(c) >= 0.60)
+                .sort((a, b) => getLuminance(b) - getLuminance(a))[0];
+
+            const replacementLight = lightColorInPalette || '#FFFFFF';
+            textA = replacementLight;
+            textB = replacementLight;
+        } else if (!isFirstDark && !isLastDark) {
+            const darkColorInPalette = colorList
+                .filter(c => getLuminance(c) <= 0.35)
+                .sort((a, b) => getLuminance(a) - getLuminance(b))[0];
+
+            const replacementDark = darkColorInPalette || '#0F172A';
+            textA = replacementDark;
+            textB = replacementDark;
+        }
+
         if (contrastCardA) {
             contrastCardA.style.backgroundColor = firstColor;
-            contrastCardA.style.color = lastColor;
+            contrastCardA.style.color = textA;
             contrastCardA.innerHTML = `
                 <p class="text-xs uppercase tracking-wider opacity-80">Contrast Preview A</p>
                 <p class="text-2xl md:text-3xl font-bold">Aa</p>
-                <p class="text-sm">Background: ${firstColor} · Text: ${lastColor}</p>
+                <p class="text-sm">Background: ${firstColor} · Text: ${textA}</p>
             `;
         }
 
         if (contrastCardB) {
             contrastCardB.style.backgroundColor = lastColor;
-            contrastCardB.style.color = firstColor;
+            contrastCardB.style.color = textB;
             contrastCardB.innerHTML = `
                 <p class="text-xs uppercase tracking-wider opacity-80">Contrast Preview B</p>
                 <p class="text-2xl md:text-3xl font-bold">Aa</p>
-                <p class="text-sm">Background: ${lastColor} · Text: ${firstColor}</p>
+                <p class="text-sm">Background: ${lastColor} · Text: ${textB}</p>
             `;
         }
 
@@ -327,52 +353,6 @@
             darkColorParagraph.style.color = firstColor;
             darkColorParagraph.textContent = `${palette.name} starts with ${firstColor} as the anchor tone, giving the palette a strong visual base. As the colors progress to ${lastColor}, the composition opens into brighter accents that are great for UI highlights, typography emphasis, and layered backgrounds. This progression creates a clear rhythm that helps designs feel intentional instead of random.`;
         }
-
-        // Color Information Grid
-        const colorRoute = (window.CM_COLOR_BASE || 'color/');
-        if (colorInfoGrid) {
-            colorInfoGrid.innerHTML = colorList.map((color) => {
-            const rgb = hexToRgb(color);
-            const hsl = hexToHsl(color);
-            const lum = Math.round(getLuminance(color) * 100);
-            const bareHex = color.replace('#', '');
-            return `
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden flex flex-col">
-                    <div class="h-16 w-full" style="background:${color}"></div>
-                    <div class="p-4 flex flex-col gap-3 flex-1">
-                        <div class="flex items-center justify-between">
-                            <p class="font-mono font-bold text-base">${color}</p>
-                            <a href="${colorRoute}${bareHex}/" class="p-1.5 rounded-lg text-slate-400 hover:text-secondary hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="View ${color} details">
-                                <i class="bi bi-box-arrow-up-right text-sm"></i>
-                            </a>
-                        </div>
-                        <div class="space-y-1.5 text-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-xs uppercase tracking-wider">RGB</span>
-                                <span class="font-mono text-xs font-semibold">${rgb.r}, ${rgb.g}, ${rgb.b}</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-xs uppercase tracking-wider">HSL</span>
-                                <span class="font-mono text-xs font-semibold">${hsl.h}°, ${hsl.s}%, ${hsl.l}%</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-xs uppercase tracking-wider">Brightness</span>
-                                <span class="font-mono text-xs font-semibold">${lum}%</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 mt-auto pt-1">
-                            <button class="copy-color-hex-btn flex-1 px-3 py-2 bg-white dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all border border-slate-200 dark:border-slate-600 flex items-center justify-center gap-1.5" data-hex="${color}">
-                                <i class="bi bi-clipboard text-xs"></i> HEX
-                            </button>
-                            <button class="copy-color-rgb-btn flex-1 px-3 py-2 bg-white dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all border border-slate-200 dark:border-slate-600 flex items-center justify-center gap-1.5" data-rgb="rgb(${rgb.r}, ${rgb.g}, ${rgb.b})">
-                                <i class="bi bi-clipboard text-xs"></i> RGB
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
 
         // Brightness Chart
         if (brightnessChart && colorList.length > 0) {
