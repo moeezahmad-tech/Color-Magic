@@ -68,9 +68,15 @@ function relativeLuminance(string $hex): float
     return ($linear[0] * 0.2126) + ($linear[1] * 0.7152) + ($linear[2] * 0.0722);
 }
 
+function getPerceivedLuminance(string $hex): float
+{
+    $rgb = hexToRgb($hex);
+    return (0.299 * $rgb['r'] + 0.587 * $rgb['g'] + 0.114 * $rgb['b']) / 255;
+}
+
 function bestContrastText(string $hex): string
 {
-    return relativeLuminance($hex) > 0.179 ? '#111111' : '#FFFFFF';
+    return getPerceivedLuminance($hex) > 0.62 ? '#111111' : '#FFFFFF';
 }
 
 function colorDistanceSq(string $hexA, string $hexB): int
@@ -136,6 +142,7 @@ if ($slugParam !== '' && $hexParam === '') {
 $hexNameEntry = $colorNames[strtoupper($normalizedHex)] ?? null;
 $hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWithHash)) : ('Hex ' . $hexWithHash);
 $colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
+$hasNamedTitle = $hexName !== '' && !preg_match('/^Hex\s*#[0-9a-f]{6}$/i', $hexName);
 
 $palettePath = __DIR__ . '/../data/palettes.json';
 if (file_exists($palettePath)) {
@@ -666,10 +673,14 @@ $schema = [
                         alt="Color palette preview for hex code <?php echo e(strtolower($normalizedHex)); ?> featuring complementary design rules"
                         width="600" height="600" class="absolute inset-0 h-full w-full object-cover" loading="eager"
                         fetchpriority="high" />
-                    <div class="relative z-10 px-4 py-3 rounded-xl backdrop-blur-sm"
-                        style="background: rgba(15, 23, 42, 0.25); color: <?php echo e($contrast); ?>;">
-                        <p class="text-sm uppercase tracking-widest opacity-85">Selected Color</p>
-                        <p class="text-3xl font-bold"><?php echo e($hexWithHash); ?></p>
+                    <div class="relative z-10 select-none p-2 sm:p-3" style="color: <?php echo e($contrast); ?>;">
+                        <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] opacity-85 mb-2">COLOR MAGIC</p>
+                        <?php if ($hasNamedTitle): ?>
+                            <p class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight"><?php echo e($hexName); ?></p>
+                            <p class="text-xl sm:text-2xl font-bold opacity-90 mt-1 font-mono tracking-tight"><?php echo e($hexWithHash); ?></p>
+                        <?php else: ?>
+                            <p class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none"><?php echo e($hexWithHash); ?></p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -685,54 +696,74 @@ $schema = [
                     </p>
                 </div>
 
-                <!-- 4. Action Buttons (2x2 on desktop, 1x4 on mobile) -->
+                <!-- 2. Details: Metric Cards with 1-Click Copy -->
+                <div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3">
+                        <button type="button"
+                            class="copy-btn metric-card group relative text-left bg-slate-50 hover:bg-white dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl px-2.5 py-3 border border-slate-200 hover:border-primary/50 dark:border-slate-700/60 dark:hover:border-primary/50 transition-all shadow-sm hover:shadow min-w-0 flex flex-col justify-between"
+                            data-copy="<?php echo e($hexWithHash); ?>"
+                            data-label="Copied HEX!"
+                            title="Click to copy HEX">
+                            <div class="flex items-center justify-between w-full">
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 group-hover:text-primary transition-colors">HEX</span>
+                                <i class="copy-icon bi bi-clipboard text-slate-400 group-hover:text-primary text-xs transition-colors"></i>
+                            </div>
+                            <p class="font-mono font-bold text-xs sm:text-[11px] md:text-xs lg:text-[13px] xl:text-sm mt-1.5 whitespace-nowrap tracking-tight"><?php echo e($hexWithHash); ?></p>
+                        </button>
+
+                        <button type="button"
+                            class="copy-btn metric-card group relative text-left bg-slate-50 hover:bg-white dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl px-2.5 py-3 border border-slate-200 hover:border-primary/50 dark:border-slate-700/60 dark:hover:border-primary/50 transition-all shadow-sm hover:shadow min-w-0 flex flex-col justify-between"
+                            data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)"
+                            data-label="Copied RGB!"
+                            title="Click to copy RGB">
+                            <div class="flex items-center justify-between w-full">
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 group-hover:text-primary transition-colors">RGB</span>
+                                <i class="copy-icon bi bi-clipboard text-slate-400 group-hover:text-primary text-xs transition-colors"></i>
+                            </div>
+                            <p class="font-mono font-bold text-xs sm:text-[11px] md:text-xs lg:text-[13px] xl:text-sm mt-1.5 whitespace-nowrap tracking-tight"><?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
+                        </button>
+
+                        <button type="button"
+                            class="copy-btn metric-card group relative text-left bg-slate-50 hover:bg-white dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl px-2.5 py-3 border border-slate-200 hover:border-primary/50 dark:border-slate-700/60 dark:hover:border-primary/50 transition-all shadow-sm hover:shadow min-w-0 flex flex-col justify-between"
+                            data-copy="hsl(<?php echo e((string) $hsl['h']); ?>, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%)"
+                            data-label="Copied HSL!"
+                            title="Click to copy HSL">
+                            <div class="flex items-center justify-between w-full">
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 group-hover:text-primary transition-colors">HSL</span>
+                                <i class="copy-icon bi bi-clipboard text-slate-400 group-hover:text-primary text-xs transition-colors"></i>
+                            </div>
+                            <p class="font-mono font-bold text-xs sm:text-[11px] md:text-xs lg:text-[13px] xl:text-sm mt-1.5 whitespace-nowrap tracking-tight"><?php echo e((string) $hsl['h']); ?>°, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%</p>
+                        </button>
+
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-3 border border-slate-200 dark:border-slate-700/60 min-w-0 flex flex-col justify-between">
+                            <div class="flex items-center justify-between w-full">
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Contrast</span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-slate-300 dark:border-slate-600 shadow-sm" style="background-color: <?php echo $contrast; ?>;"></span>
+                            </div>
+                            <p class="font-bold text-xs sm:text-[11px] md:text-xs lg:text-[13px] xl:text-sm mt-1.5 whitespace-nowrap tracking-tight"><?php echo $contrast === '#FFFFFF' ? 'White text' : 'Dark text'; ?></p>
+                        </div>
+                    </div>
+                    <div class="h-4 mt-1.5">
+                        <p id="copyFeedback"
+                            class="copy-feedback opacity-0 -translate-y-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 transition-all">
+                            Copied to clipboard</p>
+                    </div>
+                </div>
+
+                <!-- 3. Primary Action Buttons -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button
-                        class="copy-btn w-full px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-                        data-copy="<?php echo e($hexWithHash); ?>">
-                        <i class="bi bi-clipboard"></i>
-                        <span>Copy HEX</span>
-                    </button>
-                    <button
-                        class="copy-btn w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
-                        data-copy="rgb(<?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?>)">
-                        <i class="bi bi-code-slash"></i>
-                        <span>Copy RGB</span>
-                    </button>
                     <button id="downloadColorPngBtn"
-                        class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                        <i class="bi bi-download"></i>
-                        <span>Download PNG</span>
+                        class="w-full px-5 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 active:scale-[0.99]"
+                        title="Download color image">
+                        <i class="bi bi-download text-base"></i>
+                        <span>Download Image</span>
                     </button>
                     <button id="favColorHeroBtn"
-                        class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                        <i class="bi bi-heart"></i>
+                        class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 active:scale-[0.99]">
+                        <i class="bi bi-heart text-base"></i>
                         <span>Favorite</span>
                     </button>
                 </div>
-
-                <!-- 5. Details: Metric Cards -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
-                        <p class="text-[11px] uppercase tracking-wider text-slate-400">HEX</p>
-                        <p class="font-mono font-bold text-base mt-1"><?php echo e($hexWithHash); ?></p>
-                    </div>
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
-                        <p class="text-[11px] uppercase tracking-wider text-slate-400">RGB</p>
-                        <p class="font-mono font-bold text-base mt-1"><?php echo e((string) $rgb['r']); ?>, <?php echo e((string) $rgb['g']); ?>, <?php echo e((string) $rgb['b']); ?></p>
-                    </div>
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
-                        <p class="text-[11px] uppercase tracking-wider text-slate-400">HSL</p>
-                        <p class="font-mono font-bold text-base mt-1"><?php echo e((string) $hsl['h']); ?>°, <?php echo e((string) $hsl['s']); ?>%, <?php echo e((string) $hsl['l']); ?>%</p>
-                    </div>
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700/60">
-                        <p class="text-[11px] uppercase tracking-wider text-slate-400">Best Contrast</p>
-                        <p class="font-bold text-base mt-1"><?php echo $contrast === '#FFFFFF' ? 'White text' : 'Dark text'; ?></p>
-                    </div>
-                </div>
-                <p id="copyFeedback"
-                    class="copy-feedback opacity-0 -translate-y-1 text-sm font-semibold text-emerald-600">
-                    Copied to clipboard</p>
             </div>
         </section>
 
@@ -915,11 +946,47 @@ $schema = [
     <script src="<?php echo e($assetBase); ?>/assets/js/components/gradient-card.js?v=3.1"></script>
 
     <script>
-        // ── Copy HEX / RGB buttons ──────────────────────────────────────────
+        // ── Copy HEX / RGB / HSL buttons & metric cards ──────────────────────
         document.querySelectorAll('.copy-btn').forEach(function (button) {
             button.addEventListener('click', function () {
                 var text = button.getAttribute('data-copy') || '';
-                var label = text.indexOf('rgb') === 0 ? 'Copied RGB!' : 'Copied HEX!';
+                var label = button.getAttribute('data-label') || (text.indexOf('rgb') === 0 ? 'Copied RGB!' : (text.indexOf('hsl') === 0 ? 'Copied HSL!' : 'Copied HEX!'));
+
+                if (button.classList.contains('metric-card')) {
+                    var icon = button.querySelector('.copy-icon');
+                    var origIcon = icon ? icon.className : '';
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text);
+                    } else {
+                        var ta = document.createElement('textarea');
+                        ta.value = text;
+                        ta.style.position = 'fixed';
+                        ta.style.left = '-9999px';
+                        document.body.appendChild(ta);
+                        ta.focus();
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                    }
+                    if (icon) {
+                        icon.className = 'copy-icon bi bi-check2 text-emerald-500 text-xs font-bold transition-all';
+                    }
+                    button.classList.add('ring-2', 'ring-emerald-500/40', 'border-emerald-500/40');
+                    var feedback = document.getElementById('copyFeedback');
+                    if (feedback) {
+                        feedback.textContent = label;
+                        feedback.classList.remove('opacity-0', '-translate-y-1');
+                        setTimeout(function () {
+                            feedback.classList.add('opacity-0', '-translate-y-1');
+                        }, 1800);
+                    }
+                    setTimeout(function () {
+                        if (icon) icon.className = origIcon;
+                        button.classList.remove('ring-2', 'ring-emerald-500/40', 'border-emerald-500/40');
+                    }, 1600);
+                    return;
+                }
+
                 if (window.ColorMagic && window.ColorMagic.animateCopy) {
                     window.ColorMagic.animateCopy(button, text, label);
                 } else {
@@ -953,14 +1020,16 @@ $schema = [
             });
         })();
 
-        // ── Download PNG button ───────────────────────────────────────────
+        // ── Download Pantone Card button ──────────────────────────────────
         (function () {
             var downloadBtn = document.getElementById('downloadColorPngBtn');
             if (!downloadBtn || !window.ColorMagic || !window.ColorMagic.exportColorImage) return;
+
             var hex = '<?php echo e($hexWithHash); ?>';
             var name = '<?php echo e($hexName); ?>';
             var rgb = { r: <?php echo $rgb['r']; ?>, g: <?php echo $rgb['g']; ?>, b: <?php echo $rgb['b']; ?> };
             var hsl = { h: <?php echo $hsl['h']; ?>, s: <?php echo $hsl['s']; ?>, l: <?php echo $hsl['l']; ?> };
+
             downloadBtn.addEventListener('click', function () {
                 if (window.ColorMagic.animateDownload) {
                     window.ColorMagic.animateDownload(downloadBtn, function () {

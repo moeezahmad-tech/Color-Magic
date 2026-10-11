@@ -25,7 +25,7 @@
     }
 
     function bestTextColor(hex) {
-        return getLuminance(hex) > 0.5 ? '#1e293b' : '#ffffff';
+        return getLuminance(hex) > 0.62 ? '#1e293b' : '#ffffff';
     }
 
     function downloadCanvas(canvas, filename) {
@@ -152,105 +152,203 @@
 
     // ─── Color Image Export ────────────────────────────────────────────────────
 
+    function rgbToCmyk(r, g, b) {
+        var c = 1 - (r / 255);
+        var m = 1 - (g / 255);
+        var y = 1 - (b / 255);
+        var k = Math.min(c, Math.min(m, y));
+        if (k >= 1) return { c: 0, m: 0, y: 0, k: 100 };
+        return {
+            c: Math.round(((c - k) / (1 - k)) * 100),
+            m: Math.round(((m - k) / (1 - k)) * 100),
+            y: Math.round(((y - k) / (1 - k)) * 100),
+            k: Math.round(k * 100)
+        };
+    }
+
+    function getColorMoodKeywords(hex, rgb, hsl, name) {
+        var h = (hsl && typeof hsl.h === 'number') ? hsl.h : 0;
+        var s = (hsl && typeof hsl.s === 'number') ? hsl.s : 0;
+        var l = (hsl && typeof hsl.l === 'number') ? hsl.l : 50;
+        var n = (name || '').toLowerCase();
+
+        if (n.indexOf('merlot') !== -1 || n.indexOf('wine') !== -1 || n.indexOf('burgundy') !== -1 || ((h >= 335 || h <= 15) && l < 35 && s > 20)) {
+            return ['RICH', 'MOODY', 'TIMELESS', 'ELEGANCE'];
+        }
+        if (n.indexOf('inferno') !== -1 || n.indexOf('crimson') !== -1 || n.indexOf('ruby') !== -1 || n.indexOf('scarlet') !== -1) {
+            return ['INTENSE', 'PASSION', 'DRAMATIC', 'VELVET'];
+        }
+        if (l < 15) {
+            return ['DEEP', 'MYSTERIOUS', 'MODERN', 'PRECISION'];
+        }
+        if (l > 85) {
+            return ['ETHEREAL', 'LUMINOUS', 'SERENE', 'PURITY'];
+        }
+        if (s < 18) {
+            return ['MINIMAL', 'SUBTLE', 'ORGANIC', 'UNDERSTATED'];
+        }
+        if (h >= 35 && h <= 65) {
+            return ['RADIANT', 'WARMTH', 'OPTIMISTIC', 'VIBRANT'];
+        }
+        if (h > 65 && h <= 165) {
+            return ['BOTANICAL', 'GROUNDED', 'TRANQUIL', 'ORGANIC'];
+        }
+        if (h > 165 && h <= 200) {
+            return ['COASTAL', 'REFRESHING', 'TRANQUIL', 'MODERN'];
+        }
+        if (h > 200 && h <= 255) {
+            return l < 40 ? ['REGAL', 'DEEP', 'TIMELESS', 'CONFIDENT'] : ['AIRY', 'SERENE', 'CALM', 'BALANCED'];
+        }
+        if (h > 255 && h <= 300) {
+            return ['MYSTICAL', 'LUXURIOUS', 'CREATIVE', 'ENCHANTING'];
+        }
+        if (h > 300 && h < 335) {
+            return ['EXPRESSIVE', 'PLAYFUL', 'ALLURING', 'CONTEMPORARY'];
+        }
+        if (h >= 15 && h < 35) {
+            return l < 40 ? ['EARTHEN', 'RUSTIC', 'HERITAGE', 'WARMTH'] : ['VIVID', 'SUNLIT', 'ENERGETIC', 'DYNAMIC'];
+        }
+
+        return ['TIMELESS', 'MODERN', 'HARMONIOUS', 'ELEGANCE'];
+    }
+
+    function drawSpacedText(ctx, text, x, y, letterSpacing, align) {
+        if (!text) return;
+        align = align || 'left';
+        if (typeof ctx.letterSpacing !== 'undefined') {
+            ctx.letterSpacing = letterSpacing + 'px';
+            ctx.textAlign = align;
+            ctx.fillText(text, x, y);
+            ctx.letterSpacing = '0px';
+            return;
+        }
+        var chars = text.split('');
+        var widths = [];
+        var totalW = 0;
+        for (var i = 0; i < chars.length; i++) {
+            var w = ctx.measureText(chars[i]).width;
+            widths.push(w);
+            totalW += w + (i < chars.length - 1 ? letterSpacing : 0);
+        }
+        var curX = x;
+        if (align === 'right') curX = x - totalW;
+        else if (align === 'center') curX = x - totalW / 2;
+        ctx.textAlign = 'left';
+        for (var j = 0; j < chars.length; j++) {
+            ctx.fillText(chars[j], curX, y);
+            curX += widths[j] + letterSpacing;
+        }
+    }
+
     /**
-     * Renders a single color as a PNG image and triggers download.
+     * Renders a color swatch canvas in Pantone Swatch style (Image 2).
      * @param {Object} colorData - { hex: string, name: string, rgb: {r,g,b}, hsl: {h,s,l} }
-     * @param {string} [filename] - Optional filename
+     * @returns {HTMLCanvasElement}
      */
-    window.ColorMagic.exportColorImage = function (colorData, filename) {
+    window.ColorMagic.renderColorCanvas = function (colorData) {
         var canvas = document.createElement('canvas');
-        var W = 4800, H = 3200;
+        var W = 2000, H = 2500; // 4:5 vertical portrait ratio
         canvas.width = W;
         canvas.height = H;
         var ctx = canvas.getContext('2d');
 
         var hex = colorData.hex || '#000000';
-        var name = colorData.name || hex;
+        var cleanHex = hex.replace('#', '').toUpperCase();
+        var name = (colorData.name || ('#' + cleanHex)).replace(/^Hex\s*#/i, '');
         var rgb = colorData.rgb || hexToRgb(hex);
         var hsl = colorData.hsl || { h: 0, s: 0, l: 0 };
+        var cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
 
-        // Color fill (top 60%)
-        var colorH = 1920;
+        // Full-bleed color background
         ctx.fillStyle = hex;
-        ctx.fillRect(0, 0, W, colorH);
+        ctx.fillRect(0, 0, W, H);
 
-        // Hex label on color area
-        var textOnColor = bestTextColor(hex);
-        ctx.fillStyle = textOnColor;
-        ctx.font = 'bold 288px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(hex.toUpperCase(), W / 2, colorH / 2 - 80);
+        // Contrast calculation for high legibility
+        var isLight = getLuminance(hex) > 0.62;
+        var textPrimary = isLight ? '#111827' : '#FFFFFF';
+        var textSecondary = isLight ? 'rgba(17, 24, 39, 0.88)' : 'rgba(255, 255, 255, 0.92)';
+        var textMuted = isLight ? 'rgba(17, 24, 39, 0.55)' : 'rgba(255, 255, 255, 0.60)';
 
-        // Color name below hex
-        ctx.font = '500 112px Inter, system-ui, sans-serif';
-        ctx.globalAlpha = 0.85;
-        ctx.fillText(name, W / 2, colorH / 2 + 160);
-        ctx.globalAlpha = 1;
+        // ─── Swatch Card Layout ─────────────────────────────────────────────
+        var startX = 220;
 
-        // Bottom info area
-        var infoY = colorH;
+        // 1. Brand Tag (moderate size, clean letter-spacing, NO (R) symbol)
+        ctx.fillStyle = textSecondary;
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '700 48px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        drawSpacedText(ctx, 'COLOR MAGIC', startX, 1500, 6, 'left');
 
-        // White background
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, infoY, W, H - infoY);
+        // 2. Large Color Name / Color Code
+        var hasDistinctName = name && name.trim() !== '' && 
+            name.toLowerCase() !== ('#' + cleanHex).toLowerCase() && 
+            name.toLowerCase() !== cleanHex.toLowerCase() &&
+            name.toLowerCase() !== ('hex #' + cleanHex).toLowerCase();
 
-        // Divider
-        ctx.strokeStyle = '#e2e8f0';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(160, infoY);
-        ctx.lineTo(W - 160, infoY);
-        ctx.stroke();
+        if (hasDistinctName) {
+            // Show Color Name in LARGE size
+            ctx.fillStyle = textPrimary;
+            var heroName = name.toUpperCase();
+            var maxHeroW = 1560;
+            ctx.font = '900 136px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            if (ctx.measureText(heroName).width > maxHeroW) {
+                var scale = maxHeroW / ctx.measureText(heroName).width;
+                ctx.font = '900 ' + Math.max(64, Math.floor(136 * scale)) + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            }
+            drawSpacedText(ctx, heroName, startX, 1660, 2, 'left');
 
-        // Color values in cards
-        var cardW = 1360;
-        var cardH = 720;
-        var cardGap = 120;
-        var cardY = infoY + 160;
-        var startX = (W - (3 * cardW + 2 * cardGap)) / 2;
+            // Color Code in prominent size
+            ctx.fillStyle = textSecondary;
+            ctx.font = '700 72px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            drawSpacedText(ctx, '#' + cleanHex, startX, 1770, 4, 'left');
+        } else {
+            // If no custom name, show the Color Code in LARGE size
+            ctx.fillStyle = textPrimary;
+            ctx.font = '900 150px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            drawSpacedText(ctx, '#' + cleanHex, startX, 1700, 3, 'left');
+        }
 
-        var cards = [
-            { label: 'HEX', value: hex.toUpperCase() },
-            { label: 'RGB', value: rgb.r + ', ' + rgb.g + ', ' + rgb.b },
-            { label: 'HSL', value: hsl.h + '\u00b0, ' + hsl.s + '%, ' + hsl.l + '%' }
-        ];
+        // 3. Technical Specs Block (HEX, CMYK, RGB, HSL)
+        var specY = 1920;
+        var lineH = 74;
+        var labelX = startX;
+        var valueX = startX + 280;
 
-        cards.forEach(function (card, i) {
-            var x = startX + i * (cardW + cardGap);
+        // Labels Column
+        ctx.font = '700 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textSecondary;
+        drawSpacedText(ctx, 'HEX', labelX, specY, 4, 'left');
+        drawSpacedText(ctx, 'CMYK', labelX, specY + lineH, 4, 'left');
+        drawSpacedText(ctx, 'RGB', labelX, specY + lineH * 2, 4, 'left');
+        drawSpacedText(ctx, 'HSL', labelX, specY + lineH * 3, 4, 'left');
 
-            // Card background
-            roundRect(ctx, x, cardY, cardW, cardH, 64);
-            ctx.fillStyle = '#f8fafc';
-            ctx.fill();
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 4;
-            ctx.stroke();
+        // Values Column
+        ctx.font = '500 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textPrimary;
+        drawSpacedText(ctx, '#' + cleanHex, valueX, specY, 2, 'left');
+        drawSpacedText(ctx, cmyk.c + '  ' + cmyk.m + '  ' + cmyk.y + '  ' + cmyk.k, valueX, specY + lineH, 2, 'left');
+        drawSpacedText(ctx, rgb.r + '  ' + rgb.g + '  ' + rgb.b, valueX, specY + lineH * 2, 2, 'left');
+        drawSpacedText(ctx, Math.round(hsl.h) + '\u00b0  ' + Math.round(hsl.s) + '%  ' + Math.round(hsl.l) + '%', valueX, specY + lineH * 3, 2, 'left');
 
-            // Label
-            ctx.fillStyle = '#64748b';
-            ctx.font = '600 56px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-            ctx.fillText(card.label, x + 96, cardY + 96);
+        // 4. Subtle Branding URL (Bottom Right)
+        ctx.font = '500 26px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = textMuted;
+        drawSpacedText(ctx, 'colormagic.techkreative.com', 1780, 2360, 3, 'right');
 
-            // Value
-            ctx.fillStyle = '#0f172a';
-            ctx.font = 'bold 128px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(card.value, x + cardW / 2, cardY + cardH / 2 + 40);
-        });
+        return canvas;
+    };
 
-        // Branding
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 56px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText('Color Magic \u00b7 colormagic.techkreative.com', W - 200, H - 120);
+    /**
+     * Renders a single color as a high-res swatch PNG image and triggers download.
+     * @param {Object} colorData - { hex: string, name: string, rgb: {r,g,b}, hsl: {h,s,l} }
+     * @param {string} [filename] - Optional filename
+     */
+    window.ColorMagic.exportColorImage = function (colorData, filename) {
+        var canvas = window.ColorMagic.renderColorCanvas(colorData);
 
-        // Download
-        var fname = filename || hex.replace('#', '').toLowerCase() + '-color.png';
+        var hex = colorData.hex || '#000000';
+        var cleanHex = hex.replace('#', '').toLowerCase();
+        var fname = filename || cleanHex + '-color.png';
+
         downloadCanvas(canvas, fname);
     };
 

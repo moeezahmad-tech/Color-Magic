@@ -76,17 +76,13 @@
         return { h: h * 360, s: s * 100, l: l * 100 };
     }
 
-    function getLuminance(hex) {
+    function getPerceivedLuminance(hex) {
         const { r, g, b } = hexToRgb(hex);
-        const a = [r, g, b].map(v => {
-            v /= 255;
-            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-        });
-        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+        return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     }
 
     function getBestContrast(hex) {
-        return getLuminance(hex) > 0.179 ? 'Black' : 'White';
+        return getPerceivedLuminance(hex) > 0.62 ? 'Dark text' : 'White text';
     }
 
     // ── History ───────────────────────────────────────────────────────────────
@@ -207,7 +203,7 @@
         const colorImageUrl = `https://colormagic.techkreative.com/colorImage.php?hex=${cleanHex}`;
         const rgbText  = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
         const hslText  = `${Math.round(hsl.h)}°, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%`;
-        const contrastColor = contrast === 'White' ? '#FFFFFF' : '#000000';
+        const contrastColor = (contrast === 'White text' || contrast === 'White') ? '#FFFFFF' : '#111111';
 
         colorResultsGrid.innerHTML = '';
 
