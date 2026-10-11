@@ -147,14 +147,6 @@
                 <div class="h-6 w-36 bg-slate-200/80 dark:bg-slate-800 rounded mb-4"></div>
                 <div class="h-28 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
             </div>
-            <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 border border-slate-200/60 dark:border-slate-800 animate-pulse">
-                <div class="h-6 w-40 bg-slate-200/80 dark:bg-slate-800 rounded mb-4"></div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="h-44 bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
-                    <div class="h-44 bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
-                    <div class="h-44 bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
-                </div>
-            </div>
         </div>
 
         <!-- Gradient detail (hidden until loaded) -->
@@ -237,26 +229,170 @@
                 </div>
             </div>
 
-            <!-- CSS Code Block -->
+            <!-- Export: JSON (Primary on top) -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <h2 class="text-xl md:text-2xl font-bold mb-4">CSS Code</h2>
-                <div class="relative">
-                    <pre id="cssCodeBlock" class="bg-slate-50 dark:bg-slate-800 rounded-xl p-5 font-mono text-sm overflow-x-auto border border-slate-200 dark:border-slate-700 leading-relaxed"></pre>
-                    <button id="copyCssBlockBtn"
-                        class="absolute top-3 right-3 px-3 py-1.5 bg-white dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all shadow-sm border border-slate-200 dark:border-slate-600">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">JSON</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Structured JSON format for APIs, config files, and data exchange</p>
+                    </div>
+                    <button id="copyJsonBtn"
+                        class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
                         <i class="bi bi-clipboard me-1"></i>Copy
                     </button>
                 </div>
+                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                    <pre id="jsonCode"></pre>
+                </div>
             </section>
 
-            <!-- Color Information -->
-            <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
-                <h2 class="text-xl md:text-2xl font-bold mb-4">Color Information</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                    RGB, HSL, and brightness values for each color in this gradient
-                </p>
-                <div id="colorInfoGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-            </section>
+            <!-- See More Export Formats Button -->
+            <div class="text-center">
+                <button id="toggleMoreFormatsBtn" type="button"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-semibold text-sm border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:border-primary/50 group">
+                    <span id="toggleMoreFormatsText">See More</span>
+                    <i id="toggleMoreFormatsIcon" class="bi bi-chevron-down transition-transform group-hover:translate-y-0.5"></i>
+                </button>
+            </div>
+
+            <!-- Additional Export Formats (Collapsible) -->
+            <div id="moreExportFormats" class="hidden flex-col gap-8">
+                <!-- CSS Code Block -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">CSS Code</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">CSS background declarations with fallback color</p>
+                        </div>
+                        <button id="copyCssBlockBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="cssCodeBlock"></pre>
+                    </div>
+                </section>
+
+                <!-- CSS Custom Properties -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">CSS Custom Properties</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">CSS variables for stylesheets with individual color stops</p>
+                        </div>
+                        <button id="copyCssVarsExportBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="cssVarsCode"></pre>
+                    </div>
+                </section>
+
+                <!-- SCSS Variables -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">SCSS Variables</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Sass/SCSS gradient variable and reusable mixin</p>
+                        </div>
+                        <button id="copyScssBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="scssCode"></pre>
+                    </div>
+                </section>
+
+                <!-- Tailwind Config -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">Tailwind CSS Config</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Extend backgroundImage in tailwind.config.js</p>
+                        </div>
+                        <button id="copyTailwindBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="tailwindCode"></pre>
+                    </div>
+                </section>
+
+                <!-- HEX Array -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">HEX Array</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Array of hex color stops for JavaScript or canvas</p>
+                        </div>
+                        <button id="copyHexArrayBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="hexArrayCode"></pre>
+                    </div>
+                </section>
+
+                <!-- SVG Gradient -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">SVG Gradient Defs</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Vector SVG gradient definition with color stops</p>
+                        </div>
+                        <button id="copySvgGradientBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="svgGradientCode"></pre>
+                    </div>
+                </section>
+
+                <!-- Android XML -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">Android XML</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Android shape drawable XML gradient</p>
+                        </div>
+                        <button id="copyAndroidBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="androidCode"></pre>
+                    </div>
+                </section>
+
+                <!-- Swift SwiftUI -->
+                <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">Swift (SwiftUI)</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">SwiftUI LinearGradient declaration for iOS/macOS</p>
+                        </div>
+                        <button id="copySwiftBtn"
+                            class="shrink-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto max-h-64">
+                        <pre id="swiftCode"></pre>
+                    </div>
+                </section>
+            </div>
 
             <!-- Related Colors -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm">

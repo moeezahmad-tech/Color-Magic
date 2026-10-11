@@ -265,56 +265,6 @@
             renderColorList(names);
         });
 
-        // CSS code block
-        var cssCode = 'background: ' + g.css + ';';
-        document.getElementById('cssCodeBlock').textContent = cssCode;
-
-        // Color info grid
-        var colorInfoGrid = document.getElementById('colorInfoGrid');
-        colorInfoGrid.innerHTML = '';
-        var colorRoute = (document.querySelector('base') ? '' : '/') + 'color/';
-        g.colors.forEach(function (hex) {
-            var rgb = hexToRgb(hex);
-            var hsl = hexToHsl(hex);
-            var lum = getLuminance(hex);
-            var bareHex = hex.replace('#', '');
-            var card = document.createElement('div');
-            card.className = 'bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden flex flex-col';
-            card.innerHTML =
-                '<div class="h-16 w-full" style="background:' + hex + '"></div>'
-                + '<div class="p-4 flex flex-col gap-3 flex-1">'
-                +   '<div class="flex items-center justify-between">'
-                +     '<p class="font-mono font-bold text-base">' + hex + '</p>'
-                +     '<a href="' + colorRoute + bareHex + '/" class="p-1.5 rounded-lg text-slate-400 hover:text-secondary hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="View ' + hex + ' details">'
-                +       '<i class="bi bi-box-arrow-up-right text-sm"></i>'
-                +     '</a>'
-                +   '</div>'
-                +   '<div class="space-y-1.5 text-sm">'
-                +     '<div class="flex items-center justify-between">'
-                +       '<span class="text-slate-400 text-xs uppercase tracking-wider">RGB</span>'
-                +       '<span class="font-mono text-xs font-semibold">' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + '</span>'
-                +     '</div>'
-                +     '<div class="flex items-center justify-between">'
-                +       '<span class="text-slate-400 text-xs uppercase tracking-wider">HSL</span>'
-                +       '<span class="font-mono text-xs font-semibold">' + hsl.h + '°, ' + hsl.s + '%, ' + hsl.l + '%</span>'
-                +     '</div>'
-                +     '<div class="flex items-center justify-between">'
-                +       '<span class="text-slate-400 text-xs uppercase tracking-wider">Brightness</span>'
-                +       '<span class="font-mono text-xs font-semibold">' + lum + '%</span>'
-                +     '</div>'
-                +   '</div>'
-                +   '<div class="flex items-center gap-2 mt-auto pt-1">'
-                +     '<button class="copy-color-hex-btn flex-1 px-3 py-2 bg-white dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all border border-slate-200 dark:border-slate-600 flex items-center justify-center gap-1.5" data-hex="' + hex + '">'
-                +       '<i class="bi bi-clipboard text-xs"></i> HEX'
-                +     '</button>'
-                +     '<button class="copy-color-rgb-btn flex-1 px-3 py-2 bg-white dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all border border-slate-200 dark:border-slate-600 flex items-center justify-center gap-1.5" data-rgb="rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')">'
-                +       '<i class="bi bi-clipboard text-xs"></i> RGB'
-                +     '</button>'
-                +   '</div>'
-                + '</div>';
-            colorInfoGrid.appendChild(card);
-        });
-
         // Copy CSS (hero click)
         hero.addEventListener('click', function () {
             copyToClipboard(g.css, hero, null);
@@ -327,30 +277,110 @@
             }
         });
 
+        // --- Export Format Data ---
+        var slugName = (g.name || 'gradient').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-        // Copy CSS block button
-        var copyBlockBtn = document.getElementById('copyCssBlockBtn');
-        if (copyBlockBtn) {
-            var copyBlockOrig = copyBlockBtn.innerHTML;
-            copyBlockBtn.addEventListener('click', function () {
-                copyToClipboard(cssCode, copyBlockBtn, copyBlockOrig);
-            });
-        }
+        var jsonFormat = JSON.stringify({
+            name: g.name,
+            type: g.type || 'linear',
+            style: g.style || 'Modern',
+            angle: g.angle || (g.type === 'linear' ? '135deg' : null),
+            colors: g.colors,
+            css: g.css
+        }, null, 2);
 
-        // Copy color HEX / RGB buttons (delegated on color info grid)
-        var colorInfoGrid = document.getElementById('colorInfoGrid');
-        if (colorInfoGrid) {
-            colorInfoGrid.addEventListener('click', function (e) {
-                var hexBtn = e.target.closest('.copy-color-hex-btn');
-                if (hexBtn) {
-                    var origHTML = hexBtn.innerHTML;
-                    copyToClipboard(hexBtn.dataset.hex, hexBtn, origHTML);
-                    return;
-                }
-                var rgbBtn = e.target.closest('.copy-color-rgb-btn');
-                if (rgbBtn) {
-                    var origRGB = rgbBtn.innerHTML;
-                    copyToClipboard(rgbBtn.dataset.rgb, rgbBtn, origRGB);
+        var cssCodeFormat = '/* ' + g.name + ' */\n'
+            + 'background: ' + (g.colors[0] || '#000000') + ';\n'
+            + 'background: ' + g.css + ';';
+
+        var cssVarsFormat = ':root {\n'
+            + '  --gradient-name: "' + g.name + '";\n'
+            + '  --gradient-css: ' + g.css + ';\n'
+            + g.colors.map(function (c, i) { return '  --gradient-stop-' + (i + 1) + ': ' + c + ';'; }).join('\n')
+            + '\n}';
+
+        var scssFormat = '$gradient-' + slugName + ': ' + g.css + ';\n\n'
+            + '@mixin ' + slugName + '-gradient {\n'
+            + '  background: ' + (g.colors[0] || '#000000') + ';\n'
+            + '  background: $gradient-' + slugName + ';\n'
+            + '}';
+
+        var tailwindFormat = 'backgroundImage: {\n'
+            + "  '" + slugName + "': '" + g.css + "',\n"
+            + '}';
+
+        var hexArrayFormat = '[\n  ' + g.colors.map(function (c) { return "'" + c + "'"; }).join(',\n  ') + '\n]';
+
+        var svgStops = g.colors.map(function (c, i) {
+            var offset = g.colors.length > 1 ? Math.round((i / (g.colors.length - 1)) * 100) : 0;
+            return '    <stop offset="' + offset + '%" stop-color="' + c + '" />';
+        }).join('\n');
+        var svgFormat = (g.type === 'radial')
+            ? '<svg width="0" height="0">\n  <defs>\n    <radialGradient id="' + slugName + '">\n' + svgStops + '\n    </radialGradient>\n  </defs>\n</svg>'
+            : '<svg width="0" height="0">\n  <defs>\n    <linearGradient id="' + slugName + '" x1="0%" y1="0%" x2="100%" y2="100%">\n' + svgStops + '\n    </linearGradient>\n  </defs>\n</svg>';
+
+        var androidFormat = '<?xml version="1.0" encoding="utf-8"?>\n'
+            + '<shape xmlns:android="http://schemas.android.com/apk/res/android">\n'
+            + '    <gradient\n'
+            + '        android:type="' + (g.type === 'radial' ? 'radial' : 'linear') + '"\n'
+            + '        android:startColor="' + (g.colors[0] || '#000000') + '"\n'
+            + (g.colors.length > 2 ? '        android:centerColor="' + g.colors[Math.floor(g.colors.length / 2)] + '"\n' : '')
+            + '        android:endColor="' + (g.colors[g.colors.length - 1] || '#ffffff') + '" />\n'
+            + '</shape>';
+
+        var swiftColors = g.colors.map(function (c) { return 'Color(hex: "' + c + '")'; }).join(', ');
+        var swiftFormat = 'LinearGradient(\n'
+            + '    gradient: Gradient(colors: [' + swiftColors + ']),\n'
+            + '    startPoint: .topLeading,\n'
+            + '    endPoint: .bottomTrailing\n'
+            + ')';
+
+        // Populate each export section's code block (JSON on top, followed by other formats)
+        var exportSections = [
+            { codeEl: 'jsonCode',            copyBtnId: 'copyJsonBtn',          data: jsonFormat },
+            { codeEl: 'cssCodeBlock',        copyBtnId: 'copyCssBlockBtn',      data: cssCodeFormat },
+            { codeEl: 'cssVarsCode',         copyBtnId: 'copyCssVarsExportBtn', data: cssVarsFormat },
+            { codeEl: 'scssCode',            copyBtnId: 'copyScssBtn',          data: scssFormat },
+            { codeEl: 'tailwindCode',        copyBtnId: 'copyTailwindBtn',      data: tailwindFormat },
+            { codeEl: 'hexArrayCode',        copyBtnId: 'copyHexArrayBtn',      data: hexArrayFormat },
+            { codeEl: 'svgGradientCode',     copyBtnId: 'copySvgGradientBtn',   data: svgFormat },
+            { codeEl: 'androidCode',         copyBtnId: 'copyAndroidBtn',       data: androidFormat },
+            { codeEl: 'swiftCode',           copyBtnId: 'copySwiftBtn',         data: swiftFormat }
+        ];
+
+        var copyIconHTML = '<i class="bi bi-clipboard me-1"></i>Copy';
+
+        exportSections.forEach(function (sec) {
+            var codeBlock = document.getElementById(sec.codeEl);
+            var btn = document.getElementById(sec.copyBtnId);
+            if (codeBlock) codeBlock.textContent = sec.data;
+            if (btn) {
+                var origHTML = btn.innerHTML;
+                btn.addEventListener('click', function () {
+                    copyToClipboard(sec.data, btn, origHTML);
+                });
+            }
+        });
+
+        // Toggle additional export formats (See More / See Less)
+        var toggleMoreFormatsBtn = document.getElementById('toggleMoreFormatsBtn');
+        var moreExportFormats = document.getElementById('moreExportFormats');
+        var toggleMoreFormatsText = document.getElementById('toggleMoreFormatsText');
+        var toggleMoreFormatsIcon = document.getElementById('toggleMoreFormatsIcon');
+
+        if (toggleMoreFormatsBtn && moreExportFormats) {
+            toggleMoreFormatsBtn.addEventListener('click', function () {
+                var isHidden = moreExportFormats.classList.contains('hidden');
+                if (isHidden) {
+                    moreExportFormats.classList.remove('hidden');
+                    moreExportFormats.classList.add('flex');
+                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See Less';
+                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-up transition-transform group-hover:-translate-y-0.5';
+                } else {
+                    moreExportFormats.classList.add('hidden');
+                    moreExportFormats.classList.remove('flex');
+                    if (toggleMoreFormatsText) toggleMoreFormatsText.textContent = 'See More';
+                    if (toggleMoreFormatsIcon) toggleMoreFormatsIcon.className = 'bi bi-chevron-down transition-transform group-hover:translate-y-0.5';
                 }
             });
         }
