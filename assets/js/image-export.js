@@ -438,29 +438,51 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, W, gradientH);
 
-        // Top-Left: Gradient Title in bold uppercase (matching reference poster)
+        // 1b. Brand Tag & Gradient Title (Top-Left of Gradient Box)
         var topPadX = 92;
         var topPadY = 104;
         var firstColorLum = getLuminance(colors[0]);
         var topTitleColor = firstColorLum > 0.85 ? '#111827' : '#FFFFFF';
 
         ctx.save();
-        ctx.shadowColor = firstColorLum > 0.85 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.22)';
+        ctx.shadowColor = firstColorLum > 0.85 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)';
         ctx.shadowBlur = 8;
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 2;
         ctx.fillStyle = topTitleColor;
-        ctx.font = '800 36px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.textBaseline = 'top';
 
-        // Auto-fit gradient name if long
+        // Line 1: COLOR MAGIC on top (brand kicker)
+        ctx.font = '700 28px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        drawSpacedText(ctx, 'COLOR MAGIC', topPadX, topPadY, 4, 'left');
+
+        // Line 2: Large text for the gradient name
+        var nameY = topPadY + 48;
+        var nameFontSize = 76;
+        ctx.font = '900 ' + nameFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         var maxNameW = W - topPadX * 2;
         var measuredNameW = ctx.measureText(name).width;
         if (measuredNameW > maxNameW) {
-            var scaledFontSize = Math.max(22, Math.floor(36 * (maxNameW / measuredNameW)));
-            ctx.font = '800 ' + scaledFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            nameFontSize = Math.max(36, Math.floor(nameFontSize * (maxNameW / measuredNameW)));
+            ctx.font = '900 ' + nameFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         }
-        drawSpacedText(ctx, name, topPadX, topPadY, 3, 'left');
+        drawSpacedText(ctx, name, topPadX, nameY, 2, 'left');
+        ctx.restore();
+
+        // 1c. Website Link on the bottom-right corner of the gradient color box (NOT on the solid color bottom box)
+        var lastColor = colors[colors.length - 1] || '#000000';
+        var lastColorLum = getLuminance(lastColor);
+        var urlColor = lastColorLum > 0.80 ? 'rgba(17, 24, 39, 0.75)' : 'rgba(255, 255, 255, 0.82)';
+
+        ctx.save();
+        ctx.shadowColor = lastColorLum > 0.80 ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 2;
+        ctx.fillStyle = urlColor;
+        ctx.font = '600 24px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.textBaseline = 'bottom';
+        drawSpacedText(ctx, 'colormagic.techkreative.com', W - topPadX, gradientH - 42, 2, 'right');
         ctx.restore();
 
         // 2. Bottom Section: Color Blocks (bottom ~33.2% of total height)
@@ -556,15 +578,8 @@
 
             var hexLabelW = ctx.measureText('HEX').width;
             ctx.fillStyle = textColor;
+            ctx.fillText(hex.toUpperCase(), textX + hexLabelW + 28, line2Y);
         });
-
-        // 3. Website Name (Bottom-Right Corner)
-        var lastColor = colors[colors.length - 1] || '#000000';
-        var isLastDark = getLuminance(lastColor) > 0.50;
-        ctx.fillStyle = isLastDark ? 'rgba(17, 24, 39, 0.65)' : 'rgba(255, 255, 255, 0.70)';
-        ctx.font = '800 24px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        ctx.textBaseline = 'bottom';
-        drawSpacedText(ctx, 'COLOR MAGIC', W - 76, H - 54, 3, 'right');
 
         return canvas;
     };
