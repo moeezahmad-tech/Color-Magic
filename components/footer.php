@@ -79,8 +79,6 @@
                     <li><a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank"
                             rel="noopener noreferrer"
                             class="text-sm text-slate-500 hover:text-primary transition-colors">GitHub Repository</a></li>
-                    <li><a href="<?= $base ?>/sitemap.xml" target="_blank"
-                            class="text-sm text-slate-500 hover:text-primary transition-colors">XML Sitemap</a></li>
                 </ul>
             </div>
 
