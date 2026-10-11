@@ -255,6 +255,9 @@
         // Async resolve color names to populate gradient overlay and swatches
         loadColorDict().then(function (dict) {
             if (!dict) return;
+            window.ColorMagic = window.ColorMagic || {};
+            window.ColorMagic.colorDict = dict;
+            window.ColorMagic.findColorName = findColorName;
             var names = g.colors.map(function (hex) {
                 return findColorName(hex, dict);
             });
@@ -402,12 +405,30 @@
         var downloadPngBtn = document.getElementById('downloadGradientPngBtn');
         if (downloadPngBtn && window.ColorMagic && window.ColorMagic.exportGradientImage) {
             downloadPngBtn.addEventListener('click', function () {
-                if (window.ColorMagic.animateDownload) {
-                    window.ColorMagic.animateDownload(downloadPngBtn, function () {
+                var triggerExport = function () {
+                    if (window.ColorMagic.animateDownload) {
+                        window.ColorMagic.animateDownload(downloadPngBtn, function () {
+                            window.ColorMagic.exportGradientImage(g);
+                        });
+                    } else {
                         window.ColorMagic.exportGradientImage(g);
-                    });
+                    }
+                };
+
+                if (!g.colorNames || g.colorNames.length === 0) {
+                    loadColorDict().then(function (dict) {
+                        if (dict) {
+                            window.ColorMagic = window.ColorMagic || {};
+                            window.ColorMagic.colorDict = dict;
+                            window.ColorMagic.findColorName = findColorName;
+                            g.colorNames = g.colors.map(function (hex) {
+                                return findColorName(hex, dict);
+                            });
+                        }
+                        triggerExport();
+                    }).catch(triggerExport);
                 } else {
-                    window.ColorMagic.exportGradientImage(g);
+                    triggerExport();
                 }
             });
         }

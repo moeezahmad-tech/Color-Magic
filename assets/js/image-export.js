@@ -28,6 +28,14 @@
         return getLuminance(hex) > 0.62 ? '#1e293b' : '#ffffff';
     }
 
+    function toTitleCase(str) {
+        if (!str) return '';
+        if (str.charAt(0) === '#') return str.toUpperCase();
+        return str.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    }
+
     function downloadCanvas(canvas, filename) {
         canvas.toBlob(function (blob) {
             if (!blob) return;
@@ -391,13 +399,14 @@
     // ─── Gradient Image Export ─────────────────────────────────────────────────
 
     /**
-     * Renders a gradient card canvas in Pantone Swatch / high-res portrait style (4:5).
-     * @param {Object} gradient - { id, name, css, colors, type, style, angle, shape }
+     * Renders a gradient card canvas matching the poster reference style
+     * (top ~66.8% gradient with uppercase title, bottom ~33.2% solid color blocks with names & hex).
+     * @param {Object} gradient - { id, name, css, colors, type, style, angle, shape, colorNames }
      * @returns {HTMLCanvasElement}
      */
     window.ColorMagic.renderGradientCanvas = function (gradient) {
         var canvas = document.createElement('canvas');
-        var W = 2000, H = 2500; // 4:5 vertical portrait ratio
+        var W = 1648, H = 2048; // High-res 2x matching 824x1024 reference poster proportions
         canvas.width = W;
         canvas.height = H;
         var ctx = canvas.getContext('2d');
@@ -407,17 +416,19 @@
         var type = (gradient.type || 'linear').toLowerCase();
         var angle = (typeof gradient.angle === 'number') ? gradient.angle : 135;
 
-        // Render high-res gradient
+        // 1. Top Section: Gradient (top ~66.8% of total height)
+        var gradientH = Math.round(H * 0.668);
+
         var grad;
         if (type === 'linear') {
             var rad = (angle - 90) * Math.PI / 180;
-            var cx = W / 2, cy = H / 2;
-            var len = Math.sqrt(W * W + H * H);
+            var cx = W / 2, cy = gradientH / 2;
+            var len = Math.sqrt(W * W + gradientH * gradientH);
             var dx = Math.cos(rad) * len / 2;
             var dy = Math.sin(rad) * len / 2;
             grad = ctx.createLinearGradient(cx - dx, cy - dy, cx + dx, cy + dy);
         } else {
-            grad = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) / 1.5);
+            grad = ctx.createRadialGradient(W / 2, gradientH / 2, 0, W / 2, gradientH / 2, Math.max(W, gradientH) / 1.4);
         }
 
         colors.forEach(function (hex, i) {
@@ -425,99 +436,120 @@
         });
 
         ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, W, H);
+        ctx.fillRect(0, 0, W, gradientH);
 
-        // Calculate average perceived luminance
-        var totalLum = 0;
-        colors.forEach(function (hex) {
-            totalLum += getLuminance(hex);
-        });
-        var avgLum = totalLum / Math.max(colors.length, 1);
-        var isLight = avgLum > 0.62;
+        // Top-Left: Gradient Title in bold uppercase
+        var topPadX = 92;
+        var topPadY = 104;
+        var firstColorLum = getLuminance(colors[0]);
+        var topTitleColor = firstColorLum > 0.85 ? '#111827' : '#FFFFFF';
 
-        var textPrimary = isLight ? '#111827' : '#FFFFFF';
-        var textSecondary = isLight ? 'rgba(17, 24, 39, 0.88)' : 'rgba(255, 255, 255, 0.92)';
-        var textMuted = isLight ? 'rgba(17, 24, 39, 0.55)' : 'rgba(255, 255, 255, 0.60)';
+        ctx.save();
+        ctx.shadowColor = firstColorLum > 0.85 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.22)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 2;
+        ctx.fillStyle = topTitleColor;
+        ctx.font = '800 36px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.textBaseline = 'top';
+        drawSpacedText(ctx, name, topPadX, topPadY, 3, 'left');
+        ctx.restore();
 
-        // ─── Swatch Card Layout ─────────────────────────────────────────────
-        var startX = 220;
+        // 2. Bottom Section: Color Blocks (bottom ~33.2% of total height)
+        var blockAreaY = gradientH;
+        var blockAreaH = H - gradientH;
+        var rects = [];
 
-        // 1. Brand Tag (moderate size, clean letter-spacing, NO (R) symbol)
-        ctx.fillStyle = textSecondary;
-        ctx.textBaseline = 'alphabetic';
-        ctx.font = '700 48px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        drawSpacedText(ctx, 'COLOR MAGIC', startX, 1500, 6, 'left');
+        if (colors.length === 3) {
+            // Exactly matching user reference poster (3 colors):
+            // Left block: ~57.3% width, full bottom height
+            // Right top block: ~42.7% width, ~54% height
+            // Right bottom block: ~42.7% width, ~46% height
+            var leftW = Math.round(W * 0.573);
+            var rightW = W - leftW;
+            var topRightH = Math.round(blockAreaH * 0.54);
+            var bottomRightH = blockAreaH - topRightH;
 
-        // 2. Large Gradient Name
-        ctx.fillStyle = textPrimary;
-        var maxHeroW = 1560;
-        ctx.font = '900 136px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        if (ctx.measureText(name).width > maxHeroW) {
-            var scale = maxHeroW / ctx.measureText(name).width;
-            ctx.font = '900 ' + Math.max(64, Math.floor(136 * scale)) + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            rects.push({ x: 0, y: blockAreaY, w: leftW, h: blockAreaH });
+            rects.push({ x: leftW, y: blockAreaY, w: rightW, h: topRightH });
+            rects.push({ x: leftW, y: blockAreaY + topRightH, w: rightW, h: bottomRightH });
+        } else if (colors.length === 2) {
+            var colW = Math.round(W * 0.5);
+            rects.push({ x: 0, y: blockAreaY, w: colW, h: blockAreaH });
+            rects.push({ x: colW, y: blockAreaY, w: W - colW, h: blockAreaH });
+        } else if (colors.length === 4) {
+            var colW = Math.round(W * 0.5);
+            var rowH = Math.round(blockAreaH * 0.5);
+            rects.push({ x: 0, y: blockAreaY, w: colW, h: rowH });
+            rects.push({ x: colW, y: blockAreaY, w: W - colW, h: rowH });
+            rects.push({ x: 0, y: blockAreaY + rowH, w: colW, h: blockAreaH - rowH });
+            rects.push({ x: colW, y: blockAreaY + rowH, w: W - colW, h: blockAreaH - rowH });
+        } else {
+            var colW = W / colors.length;
+            for (var i = 0; i < colors.length; i++) {
+                rects.push({
+                    x: Math.round(i * colW),
+                    y: blockAreaY,
+                    w: Math.round(colW) + 1,
+                    h: blockAreaH
+                });
+            }
         }
-        drawSpacedText(ctx, name, startX, 1660, 2, 'left');
 
-        // 3. Color stops subtitle
-        ctx.fillStyle = textSecondary;
-        ctx.font = '700 68px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        var stopsSummary = colors.map(function (c) { return c.toUpperCase(); }).join('  \u2192  ');
-        if (ctx.measureText(stopsSummary).width > maxHeroW) {
-            var sScale = maxHeroW / ctx.measureText(stopsSummary).width;
-            ctx.font = '700 ' + Math.max(36, Math.floor(68 * sScale)) + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        }
-        drawSpacedText(ctx, stopsSummary, startX, 1770, 3, 'left');
+        rects.forEach(function (rect, i) {
+            var hex = colors[i] || '#000000';
 
-        // 3b. Visual Color Swatch Chips with Color Names
-        var swatchY = 1836;
-        var swatchR = 18;
-        var curSwatchX = startX + swatchR;
-        colors.forEach(function (cHex, idx) {
-            if (curSwatchX > startX + maxHeroW - 100) return; // avoid overflow
-            ctx.beginPath();
-            ctx.arc(curSwatchX, swatchY, swatchR, 0, Math.PI * 2);
-            ctx.fillStyle = cHex;
-            ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.5)';
-            ctx.stroke();
+            // Draw solid block
+            ctx.fillStyle = hex;
+            ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 
-            var cName = (gradient.colorNames && gradient.colorNames[idx]) ? gradient.colorNames[idx] : cHex.toUpperCase();
-            ctx.font = '600 36px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-            ctx.fillStyle = textSecondary;
-            ctx.textBaseline = 'middle';
+            // Text contrast: luminance > 0.50 is light background => dark text
+            var lum = getLuminance(hex);
+            var isDarkText = lum > 0.50;
+            var textColor = isDarkText ? '#111827' : '#FFFFFF';
+            var labelColor = isDarkText ? 'rgba(17, 24, 39, 0.72)' : 'rgba(255, 255, 255, 0.75)';
+
+            // Generous padding matching reference
+            var padX = Math.max(36, Math.min(76, Math.round(rect.w * 0.08)));
+            var padY = Math.max(36, Math.min(74, Math.round(rect.h * 0.18)));
+            var textX = rect.x + padX;
+            var textY = rect.y + padY;
+
+            // Color name in Title Case
+            var rawName = (gradient.colorNames && gradient.colorNames[i]) ? gradient.colorNames[i] : '';
+            if (!rawName && window.ColorMagic.colorDict && window.ColorMagic.findColorName) {
+                rawName = window.ColorMagic.findColorName(hex, window.ColorMagic.colorDict);
+            }
+            if (!rawName) {
+                rawName = hex.toUpperCase();
+            }
+            var colorName = toTitleCase(rawName);
+
+            // Measure and fit color name on single line
+            var maxTextW = rect.w - padX * 1.4;
+            var nameFontSize = 42;
+            ctx.font = '800 ' + nameFontSize + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            var measuredW = ctx.measureText(colorName).width;
+            if (measuredW > maxTextW) {
+                nameFontSize = Math.max(22, Math.floor(nameFontSize * (maxTextW / measuredW)));
+                ctx.font = '800 ' + nameFontSize + 'px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            }
+
+            ctx.fillStyle = textColor;
+            ctx.textBaseline = 'top';
             ctx.textAlign = 'left';
-            ctx.fillText(cName, curSwatchX + swatchR + 14, swatchY);
+            ctx.fillText(colorName, textX, textY);
 
-            var textW = ctx.measureText(cName).width;
-            curSwatchX += swatchR * 2 + textW + 48;
+            // Line 2: HEX #XXXXXX
+            var line2Y = textY + nameFontSize + 16;
+            ctx.font = '700 24px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillStyle = labelColor;
+            ctx.fillText('HEX', textX, line2Y);
+
+            var hexLabelW = ctx.measureText('HEX').width;
+            ctx.fillStyle = textColor;
+            ctx.fillText(hex.toUpperCase(), textX + hexLabelW + 28, line2Y);
         });
-
-        // 4. Technical Specs Block (TYPE, STOPS, STYLE)
-        var specY = 1950;
-        var lineH = 78;
-        var labelX = startX;
-        var valueX = startX + 280;
-
-        // Labels Column
-        ctx.font = '700 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        ctx.fillStyle = textSecondary;
-        drawSpacedText(ctx, 'TYPE', labelX, specY, 4, 'left');
-        drawSpacedText(ctx, 'STOPS', labelX, specY + lineH, 4, 'left');
-        drawSpacedText(ctx, 'STYLE', labelX, specY + lineH * 2, 4, 'left');
-
-        // Values Column
-        ctx.font = '500 50px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        ctx.fillStyle = textPrimary;
-        var typeValue = (type === 'linear' ? (type.toUpperCase() + ' \u00b7 ' + angle + '\u00b0') : (type.toUpperCase() + ' \u00b7 CIRCLE'));
-        drawSpacedText(ctx, typeValue, valueX, specY, 2, 'left');
-        drawSpacedText(ctx, colors.length + ' COLORS (' + colors.join(', ') + ')', valueX, specY + lineH, 2, 'left');
-        drawSpacedText(ctx, (gradient.style || 'MODERN').toUpperCase(), valueX, specY + lineH * 2, 2, 'left');
-
-        // 5. Subtle Branding URL (Bottom Right)
-        ctx.font = '500 26px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        ctx.fillStyle = textMuted;
-        drawSpacedText(ctx, 'colormagic.techkreative.com', 1780, 2360, 3, 'right');
 
         return canvas;
     };
