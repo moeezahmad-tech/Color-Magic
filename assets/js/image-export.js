@@ -74,7 +74,7 @@
      */
     window.ColorMagic.exportPaletteImage = function (palette, filename) {
         var canvas = document.createElement('canvas');
-        var W = 1152, H = 2048; // High-res 9:16 portrait ratio (2x 576x1024)
+        var W = 1500, H = 2000; // 3:4 portrait ratio (1500x2000)
         canvas.width = W;
         canvas.height = H;
         var ctx = canvas.getContext('2d');
@@ -98,7 +98,7 @@
 
             // Clean HEX code near bottom-left of band
             var cleanHex = hex.replace('#', '').toUpperCase();
-            var padX = 80;
+            var padX = 90;
             var hexY = y1 - 85;
 
             ctx.save();
@@ -107,15 +107,15 @@
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 2;
             ctx.fillStyle = textColor;
-            ctx.font = '800 52px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.font = '800 56px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.textBaseline = 'alphabetic';
             drawSpacedText(ctx, cleanHex, padX, hexY, 2, 'left');
             ctx.restore();
         });
 
         // 2. Website Name at the top (and Palette Name on top-right)
-        var topPadX = 80;
-        var topPadY = 64;
+        var topPadX = 90;
+        var topPadY = 68;
         var firstColor = colors[0] || '#ffffff';
         var firstLum = getLuminance(firstColor);
         var firstIsLight = firstLum > 0.60;
@@ -130,16 +130,16 @@
         ctx.textBaseline = 'top';
 
         // Top-Left: Website Name
-        ctx.font = '800 28px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.font = '800 30px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         drawSpacedText(ctx, 'COLOR MAGIC', topPadX, topPadY, 4, 'left');
 
         // Top-Right: Palette Name
         if (name) {
-            ctx.font = '700 28px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-            var maxNameW = W - topPadX * 2 - 320;
+            ctx.font = '700 30px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            var maxNameW = W - topPadX * 2 - 340;
             var measuredNameW = ctx.measureText(name).width;
             if (measuredNameW > maxNameW) {
-                var scaledSize = Math.max(18, Math.floor(28 * (maxNameW / measuredNameW)));
+                var scaledSize = Math.max(18, Math.floor(30 * (maxNameW / measuredNameW)));
                 ctx.font = '700 ' + scaledSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             }
             drawSpacedText(ctx, name, W - topPadX, topPadY, 2, 'right');
@@ -158,7 +158,7 @@
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 2;
         ctx.fillStyle = urlTextColor;
-        ctx.font = '600 22px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.font = '600 24px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.textBaseline = 'alphabetic';
         drawSpacedText(ctx, 'colormagic.techkreative.com', W - topPadX, H - 85, 2, 'right');
         ctx.restore();
