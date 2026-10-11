@@ -67,8 +67,9 @@
     // ─── Palette Image Export ──────────────────────────────────────────────────
 
     /**
-     * Renders a palette as a high-res PNG image matching the horizontal bands poster design
-     * (full-bleed horizontal color bands, HEX in each band, website name at top, URL at bottom).
+     * Renders a palette as a high-res PNG image matching the decreasing bands poster design
+     * (first color has the largest height, heights decrease linearly with the last band being half of the first,
+     * large palette name with brand tag on top, HEX in each band, and website URL at bottom).
      * @param {Object} palette - { name: string, colors: string[], style: string, colorNames?: string[] }
      * @param {string} [filename] - Optional filename
      */
@@ -82,12 +83,32 @@
         var colors = palette.colors || ['#000000', '#ffffff'];
         var name = (palette.name || 'Color Palette').toUpperCase();
         var n = colors.length;
-        var bandH = H / n;
 
-        // 1. Draw full-bleed horizontal color bands
+        // Decreasing heights progression: h0 = 4H / 3n, hn-1 = h0 / 2
+        var heights = [];
+        if (n <= 1) {
+            heights = [H];
+        } else {
+            var h0 = (4 * H) / (3 * n);
+            var d = h0 / (2 * (n - 1));
+            for (var i = 0; i < n; i++) {
+                heights.push(h0 - i * d);
+            }
+        }
+
+        // Calculate Y boundaries
+        var yBounds = [0];
+        var curY = 0;
+        for (var i = 0; i < n; i++) {
+            curY += heights[i];
+            yBounds.push(Math.round(curY));
+        }
+        yBounds[n] = H;
+
+        // 1. Draw horizontal color bands
         colors.forEach(function (hex, i) {
-            var y0 = Math.floor(i * bandH);
-            var y1 = (i === n - 1) ? H : Math.floor((i + 1) * bandH);
+            var y0 = yBounds[i];
+            var y1 = yBounds[i + 1];
             ctx.fillStyle = hex;
             ctx.fillRect(0, y0, W, y1 - y0);
 
@@ -99,7 +120,7 @@
             // Clean HEX code near bottom-left of band
             var cleanHex = hex.replace('#', '').toUpperCase();
             var padX = 100;
-            var hexY = y1 - 90;
+            var hexY = y1 - 85;
 
             ctx.save();
             ctx.shadowColor = isLight ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)';
@@ -107,13 +128,13 @@
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 2;
             ctx.fillStyle = textColor;
-            ctx.font = '800 60px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.font = '800 58px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.textBaseline = 'alphabetic';
             drawSpacedText(ctx, cleanHex, padX, hexY, 2, 'left');
             ctx.restore();
         });
 
-        // 2. Website Name at the top (and Palette Name on top-right)
+        // 2. Band 0 Top: Brand Tag ("COLOR MAGIC") + Large Palette Name
         var topPadX = 100;
         var topPadY = 74;
         var firstColor = colors[0] || '#ffffff';
@@ -123,30 +144,30 @@
 
         ctx.save();
         ctx.shadowColor = firstIsLight ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)';
-        ctx.shadowBlur = 6;
+        ctx.shadowBlur = 8;
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 2;
         ctx.fillStyle = topTextColor;
         ctx.textBaseline = 'top';
 
-        // Top-Left: Website Name
-        ctx.font = '800 32px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        // Line 1: COLOR MAGIC brand kicker
+        ctx.font = '700 28px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         drawSpacedText(ctx, 'COLOR MAGIC', topPadX, topPadY, 4, 'left');
 
-        // Top-Right: Palette Name
-        if (name) {
-            ctx.font = '700 32px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-            var maxNameW = W - topPadX * 2 - 360;
-            var measuredNameW = ctx.measureText(name).width;
-            if (measuredNameW > maxNameW) {
-                var scaledSize = Math.max(20, Math.floor(32 * (maxNameW / measuredNameW)));
-                ctx.font = '700 ' + scaledSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-            }
-            drawSpacedText(ctx, name, W - topPadX, topPadY, 2, 'right');
+        // Line 2: Large Palette Name
+        var nameY = topPadY + 46;
+        var nameFontSize = 76;
+        ctx.font = '900 ' + nameFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        var maxNameW = W - topPadX * 2;
+        var measuredNameW = ctx.measureText(name).width;
+        if (measuredNameW > maxNameW) {
+            nameFontSize = Math.max(36, Math.floor(nameFontSize * (maxNameW / measuredNameW)));
+            ctx.font = '900 ' + nameFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         }
+        drawSpacedText(ctx, name, topPadX, nameY, 2, 'left');
         ctx.restore();
 
-        // 3. Website URL at the bottom
+        // 3. Last Band Bottom: Website URL at bottom-right
         var lastColor = colors[colors.length - 1] || '#000000';
         var lastLum = getLuminance(lastColor);
         var lastIsLight = lastLum > 0.60;
@@ -160,7 +181,7 @@
         ctx.fillStyle = urlTextColor;
         ctx.font = '600 26px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.textBaseline = 'alphabetic';
-        drawSpacedText(ctx, 'colormagic.techkreative.com', W - topPadX, H - 90, 2, 'right');
+        drawSpacedText(ctx, 'colormagic.techkreative.com', W - topPadX, H - 85, 2, 'right');
         ctx.restore();
 
         // Download
