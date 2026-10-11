@@ -95,6 +95,11 @@ if ($includePages) {
         ['path' => 'dark-color-finder',   'priority' => '0.8', 'freq' => 'monthly', 'file' => 'dark-color-finder.php'],
         ['path' => 'brand-color-lookup',  'priority' => '0.8', 'freq' => 'monthly', 'file' => 'brand-color-lookup.php'],
         ['path' => 'open-source',         'priority' => '0.8', 'freq' => 'monthly', 'file' => 'open-source.php'],
+        ['path' => 'about',               'priority' => '0.7', 'freq' => 'monthly', 'file' => 'about.php'],
+        ['path' => 'contact',             'priority' => '0.7', 'freq' => 'monthly', 'file' => 'contact.php'],
+        ['path' => 'privacy-policy',      'priority' => '0.5', 'freq' => 'yearly',  'file' => 'privacy-policy.php'],
+        ['path' => 'terms-and-conditions','priority' => '0.5', 'freq' => 'yearly',  'file' => 'terms-and-conditions.php'],
+        ['path' => 'cookie-policy',       'priority' => '0.5', 'freq' => 'yearly',  'file' => 'cookie-policy.php'],
     ];
 
     foreach ($staticPages as $page) {

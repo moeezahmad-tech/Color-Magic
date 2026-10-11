@@ -117,6 +117,12 @@ $staticPages = [
     'what-color-is'      => __DIR__ . '/pages/what-color-is.php',
     'dark-color-finder'  => __DIR__ . '/pages/dark-color-finder.php',
     'brand-color-lookup' => __DIR__ . '/pages/brand-color-lookup.php',
+    'about'              => __DIR__ . '/pages/about.php',
+    'contact'            => __DIR__ . '/pages/contact.php',
+    'privacy-policy'     => __DIR__ . '/pages/privacy-policy.php',
+    'terms-and-conditions' => __DIR__ . '/pages/terms-and-conditions.php',
+    'terms'              => __DIR__ . '/pages/terms-and-conditions.php',
+    'cookie-policy'      => __DIR__ . '/pages/cookie-policy.php',
 ];
 if (isset($staticPages[$path])) {
     dispatch($staticPages[$path]);

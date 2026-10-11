@@ -60,6 +60,12 @@ RewriteRule ^hex-to-rgb/?$ pages/hex-to-rgb.php [L]
 RewriteRule ^what-color-is/?$ pages/what-color-is.php [L]
 RewriteRule ^dark-color-finder/?$ pages/dark-color-finder.php [L]
 RewriteRule ^brand-color-lookup/?$ pages/brand-color-lookup.php [L]
+RewriteRule ^about/?$ pages/about.php [L]
+RewriteRule ^contact/?$ pages/contact.php [L]
+RewriteRule ^privacy-policy/?$ pages/privacy-policy.php [L]
+RewriteRule ^terms-and-conditions/?$ pages/terms-and-conditions.php [L]
+RewriteRule ^terms/?$ pages/terms-and-conditions.php [L]
+RewriteRule ^cookie-policy/?$ pages/cookie-policy.php [L]
 
 # ── PERFORMANCE: Gzip Compression ──────────────────────────────────────────
 <IfModule mod_deflate.c>
