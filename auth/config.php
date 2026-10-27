@@ -1,21 +1,40 @@
 <?php
 require_once __DIR__ . '/../components/config.php';
 
-$envFileCandidates = [
-    __DIR__ . '/../.env.colormagic',
-    __DIR__ . '/../../.env.colormagic',
-    __DIR__ . '/../.env',
-    __DIR__ . '/../../.env',
-    __DIR__ . '/../.env.local'
-];
+// Base and Local candidate files:
+// - On production: .env.colormagic is located in the parent directory (__DIR__ . '/../../.env.colormagic')
+// - In local dev: both .env.colormagic and .env.colormagic.local exist; .env.colormagic.local takes precedence.
+$env = !empty($cmEnv) ? $cmEnv : [];
 
-$env = [];
-foreach ($envFileCandidates as $candidate) {
-    if (file_exists($candidate) && is_readable($candidate)) {
-        $parsed = parse_ini_file($candidate);
-        if ($parsed) {
-            $env = array_merge($env, $parsed);
-            if (!empty($env['CLIENT_ID_COLORMAGIC']) || !empty($env['CLIENT_ID'])) {
+if (empty($env)) {
+    $baseCandidates = [
+        __DIR__ . '/../../.env.colormagic', // Production parent directory
+        __DIR__ . '/../.env.colormagic',    // Project root
+        __DIR__ . '/../../.env',           // Fallback
+        __DIR__ . '/../.env'               // Fallback
+    ];
+
+    $localCandidates = [
+        __DIR__ . '/../../.env.colormagic.local',
+        __DIR__ . '/../.env.colormagic.local',
+        __DIR__ . '/../.env.local'
+    ];
+
+    foreach ($baseCandidates as $candidate) {
+        if (file_exists($candidate) && is_readable($candidate)) {
+            $parsed = function_exists('cm_read_env_file') ? cm_read_env_file($candidate) : @parse_ini_file($candidate);
+            if ($parsed) {
+                $env = array_merge($env, $parsed);
+                break;
+            }
+        }
+    }
+
+    foreach ($localCandidates as $candidate) {
+        if (file_exists($candidate) && is_readable($candidate)) {
+            $parsed = function_exists('cm_read_env_file') ? cm_read_env_file($candidate) : @parse_ini_file($candidate);
+            if ($parsed) {
+                $env = array_merge($env, $parsed);
                 break;
             }
         }

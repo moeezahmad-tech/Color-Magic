@@ -3,8 +3,10 @@ temp.txt
 genrators
 .env
 .env.colormagic
+.env.colormagic.local
 .env.api.colormagic
 .env.local
+.env*.local
 *.sqlite-shm
 *.sqlite-wal
 node_modules

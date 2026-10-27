@@ -19,35 +19,82 @@ $base = (!$isBuiltinServer && isset($_SERVER['HTTP_HOST']) && preg_match('/^(loc
     ? '/ColorMagic'
     : '';
 
-// Load API_BASE_URL from .env configuration
-$apiBaseUrl = '';
-$envFileCandidates = [
-    __DIR__ . '/../.env',
-    __DIR__ . '/../.env.local',
-    __DIR__ . '/../.env.api.colormagic',
-    __DIR__ . '/../.env.colormagic'
-];
-
-foreach ($envFileCandidates as $envFile) {
-    if (file_exists($envFile) && is_readable($envFile)) {
-        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        if ($lines) {
-            foreach ($lines as $line) {
-                $line = trim($line);
-                if ($line === '' || $line[0] === '#') continue;
-                if (strpos($line, '=') !== false) {
-                    list($envKey, $envVal) = explode('=', $line, 2);
-                    $envKey = trim($envKey);
-                    $envVal = trim($envVal, " \t\n\r\0\x0B\"'");
-                    if (in_array($envKey, ['API_BASE_URL', 'API_URL', 'COLORMAGIC_API_URL'], true) && empty($apiBaseUrl)) {
-                        $apiBaseUrl = $envVal;
-                    }
-                }
+/**
+ * Helper to safely parse a .env file into key-value pairs without INI parser restrictions.
+ */
+if (!function_exists('cm_read_env_file')) {
+    function cm_read_env_file(string $filePath): array {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            return [];
+        }
+        $data = [];
+        $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines === false) {
+            return [];
+        }
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#' || $line[0] === ';') {
+                continue;
+            }
+            if (strpos($line, '=') !== false) {
+                list($key, $val) = explode('=', $line, 2);
+                $key = trim($key);
+                $val = trim($val, " \t\n\r\0\x0B\"'");
+                $data[$key] = $val;
             }
         }
+        return $data;
     }
 }
 
+// Load environment configuration:
+// - On production: .env.colormagic is located in the parent directory (__DIR__ . '/../../.env.colormagic')
+// - In local dev: both .env.colormagic and .env.colormagic.local exist in project root; .env.colormagic.local takes precedence.
+$cmBaseCandidates = [
+    __DIR__ . '/../../.env.colormagic', // Production parent directory
+    __DIR__ . '/../.env.colormagic',    // Project root
+    __DIR__ . '/../../.env',           // Fallback
+    __DIR__ . '/../.env',              // Fallback
+    __DIR__ . '/../.env.api.colormagic' // Legacy fallback
+];
+
+$cmLocalCandidates = [
+    __DIR__ . '/../../.env.colormagic.local', // Local parent directory
+    __DIR__ . '/../.env.colormagic.local',    // Local project root
+    __DIR__ . '/../.env.local'                // Legacy fallback
+];
+
+$cmEnv = [];
+
+// 1. Load base/production configuration
+foreach ($cmBaseCandidates as $file) {
+    if (file_exists($file) && is_readable($file)) {
+        $cmEnv = array_merge($cmEnv, cm_read_env_file($file));
+        break;
+    }
+}
+
+// 2. Overlay local development configuration (if present)
+foreach ($cmLocalCandidates as $file) {
+    if (file_exists($file) && is_readable($file)) {
+        $cmEnv = array_merge($cmEnv, cm_read_env_file($file));
+        break;
+    }
+}
+
+// 3. Populate process environment and $_ENV
+foreach ($cmEnv as $k => $v) {
+    if (getenv($k) === false) {
+        putenv("{$k}={$v}");
+    }
+    if (!isset($_ENV[$k])) {
+        $_ENV[$k] = $v;
+    }
+}
+
+// Extract API_BASE_URL
+$apiBaseUrl = $cmEnv['API_BASE_URL'] ?? ($cmEnv['API_URL'] ?? ($cmEnv['COLORMAGIC_API_URL'] ?? ''));
 if (empty($apiBaseUrl)) {
     // Default to production API URL for all environments (local & live)
     $apiBaseUrl = 'https://colormagic-api.techkreative.com';

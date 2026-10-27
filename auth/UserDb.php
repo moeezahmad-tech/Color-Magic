@@ -28,23 +28,44 @@ class UserDb {
 
         // Check in candidate env files if not set in server environment
         if (!$host || !$user) {
-            $envCandidates = [
-                __DIR__ . '/../.env.colormagic',
-                __DIR__ . '/../../.env.colormagic',
-                __DIR__ . '/../.env',
-                __DIR__ . '/../../.env'
+            $baseFiles = [
+                __DIR__ . '/../../.env.colormagic', // Production parent directory
+                __DIR__ . '/../.env.colormagic',    // Project root
+                __DIR__ . '/../../.env',           // Fallback
+                __DIR__ . '/../.env'               // Fallback
             ];
-            foreach ($envCandidates as $file) {
+            $localFiles = [
+                __DIR__ . '/../../.env.colormagic.local',
+                __DIR__ . '/../.env.colormagic.local',
+                __DIR__ . '/../.env.local'
+            ];
+
+            $env = [];
+            foreach ($baseFiles as $file) {
                 if (file_exists($file) && is_readable($file)) {
-                    $env = parse_ini_file($file);
-                    if ($env) {
-                        $host = $host ?: ($env['DB_SERVER'] ?? ($env['DB_HOST'] ?? ($env['MYSQL_HOST'] ?? null)));
-                        $user = $user ?: ($env['DB_USERNAME'] ?? ($env['DB_USER'] ?? ($env['MYSQL_USER'] ?? null)));
-                        $pass = $pass ?: ($env['DB_PASSWORD'] ?? ($env['DB_PASS'] ?? ($env['MYSQL_PASSWORD'] ?? '')));
-                        $db   = $db   ?: ($env['DB_NAME'] ?? ($env['DB_DATABASE'] ?? ($env['MYSQL_DATABASE'] ?? null)));
-                        $port = $port ?: ($env['DB_PORT'] ?? ($env['MYSQL_PORT'] ?? '3306'));
+                    $parsed = function_exists('cm_read_env_file') ? cm_read_env_file($file) : @parse_ini_file($file);
+                    if ($parsed) {
+                        $env = array_merge($env, $parsed);
+                        break;
                     }
                 }
+            }
+            foreach ($localFiles as $file) {
+                if (file_exists($file) && is_readable($file)) {
+                    $parsed = function_exists('cm_read_env_file') ? cm_read_env_file($file) : @parse_ini_file($file);
+                    if ($parsed) {
+                        $env = array_merge($env, $parsed);
+                        break;
+                    }
+                }
+            }
+
+            if (!empty($env)) {
+                $host = $host ?: ($env['DB_SERVER'] ?? ($env['DB_HOST'] ?? ($env['MYSQL_HOST'] ?? null)));
+                $user = $user ?: ($env['DB_USERNAME'] ?? ($env['DB_USER'] ?? ($env['MYSQL_USER'] ?? null)));
+                $pass = $pass ?: ($env['DB_PASSWORD'] ?? ($env['DB_PASS'] ?? ($env['MYSQL_PASSWORD'] ?? '')));
+                $db   = $db   ?: ($env['DB_NAME'] ?? ($env['DB_DATABASE'] ?? ($env['MYSQL_DATABASE'] ?? null)));
+                $port = $port ?: ($env['DB_PORT'] ?? ($env['MYSQL_PORT'] ?? '3306'));
             }
         }
 
