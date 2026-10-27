@@ -142,6 +142,12 @@
                         <?php endif; ?>
                         <span class="text-xs pr-1 truncate max-w-[100px]"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Profile') ?></span>
                     </a>
+                    <a href="<?= $base ?>/auth/logout"
+                        title="Sign Out"
+                        aria-label="Sign Out"
+                        class="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors">
+                        <i class="bi bi-box-arrow-right text-sm"></i>
+                    </a>
                     <script>
                         try {
                             const u = <?= json_encode($_SESSION['user']) ?>;
@@ -170,11 +176,18 @@
                                     const pic = user.picture
                                         ? `<img src="${user.picture}" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">`
                                         : `<div class="w-6 h-6 rounded-full bg-indigo-200 text-indigo-700 flex items-center justify-center text-xs font-bold shadow-sm">${(user.email[0] || 'U').toUpperCase()}</div>`;
+                                    
                                     slot.innerHTML = `
                                         <a href="<?= $base ?>/profile"
                                             class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 rounded-full transition-all shadow-sm font-medium border border-indigo-100 dark:border-indigo-800">
                                             ${pic}
                                             <span class="text-xs pr-1 truncate max-w-[100px]">${name}</span>
+                                        </a>
+                                        <a href="<?= $base ?>/auth/logout"
+                                            title="Sign Out"
+                                            aria-label="Sign Out"
+                                            class="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors">
+                                            <i class="bi bi-box-arrow-right text-sm"></i>
                                         </a>
                                     `;
                                 }

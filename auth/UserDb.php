@@ -103,10 +103,12 @@ class UserDb {
             email VARCHAR(255) NOT NULL UNIQUE,
             name VARCHAR(255) NULL,
             picture VARCHAR(500) NULL,
+            role VARCHAR(50) DEFAULT 'user',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             INDEX idx_google_id (google_id),
-            INDEX idx_email (email)
+            INDEX idx_email (email),
+            INDEX idx_role (role)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
         CREATE TABLE IF NOT EXISTS user_favorites (
@@ -121,6 +123,13 @@ class UserDb {
             CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $pdo->exec($sql);
+
+        // Ensure role column exists if table was created previously without it
+        try {
+            $pdo->exec("ALTER TABLE users ADD COLUMN role VARCHAR(50) DEFAULT 'user' AFTER picture");
+        } catch (\Throwable $e) {
+            // Ignored if column already exists
+        }
     }
 
     /**
@@ -138,13 +147,16 @@ class UserDb {
             return null;
         }
 
+        $role = $userData['role'] ?? 'user';
+
         try {
-            $sql = "INSERT INTO users (google_id, email, name, picture, last_login)
-                    VALUES (:google_id, :email, :name, :picture, NOW())
+            $sql = "INSERT INTO users (google_id, email, name, picture, role, last_login)
+                    VALUES (:google_id, :email, :name, :picture, :role, NOW())
                     ON DUPLICATE KEY UPDATE
                         google_id = COALESCE(VALUES(google_id), google_id),
                         name = COALESCE(VALUES(name), name),
                         picture = COALESCE(VALUES(picture), picture),
+                        role = CASE WHEN VALUES(role) = 'admin' THEN 'admin' ELSE role END,
                         last_login = NOW()";
 
             $stmt = $pdo->prepare($sql);
@@ -153,6 +165,7 @@ class UserDb {
                 ':email'     => $userData['email'],
                 ':name'      => $userData['name'] ?? null,
                 ':picture'   => $userData['picture'] ?? null,
+                ':role'      => $role,
             ]);
 
             return self::getUserByEmail($userData['email']);
@@ -172,12 +185,31 @@ class UserDb {
         if (!$pdo) return null;
 
         try {
-            $stmt = $pdo->prepare("SELECT id, google_id, email, name, picture, created_at, last_login FROM users WHERE email = :email LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id, google_id, email, name, picture, role, created_at, last_login FROM users WHERE email = :email LIMIT 1");
             $stmt->execute([':email' => $email]);
             return $stmt->fetch() ?: null;
         } catch (\Throwable $e) {
             error_log("UserDb getUserByEmail error: " . $e->getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Update user role (e.g. 'admin' or 'user')
+     * @param string $email
+     * @param string $role
+     * @return bool
+     */
+    public static function setUserRole(string $email, string $role = 'admin') {
+        $pdo = self::getConnection();
+        if (!$pdo) return false;
+
+        try {
+            $stmt = $pdo->prepare("UPDATE users SET role = :role WHERE email = :email");
+            return $stmt->execute([':role' => $role, ':email' => $email]);
+        } catch (\Throwable $e) {
+            error_log("UserDb setUserRole error: " . $e->getMessage());
+            return false;
         }
     }
 

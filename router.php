@@ -18,14 +18,15 @@ if (preg_match('#^sitemaps/([a-zA-Z0-9_-]+)\.xml$#i', $path, $matches)) {
     dispatch(__DIR__ . '/sitemap.php', ['type' => $matches[1]]);
 }
 
-// 1. Serve physical static files directly (CSS, JS, images, fonts, txt, xml, json)
+// 1. Serve physical static files directly, or execute physical PHP scripts directly
 $filePath = __DIR__ . '/' . $path;
 if ($path !== '' && file_exists($filePath) && !is_dir($filePath)) {
     $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-    // If it's not PHP, let PHP built-in server stream the static asset
-    if ($ext !== 'php') {
-        return false;
+    if ($ext === 'php') {
+        dispatch($filePath);
     }
+    // Static asset (CSS, JS, images, fonts, txt, etc.) -> let PHP CLI server stream it
+    return false;
 }
 
 // 2. Legacy API data compatibility -> /data/*.json
@@ -91,20 +92,24 @@ if (preg_match('#^colors/([0-9a-fA-F]{6})\.webp$#i', $path, $matches)) {
     dispatch(__DIR__ . '/pages/colorImage.php', ['hex' => strtoupper($matches[1])]);
 }
 
-// 6. Auth Routes
+// 6. Auth Routes (support both extensionless and .php)
+$cleanPath = preg_replace('/\.php$/i', '', $path);
+
 $authRoutes = [
     'auth/google-login'    => __DIR__ . '/auth/google-login.php',
     'auth/google-callback' => __DIR__ . '/auth/google-callback.php',
     'auth/logout'          => __DIR__ . '/auth/logout.php',
     'auth/delete-account'  => __DIR__ . '/auth/delete-account.php',
     'auth/favorites'       => __DIR__ . '/auth/favorites.php',
+    'auth/admin-auth'      => __DIR__ . '/auth/admin-auth.php',
 ];
-if (isset($authRoutes[$path])) {
-    dispatch($authRoutes[$path]);
+if (isset($authRoutes[$path]) || isset($authRoutes[$cleanPath])) {
+    dispatch($authRoutes[$path] ?? $authRoutes[$cleanPath]);
 }
 
-// 7. Static Pages
+// 7. Static Pages (support both extensionless and .php)
 $staticPages = [
+    'admin'              => __DIR__ . '/pages/admin.php',
     'palettes'           => __DIR__ . '/pages/palettes.php',
     'gradients'          => __DIR__ . '/pages/gradients.php',
     'generate-palette'   => __DIR__ . '/pages/generate-palette.php',
@@ -125,8 +130,8 @@ $staticPages = [
     'terms'              => __DIR__ . '/pages/terms-and-conditions.php',
     'cookie-policy'      => __DIR__ . '/pages/cookie-policy.php',
 ];
-if (isset($staticPages[$path])) {
-    dispatch($staticPages[$path]);
+if (isset($staticPages[$path]) || isset($staticPages[$cleanPath])) {
+    dispatch($staticPages[$path] ?? $staticPages[$cleanPath]);
 }
 
 // Also handle direct access to pages/xxx or pages/xxx.php

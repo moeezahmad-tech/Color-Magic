@@ -1,7 +1,14 @@
 <?php 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include '../components/config.php'; 
+require_once __DIR__ . '/../auth/AdminAuth.php';
 /** @var string $base */ 
+if (isset($_GET['return'])) {
+    $_SESSION['auth_return'] = $_GET['return'];
+}
+$isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_SESSION['user']['email']);
 ?>
 <!doctype html>
 <html lang="en">
@@ -13,6 +20,7 @@ include '../components/config.php';
     
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
@@ -24,7 +32,7 @@ include '../components/config.php';
             <div class="text-center mb-8">
                 <img src="<?= $base ?>/assets/images/logo.png" alt="Color Magic Logo" class="w-16 h-16 mx-auto mb-4 rounded-xl shadow-sm">
                 <h2 class="text-2xl font-bold text-gray-900">Welcome to Color Magic</h2>
-                <p class="text-gray-500 mt-2 text-sm">Sign in or create an account to save your favorite palettes and colors.</p>
+                <p class="text-gray-500 mt-2 text-sm">Sign in with Google to access your account and favorites.</p>
             </div>
 
             <?php if (isset($_GET['error']) && $_GET['error'] === 'auth_failed'): ?>
@@ -49,10 +57,20 @@ include '../components/config.php';
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-1">Signed in as</h3>
                     <p class="text-gray-600 mb-6 font-medium"><?= htmlspecialchars($_SESSION['user']['email']) ?></p>
-                    <a href="<?= $base ?>/auth/logout" class="inline-flex justify-center items-center w-full px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                        Sign Out
-                    </a>
-                    <a href="<?= $base ?>/" class="block mt-4 text-sm text-indigo-600 hover:text-indigo-500 font-medium">Return to Dashboard</a>
+                    <div class="space-y-2 mb-4">
+                        <?php if ($isLoginAdmin): ?>
+                            <a href="<?= $base ?>/admin" class="inline-flex justify-center items-center w-full px-4 py-3 rounded-xl shadow-sm text-sm font-bold text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 hover:scale-[1.01] transition-all">
+                                <i class="bi bi-shield-lock-fill mr-2"></i> Go to Admin Dashboard
+                            </a>
+                        <?php endif; ?>
+                        <a href="<?= $base ?>/profile" class="inline-flex justify-center items-center w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+                            <i class="bi bi-person mr-2"></i> View Profile
+                        </a>
+                        <a href="<?= $base ?>/auth/logout" class="inline-flex justify-center items-center w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors">
+                            <i class="bi bi-box-arrow-right mr-2"></i> Sign Out
+                        </a>
+                    </div>
+                    <a href="<?= $base ?>/" class="block text-sm text-slate-500 hover:text-slate-800 font-medium">Return to Home</a>
                 </div>
             <?php else: ?>
                 <div class="space-y-4">

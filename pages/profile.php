@@ -1,4 +1,10 @@
-<?php include '../components/config.php'; /** @var string $base */ ?>
+<?php 
+include '../components/config.php'; 
+require_once __DIR__ . '/../auth/AdminAuth.php';
+/** @var string $base */ 
+$profileEmail = $_SESSION['user']['email'] ?? null;
+$isAdmin = AdminAuth::isAdminEmail($profileEmail);
+?>
 <!doctype html>
 <html lang="en">
 
@@ -299,7 +305,14 @@
                     View your saved colors, palettes, and gradients. Manage your account settings below.
                 </p>
             </div>
-            <div id="favTotalCount" class="text-sm text-slate-500 dark:text-slate-400 font-mono bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm"></div>
+            <div class="flex flex-wrap items-center gap-3">
+                <a id="adminHeroBtn" href="<?= $base ?>/admin" class="<?= $isAdmin ? 'inline-flex' : 'hidden' ?> items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white rounded-xl font-bold text-sm shadow-md shadow-purple-500/20 hover:shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02] transition-all">
+                    <i class="bi bi-shield-check text-base"></i>
+                    <span>Go to Admin Dashboard</span>
+                    <i class="bi bi-arrow-right text-xs"></i>
+                </a>
+                <div id="favTotalCount" class="text-sm text-slate-500 dark:text-slate-400 font-mono bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm"></div>
+            </div>
         </div>
 
         <!-- Tabs -->
@@ -384,6 +397,7 @@
         (function() {
             try {
                 const raw = localStorage.getItem('cm_user') || sessionStorage.getItem('cm_user');
+                const hasAdminToken = localStorage.getItem('cm_admin_token') || sessionStorage.getItem('cm_admin_token');
                 if (raw) {
                     const user = JSON.parse(raw);
                     const emailEl = document.getElementById('profileUserEmail');
@@ -394,6 +408,14 @@
                         }
                         if (avatarEl && user.picture && !avatarEl.querySelector('img')) {
                             avatarEl.innerHTML = `<img src="${user.picture}" alt="Profile" class="w-10 h-10 rounded-full object-cover shadow-sm">`;
+                        }
+                        // Check if user is admin
+                        if (user.is_admin || user.role === 'admin' || hasAdminToken) {
+                            const heroBtn = document.getElementById('adminHeroBtn');
+                            if (heroBtn) {
+                                heroBtn.classList.remove('hidden');
+                                heroBtn.classList.add('inline-flex');
+                            }
                         }
                     }
                 }
