@@ -129,6 +129,7 @@ $staticPages = [
     'terms-and-conditions' => __DIR__ . '/pages/terms-and-conditions.php',
     'terms'              => __DIR__ . '/pages/terms-and-conditions.php',
     'cookie-policy'      => __DIR__ . '/pages/cookie-policy.php',
+    'verify-human'       => __DIR__ . '/pages/verify-human.php',
 ];
 if (isset($staticPages[$path]) || isset($staticPages[$cleanPath])) {
     dispatch($staticPages[$path] ?? $staticPages[$cleanPath]);

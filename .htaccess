@@ -69,6 +69,7 @@ RewriteRule ^privacy-policy/?$ pages/privacy-policy.php [L]
 RewriteRule ^terms-and-conditions/?$ pages/terms-and-conditions.php [L]
 RewriteRule ^terms/?$ pages/terms-and-conditions.php [L]
 RewriteRule ^cookie-policy/?$ pages/cookie-policy.php [L]
+RewriteRule ^verify-human/?$ pages/verify-human.php [L]
 
 # ── PERFORMANCE: Gzip Compression ──────────────────────────────────────────
 <IfModule mod_deflate.c>

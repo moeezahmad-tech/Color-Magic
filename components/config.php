@@ -118,3 +118,6 @@ if (!function_exists('cm_asset_v')) {
     }
 }
 
+// Anti-Bot & Human Verification Security Gate
+require_once __DIR__ . '/security-gate.php';
+cm_check_security_gate($base);
