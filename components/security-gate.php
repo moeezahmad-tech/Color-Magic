@@ -86,7 +86,8 @@ if (!function_exists('cm_is_whitelisted_request')) {
         // Search engine crawlers (preserves Google, Bing, Yandex SEO indexing)
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $allowedBots = [
-            'Googlebot', 'bingbot', 'Baiduspider', 'YandexBot', 
+            'Googlebot', 'Google-InspectionTool', 'GoogleOther', 'Googlebot-Image', 'Storebot-Google',
+            'bingbot', 'Baiduspider', 'YandexBot', 
             'DuckDuckBot', 'Applebot', 'Pinterestbot', 'Twitterbot', 'facebookexternalhit'
         ];
         foreach ($allowedBots as $bot) {
