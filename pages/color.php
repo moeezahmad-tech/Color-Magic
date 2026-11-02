@@ -321,6 +321,11 @@ $analogous1 = ($hue + 30) % 360;
 $analogous2 = ($hue + 330) % 360;
 $triadic1 = ($hue + 120) % 360;
 $triadic2 = ($hue + 240) % 360;
+$split1 = ($hue + 150) % 360;
+$split2 = ($hue + 210) % 360;
+$tetradic1 = ($hue + 60) % 360;
+$tetradic2 = ($hue + 180) % 360;
+$tetradic3 = ($hue + 240) % 360;
 
 function hslToHex(int $h, int $s, int $l): string
 {
@@ -362,21 +367,160 @@ $analogous1Hex = '#' . hslToHex($analogous1, $hsl['s'], $hsl['l']);
 $analogous2Hex = '#' . hslToHex($analogous2, $hsl['s'], $hsl['l']);
 $triadic1Hex = '#' . hslToHex($triadic1, $hsl['s'], $hsl['l']);
 $triadic2Hex = '#' . hslToHex($triadic2, $hsl['s'], $hsl['l']);
+$split1Hex = '#' . hslToHex($split1, $hsl['s'], $hsl['l']);
+$split2Hex = '#' . hslToHex($split2, $hsl['s'], $hsl['l']);
+$tetradic1Hex = '#' . hslToHex($tetradic1, $hsl['s'], $hsl['l']);
+$tetradic2Hex = '#' . hslToHex($tetradic2, $hsl['s'], $hsl['l']);
+$tetradic3Hex = '#' . hslToHex($tetradic3, $hsl['s'], $hsl['l']);
+
+// CMYK Calculations
+$rNorm = $rgb['r'] / 255;
+$gNorm = $rgb['g'] / 255;
+$bNorm = $rgb['b'] / 255;
+$kVal = 1 - max($rNorm, $gNorm, $bNorm);
+$cVal = $kVal < 1 ? (1 - $rNorm - $kVal) / (1 - $kVal) : 0;
+$mVal = $kVal < 1 ? (1 - $gNorm - $kVal) / (1 - $kVal) : 0;
+$yVal = $kVal < 1 ? (1 - $bNorm - $kVal) / (1 - $kVal) : 0;
+$cmyk = [
+    'c' => (int) round($cVal * 100),
+    'm' => (int) round($mVal * 100),
+    'y' => (int) round($yVal * 100),
+    'k' => (int) round($kVal * 100),
+];
+
+// HSV / HSB
+$maxCh = max($rNorm, $gNorm, $bNorm);
+$minCh = min($rNorm, $gNorm, $bNorm);
+$deltaCh = $maxCh - $minCh;
+$hsvS = $maxCh > 0 ? ($deltaCh / $maxCh) : 0;
+$hsv = [
+    'h' => $hsl['h'],
+    's' => (int) round($hsvS * 100),
+    'v' => (int) round($maxCh * 100),
+];
+
+// Decimal
+$colorDecimal = hexdec($normalizedHex);
+
+// Color Psychology and Meaning Engine
+function getColorPsychology(int $h, int $s, int $l, string $name, string $hex): array
+{
+    if ($s < 12) {
+        return [
+            'family' => 'Achromatic / Neutral',
+            'meaning' => "$name ($hex) is a sophisticated, understated neutral tone. Neutrals communicate balance, minimalism, and timeless elegance. They provide a calm backdrop that allows bold accent elements to shine without overwhelming the viewer.",
+            'use' => 'Ideal for clean backgrounds, editorial layouts, modern SaaS interfaces, and body typography that requires effortless readability.',
+            'pairing' => 'Pairs effortlessly with vibrant jewel tones (like emerald green or sapphire blue) or rich monochromatic textures.'
+        ];
+    }
+    if ($h >= 345 || $h < 15) {
+        return [
+            'family' => 'Red / Crimson',
+            'meaning' => "$name ($hex) belongs to the vibrant red color spectrum, representing passion, dynamic energy, courage, and bold action. In color psychology, red naturally stimulates appetite, raises heart rate, and creates an immediate sense of urgency.",
+            'use' => 'Exceptional for high-conversion primary Call-to-Action (CTA) buttons, discount badges, alert notifications, and high-impact branding.',
+            'pairing' => 'Pairs beautifully with crisp whites, deep slate charcoal, and warm complementary greens for maximum contrast.'
+        ];
+    }
+    if ($h >= 15 && $h < 45) {
+        return [
+            'family' => 'Orange / Amber',
+            'meaning' => "$name ($hex) is an energetic, welcoming warm color blending red's passion with yellow's cheerful brightness. It radiates enthusiasm, social connection, adventure, and playful confidence.",
+            'use' => 'Widely used in creative agencies, food & beverage branding, interactive onboarding flows, and energetic marketing highlights.',
+            'pairing' => 'Pairs stunningly with deep ocean navy, midnight blues, and warm earth tones like terracotta.'
+        ];
+    }
+    if ($h >= 45 && $h < 70) {
+        return [
+            'family' => 'Yellow / Gold',
+            'meaning' => "$name ($hex) is a luminous, high-energy hue embodying optimism, intellect, warmth, and joyful vitality. It captures attention faster than any other color on the visible spectrum.",
+            'use' => 'Perfect for attention-grabbing hero accents, star ratings, positive notification banners, and warm creative interfaces.',
+            'pairing' => 'Complements deep purple, charcoal gray, and rich royal blue for high-end graphic balance.'
+        ];
+    }
+    if ($h >= 70 && $h < 165) {
+        return [
+            'family' => 'Green / Emerald',
+            'meaning' => "$name ($hex) resides in the restorative green family, universally symbolizing nature, growth, financial prosperity, health, and emotional balance.",
+            'use' => 'The go-to choice for finance apps, eco-friendly brands, success confirmations, health platforms, and organic product packaging.',
+            'pairing' => 'Pairs harmoniously with crisp earth tones, ivory whites, and complementary magenta or berry accents.'
+        ];
+    }
+    if ($h >= 165 && $h < 260) {
+        return [
+            'family' => 'Blue / Azure',
+            'meaning' => "$name ($hex) is part of the dependable blue family, evoking deep trust, calm authority, security, and intellectual focus. It is statistically the world's most favored corporate color.",
+            'use' => 'Ideal for fintech, healthcare, SaaS dashboards, navigation headers, and trustworthy enterprise digital products.',
+            'pairing' => 'Pairs effortlessly with warm coral, crisp white, gold accents, and subtle neutral grays.'
+        ];
+    }
+    if ($h >= 260 && $h < 315) {
+        return [
+            'family' => 'Purple / Violet',
+            'meaning' => "$name ($hex) embodies luxury, creative imagination, spiritual wisdom, and modern digital innovation. Combining the stability of blue with the energy of red, it conveys prestige and uniqueness.",
+            'use' => 'Popular in AI tech brands, luxury beauty packaging, gaming interfaces, and cutting-edge creative portfolios.',
+            'pairing' => 'Looks magnificent with soft neon greens, gold metallic accents, and deep obsidian dark mode surfaces.'
+        ];
+    }
+    return [
+        'family' => 'Pink / Magenta',
+        'meaning' => "$name ($hex) is a spirited, modern pink expressing empathy, youthfulness, creative flair, and playful sophistication.",
+        'use' => 'Excellent for lifestyle applications, modern e-commerce brands, vibrant mobile apps, and trendy gradient highlights.',
+        'pairing' => 'Pairs wonderfully with rich teal, clean mint greens, deep purples, and soft pastel backgrounds.'
+    ];
+}
+
+$psychology = getColorPsychology($hsl['h'], $hsl['s'], $hsl['l'], $hexName, $hexWithHash);
+
+$faqItems = [
+    [
+        'q' => "What is the color name for $hexWithHash?",
+        'a' => "The color $hexWithHash is recognized as " . ($hasColorName ? $hexName : "a unique hexadecimal color") . ". It has an RGB representation of rgb({$rgb['r']}, {$rgb['g']}, {$rgb['b']}) and HSL coordinates of {$hsl['h']}° hue, {$hsl['s']}% saturation, and {$hsl['l']}% lightness."
+    ],
+    [
+        'q' => "What are the exact RGB, CMYK, and HSV values of $hexWithHash?",
+        'a' => "For web and digital design, $hexWithHash has RGB values of ({$rgb['r']}, {$rgb['g']}, {$rgb['b']}) and HSV of ({$hsv['h']}°, {$hsv['s']}%, {$hsv['v']}%). For commercial print design, its four-color process CMYK values are Cyan: {$cmyk['c']}%, Magenta: {$cmyk['m']}%, Yellow: {$cmyk['y']}%, and Key/Black: {$cmyk['k']}%."
+    ],
+    [
+        'q' => "What is the complementary color of $hexName ($hexWithHash)?",
+        'a' => "The exact optical complementary color of $hexWithHash is $complementaryHex. This sits directly opposite on the standard 360-degree color wheel, providing the highest visual contrast when paired together."
+    ],
+    [
+        'q' => "Is $hexWithHash accessible under WCAG 2.1 contrast guidelines?",
+        'a' => "On a pure white background (#FFFFFF), $hexWithHash has a contrast ratio of {$contrastWithWhite}:1 (" . ($whitePassesAA ? 'Passes AA' : 'Fails AA') . "). On a black background (#000000), it achieves a {$contrastWithBlack}:1 contrast ratio (" . ($blackPassesAA ? 'Passes AA' : 'Fails AA') . "). The most legible text overlay for this color is " . ($contrast === '#FFFFFF' ? 'White text (#FFFFFF)' : 'Dark text (#111111)') . "."
+    ]
+];
 
 $schema = [
     '@context' => 'https://schema.org',
-    '@type' => 'WebPage',
-    'name' => 'Hex ' . $hexWithHash . ' Color Palette & Harmonies',
-    'url' => $canonicalUrl,
-    'description' => $metaDescription,
-    'primaryImageOfPage' => $dynamicColorImageUrl,
-    'image' => $dynamicColorImageUrl,
-    'mainEntity' => [
-        '@type' => 'DefinedTerm',
-        'name' => $hexName,
-        'identifier' => $hexWithHash,
-        'description' => 'RGB(' . $rgb['r'] . ', ' . $rgb['g'] . ', ' . $rgb['b'] . ') | HSL(' . $hsl['h'] . ', ' . $hsl['s'] . '%, ' . $hsl['l'] . '%)',
-    ],
+    '@graph' => [
+        [
+            '@type' => 'WebPage',
+            'name' => 'Hex ' . $hexWithHash . ' Color Palette, Conversions & Harmonies',
+            'url' => $canonicalUrl,
+            'description' => $metaDescription,
+            'primaryImageOfPage' => $dynamicColorImageUrl,
+            'image' => $dynamicColorImageUrl,
+            'mainEntity' => [
+                '@type' => 'DefinedTerm',
+                'name' => $hexName,
+                'identifier' => $hexWithHash,
+                'description' => 'RGB(' . $rgb['r'] . ', ' . $rgb['g'] . ', ' . $rgb['b'] . ') | HSL(' . $hsl['h'] . ', ' . $hsl['s'] . '%, ' . $hsl['l'] . '%)',
+            ],
+        ],
+        [
+            '@type' => 'FAQPage',
+            'mainEntity' => array_map(static function (array $faq): array {
+                return [
+                    '@type' => 'Question',
+                    'name' => $faq['q'],
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => $faq['a']
+                    ]
+                ];
+            }, $faqItems)
+        ]
+    ]
 ];
 ?>
 <!DOCTYPE html>
@@ -838,6 +982,297 @@ $schema = [
                     <?php endforeach; ?>
                 </div>
                 <p class="text-center text-sm text-slate-500 mt-2 font-medium">Tone Color Variation</p>
+            </div>
+        </section>
+
+        <!-- Color Harmonies Suite -->
+        <section class="mt-12" aria-labelledby="harmonies-title">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                <div>
+                    <h2 id="harmonies-title" class="text-2xl md:text-3xl font-bold tracking-tight">Color Harmonies for <?php echo e($hexWithHash); ?></h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Balanced color combinations based on geometric relationships across the 360° color wheel.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <!-- Complementary -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Complementary</span>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">180° Shift</span>
+                    </div>
+                    <div class="flex h-16 rounded-xl overflow-hidden mb-3 border border-slate-200/50 dark:border-slate-700/50">
+                        <a href="<?php echo e($colorRouteBase . ltrim($hexWithHash, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[11px] font-mono font-bold text-white shadow-inner" style="background-color: <?php echo e($hexWithHash); ?>; color: <?php echo e($contrast); ?>;"><?php echo e($hexWithHash); ?></a>
+                        <a href="<?php echo e($colorRouteBase . ltrim($complementaryHex, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[11px] font-mono font-bold text-white shadow-inner hover:opacity-90 transition" style="background-color: <?php echo e($complementaryHex); ?>; color: <?php echo e(bestContrastText($complementaryHex)); ?>;"><?php echo e($complementaryHex); ?></a>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Direct opposite on the color wheel. Delivers the strongest visual contrast and dynamic energy.</p>
+                </div>
+
+                <!-- Analogous -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Analogous</span>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">±30° Adjacent</span>
+                    </div>
+                    <div class="flex h-16 rounded-xl overflow-hidden mb-3 border border-slate-200/50 dark:border-slate-700/50">
+                        <a href="<?php echo e($colorRouteBase . ltrim($analogous1Hex, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold hover:opacity-90 transition" style="background-color: <?php echo e($analogous1Hex); ?>; color: <?php echo e(bestContrastText($analogous1Hex)); ?>;"><?php echo e($analogous1Hex); ?></a>
+                        <a href="<?php echo e($colorRouteBase . ltrim($hexWithHash, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold" style="background-color: <?php echo e($hexWithHash); ?>; color: <?php echo e($contrast); ?>;"><?php echo e($hexWithHash); ?></a>
+                        <a href="<?php echo e($colorRouteBase . ltrim($analogous2Hex, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold hover:opacity-90 transition" style="background-color: <?php echo e($analogous2Hex); ?>; color: <?php echo e(bestContrastText($analogous2Hex)); ?>;"><?php echo e($analogous2Hex); ?></a>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Colors directly neighboring on the wheel. Creates serene, comfortable, cohesive compositions.</p>
+                </div>
+
+                <!-- Split-Complementary -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Split-Complementary</span>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">150° / 210°</span>
+                    </div>
+                    <div class="flex h-16 rounded-xl overflow-hidden mb-3 border border-slate-200/50 dark:border-slate-700/50">
+                        <a href="<?php echo e($colorRouteBase . ltrim($hexWithHash, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold" style="background-color: <?php echo e($hexWithHash); ?>; color: <?php echo e($contrast); ?>;"><?php echo e($hexWithHash); ?></a>
+                        <a href="<?php echo e($colorRouteBase . ltrim($split1Hex, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold hover:opacity-90 transition" style="background-color: <?php echo e($split1Hex); ?>; color: <?php echo e(bestContrastText($split1Hex)); ?>;"><?php echo e($split1Hex); ?></a>
+                        <a href="<?php echo e($colorRouteBase . ltrim($split2Hex, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold hover:opacity-90 transition" style="background-color: <?php echo e($split2Hex); ?>; color: <?php echo e(bestContrastText($split2Hex)); ?>;"><?php echo e($split2Hex); ?></a>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Variation of complementary with high visual nuance and less tension than pure opposite pairs.</p>
+                </div>
+
+                <!-- Triadic -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Triadic</span>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">120° Triangle</span>
+                    </div>
+                    <div class="flex h-16 rounded-xl overflow-hidden mb-3 border border-slate-200/50 dark:border-slate-700/50">
+                        <a href="<?php echo e($colorRouteBase . ltrim($hexWithHash, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold" style="background-color: <?php echo e($hexWithHash); ?>; color: <?php echo e($contrast); ?>;"><?php echo e($hexWithHash); ?></a>
+                        <a href="<?php echo e($colorRouteBase . ltrim($triadic1Hex, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold hover:opacity-90 transition" style="background-color: <?php echo e($triadic1Hex); ?>; color: <?php echo e(bestContrastText($triadic1Hex)); ?>;"><?php echo e($triadic1Hex); ?></a>
+                        <a href="<?php echo e($colorRouteBase . ltrim($triadic2Hex, '#') . '/'); ?>" class="flex-1 flex items-center justify-center text-[10px] font-mono font-bold hover:opacity-90 transition" style="background-color: <?php echo e($triadic2Hex); ?>; color: <?php echo e(bestContrastText($triadic2Hex)); ?>;"><?php echo e($triadic2Hex); ?></a>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Equidistant 3-point color triad. Vibrant and balanced even when using pale or unsaturated versions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Complete Color Conversions Table -->
+        <section class="mt-12" aria-labelledby="conversions-title">
+            <h2 id="conversions-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Color Conversions & Codes for <?php echo e($hexWithHash); ?></h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Standard representation values for web design, digital graphics, CSS styling, and CMYK commercial printing.</p>
+
+            <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-bold text-slate-500 dark:text-slate-400">
+                            <tr>
+                                <th class="px-5 py-3.5">Color Space / Format</th>
+                                <th class="px-5 py-3.5">Syntax / Value</th>
+                                <th class="px-5 py-3.5">Details</th>
+                                <th class="px-5 py-3.5 text-right">Copy</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 font-mono">
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3.5 font-bold font-sans text-slate-900 dark:text-white">HEX</td>
+                                <td class="px-5 py-3.5 font-bold text-primary"><?php echo e($hexWithHash); ?></td>
+                                <td class="px-5 py-3.5 font-sans text-xs text-slate-500 dark:text-slate-400">6-character hexadecimal code</td>
+                                <td class="px-5 py-3.5 text-right"><button type="button" class="copy-btn px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-sans font-medium" data-copy="<?php echo e($hexWithHash); ?>">Copy</button></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3.5 font-bold font-sans text-slate-900 dark:text-white">RGB</td>
+                                <td class="px-5 py-3.5">rgb(<?php echo (string)$rgb['r']; ?>, <?php echo (string)$rgb['g']; ?>, <?php echo (string)$rgb['b']; ?>)</td>
+                                <td class="px-5 py-3.5 font-sans text-xs text-slate-500 dark:text-slate-400">Red, Green, Blue (0-255)</td>
+                                <td class="px-5 py-3.5 text-right"><button type="button" class="copy-btn px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-sans font-medium" data-copy="rgb(<?php echo (string)$rgb['r']; ?>, <?php echo (string)$rgb['g']; ?>, <?php echo (string)$rgb['b']; ?>)">Copy</button></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3.5 font-bold font-sans text-slate-900 dark:text-white">HSL</td>
+                                <td class="px-5 py-3.5">hsl(<?php echo (string)$hsl['h']; ?>°, <?php echo (string)$hsl['s']; ?>%, <?php echo (string)$hsl['l']; ?>%)</td>
+                                <td class="px-5 py-3.5 font-sans text-xs text-slate-500 dark:text-slate-400">Hue, Saturation, Lightness</td>
+                                <td class="px-5 py-3.5 text-right"><button type="button" class="copy-btn px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-sans font-medium" data-copy="hsl(<?php echo (string)$hsl['h']; ?>, <?php echo (string)$hsl['s']; ?>%, <?php echo (string)$hsl['l']; ?>%)">Copy</button></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3.5 font-bold font-sans text-slate-900 dark:text-white">HSV / HSB</td>
+                                <td class="px-5 py-3.5">hsv(<?php echo (string)$hsv['h']; ?>°, <?php echo (string)$hsv['s']; ?>%, <?php echo (string)$hsv['v']; ?>%)</td>
+                                <td class="px-5 py-3.5 font-sans text-xs text-slate-500 dark:text-slate-400">Hue, Saturation, Value/Brightness</td>
+                                <td class="px-5 py-3.5 text-right"><button type="button" class="copy-btn px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-sans font-medium" data-copy="hsv(<?php echo (string)$hsv['h']; ?>, <?php echo (string)$hsv['s']; ?>%, <?php echo (string)$hsv['v']; ?>%)">Copy</button></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3.5 font-bold font-sans text-slate-900 dark:text-white">CMYK (Print)</td>
+                                <td class="px-5 py-3.5">cmyk(<?php echo (string)$cmyk['c']; ?>%, <?php echo (string)$cmyk['m']; ?>%, <?php echo (string)$cmyk['y']; ?>%, <?php echo (string)$cmyk['k']; ?>%)</td>
+                                <td class="px-5 py-3.5 font-sans text-xs text-slate-500 dark:text-slate-400">Cyan, Magenta, Yellow, Black process</td>
+                                <td class="px-5 py-3.5 text-right"><button type="button" class="copy-btn px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-sans font-medium" data-copy="cmyk(<?php echo (string)$cmyk['c']; ?>%, <?php echo (string)$cmyk['m']; ?>%, <?php echo (string)$cmyk['y']; ?>%, <?php echo (string)$cmyk['k']; ?>%)">Copy</button></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3.5 font-bold font-sans text-slate-900 dark:text-white">Decimal</td>
+                                <td class="px-5 py-3.5"><?php echo (string)$colorDecimal; ?></td>
+                                <td class="px-5 py-3.5 font-sans text-xs text-slate-500 dark:text-slate-400">Integer decimal value</td>
+                                <td class="px-5 py-3.5 text-right"><button type="button" class="copy-btn px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-sans font-medium" data-copy="<?php echo (string)$colorDecimal; ?>">Copy</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Color Psychology & Design Use Guide -->
+        <section class="mt-12" aria-labelledby="psychology-title">
+            <h2 id="psychology-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Color Psychology & Design Guide</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">How <?php echo e($hexName); ?> (<?php echo e($hexWithHash); ?>) communicates emotion and functions in digital user interfaces.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-secondary flex items-center justify-center text-lg mb-4">
+                        <i class="bi bi-lightbulb-fill"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Meaning & Emotion</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"><?php echo e($psychology['meaning']); ?></p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-950/40 text-primary flex items-center justify-center text-lg mb-4">
+                        <i class="bi bi-window-fullscreen"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">UI & Web Applications</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"><?php echo e($psychology['use']); ?></p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center text-lg mb-4">
+                        <i class="bi bi-palette-fill"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Pairing Suggestions</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"><?php echo e($psychology['pairing']); ?></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WCAG 2.1 Accessibility & Readability Analysis -->
+        <section class="mt-12" aria-labelledby="accessibility-title">
+            <h2 id="accessibility-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-2">WCAG 2.1 Contrast & Accessibility</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Readability verification according to Web Content Accessibility Guidelines (WCAG) 2.1 contrast compliance standards.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- White text on Color -->
+                <div class="rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 flex flex-col justify-between" style="background-color: <?php echo e($hexWithHash); ?>; color: #FFFFFF;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs uppercase font-bold tracking-wider opacity-90">White on Color</span>
+                            <span class="text-xs font-mono font-extrabold px-2 py-0.5 rounded bg-black/20"><?php echo e($contrastWithWhite); ?>:1</span>
+                        </div>
+                        <p class="text-sm font-semibold leading-relaxed">Sample headline text for readability.</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-white/20 flex items-center justify-between text-xs font-bold">
+                        <span>AA Normal: <?php echo $whitePassesAA ? 'PASS' : 'FAIL'; ?></span>
+                        <span>AAA: <?php echo $whitePassesAAA ? 'PASS' : 'FAIL'; ?></span>
+                    </div>
+                </div>
+
+                <!-- Dark text on Color -->
+                <div class="rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 flex flex-col justify-between" style="background-color: <?php echo e($hexWithHash); ?>; color: #0F172A;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs uppercase font-bold tracking-wider opacity-90">Dark on Color</span>
+                            <span class="text-xs font-mono font-extrabold px-2 py-0.5 rounded bg-white/30"><?php echo e($contrastWithBlack); ?>:1</span>
+                        </div>
+                        <p class="text-sm font-semibold leading-relaxed">Sample headline text for readability.</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-black/15 flex items-center justify-between text-xs font-bold">
+                        <span>AA Normal: <?php echo $blackPassesAA ? 'PASS' : 'FAIL'; ?></span>
+                        <span>AAA: <?php echo $blackPassesAAA ? 'PASS' : 'FAIL'; ?></span>
+                    </div>
+                </div>
+
+                <!-- Color on White Background -->
+                <div class="rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs uppercase font-bold tracking-wider text-slate-400">Color on White</span>
+                            <span class="text-xs font-mono font-extrabold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"><?php echo e($contrastWithWhite); ?>:1</span>
+                        </div>
+                        <p class="text-sm font-semibold leading-relaxed" style="color: <?php echo e($hexWithHash); ?>;">Sample colored text on white canvas.</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-400">
+                        <span>AA Large: <?php echo $whitePassesAALarge ? 'PASS' : 'FAIL'; ?></span>
+                        <span>AA: <?php echo $whitePassesAA ? 'PASS' : 'FAIL'; ?></span>
+                    </div>
+                </div>
+
+                <!-- Color on Dark Background -->
+                <div class="rounded-2xl p-5 shadow-sm border border-slate-800 bg-[#0F172A] flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs uppercase font-bold tracking-wider text-slate-400">Color on Slate</span>
+                            <span class="text-xs font-mono font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-300"><?php echo e($contrastWithBlack); ?>:1</span>
+                        </div>
+                        <p class="text-sm font-semibold leading-relaxed" style="color: <?php echo e($hexWithHash); ?>;">Sample colored text on dark canvas.</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-slate-400">
+                        <span>AA Large: <?php echo $blackPassesAALarge ? 'PASS' : 'FAIL'; ?></span>
+                        <span>AA: <?php echo $blackPassesAA ? 'PASS' : 'FAIL'; ?></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CSS & Developer Snippets -->
+        <section class="mt-12" aria-labelledby="developer-code-title">
+            <h2 id="developer-code-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-2">CSS & Developer Implementation</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Ready-to-use style declarations and utility classes for your web projects.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+                <!-- CSS -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3 font-sans">
+                        <span class="font-bold text-slate-700 dark:text-slate-200 text-sm">CSS Styles</span>
+                        <button type="button" class="copy-btn px-2 py-0.5 rounded text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-medium" data-copy="background-color: <?php echo e($hexWithHash); ?>; color: <?php echo e($contrast); ?>;">Copy</button>
+                    </div>
+                    <pre class="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl overflow-x-auto text-slate-700 dark:text-slate-300"><code>/* Background &amp; Text */
+background-color: <?php echo e($hexWithHash); ?>;
+color: <?php echo e($contrast); ?>;
+border-color: <?php echo e($hexWithHash); ?>;</code></pre>
+                </div>
+
+                <!-- Tailwind -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3 font-sans">
+                        <span class="font-bold text-slate-700 dark:text-slate-200 text-sm">Tailwind CSS</span>
+                        <button type="button" class="copy-btn px-2 py-0.5 rounded text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-medium" data-copy="bg-[<?php echo e($hexWithHash); ?>] text-[<?php echo e($contrast); ?>] border-[<?php echo e($hexWithHash); ?>]">Copy</button>
+                    </div>
+                    <pre class="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl overflow-x-auto text-slate-700 dark:text-slate-300"><code>&lt;!-- Tailwind Classes --&gt;
+bg-[<?php echo e($hexWithHash); ?>]
+text-[<?php echo e($contrast); ?>]
+border-[<?php echo e($hexWithHash); ?>]</code></pre>
+                </div>
+
+                <!-- SVG -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3 font-sans">
+                        <span class="font-bold text-slate-700 dark:text-slate-200 text-sm">SVG Vector</span>
+                        <button type="button" class="copy-btn px-2 py-0.5 rounded text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition font-medium" data-copy='&lt;rect width="100" height="100" fill="<?php echo e($hexWithHash); ?>" /&gt;'>Copy</button>
+                    </div>
+                    <pre class="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl overflow-x-auto text-slate-700 dark:text-slate-300"><code>&lt;!-- SVG Fill --&gt;
+&lt;rect fill="<?php echo e($hexWithHash); ?>" /&gt;
+&lt;path stroke="<?php echo e($hexWithHash); ?>" /&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Frequently Asked Questions (FAQ) -->
+        <section class="mt-12" aria-labelledby="faq-title">
+            <h2 id="faq-title" class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Frequently Asked Questions</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Quick answers and technical specs for <?php echo e($hexName); ?> (<?php echo e($hexWithHash); ?>).</p>
+
+            <div class="space-y-3">
+                <?php foreach ($faqItems as $faq): ?>
+                    <details class="group bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition [&_summary::-webkit-details-marker]:hidden">
+                        <summary class="flex items-center justify-between cursor-pointer font-bold text-base text-slate-900 dark:text-white">
+                            <span><?php echo e($faq['q']); ?></span>
+                            <span class="ml-4 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform">
+                                <i class="bi bi-chevron-down"></i>
+                            </span>
+                        </summary>
+                        <p class="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed pr-6 border-t border-slate-100 dark:border-slate-800 pt-3">
+                            <?php echo e($faq['a']); ?>
+                        </p>
+                    </details>
+                <?php endforeach; ?>
             </div>
         </section>
 
