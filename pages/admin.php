@@ -181,23 +181,6 @@ if (!$isAuthenticatedAdmin) {
 
             <!-- Bottom Section: Session countdown & Logout -->
             <div class="p-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
-                <!-- 12-Hour Session Countdown Box -->
-                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-indicator"></span>
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">12h Session</span>
-                        </div>
-                        <span class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded">Active</span>
-                    </div>
-                    <div class="flex items-baseline justify-between">
-                        <span id="sessionCountdown" class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">12h 00m 00s</span>
-                        <span class="text-[10px] text-slate-400">JWT HS256</span>
-                    </div>
-                    <div class="w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
-                        <div id="sessionProgressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-full w-full transition-all duration-1000"></div>
-                    </div>
-                </div>
 
                 <!-- Admin User Info Pill -->
                 <div class="flex items-center gap-3 px-2 py-1">
@@ -238,11 +221,6 @@ if (!$isAuthenticatedAdmin) {
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <!-- Session indicator pill -->
-                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-xs font-medium">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-indicator"></span>
-                        <span>12h Session Active</span>
-                    </div>
 
                     <!-- Theme toggle -->
                     <button id="themeToggleBtn" type="button" aria-label="Toggle dark mode" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
