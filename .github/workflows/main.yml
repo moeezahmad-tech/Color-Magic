@@ -1,4 +1,4 @@
-name: Clear Cloudflare Cache & Production Deploy
+name: Production Deploy
 
 on:
   push:
