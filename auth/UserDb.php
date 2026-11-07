@@ -6,6 +6,22 @@
 class UserDb {
     private static $pdo = null;
 
+    private static function parseEnv(string $filePath): array {
+        if (!file_exists($filePath) || !is_readable($filePath)) return [];
+        $data = [];
+        $lines = @file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines === false) return [];
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#' || $line[0] === ';') continue;
+            if (strpos($line, '=') !== false) {
+                list($key, $val) = explode('=', $line, 2);
+                $data[trim($key)] = trim($val, " \t\n\r\0\x0B\"'");
+            }
+        }
+        return $data;
+    }
+
     /**
      * Get or establish MySQL PDO connection
      * @return PDO|null
@@ -24,49 +40,47 @@ class UserDb {
         $user = getenv('DB_USERNAME') ?: (getenv('DB_USER') ?: null);
         $pass = getenv('DB_PASSWORD') ?: (getenv('DB_PASS') ?: null);
         $db   = getenv('DB_NAME') ?: (getenv('DB_DATABASE') ?: null);
-        $port = getenv('DB_PORT') ?: '3306';
+        $port = getenv('DB_PORT') ?: null;
 
         // Check in candidate env files if not set in server environment
-        if (!$host || !$user) {
-            $baseFiles = [
-                __DIR__ . '/../../.env.colormagic', // Production parent directory
-                __DIR__ . '/../.env.colormagic',    // Project root
-                __DIR__ . '/../../.env',           // Fallback
-                __DIR__ . '/../.env'               // Fallback
-            ];
-            $localFiles = [
-                __DIR__ . '/../../.env.colormagic.local',
-                __DIR__ . '/../.env.colormagic.local',
-                __DIR__ . '/../.env.local'
-            ];
+        $baseFiles = [
+            __DIR__ . '/../../.env.colormagic', // Production parent directory
+            __DIR__ . '/../.env.colormagic',    // Project root
+            __DIR__ . '/../../.env',           // Fallback
+            __DIR__ . '/../.env'               // Fallback
+        ];
+        $localFiles = [
+            __DIR__ . '/../../.env.colormagic.local',
+            __DIR__ . '/../.env.colormagic.local',
+            __DIR__ . '/../.env.local'
+        ];
 
-            $env = [];
-            foreach ($baseFiles as $file) {
-                if (file_exists($file) && is_readable($file)) {
-                    $parsed = function_exists('cm_read_env_file') ? cm_read_env_file($file) : @parse_ini_file($file);
-                    if ($parsed) {
-                        $env = array_merge($env, $parsed);
-                        break;
-                    }
+        $env = [];
+        foreach ($baseFiles as $file) {
+            if (file_exists($file)) {
+                $parsed = self::parseEnv($file);
+                if (!empty($parsed)) {
+                    $env = array_merge($env, $parsed);
+                    break;
                 }
             }
-            foreach ($localFiles as $file) {
-                if (file_exists($file) && is_readable($file)) {
-                    $parsed = function_exists('cm_read_env_file') ? cm_read_env_file($file) : @parse_ini_file($file);
-                    if ($parsed) {
-                        $env = array_merge($env, $parsed);
-                        break;
-                    }
+        }
+        foreach ($localFiles as $file) {
+            if (file_exists($file)) {
+                $parsed = self::parseEnv($file);
+                if (!empty($parsed)) {
+                    $env = array_merge($env, $parsed);
+                    break;
                 }
             }
+        }
 
-            if (!empty($env)) {
-                $host = $host ?: ($env['DB_SERVER'] ?? ($env['DB_HOST'] ?? ($env['MYSQL_HOST'] ?? null)));
-                $user = $user ?: ($env['DB_USERNAME'] ?? ($env['DB_USER'] ?? ($env['MYSQL_USER'] ?? null)));
-                $pass = $pass ?: ($env['DB_PASSWORD'] ?? ($env['DB_PASS'] ?? ($env['MYSQL_PASSWORD'] ?? '')));
-                $db   = $db   ?: ($env['DB_NAME'] ?? ($env['DB_DATABASE'] ?? ($env['MYSQL_DATABASE'] ?? null)));
-                $port = $port ?: ($env['DB_PORT'] ?? ($env['MYSQL_PORT'] ?? '3306'));
-            }
+        if (!empty($env)) {
+            $host = $env['DB_SERVER'] ?? ($env['DB_HOST'] ?? ($env['MYSQL_HOST'] ?? $host));
+            $user = $env['DB_USERNAME'] ?? ($env['DB_USER'] ?? ($env['MYSQL_USER'] ?? $user));
+            $pass = $env['DB_PASSWORD'] ?? ($env['DB_PASS'] ?? ($env['MYSQL_PASSWORD'] ?? $pass));
+            $db   = $env['DB_NAME'] ?? ($env['DB_DATABASE'] ?? ($env['MYSQL_DATABASE'] ?? $db));
+            $port = $env['DB_PORT'] ?? ($env['MYSQL_PORT'] ?? ($port ?: '3306'));
         }
 
         // In StackCP hosting, the Database Name equals the Username if not specified separately
@@ -103,6 +117,10 @@ class UserDb {
             email VARCHAR(255) NOT NULL UNIQUE,
             name VARCHAR(255) NULL,
             picture VARCHAR(500) NULL,
+            avatar VARCHAR(100) DEFAULT '1.webp',
+            city VARCHAR(100) NULL,
+            country VARCHAR(100) NULL,
+            bio TEXT NULL,
             role VARCHAR(50) DEFAULT 'user',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -123,13 +141,6 @@ class UserDb {
             CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $pdo->exec($sql);
-
-        // Ensure role column exists if table was created previously without it
-        try {
-            $pdo->exec("ALTER TABLE users ADD COLUMN role VARCHAR(50) DEFAULT 'user' AFTER picture");
-        } catch (\Throwable $e) {
-            // Ignored if column already exists
-        }
     }
 
     /**
@@ -148,14 +159,17 @@ class UserDb {
         }
 
         $role = $userData['role'] ?? 'user';
+        $avatar = $userData['avatar'] ?? '1.webp';
+        $city = $userData['city'] ?? null;
+        $country = $userData['country'] ?? null;
+        $bio = $userData['bio'] ?? null;
 
         try {
-            $sql = "INSERT INTO users (google_id, email, name, picture, role, last_login)
-                    VALUES (:google_id, :email, :name, :picture, :role, NOW())
+            $sql = "INSERT INTO users (google_id, email, name, picture, avatar, city, country, bio, role, last_login)
+                    VALUES (:google_id, :email, :name, :picture, :avatar, :city, :country, :bio, :role, NOW())
                     ON DUPLICATE KEY UPDATE
                         google_id = COALESCE(VALUES(google_id), google_id),
                         name = COALESCE(VALUES(name), name),
-                        picture = COALESCE(VALUES(picture), picture),
                         role = CASE WHEN VALUES(role) = 'admin' THEN 'admin' ELSE role END,
                         last_login = NOW()";
 
@@ -165,6 +179,10 @@ class UserDb {
                 ':email'     => $userData['email'],
                 ':name'      => $userData['name'] ?? null,
                 ':picture'   => $userData['picture'] ?? null,
+                ':avatar'    => $avatar,
+                ':city'      => $city,
+                ':country'   => $country,
+                ':bio'       => $bio,
                 ':role'      => $role,
             ]);
 
@@ -185,13 +203,82 @@ class UserDb {
         if (!$pdo) return null;
 
         try {
-            $stmt = $pdo->prepare("SELECT id, google_id, email, name, picture, role, created_at, last_login FROM users WHERE email = :email LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id, google_id, email, name, username, pronouns, picture, avatar, city, country, bio, website, role, created_at, last_login FROM users WHERE email = :email LIMIT 1");
             $stmt->execute([':email' => $email]);
-            return $stmt->fetch() ?: null;
+            $row = $stmt->fetch();
+            if ($row) {
+                if (empty($row['avatar'])) {
+                    $row['avatar'] = '1.webp';
+                }
+                return $row;
+            }
+            return null;
         } catch (\Throwable $e) {
             error_log("UserDb getUserByEmail error: " . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Update user profile information (name, username, pronouns, avatar, city, country, bio, website)
+     * @param string $email
+     * @param array $profileData
+     * @return array|null
+     */
+    public static function updateUserProfile(string $email, array $profileData) {
+        $pdo = self::getConnection();
+        if (!$pdo) return null;
+
+        $user = self::getUserByEmail($email);
+        if (!$user) return null;
+
+        $name = isset($profileData['name']) ? trim((string)$profileData['name']) : $user['name'];
+        $username = isset($profileData['username']) ? trim((string)$profileData['username']) : ($user['username'] ?? null);
+        $pronouns = isset($profileData['pronouns']) ? trim((string)$profileData['pronouns']) : ($user['pronouns'] ?? null);
+        $avatar = isset($profileData['avatar']) ? trim((string)$profileData['avatar']) : $user['avatar'];
+        $city = isset($profileData['city']) ? trim((string)$profileData['city']) : $user['city'];
+        $country = isset($profileData['country']) ? trim((string)$profileData['country']) : $user['country'];
+        $bio = isset($profileData['bio']) ? trim((string)$profileData['bio']) : $user['bio'];
+        $website = isset($profileData['website']) ? trim((string)$profileData['website']) : ($user['website'] ?? null);
+
+        // Validate avatar filename (e.g. "1.webp" .. "28.webp")
+        if (!preg_match('/^[0-9]{1,2}\.webp$/', $avatar)) {
+            $avatar = $user['avatar'] ?: '1.webp';
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE users SET name = :name, username = :username, pronouns = :pronouns, avatar = :avatar, city = :city, country = :country, bio = :bio, website = :website WHERE email = :email");
+            $stmt->execute([
+                ':name'     => $name,
+                ':username' => $username,
+                ':pronouns' => $pronouns,
+                ':avatar'   => $avatar,
+                ':city'     => $city,
+                ':country'  => $country,
+                ':bio'      => $bio,
+                ':website'  => $website,
+                ':email'    => $email
+            ]);
+
+            return self::getUserByEmail($email);
+        } catch (\Throwable $e) {
+            error_log("UserDb updateUserProfile error: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Get user profile and favorites array in one call
+     * @param string $email
+     * @return array
+     */
+    public static function getUserProfileAndFavorites(string $email) {
+        $user = self::getUserByEmail($email);
+        $favorites = self::getUserFavorites($email);
+        return [
+            'user' => $user,
+            'favorites' => $favorites
+        ];
     }
 
     /**

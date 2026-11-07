@@ -152,32 +152,43 @@ window.ColorMagic.GradientFavorites = (function () {
     return { getFavorites, saveFavorites, toggleFavorite, isFavorite };
 })();
 
-// ─── Bi-directional DB Sync for Google Logged-In Users ───────────────────────
-window.ColorMagic.syncFavoritesWithServer = function () {
+// ─── Smart LocalStorage / Database Sync ───────────────────────────────────────
+// Only pull from database IF localStorage is empty and user is logged in.
+// On subsequent page reloads, load immediately from localStorage with ZERO DB calls.
+// Whenever a favorite is added or removed, update localStorage and sync asynchronously to DB.
+window.ColorMagic.ensureUserFavoritesLoaded = function () {
     try {
         const hasUser = localStorage.getItem('cm_user') || sessionStorage.getItem('cm_user');
         if (!hasUser) return Promise.resolve();
-        const authBase = (window.CM_AUTH_BASE || '/auth');
-        const localPalettes = window.ColorMagic.Favorites.getFavorites();
-        const localColors   = window.ColorMagic.ColorFavorites.getFavorites();
-        const localGrads    = window.ColorMagic.GradientFavorites.getFavorites();
 
+        // Check if localStorage already has favorites initialized
+        const hasColors = localStorage.getItem('colorMagicColorFavorites') !== null;
+        const hasPalettes = localStorage.getItem('colorMagicFavorites') !== null;
+        const hasGradients = localStorage.getItem('colorMagicGradientFavorites') !== null;
+
+        // If already cached in localStorage, do NOT call database!
+        if (hasColors && hasPalettes && hasGradients) {
+            return Promise.resolve();
+        }
+
+        // Only fetch from database when local cache is empty:
+        const authBase = (window.CM_AUTH_BASE || '/auth');
         return fetch(authBase + '/favorites.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'sync',
-                palettes: localPalettes,
-                colors: localColors,
-                gradients: localGrads
-            })
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
         })
         .then(function (r) { return r.json(); })
         .then(function (res) {
             if (res && res.success && res.data) {
-                if (Array.isArray(res.data.palettes)) window.ColorMagic.Favorites.saveFavorites(res.data.palettes);
-                if (Array.isArray(res.data.colors)) window.ColorMagic.ColorFavorites.saveFavorites(res.data.colors);
-                if (Array.isArray(res.data.gradients)) window.ColorMagic.GradientFavorites.saveFavorites(res.data.gradients);
+                if (Array.isArray(res.data.colors) && !hasColors) {
+                    window.ColorMagic.ColorFavorites.saveFavorites(res.data.colors);
+                }
+                if (Array.isArray(res.data.palettes) && !hasPalettes) {
+                    window.ColorMagic.Favorites.saveFavorites(res.data.palettes);
+                }
+                if (Array.isArray(res.data.gradients) && !hasGradients) {
+                    window.ColorMagic.GradientFavorites.saveFavorites(res.data.gradients);
+                }
             }
         })
         .catch(function () {});
@@ -186,11 +197,13 @@ window.ColorMagic.syncFavoritesWithServer = function () {
     }
 };
 
-// Automatically sync when script loads if user is authenticated
+window.ColorMagic.syncFavoritesWithServer = window.ColorMagic.ensureUserFavoritesLoaded;
+
+// Run only on startup to hydrate empty localStorage
 if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', function () {
-        if (window.ColorMagic && window.ColorMagic.syncFavoritesWithServer) {
-            window.ColorMagic.syncFavoritesWithServer();
+        if (window.ColorMagic && window.ColorMagic.ensureUserFavoritesLoaded) {
+            window.ColorMagic.ensureUserFavoritesLoaded();
         }
     });
 }

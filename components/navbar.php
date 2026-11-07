@@ -131,15 +131,13 @@
                 
                 <div id="navAuthSlot" class="hidden lg:flex items-center gap-2">
                 <?php if (isset($_SESSION['user'])): ?>
+                    <?php 
+                        $navAvatar = $_SESSION['user']['avatar'] ?? '1.webp';
+                        $navAvatarUrl = $base . '/assets/avatars/' . $navAvatar;
+                    ?>
                     <a href="<?= $base ?>/profile"
                         class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 rounded-full transition-all shadow-sm font-medium border border-indigo-100 dark:border-indigo-800">
-                        <?php if(!empty($_SESSION['user']['picture'])): ?>
-                            <img src="<?= htmlspecialchars($_SESSION['user']['picture']) ?>" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">
-                        <?php else: ?>
-                            <div class="w-6 h-6 rounded-full bg-indigo-200 text-indigo-700 flex items-center justify-center text-xs font-bold shadow-sm">
-                                <?= strtoupper(substr($_SESSION['user']['email'], 0, 1)) ?>
-                            </div>
-                        <?php endif; ?>
+                        <img src="<?= htmlspecialchars($navAvatarUrl) ?>" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">
                         <span class="text-xs pr-1 truncate max-w-[100px]"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Profile') ?></span>
                     </a>
                     <a href="<?= $base ?>/auth/logout"
@@ -173,9 +171,8 @@
                                 const user = JSON.parse(raw);
                                 if (user && user.email) {
                                     const name = user.name || user.email.split('@')[0];
-                                    const pic = user.picture
-                                        ? `<img src="${user.picture}" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">`
-                                        : `<div class="w-6 h-6 rounded-full bg-indigo-200 text-indigo-700 flex items-center justify-center text-xs font-bold shadow-sm">${(user.email[0] || 'U').toUpperCase()}</div>`;
+                                    const av = user.avatar || '1.webp';
+                                    const pic = `<img src="<?= $base ?>/assets/avatars/${av}" alt="Profile" class="w-6 h-6 rounded-full object-cover shadow-sm">`;
                                     
                                     slot.innerHTML = `
                                         <a href="<?= $base ?>/profile"

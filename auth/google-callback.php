@@ -49,17 +49,25 @@ if (isset($_GET['code'])) {
         $userData = json_decode($userInfoResponse, true);
 
         if (isset($userData['email'])) {
-            $userObj = [
-                'id'           => $userData['id'] ?? null,
-                'name'         => $userData['name'] ?? null,
-                'email'        => $userData['email'],
-                'picture'      => $userData['picture'] ?? null,
-                'logged_in_at' => time()
-            ];
-
-            // Save or update user in MySQL database
             require_once __DIR__ . '/UserDb.php';
             require_once __DIR__ . '/AdminAuth.php';
+
+            // Check if user already exists in DB to retain their chosen avatar and profile
+            $existingUser = UserDb::getUserByEmail($userData['email']);
+            $avatar = $existingUser['avatar'] ?? '1.webp';
+            $avatarUrl = $base . '/assets/avatars/' . $avatar;
+
+            $userObj = [
+                'id'           => $userData['id'] ?? null,
+                'name'         => $existingUser['name'] ?? ($userData['name'] ?? null),
+                'email'        => $userData['email'],
+                'avatar'       => $avatar,
+                'picture'      => $avatarUrl,
+                'city'         => $existingUser['city'] ?? null,
+                'country'      => $existingUser['country'] ?? null,
+                'bio'          => $existingUser['bio'] ?? null,
+                'logged_in_at' => time()
+            ];
 
             $isAdmin = AdminAuth::isAdminEmail($userObj['email']);
             if ($isAdmin) {
@@ -71,6 +79,11 @@ if (isset($_GET['code'])) {
             if ($dbUser && !empty($dbUser['id'])) {
                 $userObj['db_id'] = $dbUser['id'];
                 $userObj['created_at'] = $dbUser['created_at'] ?? null;
+                $userObj['avatar'] = $dbUser['avatar'] ?? $avatar;
+                $userObj['picture'] = $base . '/assets/avatars/' . ($dbUser['avatar'] ?? $avatar);
+                $userObj['city'] = $dbUser['city'] ?? null;
+                $userObj['country'] = $dbUser['country'] ?? null;
+                $userObj['bio'] = $dbUser['bio'] ?? null;
                 if (!empty($dbUser['role']) && $dbUser['role'] === 'admin') {
                     $isAdmin = true;
                     $userObj['role'] = 'admin';
