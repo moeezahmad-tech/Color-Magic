@@ -502,8 +502,8 @@ $schema = [
             'name' => 'Hex ' . $hexWithHash . ' Color Palette, Conversions & Harmonies',
             'url' => $canonicalUrl,
             'description' => $metaDescription,
-            'primaryImageOfPage' => $dynamicColorImageUrl,
-            'image' => $dynamicColorImageUrl,
+            'primaryImageOfPage' => $absolutePosterUrl,
+            'image' => $absolutePosterUrl,
             'mainEntity' => [
                 '@type' => 'DefinedTerm',
                 'name' => $hexName,
@@ -558,11 +558,11 @@ $schema = [
     <meta property="og:title" content="<?php echo e($metaTitle); ?>" />
     <meta property="og:description" content="<?php echo e($metaDescription); ?>" />
     <meta property="og:url" content="<?php echo e($canonicalUrl); ?>" />
-    <meta property="og:image" content="<?php echo e($dynamicColorImageUrl); ?>" />
+    <meta property="og:image" content="<?php echo e($absolutePosterUrl); ?>" />
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content="<?php echo e($metaTitle); ?>" />
     <meta property="twitter:description" content="<?php echo e($metaDescription); ?>" />
-    <meta property="twitter:image" content="<?php echo e($dynamicColorImageUrl); ?>" />
+    <meta property="twitter:image" content="<?php echo e($absolutePosterUrl); ?>" />
 
     <link rel="manifest" href="<?php echo e($manifestUrl); ?>" />
     <link rel="icon" type="image/png" href="<?php echo e($faviconUrl); ?>" />
@@ -817,10 +817,6 @@ $schema = [
             <div class="h-full">
                 <div class="relative h-72 md:h-80 lg:h-full min-h-[280px] md:min-h-[340px] p-6 flex items-end overflow-hidden rounded-2xl shadow-xl shadow-black/10 dark:shadow-black/30"
                     style="background-color: <?php echo e($hexWithHash); ?>;">
-                    <img src="<?php echo e($dynamicColorImageUrl); ?>"
-                        alt="Color palette preview for hex code <?php echo e(strtolower($normalizedHex)); ?> featuring complementary design rules"
-                        width="600" height="600" class="absolute inset-0 h-full w-full object-cover" loading="eager"
-                        fetchpriority="high" />
                     <div class="relative z-10 select-none p-2 sm:p-3" style="color: <?php echo e($contrast); ?>;">
                         <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] opacity-85 mb-2">COLOR MAGIC</p>
                         <?php if ($hasNamedTitle): ?>
