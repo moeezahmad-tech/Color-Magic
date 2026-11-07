@@ -286,7 +286,11 @@ $logoUrl = $assetBase . '/assets/images/logo.png';
 $siteStylesUrl = $assetBase . '/assets/css/style.css?v=1.0';
 $tailwindConfigUrl = $assetBase . '/assets/js/tailwind-config.js';
 $colorRouteBase = $assetBase . '/color/';
-$dynamicColorImageUrl = $baseUrl . '/colors/' . strtolower($normalizedHex) . '.webp';
+$posterSlug = $colorSlug !== null ? $colorSlug : strtolower($normalizedHex);
+$posterPath = '/posters/colors/' . $posterSlug . '.jpg';
+$posterUrl = $basePath . $posterPath;
+$absolutePosterUrl = $baseUrl . $posterPath;
+$dynamicColorImageUrl = $absolutePosterUrl;
 $ogImageUrl = $baseUrl . '/assets/og-preview.png';
 
 // WCAG Contrast Ratios
@@ -907,6 +911,48 @@ $schema = [
                         <i class="bi bi-heart text-base"></i>
                         <span>Favorite</span>
                     </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Official Color Swatch Poster Showcase (Google Images & Pinterest Indexing) -->
+        <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8 my-8" aria-labelledby="color-poster-title">
+            <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <img src="<?= $posterUrl ?>" 
+                         alt="<?= e($hexName) ?> (<?= e($hexWithHash) ?>) Pantone Style Swatch Card Poster" 
+                         width="1600" height="2000" 
+                         loading="eager" fetchpriority="high"
+                         class="w-full h-auto object-cover" />
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                            <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                        </span>
+                    </div>
+                </a>
+            </div>
+            <div class="flex-1 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                    <i class="bi bi-image"></i> Official Swatch Card Graphic
+                </div>
+                <h2 id="color-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                    <?= e($hexName) ?> Swatch Poster
+                </h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Download or share the official <strong><?= e($hexName) ?></strong> (<?= e($hexWithHash) ?>) Pantone-style swatch card graphic with technical color specifications (RGB, HSL, CMYK) and typographic hierarchy.
+                </p>
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <a href="<?= $posterUrl ?>" download="<?= e($posterSlug) ?>-color-swatch.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                        <i class="bi bi-download"></i> Download Poster (JPEG)
+                    </a>
+                    <button onclick="window.ColorMagic && window.ColorMagic.exportColorImage ? window.ColorMagic.exportColorImage({hex: '<?= e($hexWithHash) ?>', name: '<?= addslashes($hexName) ?>', rgb: <?= json_encode($rgb) ?>, hsl: <?= json_encode($hsl) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                        <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                    </button>
+                    <?php if (!empty($hexNameEntry['pinterest_pin_id'])): ?>
+                        <a href="https://www.pinterest.com/pin/<?= e($hexNameEntry['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                            <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>

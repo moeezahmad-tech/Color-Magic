@@ -123,10 +123,10 @@
             var hexY = y1 - 85;
 
             ctx.save();
-            ctx.shadowColor = isLight ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)';
-            ctx.shadowBlur = 6;
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
             ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 2;
+            ctx.shadowOffsetY = 0;
             ctx.fillStyle = textColor;
             ctx.font = '800 58px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.textBaseline = 'alphabetic';
@@ -143,19 +143,19 @@
         var topTextColor = firstIsLight ? '#111827' : '#FFFFFF';
 
         ctx.save();
-        ctx.shadowColor = firstIsLight ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)';
-        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
         ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 2;
+        ctx.shadowOffsetY = 0;
         ctx.fillStyle = topTextColor;
         ctx.textBaseline = 'top';
 
         // Line 1: COLOR MAGIC brand kicker
         ctx.font = '700 28px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        drawSpacedText(ctx, 'COLOR MAGIC', topPadX, topPadY, 4, 'left');
+        drawSpacedText(ctx, 'COLOR MAGIC', topPadX, topPadY, 5, 'left');
 
-        // Line 2: Large Palette Name
-        var nameY = topPadY + 46;
+        // Line 2: Large Palette Name with comfortable breathing room
+        var nameY = topPadY + 68;
         var nameFontSize = 76;
         ctx.font = '900 ' + nameFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         var maxNameW = W - topPadX * 2;
@@ -441,19 +441,19 @@
         var topTitleColor = firstColorLum > 0.85 ? '#111827' : '#FFFFFF';
 
         ctx.save();
-        ctx.shadowColor = firstColorLum > 0.85 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)';
-        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
         ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 2;
+        ctx.shadowOffsetY = 0;
         ctx.fillStyle = topTitleColor;
         ctx.textBaseline = 'top';
 
-        // Line 1: COLOR MAGIC on top (brand kicker)
+        // Line 1: COLOR MAGIC on top (brand kicker) with generous spacing
         ctx.font = '700 28px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        drawSpacedText(ctx, 'COLOR MAGIC', topPadX, topPadY, 4, 'left');
+        drawSpacedText(ctx, 'COLOR MAGIC', topPadX, topPadY, 5, 'left');
 
-        // Line 2: Large text for the gradient name
-        var nameY = topPadY + 48;
+        // Line 2: Large text for the gradient name with elegant breathing room
+        var nameY = topPadY + 70;
         var nameFontSize = 76;
         ctx.font = '900 ' + nameFontSize + 'px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         var maxNameW = W - topPadX * 2;
@@ -471,10 +471,10 @@
         var urlColor = lastColorLum > 0.80 ? 'rgba(17, 24, 39, 0.75)' : 'rgba(255, 255, 255, 0.82)';
 
         ctx.save();
-        ctx.shadowColor = lastColorLum > 0.80 ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
-        ctx.shadowBlur = 6;
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
         ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 2;
+        ctx.shadowOffsetY = 0;
         ctx.fillStyle = urlColor;
         ctx.font = '600 24px Inter, "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.textBaseline = 'bottom';
@@ -576,6 +576,26 @@
             ctx.fillStyle = textColor;
             ctx.fillText(hex.toUpperCase(), textX + hexLabelW + 28, line2Y);
         });
+
+        // 3. Crisp dividing lines between gradient and color box & between swatches
+        var avgLum = colors.reduce(function(acc, h) { return acc + getLuminance(h); }, 0) / colors.length;
+        var dividerColor = (avgLum > 0.82) ? 'rgba(17, 24, 39, 0.3)' : 'rgba(255, 255, 255, 0.95)';
+
+        ctx.save();
+        ctx.fillStyle = dividerColor;
+        // Horizontal line between gradient and bottom color blocks
+        ctx.fillRect(0, blockAreaY - 2, W, 4);
+
+        // Grid lines separating color blocks
+        rects.forEach(function (r) {
+            if (r.x > 0) {
+                ctx.fillRect(r.x - 2, r.y, 4, r.h);
+            }
+            if (r.y > blockAreaY) {
+                ctx.fillRect(r.x, r.y - 2, r.w, 4);
+            }
+        });
+        ctx.restore();
 
         return canvas;
     };

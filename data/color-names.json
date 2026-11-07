@@ -27,7 +27,11 @@
         "hex": "191970",
         "name": "Midnight blue",
         "aliases": [],
-        "slug": "midnight-blue"
+        "slug": "midnight-blue",
+        "uploaded": true,
+        "pinterest_pin_id": "1092193347167694851",
+        "pinterest_posted_at": "2026-11-03T18:50:56+00:00",
+        "pinterest_board_id": "1092193415823453337"
     },
     "195905": {
         "hex": "195905",
@@ -2461,7 +2465,7 @@
     },
     "9C2542": {
         "hex": "9C2542",
-        "name": "Big dip o’ruby",
+        "name": "Big dip o\u2019ruby",
         "aliases": [],
         "slug": "big-dip-o-ruby"
     },
@@ -2707,7 +2711,7 @@
     },
     "4B3621": {
         "hex": "4B3621",
-        "name": "Café noir",
+        "name": "Caf\u00e9 noir",
         "aliases": [],
         "slug": "caf-noir"
     },
@@ -4075,7 +4079,7 @@
     },
     "915F6D": {
         "hex": "915F6D",
-        "name": "Raspberry glacé",
+        "name": "Raspberry glac\u00e9",
         "aliases": [],
         "slug": "raspberry-glac"
     },
@@ -5701,7 +5705,7 @@
     },
     "CD5700": {
         "hex": "CD5700",
-        "name": "Tenné (tawny)",
+        "name": "Tenn\u00e9 (tawny)",
         "aliases": [],
         "slug": "tenn-tawny"
     },

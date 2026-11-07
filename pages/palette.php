@@ -135,6 +135,15 @@ $metaTitle = $currentPalette
     : 'Curated Color Palette | Color Magic';
 $metaDescription = 'Explore ' . e($paletteName) . ' featuring ' . count($paletteColors) . ' harmonious colors (' . e($colorListString) . '). View RGB, HSL, CMYK conversions, contrast accessibility, and CSS variables.';
 $canonicalUrl = 'https://colormagic.techkreative.com/palette/' . ($paletteSlug !== '' ? e($paletteSlug) . '/' : '');
+$posterSlug = $paletteSlug !== '' ? $paletteSlug : ($currentPalette['id'] ?? 'palette_1');
+$posterPath = '/posters/palettes/' . $posterSlug . '.jpg';
+$posterUrl = $base . $posterPath;
+$absolutePosterUrl = 'https://colormagic.techkreative.com' . $posterPath;
+
+$posterSlug = $paletteSlug !== '' ? $paletteSlug : ($currentPalette['id'] ?? 'palette_1');
+$posterPath = '/posters/palettes/' . $posterSlug . '.jpg';
+$posterUrl = $base . $posterPath;
+$absolutePosterUrl = 'https://colormagic.techkreative.com' . $posterPath;
 
 $faqItems = [
     [
@@ -167,6 +176,13 @@ $schema = [
                 '@type' => 'CreativeWork',
                 'name' => $paletteName,
                 'description' => $metaDescription,
+                'image' => [
+                    '@type' => 'ImageObject',
+                    'url' => $absolutePosterUrl,
+                    'width' => 1800,
+                    'height' => 2100,
+                    'caption' => $paletteName . ' Color Palette (' . $colorListString . ')'
+                ],
                 'keywords' => 'color palette, hex codes, color scheme, ' . $paletteStyle . ', UI design'
             ]
         ],
@@ -198,6 +214,25 @@ $schema = [
     <link rel="canonical" href="<?= $canonicalUrl ?>" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
     <link rel="preload" as="image" href="<?= $base ?>/assets/images/logo.png" fetchpriority="high" />
+
+    <!-- Open Graph / Facebook / Pinterest -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<?= $canonicalUrl ?>" />
+    <meta property="og:title" content="<?= $metaTitle ?>" />
+    <meta property="og:description" content="<?= $metaDescription ?>" />
+    <meta property="og:image" content="<?= $absolutePosterUrl ?>" />
+    <meta property="og:image:width" content="1800" />
+    <meta property="og:image:height" content="2100" />
+    <meta property="og:image:alt" content="<?= e($paletteName) ?> Color Palette Poster (<?= e($colorListString) ?>)" />
+    <meta property="og:site_name" content="Color Magic" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="<?= $canonicalUrl ?>" />
+    <meta name="twitter:title" content="<?= $metaTitle ?>" />
+    <meta name="twitter:description" content="<?= $metaDescription ?>" />
+    <meta name="twitter:image" content="<?= $absolutePosterUrl ?>" />
+    <meta name="twitter:image:alt" content="<?= e($paletteName) ?> Color Palette Poster" />
 
     <!-- Resource Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -399,6 +434,48 @@ $schema = [
                 </div>
             </section>
 
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
             <!-- SECTION 2: UI Application Showcase Mockup -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm border border-slate-200/60 dark:border-slate-800" aria-labelledby="palette-ui-title">
                 <h2 id="palette-ui-title" class="text-xl md:text-2xl font-bold mb-2">Live UI & Component Preview</h2>
@@ -436,10 +513,94 @@ $schema = [
                 </div>
             </section>
 
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
             <!-- Contrast Cards -->
             <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div id="contrastCardA" class="rounded-2xl p-6 min-h-[180px] flex flex-col justify-between"></div>
                 <div id="contrastCardB" class="rounded-2xl p-6 min-h-[180px] flex flex-col justify-between"></div>
+            </section>
+
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </section>
 
             <!-- Palette Story -->
@@ -450,6 +611,48 @@ $schema = [
                 </p>
             </section>
 
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
             <!-- Brightness Levels -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm border border-slate-200/60 dark:border-slate-800">
                 <h2 class="text-xl md:text-2xl font-bold mb-4">Brightness & Lightness Spectrum</h2>
@@ -457,6 +660,48 @@ $schema = [
                     Visual representation of each color's lightness on a spectrum
                 </p>
                 <div id="brightnessChart" class="space-y-2"></div>
+            </section>
+
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </section>
 
             <!-- Export Formats: Modern Tabbed Interface -->
@@ -512,6 +757,48 @@ $schema = [
                 </div>
             </section>
 
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
             <!-- SECTION 3: Frequently Asked Questions (FAQ) -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm border border-slate-200/60 dark:border-slate-800" aria-labelledby="palette-faq-title">
                 <h2 id="palette-faq-title" class="text-xl md:text-2xl font-bold mb-2">Frequently Asked Questions</h2>
@@ -534,6 +821,48 @@ $schema = [
                 </div>
             </section>
 
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
             <!-- Related Colors -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm border border-slate-200/60 dark:border-slate-800">
                 <h2 class="text-xl md:text-2xl font-bold mb-4">Related Colors</h2>
@@ -541,6 +870,48 @@ $schema = [
                     Complementary, analogous, and triadic colors derived from this palette
                 </p>
                 <div id="relatedColorsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+            </section>
+
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </section>
 
             <!-- Related Palettes -->
@@ -552,6 +923,48 @@ $schema = [
                 <div id="relatedPalettesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"></div>
             </section>
 
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
             <!-- Related Gradients -->
             <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-7 shadow-sm border border-slate-200/60 dark:border-slate-800">
                 <h2 class="text-xl md:text-2xl font-bold mb-4">Related Gradients</h2>
@@ -559,6 +972,48 @@ $schema = [
                     Gradients that use colors from this palette
                 </p>
                 <div id="relatedGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+            </section>
+
+            <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
+            <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
+                <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
+                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="<?= $posterUrl ?>" 
+                             alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
+                             width="1800" height="2100" 
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-auto object-cover" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                <i class="bi bi-arrows-fullscreen"></i> View High-Res
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex-1 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800">
+                        <i class="bi bi-image"></i> Official High-Resolution Poster
+                    </div>
+                    <h2 id="palette-poster-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        <?= e($paletteName) ?> Color Poster Card
+                    </h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Explore and download the official <strong><?= e($paletteName) ?></strong> design poster card featuring exact HEX swatches, brand typographic hierarchy, and verified color values for digital and print design workflows.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="<?= $posterUrl ?>" download="<?= e($paletteSlug) ?>-color-palette.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-semibold shadow-md transition-all">
+                            <i class="bi bi-download"></i> Download Poster (JPEG)
+                        </a>
+                        <button onclick="window.ColorMagic && window.ColorMagic.exportPaletteImage ? window.ColorMagic.exportPaletteImage({name: '<?= addslashes($paletteName) ?>', colors: <?= json_encode($paletteColors) ?>}) : window.open('<?= $posterUrl ?>')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-all">
+                            <i class="bi bi-file-earmark-image"></i> Export PNG (Retina)
+                        </button>
+                        <?php if (!empty($currentPalette['pinterest_pin_id'])): ?>
+                            <a href="https://www.pinterest.com/pin/<?= e($currentPalette['pinterest_pin_id']) ?>/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-300 text-xs font-semibold border border-red-200 dark:border-red-900/60 transition-all" title="View pin on Pinterest">
+                                <i class="bi bi-pinterest text-red-500"></i> View on Pinterest
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </section>
         </section>
 

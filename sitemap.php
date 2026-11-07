@@ -3,12 +3,13 @@
  * Dynamic XML Sitemap Generator for Color Magic
  * Generates all sitemap links dynamically from live datasets and pages.
  * Supports:
- *   - /sitemap.php or /sitemap.xml         -> Complete dynamic sitemap with all URLs
+ *   - /sitemap.php or /sitemap.xml         -> Complete dynamic sitemap with all URLs and Images
+ *   - /sitemap-images.xml or ?type=images  -> Dedicated Google Image Sitemap
  *   - /sitemap.php?type=index              -> Master sitemap index
  *   - /sitemap.php?type=pages              -> Dynamic pages sitemap
- *   - /sitemap.php?type=colors             -> Dynamic colors sitemap (with image tags)
- *   - /sitemap.php?type=palettes           -> Dynamic palettes sitemap
- *   - /sitemap.php?type=gradients          -> Dynamic gradients sitemap
+ *   - /sitemap.php?type=colors             -> Dynamic colors sitemap (with poster image tags)
+ *   - /sitemap.php?type=palettes           -> Dynamic palettes sitemap (with poster image tags)
+ *   - /sitemap.php?type=gradients          -> Dynamic gradients sitemap (with poster image tags)
  */
 
 declare(strict_types=1);
@@ -51,9 +52,10 @@ if ($type === 'index') {
     
     $sections = [
         ['loc' => $baseUrl . '/sitemaps/pages.xml', 'lastmod' => $pagesMod],
-        ['loc' => $baseUrl . '/sitemaps/colors.xml', 'lastmod' => $colorsMod],
+        ['loc' => $baseUrl . '/sitemaps/images.xml', 'lastmod' => $now],
         ['loc' => $baseUrl . '/sitemaps/palettes.xml', 'lastmod' => $palettesMod],
         ['loc' => $baseUrl . '/sitemaps/gradients.xml', 'lastmod' => $gradientsMod],
+        ['loc' => $baseUrl . '/sitemaps/colors.xml', 'lastmod' => $colorsMod],
     ];
 
     foreach ($sections as $s) {
@@ -68,17 +70,15 @@ if ($type === 'index') {
 }
 
 // ── URLSET SITEMAP MODE ───────────────────────────────────────────────────────
-$includePages = in_array($type, ['all', '', 'pages'], true);
-$includeColors = in_array($type, ['all', '', 'colors'], true);
-$includePalettes = in_array($type, ['all', '', 'palettes'], true);
-$includeGradients = in_array($type, ['all', '', 'gradients'], true);
+$isImagesOnly = ($type === 'images');
+$includePages = !$isImagesOnly && in_array($type, ['all', '', 'pages'], true);
+$includeColors = $isImagesOnly || in_array($type, ['all', '', 'colors'], true);
+$includePalettes = $isImagesOnly || in_array($type, ['all', '', 'palettes'], true);
+$includeGradients = $isImagesOnly || in_array($type, ['all', '', 'gradients'], true);
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"';
-if ($includeColors) {
-    echo "\n        xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\"";
-}
-echo '>' . "\n";
+echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
+echo '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 
 // 1. Static Pages
 if ($includePages) {
@@ -116,7 +116,7 @@ if ($includePages) {
     }
 }
 
-// 2. Palettes
+// 2. Palettes (With High-Res Visual Posters)
 if ($includePalettes) {
     $palettesFile = __DIR__ . '/data/palettes.json';
     if (file_exists($palettesFile)) {
@@ -124,7 +124,6 @@ if ($includePalettes) {
         $lastmod = date('Y-m-d', filemtime($palettesFile));
 
         if (is_array($palettesData)) {
-            // Count names for duplicate suffixing
             $nameCount = [];
             foreach ($palettesData as $p) {
                 $name = (string)($p['name'] ?? '');
@@ -133,8 +132,12 @@ if ($includePalettes) {
             }
 
             foreach ($palettesData as $palette) {
-                $name = (string)($palette['name'] ?? '');
+                $name = (string)($palette['name'] ?? 'Palette');
                 $id = (string)($palette['id'] ?? '');
+                $style = (string)($palette['style'] ?? 'Design');
+                $colors = (array)($palette['colors'] ?? []);
+                $colorList = implode(', ', $colors);
+
                 $s = slugify($name);
                 if (($nameCount[$s] ?? 0) > 1) {
                     $s .= '-' . str_replace('palette_', '', $id);
@@ -143,19 +146,25 @@ if ($includePalettes) {
                     $s = $id;
                 }
                 $loc = $baseUrl . '/palette/' . $s . '/';
+                $posterLoc = $baseUrl . '/posters/palettes/' . $s . '.jpg';
 
                 echo "  <url>\n";
                 echo "    <loc>" . xmlEscape($loc) . "</loc>\n";
                 echo "    <lastmod>{$lastmod}</lastmod>\n";
-                echo "    <changefreq>monthly</changefreq>\n";
+                echo "    <changefreq>weekly</changefreq>\n";
                 echo "    <priority>0.8</priority>\n";
+                echo "    <image:image>\n";
+                echo "      <image:loc>" . xmlEscape($posterLoc) . "</image:loc>\n";
+                echo "      <image:title>" . xmlEscape($name . ' Color Palette Hex Codes') . "</image:title>\n";
+                echo "      <image:caption>" . xmlEscape("Curated {$style} color palette with hex codes: {$colorList}") . "</image:caption>\n";
+                echo "    </image:image>\n";
                 echo "  </url>\n";
             }
         }
     }
 }
 
-// 3. Gradients
+// 3. Gradients (With High-Res Visual Posters)
 if ($includeGradients) {
     $gradientsFile = __DIR__ . '/data/gradients.json';
     if (file_exists($gradientsFile)) {
@@ -166,20 +175,33 @@ if ($includeGradients) {
             foreach ($gradientsData as $gradient) {
                 $id = (string)($gradient['id'] ?? '');
                 if ($id === '') continue;
+
+                $name = (string)($gradient['name'] ?? 'Gradient');
+                $type = strtoupper((string)($gradient['type'] ?? 'LINEAR'));
+                $css = (string)($gradient['css'] ?? '');
+                $colors = (array)($gradient['colors'] ?? []);
+                $colorList = implode(' → ', $colors);
+
                 $loc = $baseUrl . '/gradient/' . $id . '/';
+                $posterLoc = $baseUrl . '/posters/gradients/' . $id . '.jpg';
 
                 echo "  <url>\n";
                 echo "    <loc>" . xmlEscape($loc) . "</loc>\n";
                 echo "    <lastmod>{$lastmod}</lastmod>\n";
-                echo "    <changefreq>monthly</changefreq>\n";
-                echo "    <priority>0.6</priority>\n";
+                echo "    <changefreq>weekly</changefreq>\n";
+                echo "    <priority>0.7</priority>\n";
+                echo "    <image:image>\n";
+                echo "      <image:loc>" . xmlEscape($posterLoc) . "</image:loc>\n";
+                echo "      <image:title>" . xmlEscape($name . ' ' . $type . ' CSS Gradient Poster') . "</image:title>\n";
+                echo "      <image:caption>" . xmlEscape("Curated CSS {$type} gradient ({$colorList}) with CSS: {$css}") . "</image:caption>\n";
+                echo "    </image:image>\n";
                 echo "  </url>\n";
             }
         }
     }
 }
 
-// 4. Colors
+// 4. Named Colors (With High-Res Pantone Swatch Cards)
 if ($includeColors) {
     $colorsFile = __DIR__ . '/data/color-names.json';
     if (file_exists($colorsFile)) {
@@ -196,17 +218,18 @@ if ($includeColors) {
                     ? $baseUrl . '/color/' . $slug . '/'
                     : $baseUrl . '/color/' . strtolower($cleanHex) . '/';
 
-                $imgUrl = $baseUrl . '/colors/' . strtolower($cleanHex) . '.webp';
-                $title = "{$name} (#{$cleanHex})";
-                $caption = "Color swatch and palette preview for hex code #{$cleanHex} - {$name}.";
+                $posterSlug = ($slug !== '') ? $slug : strtolower($cleanHex);
+                $posterLoc = $baseUrl . '/posters/colors/' . $posterSlug . '.jpg';
+                $title = "{$name} (#{$cleanHex}) Color Swatch Poster";
+                $caption = "Pantone style swatch card and color specifications for {$name} (#{$cleanHex}).";
 
                 echo "  <url>\n";
                 echo "    <loc>" . xmlEscape($colorUrl) . "</loc>\n";
                 echo "    <lastmod>{$lastmod}</lastmod>\n";
-                echo "    <changefreq>monthly</changefreq>\n";
+                echo "    <changefreq>weekly</changefreq>\n";
                 echo "    <priority>0.8</priority>\n";
                 echo "    <image:image>\n";
-                echo "      <image:loc>" . xmlEscape($imgUrl) . "</image:loc>\n";
+                echo "      <image:loc>" . xmlEscape($posterLoc) . "</image:loc>\n";
                 echo "      <image:title>" . xmlEscape($title) . "</image:title>\n";
                 echo "      <image:caption>" . xmlEscape($caption) . "</image:caption>\n";
                 echo "    </image:image>\n";

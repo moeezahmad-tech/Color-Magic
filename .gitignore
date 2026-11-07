@@ -13,3 +13,17 @@ node_modules
 next-env.d.ts
 .next
 tsconfig.tsbuildinfo
+
+# Local-Only Admin, Dashboard & Credentials
+.env.colormagic.admin
+admin/
+scripts/
+data/instagram_account.json
+data/pinterest_boards.json
+assets/generated/
+
+admin/
+scripts/
+data/instagram_account.json
+data/pinterest_boards.json
+assets/generated/

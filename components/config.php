@@ -65,6 +65,11 @@ $cmLocalCandidates = [
     __DIR__ . '/../.env.local'                // Legacy fallback
 ];
 
+$cmAdminCandidates = [
+    __DIR__ . '/../../.env.colormagic.admin', // Production admin configuration
+    __DIR__ . '/../.env.colormagic.admin',    // Project root admin configuration
+];
+
 $cmEnv = [];
 
 // 1. Load base/production configuration
@@ -75,7 +80,15 @@ foreach ($cmBaseCandidates as $file) {
     }
 }
 
-// 2. Overlay local development configuration (if present)
+// 2. Overlay admin configuration (if present)
+foreach ($cmAdminCandidates as $file) {
+    if (file_exists($file) && is_readable($file)) {
+        $cmEnv = array_merge($cmEnv, cm_read_env_file($file));
+        break;
+    }
+}
+
+// 3. Overlay local development configuration (if present)
 foreach ($cmLocalCandidates as $file) {
     if (file_exists($file) && is_readable($file)) {
         $cmEnv = array_merge($cmEnv, cm_read_env_file($file));
@@ -85,12 +98,8 @@ foreach ($cmLocalCandidates as $file) {
 
 // 3. Populate process environment and $_ENV
 foreach ($cmEnv as $k => $v) {
-    if (getenv($k) === false) {
-        putenv("{$k}={$v}");
-    }
-    if (!isset($_ENV[$k])) {
-        $_ENV[$k] = $v;
-    }
+    putenv("{$k}={$v}");
+    $_ENV[$k] = $v;
 }
 
 // Extract API_BASE_URL

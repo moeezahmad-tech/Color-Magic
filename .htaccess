@@ -46,10 +46,17 @@ RewriteRule ^api/([a-zA-Z0-9_-]+\.json)$ data/$1 [L]
 
 # Dynamic Sitemap Routing
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
+RewriteRule ^sitemap-images\.xml$ sitemap.php?type=images [L]
 RewriteRule ^sitemaps/([a-zA-Z0-9_-]+)\.xml$ sitemap.php?type=$1 [L]
+RewriteRule ^posters/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)\.jpg$ pages/poster.php?category=$1&id=$2 [L,QSA]
 
 # Static pages (explicit routes — no file-existence check needed)
-RewriteRule ^admin/?$ pages/admin.php [L]
+# Admin routes
+RewriteRule ^admin/?$ admin/index.php [L]
+RewriteRule ^admin/colors/?$ admin/colors.php [L]
+RewriteRule ^admin/palettes/?$ admin/palettes.php [L]
+RewriteRule ^admin/gradients/?$ admin/gradients.php [L]
+RewriteRule ^admin/([a-zA-Z0-9_-]+)/?$ admin/$1.php [L]
 RewriteRule ^palettes/?$ pages/palettes.php [L]
 RewriteRule ^gradients/?$ pages/gradients.php [L]
 RewriteRule ^generate-palette/?$ pages/generate-palette.php [L]

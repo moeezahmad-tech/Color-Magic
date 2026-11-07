@@ -23,7 +23,8 @@ class AdminAuth {
     }
 
     /**
-     * Get configured list of admin email addresses from environment or fallback
+     * Get configured list of admin email addresses from environment
+     * Returns empty array if ADMIN_EMAILS is not configured.
      * @return array
      */
     public static function getAdminEmails(): array {
@@ -37,12 +38,6 @@ class AdminAuth {
                     $emails[] = $trimmed;
                 }
             }
-        }
-
-        // Default primary admin email
-        $defaultAdmin = 'moeezahmad.tech@gmail.com';
-        if (!in_array($defaultAdmin, $emails, true)) {
-            $emails[] = $defaultAdmin;
         }
 
         return $emails;

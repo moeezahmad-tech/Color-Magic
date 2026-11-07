@@ -14,6 +14,9 @@ if ($path === 'sitemap.xml' || $path === 'sitemap.php') {
     $targetType = $_GET['type'] ?? 'all';
     dispatch(__DIR__ . '/sitemap.php', ['type' => $targetType]);
 }
+if ($path === 'sitemap-images.xml') {
+    dispatch(__DIR__ . '/sitemap.php', ['type' => 'images']);
+}
 if (preg_match('#^sitemaps/([a-zA-Z0-9_-]+)\.xml$#i', $path, $matches)) {
     dispatch(__DIR__ . '/sitemap.php', ['type' => $matches[1]]);
 }
@@ -92,6 +95,11 @@ if (preg_match('#^colors/([0-9a-fA-F]{6})\.webp$#i', $path, $matches)) {
     dispatch(__DIR__ . '/pages/colorImage.php', ['hex' => strtoupper($matches[1])]);
 }
 
+// Dynamic High-Res Poster Image: /posters/palettes/forest-breath.jpg
+if (preg_match('#^posters/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)\.jpg$#i', $path, $matches)) {
+    dispatch(__DIR__ . '/pages/poster.php', ['category' => $matches[1], 'id' => $matches[2]]);
+}
+
 // 6. Auth Routes (support both extensionless and .php)
 $cleanPath = preg_replace('/\.php$/i', '', $path);
 
@@ -107,9 +115,29 @@ if (isset($authRoutes[$path]) || isset($authRoutes[$cleanPath])) {
     dispatch($authRoutes[$path] ?? $authRoutes[$cleanPath]);
 }
 
+// 6.5 Admin Routes (support extensionless and .php)
+$adminRoutes = [
+    'admin'           => __DIR__ . '/admin/index.php',
+    'admin/colors'    => __DIR__ . '/admin/colors.php',
+    'admin/palettes'  => __DIR__ . '/admin/palettes.php',
+    'admin/gradients' => __DIR__ . '/admin/gradients.php',
+];
+if (isset($adminRoutes[$path]) || isset($adminRoutes[$cleanPath])) {
+    $target = $adminRoutes[$path] ?? $adminRoutes[$cleanPath];
+    if (file_exists($target)) {
+        dispatch($target);
+    }
+}
+if (preg_match('#^admin/([a-zA-Z0-9_-]+)(\.php)?$#', $path, $matches)) {
+    $target = __DIR__ . '/admin/' . $matches[1] . '.php';
+    if (file_exists($target)) {
+        dispatch($target);
+    }
+}
+
 // 7. Static Pages (support both extensionless and .php)
 $staticPages = [
-    'admin'              => __DIR__ . '/pages/admin.php',
+    'admin'              => __DIR__ . '/admin/index.php',
     'palettes'           => __DIR__ . '/pages/palettes.php',
     'gradients'          => __DIR__ . '/pages/gradients.php',
     'generate-palette'   => __DIR__ . '/pages/generate-palette.php',
