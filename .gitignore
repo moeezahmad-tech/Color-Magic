@@ -22,8 +22,6 @@ data/instagram_account.json
 data/pinterest_boards.json
 assets/generated/
 
-admin/
-scripts/
-data/instagram_account.json
-data/pinterest_boards.json
-assets/generated/
+# Cloudflare CLI & Wrangler
+.cloudflare/
+.wrangler/
