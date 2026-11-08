@@ -21,6 +21,22 @@ if (preg_match('#^sitemaps/([a-zA-Z0-9_-]+)\.xml$#i', $path, $matches)) {
     dispatch(__DIR__ . '/sitemap.php', ['type' => $matches[1]]);
 }
 
+// 0. Security Block: Deny direct HTTP access to /data/, internal folders, and sensitive config files
+if (preg_match('#^(data|services|scripts|components)(/|$)#i', $path) || preg_match('#(^|/)\.(env|git|vscode)#i', $path)) {
+    http_response_code(403);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'error' => 'Direct access to internal directories and files is forbidden.',
+        'code'  => 403
+    ]);
+    exit;
+}
+
+// 0b. Secure API Dataset Gateway -> /api/*.json
+if (preg_match('#^api/([a-zA-Z0-9_-]+\.json)$#i', $path, $matches)) {
+    dispatch(__DIR__ . '/api/data.php', ['file' => $matches[1]]);
+}
+
 // 1. Serve physical static files directly, or execute physical PHP scripts directly
 $filePath = __DIR__ . '/' . $path;
 if ($path !== '' && file_exists($filePath) && !is_dir($filePath)) {
@@ -30,16 +46,6 @@ if ($path !== '' && file_exists($filePath) && !is_dir($filePath)) {
     }
     // Static asset (CSS, JS, images, fonts, txt, etc.) -> let PHP CLI server stream it
     return false;
-}
-
-// 2. Legacy API data compatibility -> /data/*.json
-if (preg_match('#^api/([a-zA-Z0-9_-]+\.json)$#i', $path, $matches)) {
-    $targetData = __DIR__ . '/data/' . $matches[1];
-    if (file_exists($targetData)) {
-        header('Content-Type: application/json; charset=utf-8');
-        readfile($targetData);
-        exit;
-    }
 }
 
 // 3. Stale Service Worker requests from browser cache
@@ -72,32 +78,32 @@ if ($path === '' || $path === 'index.php') {
 // 5. Dynamic Routes
 // Hex route: /color/3498db/ or /color/3498db
 if (preg_match('#^color/([0-9a-fA-F]{6})/?$#', $path, $matches)) {
-    dispatch(__DIR__ . '/pages/color.php', ['hex' => strtoupper($matches[1])]);
+    dispatch(__DIR__ . '/pages/colors/color.php', ['hex' => strtoupper($matches[1])]);
 }
 
 // Named Color Slug route: /color/midnight-blue/ or /color/midnight-blue
 if (preg_match('#^color/([a-zA-Z][a-zA-Z0-9-]*)/?$#', $path, $matches)) {
-    dispatch(__DIR__ . '/pages/color.php', ['slug' => strtolower($matches[1])]);
+    dispatch(__DIR__ . '/pages/colors/color.php', ['slug' => strtolower($matches[1])]);
 }
 
 // Palette route: /palette/sunset-vibes/
-if (preg_match('#^palette/([a-zA-Z0-9_-]+)/?$#', $path, $matches)) {
-    dispatch(__DIR__ . '/pages/palette.php', ['slug' => $matches[1]]);
+if (preg_match('#^palette/([^/]+)/?$#', $path, $matches)) {
+    dispatch(__DIR__ . '/pages/palettes/palette.php', ['slug' => rawurldecode($matches[1])]);
 }
 
 // Gradient route: /gradient/gradient_1/
 if (preg_match('#^gradient/([a-zA-Z0-9_-]+)/?$#', $path, $matches)) {
-    dispatch(__DIR__ . '/pages/gradient.php', ['id' => $matches[1]]);
+    dispatch(__DIR__ . '/pages/gradients/gradient.php', ['id' => $matches[1]]);
 }
 
 // Dynamic Color Swatch Image: /colors/3498db.webp
 if (preg_match('#^colors/([0-9a-fA-F]{6})\.webp$#i', $path, $matches)) {
-    dispatch(__DIR__ . '/pages/colorImage.php', ['hex' => strtoupper($matches[1])]);
+    dispatch(__DIR__ . '/pages/colors/colorImage.php', ['hex' => strtoupper($matches[1])]);
 }
 
 // Dynamic High-Res Poster Image: /posters/palettes/forest-breath.jpg
-if (preg_match('#^posters/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)\.jpg$#i', $path, $matches)) {
-    dispatch(__DIR__ . '/pages/poster.php', ['category' => $matches[1], 'id' => $matches[2]]);
+if (preg_match('#^posters/([a-zA-Z0-9_-]+)/([^/]+)\.jpg$#i', $path, $matches)) {
+    dispatch(__DIR__ . '/pages/media/poster.php', ['category' => $matches[1], 'id' => rawurldecode($matches[2])]);
 }
 
 // 6. Auth Routes (support both extensionless and .php)
@@ -138,33 +144,52 @@ if (preg_match('#^admin/([a-zA-Z0-9_-]+)(\.php)?$#', $path, $matches)) {
 // 7. Static Pages (support both extensionless and .php)
 $staticPages = [
     'admin'              => __DIR__ . '/admin/index.php',
-    'palettes'           => __DIR__ . '/pages/palettes.php',
-    'gradients'          => __DIR__ . '/pages/gradients.php',
-    'generate-palette'   => __DIR__ . '/pages/generate-palette.php',
-    'palette-from-image' => __DIR__ . '/pages/palette-from-image.php',
-    'find-color'         => __DIR__ . '/pages/find-color.php',
-    'profile'            => __DIR__ . '/pages/profile.php',
-    'login'              => __DIR__ . '/pages/login.php',
-    'open-source'        => __DIR__ . '/pages/open-source.php',
-    'hex-to-color-name'  => __DIR__ . '/pages/hex-to-color-name.php',
-    'hex-to-rgb'         => __DIR__ . '/pages/hex-to-rgb.php',
-    'what-color-is'      => __DIR__ . '/pages/what-color-is.php',
-    'dark-color-finder'  => __DIR__ . '/pages/dark-color-finder.php',
-    'brand-color-lookup' => __DIR__ . '/pages/brand-color-lookup.php',
-    'about'              => __DIR__ . '/pages/about.php',
-    'contact'            => __DIR__ . '/pages/contact.php',
-    'privacy-policy'     => __DIR__ . '/pages/privacy-policy.php',
-    'terms-and-conditions' => __DIR__ . '/pages/terms-and-conditions.php',
-    'terms'              => __DIR__ . '/pages/terms-and-conditions.php',
-    'cookie-policy'      => __DIR__ . '/pages/cookie-policy.php',
-    'verify-human'       => __DIR__ . '/pages/verify-human.php',
+    'palettes'           => __DIR__ . '/pages/palettes/palettes.php',
+    'gradients'          => __DIR__ . '/pages/gradients/gradients.php',
+    'generate-palette'   => __DIR__ . '/pages/tools/generate-palette.php',
+    'palette-from-image' => __DIR__ . '/pages/tools/palette-from-image.php',
+    'find-color'         => __DIR__ . '/pages/tools/find-color.php',
+    'profile'            => __DIR__ . '/pages/account/profile.php',
+    'favorites'          => __DIR__ . '/pages/account/favorites.php',
+    'saved'              => __DIR__ . '/pages/account/favorites.php',
+    'login'              => __DIR__ . '/pages/account/login.php',
+    'open-source'        => __DIR__ . '/pages/info/open-source.php',
+    'hex-to-color-name'  => __DIR__ . '/pages/tools/hex-to-color-name.php',
+    'hex-to-rgb'         => __DIR__ . '/pages/tools/hex-to-rgb.php',
+    'what-color-is'      => __DIR__ . '/pages/tools/what-color-is.php',
+    'dark-color-finder'  => __DIR__ . '/pages/tools/dark-color-finder.php',
+    'brand-color-lookup' => __DIR__ . '/pages/tools/brand-color-lookup.php',
+    'about'              => __DIR__ . '/pages/info/about.php',
+    'contact'            => __DIR__ . '/pages/info/contact.php',
+    'privacy-policy'     => __DIR__ . '/pages/info/privacy-policy.php',
+    'terms-and-conditions' => __DIR__ . '/pages/info/terms-and-conditions.php',
+    'terms'              => __DIR__ . '/pages/info/terms-and-conditions.php',
+    'cookie-policy'      => __DIR__ . '/pages/info/cookie-policy.php',
+    'verify-human'       => __DIR__ . '/pages/account/verify-human.php',
+    'complementary-colors'       => __DIR__ . '/pages/harmonies/complementary-colors.php',
+    'analogous-colors'           => __DIR__ . '/pages/harmonies/analogous-colors.php',
+    'triadic-colors'             => __DIR__ . '/pages/harmonies/triadic-colors.php',
+    'monochromatic-colors'       => __DIR__ . '/pages/harmonies/monochromatic-colors.php',
+    'split-complementary-colors' => __DIR__ . '/pages/harmonies/split-complementary-colors.php',
+    'tetradic-colors'            => __DIR__ . '/pages/harmonies/tetradic-colors.php',
+    'harmonies/complementary-colors'       => __DIR__ . '/pages/harmonies/complementary-colors.php',
+    'harmonies/analogous-colors'           => __DIR__ . '/pages/harmonies/analogous-colors.php',
+    'harmonies/triadic-colors'             => __DIR__ . '/pages/harmonies/triadic-colors.php',
+    'harmonies/monochromatic-colors'       => __DIR__ . '/pages/harmonies/monochromatic-colors.php',
+    'harmonies/split-complementary-colors' => __DIR__ . '/pages/harmonies/split-complementary-colors.php',
+    'harmonies/tetradic-colors'            => __DIR__ . '/pages/harmonies/tetradic-colors.php',
 ];
 if (isset($staticPages[$path]) || isset($staticPages[$cleanPath])) {
     dispatch($staticPages[$path] ?? $staticPages[$cleanPath]);
 }
 
-// Also handle direct access to pages/xxx or pages/xxx.php
-if (preg_match('#^pages/([a-zA-Z0-9_-]+)(\.php)?$#', $path, $matches)) {
+// Also handle direct access to pages/xxx, pages/<subfolder>/xxx, or pages/xxx.php
+if (preg_match('#^pages/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(\.php)?$#', $path, $matches)) {
+    $target = __DIR__ . '/pages/' . $matches[1] . '/' . $matches[2] . '.php';
+    if (file_exists($target)) {
+        dispatch($target);
+    }
+} elseif (preg_match('#^pages/([a-zA-Z0-9_-]+)(\.php)?$#', $path, $matches)) {
     $target = __DIR__ . '/pages/' . $matches[1] . '.php';
     if (file_exists($target)) {
         dispatch($target);
