@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../services/PosterCacheService.php';
+require_once __DIR__ . '/../../services/PosterCacheService.php';
 
 $category = strtolower(trim((string)($_GET['category'] ?? 'palettes')));
 $idOrSlug = trim((string)($_GET['id'] ?? ''));
@@ -36,22 +36,42 @@ $folderCategory = match($category) {
 };
 
 // 1. Fast path: check if cached image already exists on disk and is valid
-$cachedFile = __DIR__ . '/../assets/generated/posters/' . $folderCategory . '/' . $idOrSlug . '.jpg';
+$cleanSearch = trim(preg_replace('/[^a-z0-9_-]+/i', '-', strtolower($idOrSlug)), '-');
+$cachedFile = __DIR__ . '/../../assets/generated/posters/' . $folderCategory . '/' . $idOrSlug . '.jpg';
+$cleanCachedFile = __DIR__ . '/../../assets/generated/posters/' . $folderCategory . '/' . $cleanSearch . '.jpg';
+
 if (file_exists($cachedFile) && filesize($cachedFile) > 1000) {
     $targetFile = $cachedFile;
+} elseif (file_exists($cleanCachedFile) && filesize($cleanCachedFile) > 1000) {
+    $targetFile = $cleanCachedFile;
 }
 
 if (!$targetFile) {
     if ($category === 'palettes' || $category === 'palette') {
-        $palettesFile = __DIR__ . '/../data/palettes.json';
+        $palettesFile = __DIR__ . '/../../data/palettes.json';
         $palettes = file_exists($palettesFile) ? json_decode((string)file_get_contents($palettesFile), true) : [];
         $matched = null;
 
         if (is_array($palettes)) {
+            $nameCounts = [];
             foreach ($palettes as $p) {
-                $nameSlug = trim(preg_replace('/[^a-z0-9]+/i', '-', strtolower((string)($p['name'] ?? ''))), '-');
+                $s = trim(preg_replace('/[^a-z0-9]+/i', '-', strtolower((string)($p['name'] ?? ''))), '-');
+                $nameCounts[$s] = ($nameCounts[$s] ?? 0) + 1;
+            }
+
+            foreach ($palettes as $p) {
                 $pId = (string)($p['id'] ?? '');
-                if ($nameSlug === strtolower($idOrSlug) || $pId === $idOrSlug) {
+                $nameSlug = trim(preg_replace('/[^a-z0-9]+/i', '-', strtolower((string)($p['name'] ?? ''))), '-');
+                $disambiguatedSlug = $nameSlug;
+                if (($nameCounts[$nameSlug] ?? 0) > 1) {
+                    $disambiguatedSlug .= '-' . str_replace('palette_', '', $pId);
+                }
+
+                if ($pId === $idOrSlug || 
+                    $pId === 'palette_' . $idOrSlug ||
+                    $nameSlug === $cleanSearch || 
+                    $disambiguatedSlug === $cleanSearch ||
+                    (preg_match('#-(\d+)$#', $cleanSearch, $m) && $pId === 'palette_' . $m[1])) {
                     $matched = $p;
                     break;
                 }
@@ -59,11 +79,11 @@ if (!$targetFile) {
         }
 
         if ($matched) {
-            $matched['slug'] = $idOrSlug;
+            $matched['slug'] = $cleanSearch ?: $idOrSlug;
             $targetFile = PosterCacheService::getPalettePoster($matched);
         }
     } elseif ($category === 'gradients' || $category === 'gradient') {
-        $gradientsFile = __DIR__ . '/../data/gradients.json';
+        $gradientsFile = __DIR__ . '/../../data/gradients.json';
         $gradients = file_exists($gradientsFile) ? json_decode((string)file_get_contents($gradientsFile), true) : [];
         $matched = null;
 
@@ -83,7 +103,7 @@ if (!$targetFile) {
             $targetFile = PosterCacheService::getGradientPoster($matched);
         }
     } elseif ($category === 'colors' || $category === 'color') {
-        $colorsFile = __DIR__ . '/../data/color-names.json';
+        $colorsFile = __DIR__ . '/../../data/color-names.json';
         $colors = file_exists($colorsFile) ? json_decode((string)file_get_contents($colorsFile), true) : [];
         $matched = null;
 
