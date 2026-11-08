@@ -1,4 +1,4 @@
-<?php include '../components/config.php'; /** @var string $base */ ?>
+<?php include '../../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -44,7 +44,7 @@
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen selection:bg-primary/20 selection:text-primary">
     <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
 
     <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <!-- Hero Section -->
@@ -238,7 +238,7 @@
         </div>
     </main>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 </body>
 
 </html>
