@@ -243,10 +243,122 @@ window.ColorMagic.getApiUrl = function (endpoint) {
  * @param {string} hex - e.g. "#EC4899"
  */
 window.ColorMagic.isLightColor = function (hex) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
+    if (!hex) return true;
+    hex = String(hex).replace('#', '').trim();
+    if (hex.length === 3) hex = hex.split('').map(function (c) { return c + c; }).join('');
+    if (hex.length < 6) return true;
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
     return (r * 299 + g * 587 + b * 114) / 1000 > 155;
+};
+
+/**
+ * Returns the semantic color family name for any hex code.
+ * E.g. 'Red', 'Blue', 'Green', 'Tan', 'Teal', 'Black', 'Silver', 'Gray', 'Golden', etc.
+ * @param {string} hex
+ * @returns {string}
+ */
+window.ColorMagic.getColorFamily = function (hex) {
+    if (!hex) return 'Color';
+    hex = String(hex).replace('#', '').trim();
+    if (!/^[0-9a-fA-F]{3,6}$/.test(hex)) return hex ? ('#' + hex.toUpperCase()) : 'Color';
+    if (hex.length === 3) hex = hex.split('').map(function (c) { return c + c; }).join('');
+
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+
+    var rn = r / 255, gn = g / 255, bn = b / 255;
+    var max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+    var delta = max - min;
+    var l = (max + min) / 2;
+    var s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    var h = 0;
+    if (delta !== 0) {
+        if (max === rn) {
+            h = ((gn - bn) / delta) % 6;
+        } else if (max === gn) {
+            h = (bn - rn) / delta + 2;
+        } else {
+            h = (rn - gn) / delta + 4;
+        }
+        h = Math.round(h * 60);
+        if (h < 0) h += 360;
+    }
+    var L = Math.round(l * 100);
+    var S = Math.round(s * 100);
+
+    // 1. Black (extremely dark)
+    if (L <= 13 || (r <= 28 && g <= 28 && b <= 28)) return 'Black';
+
+    // 2. White (extremely light and neutral)
+    if (L >= 96 && S <= 25) return 'White';
+
+    // 3. Achromatic Grays & Silvers
+    if (S <= 13 || (Math.max(r, g, b) - Math.min(r, g, b) <= 15)) {
+        return L >= 65 ? 'Silver' : 'Gray';
+    }
+
+    // 4. Tan / Beige / Khaki (warm, earthy, desaturated tones)
+    if ((h >= 25 && h <= 55 && S >= 12 && S <= 55 && L >= 55) ||
+        (h >= 25 && h <= 65 && L >= 82 && S <= 60)) {
+        return 'Tan';
+    }
+
+    // 5. Golden / Gold (rich warm yellows with amber warmth)
+    if (h >= 42 && h <= 56 && S >= 40 && L >= 30 && L <= 82 && b < 165) {
+        return 'Golden';
+    }
+
+    // 6. Brown (dark warm tones)
+    if (h >= 15 && h <= 45 && S >= 15 && L <= 38) {
+        return 'Brown';
+    }
+
+    // 7. Hue spectrum classifications
+    if (h >= 345 || h < 15) {
+        return L >= 70 ? 'Pink' : 'Red';
+    }
+    if (h >= 15 && h < 45) {
+        return 'Orange';
+    }
+    if (h >= 45 && h < 70) {
+        return 'Yellow';
+    }
+    if (h >= 70 && h < 165) {
+        if (h >= 70 && h < 85 && S >= 50) return 'Lime';
+        return 'Green';
+    }
+    if (h >= 165 && h < 195) {
+        return 'Teal';
+    }
+    if (h >= 195 && h < 215) {
+        return L >= 55 ? 'Cyan' : 'Blue';
+    }
+    if (h >= 215 && h < 260) {
+        return 'Blue';
+    }
+    if (h >= 260 && h < 320) {
+        return 'Purple';
+    }
+    if (h >= 320 && h < 345) {
+        return L >= 55 ? 'Pink' : 'Magenta';
+    }
+    return 'Blue';
+};
+
+/**
+ * Returns the semantic color family name with 'Shade' appended.
+ * E.g. 'Red Shade', 'Blue Shade', 'Green Shade', 'Tan Shade', 'Teal Shade',
+ * 'Black Shade', 'Silver Shade', 'Gray Shade', 'Golden Shade', etc.
+ * @param {string} hex
+ * @returns {string}
+ */
+window.ColorMagic.getColorFamilyShade = function (hex) {
+    var family = window.ColorMagic.getColorFamily(hex);
+    if (!family) return 'Color Shade';
+    return family + ' Shade';
 };
 
 /**
