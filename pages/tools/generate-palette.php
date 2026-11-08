@@ -1,4 +1,4 @@
-<?php include '../components/config.php'; /** @var string $base */ ?>
+<?php include '../../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -167,7 +167,7 @@
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
 
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
 
 
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
@@ -409,7 +409,7 @@
 
     </main>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 
     <script>
         window.CM_ACTIVE_PAGE = "generate";
