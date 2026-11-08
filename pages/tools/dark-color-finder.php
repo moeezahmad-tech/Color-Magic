@@ -1,9 +1,9 @@
 <?php
-include '../components/config.php';
+include '../../components/config.php';
 /** @var string $base */
 
 $colorNames = [];
-$colorNamesPath = __DIR__ . '/../data/color-names.json';
+$colorNamesPath = __DIR__ . '/../../data/color-names.json';
 if (file_exists($colorNamesPath)) {
     $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
     if (is_array($decoded)) {
@@ -192,7 +192,7 @@ ksort($grouped);
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
@@ -428,7 +428,7 @@ ksort($grouped);
         </script>
     </main>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 
     <script>
         window.CM_ACTIVE_PAGE = "dark-color-finder";
