@@ -1,4 +1,8 @@
 <?php
+if (!headers_sent()) {
+    header('Cache-Control: public, max-age=3600, stale-while-revalidate=86400');
+    header('Cloudflare-CDN-Cache-Control: public, max-age=86400, stale-while-revalidate=604800');
+}
 include '../../components/config.php';
 /** @var string $base */
 
@@ -565,8 +569,9 @@ $schema = [
     <meta property="twitter:image" content="<?php echo e($absolutePosterUrl); ?>" />
 
     <link rel="manifest" href="<?php echo e($manifestUrl); ?>" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="<?php echo e($faviconUrl); ?>" />
-    <link rel="preload" as="image" href="<?php echo e($faviconUrl); ?>" fetchpriority="high" />
+    <link rel="apple-touch-icon" href="<?php echo e($faviconUrl); ?>" />
 
     <!-- Resource Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -578,8 +583,18 @@ $schema = [
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" /></noscript>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" /></noscript>
     <link rel="stylesheet" href="<?php echo e($siteStylesUrl); ?>" />
+    <script>
+        (function(){
+            var w = console.warn;
+            console.warn = function() {
+                if (arguments[0] && typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                return w.apply(console, arguments);
+            };
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config" src="<?php echo e($tailwindConfigUrl); ?>"></script>
 
@@ -898,13 +913,16 @@ $schema = [
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button id="downloadColorPngBtn"
                         class="w-full px-5 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 active:scale-[0.99]"
-                        title="Download color image">
-                        <i class="bi bi-download text-base"></i>
+                        title="Download color image"
+                        aria-label="Download <?= e($hexName) ?> swatch image">
+                        <i class="bi bi-download text-base" aria-hidden="true"></i>
                         <span>Download Image</span>
                     </button>
                     <button id="favColorHeroBtn"
-                        class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 active:scale-[0.99]">
-                        <i class="bi bi-heart text-base"></i>
+                        class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                        title="Favorite this color"
+                        aria-label="Favorite <?= e($hexName) ?>">
+                        <i class="bi bi-heart text-base" aria-hidden="true"></i>
                         <span>Favorite</span>
                     </button>
                 </div>
@@ -914,11 +932,11 @@ $schema = [
         <!-- SECTION: Official Color Swatch Poster Showcase (Google Images & Pinterest Indexing) -->
         <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8 my-8" aria-labelledby="color-poster-title">
             <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                     <img src="<?= $posterUrl ?>" 
                          alt="<?= e($hexName) ?> (<?= e($hexWithHash) ?>) Pantone Style Swatch Card Poster" 
                          width="1600" height="2000" 
-                         loading="eager" fetchpriority="high"
+                         loading="lazy" decoding="async" fetchpriority="low"
                          class="w-full h-auto object-cover" />
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">

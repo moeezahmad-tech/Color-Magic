@@ -1,8 +1,7 @@
 <?php
 if (!headers_sent()) {
-    header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
-    header('Pragma: no-cache');
-    header('Expires: 0');
+    header('Cache-Control: public, max-age=3600, stale-while-revalidate=86400');
+    header('Cloudflare-CDN-Cache-Control: public, max-age=86400, stale-while-revalidate=604800');
 }
 include '../../components/config.php';
 /** @var string $base */
@@ -212,8 +211,9 @@ $schema = [
     <title><?= $metaTitle ?></title>
     <meta name="description" content="<?= $metaDescription ?>" />
     <link rel="canonical" href="<?= $canonicalUrl ?>" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
-    <link rel="preload" as="image" href="<?= $base ?>/assets/images/logo.png" fetchpriority="high" />
+    <link rel="apple-touch-icon" href="<?= $base ?>/assets/images/logo.png" />
 
     <!-- Open Graph / Facebook / Pinterest -->
     <meta property="og:type" content="website" />
@@ -244,8 +244,18 @@ $schema = [
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" /></noscript>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" /></noscript>
     <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script>
+        (function(){
+            var w = console.warn;
+            console.warn = function() {
+                if (arguments[0] && typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                return w.apply(console, arguments);
+            };
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
 
@@ -437,11 +447,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -516,11 +526,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -564,11 +574,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -614,11 +624,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -665,11 +675,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -760,11 +770,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -824,11 +834,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -875,11 +885,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -926,11 +936,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
@@ -977,11 +987,11 @@ $schema = [
             <!-- SECTION: Official Poster & Swatch Card Showcase (Google Images & Pinterest Indexing) -->
             <section class="bg-gradient-to-br from-purple-50/60 via-white to-pink-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-purple-100/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-8" aria-labelledby="palette-poster-title">
                 <div class="w-full md:w-5/12 max-w-xs shrink-0 mx-auto">
-                    <a href="<?= $posterUrl ?>" target="_blank" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
+                    <a href="<?= $posterUrl ?>" target="_blank" rel="noopener noreferrer" class="block group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-slate-700 hover:scale-[1.02] transition-transform duration-300">
                         <img src="<?= $posterUrl ?>" 
                              alt="<?= e($paletteName) ?> Color Palette (#<?= implode(', #', array_map('normalizeHex', $paletteColors)) ?>) Poster Graphic" 
                              width="1800" height="2100" 
-                             loading="eager" fetchpriority="high"
+                             loading="lazy" decoding="async" fetchpriority="low"
                              class="w-full h-auto object-cover" />
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <span class="px-3.5 py-1.5 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">

@@ -130,7 +130,8 @@ RewriteRule ^harmonies/([^/]+)/?$ pages/harmonies/$1.php [L]
         Header set Cache-Control "max-age=31536000, public, immutable"
     </FilesMatch>
     <FilesMatch "\.(html|htm|php)$">
-        Header set Cache-Control "no-cache, must-revalidate"
+        Header set Cache-Control "public, max-age=3600, stale-while-revalidate=86400"
+        Header set Cloudflare-CDN-Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
     </FilesMatch>
 
     <If "%{REQUEST_URI} =~ m#^/(v2|api|data)/# && %{REQUEST_METHOD} == 'GET'">
@@ -143,4 +144,5 @@ RewriteRule ^harmonies/([^/]+)/?$ pages/harmonies/$1.php [L]
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 </IfModule>
