@@ -289,17 +289,12 @@ function normalize_hex_home(string $hex): string {
         <div class="grid grid-cols-1 py-12 lg:grid-cols-12 gap-12 items-center w-full mb-12">
             <!-- Left Text Content -->
             <div class="lg:col-span-7 text-center lg:text-left space-y-6">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-100/80 dark:bg-pink-950/60 border border-pink-200 dark:border-pink-900/60 text-primary dark:text-pink-300 text-xs font-bold tracking-wide">
-                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                    <span>100% Free &amp; Open-Source Design Suite</span>
-                </div>
-
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15]">
-                    Find <span class="bg-gradient-to-r from-secondary via-fuchsia-500 to-primary bg-clip-text text-transparent">Color Names</span> &amp; Generate Professional Palettes
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.14]">
+                    Discover <span class="bg-gradient-to-r from-secondary via-fuchsia-500 to-primary bg-clip-text text-transparent">Exact Color Names</span> &amp; Craft Harmonious Palettes
                 </h1>
 
                 <p class="text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium max-w-2xl mx-auto lg:mx-0">
-                    Instantly identify any hex code's human-readable name, inspect RGB/HSL values, check WCAG contrast accessibility, and explore over 800+ curated palettes and 300+ CSS gradients with downloadable official high-res posters.
+                    Turn any hex code into its verified color name, inspect RGB &amp; HSL metrics, check WCAG contrast accessibility, and explore 800+ designer palettes and 300+ CSS gradients with downloadable high-res posters.
                 </p>
 
                 <!-- Interactive Quick Color Lookup Form in Hero -->
@@ -339,20 +334,6 @@ function normalize_hex_home(string $hex): string {
                     <button type="button" onclick="setHeroColor('F59E0B')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-mono font-medium transition flex items-center gap-1.5">
                         <span class="w-2.5 h-2.5 rounded-full" style="background-color: #F59E0B;"></span>#F59E0B
                     </button>
-                </div>
-
-                <!-- Primary CTA Links -->
-                <div class="flex flex-wrap gap-4 justify-center lg:justify-start pt-2">
-                    <a href="<?= $base ?>/palettes"
-                        class="px-6 py-3.5 bg-gradient-to-r from-secondary to-primary hover:opacity-95 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
-                        <i class="bi bi-palette-fill"></i>
-                        <span>Explore 800+ Palettes</span>
-                    </a>
-                    <a href="<?= $base ?>/generate-palette"
-                        class="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-xl transition-all border border-slate-200 dark:border-slate-700 flex items-center gap-2">
-                        <i class="bi bi-stars text-secondary"></i>
-                        <span>Generate Color Scheme</span>
-                    </a>
                 </div>
             </div>
 
@@ -468,6 +449,70 @@ function normalize_hex_home(string $hex): string {
                 </div>
             </div>
         </div>
+
+        <!-- ── 1.5 DESIGN SUITE QUICK LAUNCHPAD ───────────────────────────── -->
+        <section class="w-full mb-14 -mt-4" aria-label="Explore Color Magic Suite">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                
+                <!-- Card 1: Explore Palettes -->
+                <a href="<?= $base ?>/palettes" class="group p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                            <i class="bi bi-palette-fill"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight group-hover:text-primary transition-colors">
+                            Explore 800+ Palettes
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                            Browse curated color harmonies across Pastel, Neon, Vintage, and Retro aesthetics with downloadable official posters.
+                        </p>
+                    </div>
+                    <div class="pt-5 flex items-center gap-1.5 text-xs font-bold text-primary">
+                        <span>Browse Library</span>
+                        <i class="bi bi-arrow-right transition-transform group-hover:translate-x-1"></i>
+                    </div>
+                </a>
+
+                <!-- Card 2: Generate Palette -->
+                <a href="<?= $base ?>/generate-palette" class="group p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-secondary/40 dark:hover:border-secondary/40 transition-all duration-300 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-secondary/10 dark:bg-secondary/20 text-secondary flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                            <i class="bi bi-stars"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight group-hover:text-secondary transition-colors">
+                            Generate Color Scheme
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                            Instant color theory engine: Complementary, Analogous, and Triadic harmonies with 1-click lock and copy.
+                        </p>
+                    </div>
+                    <div class="pt-5 flex items-center gap-1.5 text-xs font-bold text-secondary">
+                        <span>Open Studio</span>
+                        <i class="bi bi-arrow-right transition-transform group-hover:translate-x-1"></i>
+                    </div>
+                </a>
+
+                <!-- Card 3: CSS Gradients -->
+                <a href="<?= $base ?>/gradients" class="group p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-amber-400/40 dark:hover:border-amber-400/40 transition-all duration-300 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                            <i class="bi bi-rainbow"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight group-hover:text-amber-500 transition-colors">
+                            300+ CSS Gradients
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                            High-contrast, production-ready linear and radial CSS gradients ready for instant copy and paste into your UI.
+                        </p>
+                    </div>
+                    <div class="pt-5 flex items-center gap-1.5 text-xs font-bold text-amber-500">
+                        <span>Explore Gradients</span>
+                        <i class="bi bi-arrow-right transition-transform group-hover:translate-x-1"></i>
+                    </div>
+                </a>
+
+            </div>
+        </section>
 
         <!-- ── 2. METRICS & TRUST STATS BAR ───────────────────────────────── -->
         <section class="w-full mb-16 py-6" aria-label="Platform Statistics">
@@ -676,113 +721,149 @@ function normalize_hex_home(string $hex): string {
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- 1. Complementary -->
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <a href="<?= $base ?>/complementary-colors" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-base text-slate-900 dark:text-white">Complementary</span>
+                            <span class="font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors">Complementary</span>
                             <span class="text-xs font-mono font-bold text-secondary">180° Opposite</span>
                         </div>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                             Direct opposites on the 360° color wheel. Produces high visual tension, making call-to-actions, buttons, and badges stand out immediately.
                         </p>
                     </div>
-                    <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
-                        <div class="flex-1" style="background-color: #0077FE;" title="#0077FE"></div>
-                        <div class="flex-1" style="background-color: #FE8800;" title="#FE8800"></div>
+                    <div>
+                        <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 mb-3">
+                            <div class="flex-1" style="background-color: #0077FE;" title="#0077FE"></div>
+                            <div class="flex-1" style="background-color: #FE8800;" title="#FE8800"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-bold text-primary">
+                            <span>Explore Guide &amp; Generator</span>
+                            <i class="bi bi-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- 2. Analogous -->
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <a href="<?= $base ?>/analogous-colors" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-base text-slate-900 dark:text-white">Analogous</span>
+                            <span class="font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors">Analogous</span>
                             <span class="text-xs font-mono font-bold text-secondary">30° Adjacent</span>
                         </div>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                             Colors sitting directly next to each other on the color wheel. Creates serene, comfortable, and nature-inspired unified compositions.
                         </p>
                     </div>
-                    <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
-                        <div class="flex-1" style="background-color: #10B981;" title="#10B981"></div>
-                        <div class="flex-1" style="background-color: #059669;" title="#059669"></div>
-                        <div class="flex-1" style="background-color: #34D399;" title="#34D399"></div>
+                    <div>
+                        <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 mb-3">
+                            <div class="flex-1" style="background-color: #10B981;" title="#10B981"></div>
+                            <div class="flex-1" style="background-color: #059669;" title="#059669"></div>
+                            <div class="flex-1" style="background-color: #34D399;" title="#34D399"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-bold text-primary">
+                            <span>Explore Guide &amp; Generator</span>
+                            <i class="bi bi-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- 3. Triadic -->
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <a href="<?= $base ?>/triadic-colors" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-base text-slate-900 dark:text-white">Triadic</span>
+                            <span class="font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors">Triadic</span>
                             <span class="text-xs font-mono font-bold text-secondary">120° Triangle</span>
                         </div>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                             Three equidistant points around the wheel. Vibrant and energetic while preserving harmonious balance between background and accents.
                         </p>
                     </div>
-                    <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
-                        <div class="flex-1" style="background-color: #EF4444;" title="#EF4444"></div>
-                        <div class="flex-1" style="background-color: #F59E0B;" title="#F59E0B"></div>
-                        <div class="flex-1" style="background-color: #3B82F6;" title="#3B82F6"></div>
+                    <div>
+                        <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 mb-3">
+                            <div class="flex-1" style="background-color: #EF4444;" title="#EF4444"></div>
+                            <div class="flex-1" style="background-color: #F59E0B;" title="#F59E0B"></div>
+                            <div class="flex-1" style="background-color: #3B82F6;" title="#3B82F6"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-bold text-primary">
+                            <span>Explore Guide &amp; Generator</span>
+                            <i class="bi bi-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- 4. Monochromatic -->
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <a href="<?= $base ?>/monochromatic-colors" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-base text-slate-900 dark:text-white">Monochromatic</span>
+                            <span class="font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors">Monochromatic</span>
                             <span class="text-xs font-mono font-bold text-secondary">Single Hue</span>
                         </div>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                             Variations in saturation and lightness derived from a single hue. Guaranteed visual cohesion, ideal for sleek SaaS products and clean portfolios.
                         </p>
                     </div>
-                    <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
-                        <div class="flex-1" style="background-color: #1E1B4B;" title="#1E1B4B"></div>
-                        <div class="flex-1" style="background-color: #4338CA;" title="#4338CA"></div>
-                        <div class="flex-1" style="background-color: #818CF8;" title="#818CF8"></div>
-                        <div class="flex-1" style="background-color: #C7D2FE;" title="#C7D2FE"></div>
+                    <div>
+                        <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 mb-3">
+                            <div class="flex-1" style="background-color: #1E1B4B;" title="#1E1B4B"></div>
+                            <div class="flex-1" style="background-color: #4338CA;" title="#4338CA"></div>
+                            <div class="flex-1" style="background-color: #818CF8;" title="#818CF8"></div>
+                            <div class="flex-1" style="background-color: #C7D2FE;" title="#C7D2FE"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-bold text-primary">
+                            <span>Explore Guide &amp; Generator</span>
+                            <i class="bi bi-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- 5. Split-Complementary -->
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <a href="<?= $base ?>/split-complementary-colors" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-base text-slate-900 dark:text-white">Split-Complementary</span>
+                            <span class="font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors">Split-Complementary</span>
                             <span class="text-xs font-mono font-bold text-secondary">150° + 210°</span>
                         </div>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                             A base color plus the two colors flanking its direct complement. Offers vibrant contrast with less tension than a strict complementary pairing.
                         </p>
                     </div>
-                    <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
-                        <div class="flex-1" style="background-color: #8B5CF6;" title="#8B5CF6"></div>
-                        <div class="flex-1" style="background-color: #F59E0B;" title="#F59E0B"></div>
-                        <div class="flex-1" style="background-color: #10B981;" title="#10B981"></div>
+                    <div>
+                        <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 mb-3">
+                            <div class="flex-1" style="background-color: #8B5CF6;" title="#8B5CF6"></div>
+                            <div class="flex-1" style="background-color: #F59E0B;" title="#F59E0B"></div>
+                            <div class="flex-1" style="background-color: #10B981;" title="#10B981"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-bold text-primary">
+                            <span>Explore Guide &amp; Generator</span>
+                            <i class="bi bi-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- 6. Tetradic (Rectangle) -->
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <a href="<?= $base ?>/tetradic-colors" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-base text-slate-900 dark:text-white">Tetradic (Four Hues)</span>
+                            <span class="font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors">Tetradic (Four Hues)</span>
                             <span class="text-xs font-mono font-bold text-secondary">Double Pair</span>
                         </div>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                             Two complementary pairs arranged in a rectangle. Rich and colorful, allowing designers to establish distinct accents across multiple app modules.
                         </p>
                     </div>
-                    <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
-                        <div class="flex-1" style="background-color: #EC4899;" title="#EC4899"></div>
-                        <div class="flex-1" style="background-color: #F59E0B;" title="#F59E0B"></div>
-                        <div class="flex-1" style="background-color: #06B6D4;" title="#06B6D4"></div>
-                        <div class="flex-1" style="background-color: #84CC16;" title="#84CC16"></div>
+                    <div>
+                        <div class="flex h-10 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 mb-3">
+                            <div class="flex-1" style="background-color: #EC4899;" title="#EC4899"></div>
+                            <div class="flex-1" style="background-color: #F59E0B;" title="#F59E0B"></div>
+                            <div class="flex-1" style="background-color: #06B6D4;" title="#06B6D4"></div>
+                            <div class="flex-1" style="background-color: #84CC16;" title="#84CC16"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-bold text-primary">
+                            <span>Explore Guide &amp; Generator</span>
+                            <i class="bi bi-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </section>
 
