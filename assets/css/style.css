@@ -14,10 +14,8 @@ body {
     height: 100%;
 }
 
-header {
+header.sticky {
     min-height: 64px;
-    background: rgba(255, 255, 255, 0.86) !important;
-    border-color: rgba(236, 72, 153, 0.2) !important;
 }
 
 /* ── Universal Loading Fallbacks (Prevents Black Flash) ── */
