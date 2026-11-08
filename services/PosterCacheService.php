@@ -31,9 +31,10 @@ class PosterCacheService {
      * Generate or fetch Palette Poster
      */
     public static function getPalettePoster(array $palette, bool $force = false): string {
-        $name = $palette['name'] ?? 'palette';
-        $slug = trim(preg_replace('/[^a-z0-9]+/i', '-', strtolower($name)), '-');
-        if (empty($slug)) $slug = $palette['id'] ?? 'palette_1';
+        $slug = !empty($palette['slug'])
+            ? trim(preg_replace('/[^a-z0-9_-]+/i', '-', strtolower((string)$palette['slug'])), '-')
+            : trim(preg_replace('/[^a-z0-9]+/i', '-', strtolower((string)($palette['name'] ?? ''))), '-');
+        if (empty($slug)) $slug = (string)($palette['id'] ?? 'palette_1');
 
         $dir = self::ensureDir('palettes');
         $filePath = $dir . '/' . $slug . '.jpg';
