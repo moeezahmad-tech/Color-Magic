@@ -49,8 +49,13 @@ window.ColorMagic.createGradientCard = function (g) {
     header.className = 'flex items-start justify-between gap-2';
 
     var name = document.createElement('h3');
-    name.className = 'text-base font-bold text-slate-800 dark:text-white leading-tight';
-    name.textContent = g.name;
+    name.className = 'text-base font-bold text-slate-800 dark:text-white leading-tight min-w-0 flex-1 truncate';
+    var nameLink = document.createElement('a');
+    nameLink.href = gradientBase + g.id + '/';
+    nameLink.className = 'hover:text-primary transition-colors block truncate';
+    nameLink.title = 'Open gradient: ' + g.name;
+    nameLink.textContent = g.name;
+    name.appendChild(nameLink);
 
     var headerRight = document.createElement('div');
     headerRight.className = 'flex items-center gap-1.5 flex-shrink-0';
