@@ -4,7 +4,7 @@ if (!headers_sent()) {
     header('Pragma: no-cache');
     header('Expires: 0');
 }
-include '../components/config.php';
+include '../../components/config.php';
 /** @var string $base */
 
 function e(string $value): string {
@@ -98,9 +98,12 @@ function slugify(string $text): string {
     return trim(preg_replace('/[^a-z0-9]+/i', '-', strtolower($text)), '-');
 }
 
-$paletteSlug = $_GET['slug'] ?? '';
-$palettesFile = __DIR__ . '/../data/palettes.json';
-$allPalettes = file_exists($palettesFile) ? json_decode(file_get_contents($palettesFile), true) : [];
+$rawPaletteSlug = (string)($_GET['slug'] ?? '');
+$cleanSlug = trim(preg_replace('/[^a-z0-9_-]+/i', '-', strtolower($rawPaletteSlug)), '-');
+$paletteSlug = $cleanSlug;
+
+$palettesFile = __DIR__ . '/../../data/palettes.json';
+$allPalettes = file_exists($palettesFile) ? json_decode((string)file_get_contents($palettesFile), true) : [];
 
 $currentPalette = null;
 if (!empty($paletteSlug) && is_array($allPalettes)) {
@@ -110,16 +113,18 @@ if (!empty($paletteSlug) && is_array($allPalettes)) {
         $nameCounts[$s] = ($nameCounts[$s] ?? 0) + 1;
     }
     foreach ($allPalettes as $p) {
-        if (($p['id'] ?? '') === $paletteSlug) {
-            $currentPalette = $p;
-            break;
-        }
+        $pId = (string)($p['id'] ?? '');
         $s = slugify($p['name'] ?? '');
+        $disambiguated = $s;
         if (($nameCounts[$s] ?? 0) > 1) {
-            $s .= '-' . str_replace('palette_', '', $p['id'] ?? '');
+            $disambiguated .= '-' . str_replace('palette_', '', $pId);
         }
-        if ($s === $paletteSlug) {
+        if ($pId === $paletteSlug || 
+            $disambiguated === $paletteSlug || 
+            $s === $paletteSlug ||
+            (preg_match('#-(\d+)$#', $paletteSlug, $m) && $pId === 'palette_' . $m[1])) {
             $currentPalette = $p;
+            $paletteSlug = $disambiguated;
             break;
         }
     }
@@ -135,11 +140,6 @@ $metaTitle = $currentPalette
     : 'Curated Color Palette | Color Magic';
 $metaDescription = 'Explore ' . e($paletteName) . ' featuring ' . count($paletteColors) . ' harmonious colors (' . e($colorListString) . '). View RGB, HSL, CMYK conversions, contrast accessibility, and CSS variables.';
 $canonicalUrl = 'https://colormagic.techkreative.com/palette/' . ($paletteSlug !== '' ? e($paletteSlug) . '/' : '');
-$posterSlug = $paletteSlug !== '' ? $paletteSlug : ($currentPalette['id'] ?? 'palette_1');
-$posterPath = '/posters/palettes/' . $posterSlug . '.jpg';
-$posterUrl = $base . $posterPath;
-$absolutePosterUrl = 'https://colormagic.techkreative.com' . $posterPath;
-
 $posterSlug = $paletteSlug !== '' ? $paletteSlug : ($currentPalette['id'] ?? 'palette_1');
 $posterPath = '/posters/palettes/' . $posterSlug . '.jpg';
 $posterUrl = $base . $posterPath;
@@ -275,7 +275,7 @@ $schema = [
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
 
     <main class="w-full max-w-7xl mx-auto pt-24 p-5 md:p-8 flex flex-col gap-8">
         <!-- Top Navigation: Breadcrumb -->
@@ -1027,7 +1027,7 @@ $schema = [
         </section>
     </main>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 
     <script>
         window.CM_COLOR_BASE    = '<?= $base ?>/color/';

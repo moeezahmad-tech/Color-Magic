@@ -1,4 +1,4 @@
-<?php include '../components/config.php'; /** @var string $base */ ?>
+<?php include '../../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -221,7 +221,7 @@
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
     <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
 
 
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
@@ -424,12 +424,13 @@
             </div>
     </main>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 
     <script>
         window.CM_ACTIVE_PAGE = "explore";
-        window.CM_COLOR_BASE = 'color/';
-        window.CM_PALETTE_BASE = 'palette/';
+        window.CM_COLOR_BASE = '<?= $base ?>/color/';
+        window.CM_PALETTE_BASE = '<?= $base ?>/palette/';
+        window.CM_BASE = '<?= $base ?>';
 
         // Filter panel toggle
         (function () {
@@ -448,7 +449,7 @@
     </script>
     <script src="<?= $base ?>/assets/js/utils.js?v=2.1" defer></script>
     <script src="<?= $base ?>/assets/js/services/favorites.js?v=2.1" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=2.1" defer></script>
+    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= cm_asset_v('assets/js/components/palette-card.js') ?>" defer></script>
     <script src="<?= $base ?>/assets/js/explore-palettes.js?v=2.1" defer></script>
 </body>
 
