@@ -24,36 +24,65 @@
     var panelPalettes      = document.getElementById('favPanelPalettes');
     var panelGradients     = document.getElementById('favPanelGradients');
 
-    var activeTab = 'colors';
+    var activeTab = 'palettes';
 
     // ─── Tab switching ──────────────────────────────────────────────────────────
+    function switchTab(tabName) {
+        if (!tabName) return;
+        activeTab = tabName;
+        document.querySelectorAll('.fav-tab').forEach(function (b) {
+            if (b.dataset.tab === tabName) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+        [panelColors, panelPalettes, panelGradients].forEach(function (p) {
+            if (p) p.classList.add('hidden');
+        });
+        var target = activeTab === 'colors' ? panelColors
+                   : activeTab === 'palettes' ? panelPalettes
+                   : panelGradients;
+        if (target) target.classList.remove('hidden');
+
+        try {
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState(null, '', '#' + tabName);
+            }
+        } catch(e) {}
+    }
+
     if (favTabs) {
         favTabs.addEventListener('click', function (e) {
             var btn = e.target.closest('.fav-tab');
             if (!btn) return;
-            activeTab = btn.dataset.tab;
-            document.querySelectorAll('.fav-tab').forEach(function (b) {
-                b.classList.remove('active');
-            });
-            btn.classList.add('active');
-            [panelColors, panelPalettes, panelGradients].forEach(function (p) {
-                if (p) p.classList.add('hidden');
-            });
-            var target = activeTab === 'colors' ? panelColors
-                       : activeTab === 'palettes' ? panelPalettes
-                       : panelGradients;
-            if (target) target.classList.remove('hidden');
+            switchTab(btn.dataset.tab);
         });
+
+        // Initialize based on URL hash if provided
+        var hash = (window.location.hash || '').replace('#', '').toLowerCase();
+        if (hash === 'colors' || hash === 'gradients' || hash === 'palettes') {
+            switchTab(hash);
+        } else {
+            switchTab('palettes');
+        }
     }
 
     // ─── Empty state builder ────────────────────────────────────────────────────
-    function buildEmptyState(icon, title, message) {
+    function buildEmptyState(icon, title, message, ctaText, ctaHref) {
         var div = document.createElement('div');
-        div.className = 'col-span-full flex flex-col items-center justify-center py-16 text-center';
+        div.className = 'col-span-full flex flex-col items-center justify-center py-20 text-center px-4';
+        var ctaHtml = (ctaText && ctaHref)
+            ? '<a href="' + ctaHref + '" class="mt-5 px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition-all active:scale-95 inline-flex items-center gap-2">'
+              + '<i class="bi bi-compass"></i><span>' + ctaText + '</span></a>'
+            : '';
         div.innerHTML =
-            '<i class="bi ' + icon + ' text-6xl text-slate-300 dark:text-slate-700 mb-4"></i>'
-            + '<p class="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">' + title + '</p>'
-            + '<p class="text-sm text-slate-500 max-w-md">' + message + '</p>';
+            '<div class="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4 shadow-inner">'
+            +   '<i class="bi ' + icon + ' text-3xl"></i>'
+            + '</div>'
+            + '<p class="text-xl font-extrabold text-slate-800 dark:text-white mb-2 tracking-tight">' + title + '</p>'
+            + '<p class="text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">' + message + '</p>'
+            + ctaHtml;
         return div;
     }
 
@@ -68,9 +97,23 @@
 
     // ─── Color card builder ─────────────────────────────────────────────────────
     function buildColorCard(hex, name, slug) {
-        var fullHex = '#' + hex;
+        var cleanHex = String(hex || '').replace('#', '').trim();
+        var fullHex = '#' + cleanHex;
         var light   = window.ColorMagic.isLightColor(fullHex);
         var textCls = light ? 'text-slate-800' : 'text-white';
+
+        var isKnownName = name && typeof name === 'string' &&
+            name.toLowerCase() !== 'unknown color' &&
+            name.toLowerCase() !== 'unknown' &&
+            name.trim().length > 0;
+
+        var familyShade = (window.ColorMagic && window.ColorMagic.getColorFamilyShade)
+            ? window.ColorMagic.getColorFamilyShade(fullHex)
+            : (fullHex.toUpperCase() + ' Shade');
+
+        var displayName = isKnownName ? name : familyShade;
+        var displaySlug = slug || cleanHex.toLowerCase();
+        var colorUrl    = (window.CM_COLOR_BASE || 'color/') + displaySlug + '/';
 
         var card = document.createElement('div');
         card.className = 'color-fav-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col';
@@ -79,18 +122,18 @@
             '<div class="h-28 w-full relative flex items-end p-2.5" style="background-color:' + fullHex + '">'
             +   '<div class="flex items-center justify-between w-full">'
             +     '<span class="text-xs font-mono font-bold ' + textCls + ' drop-shadow">' + fullHex.toUpperCase() + '</span>'
-            +     '<button class="fav-color-remove-btn border-none bg-transparent p-1 rounded-md transition-colors ' + textCls + ' hover:text-red-400" data-hex="' + hex + '" title="Remove from favorites">'
+            +     '<button class="fav-color-remove-btn border-none bg-transparent p-1 rounded-md transition-colors ' + textCls + ' hover:text-red-400" data-hex="' + cleanHex + '" title="Remove from favorites">'
             +       '<i class="bi bi-heart-fill text-sm drop-shadow"></i>'
             +     '</button>'
             +   '</div>'
             + '</div>'
             + '<div class="p-3 flex flex-col gap-1.5">'
-            +   '<a href="color/' + (slug || hex) + '/" class="text-sm font-bold text-slate-800 dark:text-white hover:text-primary transition-colors leading-tight truncate" title="' + (name || hex) + '">'
-            +     (name || 'Unknown color')
+            +   '<a href="' + colorUrl + '" class="text-sm font-bold text-slate-800 dark:text-white hover:text-primary transition-colors leading-tight truncate" title="' + displayName + ' (' + fullHex.toUpperCase() + ')">'
+            +     displayName
             +   '</a>'
             +   '<div class="flex items-center justify-between gap-2">'
-            +     '<span class="text-[11px] text-slate-400 dark:text-slate-500 font-mono">' + fullHex.toUpperCase() + '</span>'
-            +     '<button class="fav-color-copy-btn border-none bg-transparent text-[11px] font-semibold text-primary hover:underline flex items-center gap-1" data-hex="' + fullHex + '">'
+            +     '<span class="text-[11px] text-slate-400 dark:text-slate-500 font-mono font-medium">' + fullHex.toUpperCase() + '</span>'
+            +     '<button class="fav-color-copy-btn border-none bg-transparent text-[11px] font-semibold text-primary hover:underline flex items-center gap-1" data-hex="' + fullHex.toUpperCase() + '">'
             +       '<i class="bi bi-clipboard text-xs"></i> Copy'
             +     '</button>'
             +   '</div>'
@@ -117,18 +160,23 @@
         var favHexes = window.ColorMagic.ColorFavorites.getFavorites();
         if (favHexes.length === 0) {
             favColorsGrid.appendChild(
-                buildEmptyState('bi-eyedropper', 'No Saved Colors',
-                    'Start saving colors by clicking the heart icon on any color swatch across the app.')
+                buildEmptyState('bi-eyedropper', 'No Saved Colors Yet',
+                    'Start saving colors by clicking the heart icon on any color swatch across the app.',
+                    'Find Color Details', 'find-color')
             );
             return 0;
         }
 
         var fragment = document.createDocumentFragment();
         favHexes.forEach(function (hex) {
-            var entry = colorNames[hex];
+            var cleanHex = String(hex || '').replace('#', '').trim();
+            var entry = null;
+            if (colorNames) {
+                entry = colorNames[cleanHex.toUpperCase()] || colorNames[cleanHex.toLowerCase()] || colorNames[cleanHex];
+            }
             var name  = entry ? entry.name : null;
             var slug  = entry ? entry.slug : null;
-            fragment.appendChild(buildColorCard(hex, name, slug));
+            fragment.appendChild(buildColorCard(cleanHex, name, slug));
         });
         favColorsGrid.appendChild(fragment);
         return favHexes.length;
@@ -147,8 +195,9 @@
 
         if (favPalettes.length === 0) {
             favPalettesGrid.appendChild(
-                buildEmptyState('bi-palette', 'No Saved Palettes',
-                    'Start saving palettes by clicking the heart icon on any palette card.')
+                buildEmptyState('bi-palette', 'No Saved Palettes Yet',
+                    'Start saving palettes by clicking the heart icon on any palette card.',
+                    'Browse 800+ Palettes', 'palettes')
             );
             return 0;
         }
@@ -176,8 +225,9 @@
 
         if (favGradients.length === 0) {
             favGradientsGrid.appendChild(
-                buildEmptyState('bi-rainbow', 'No Saved Gradients',
-                    'Start saving gradients by clicking the heart icon on any gradient card.')
+                buildEmptyState('bi-rainbow', 'No Saved Gradients Yet',
+                    'Start saving gradients by clicking the heart icon on any gradient card.',
+                    'Explore 300+ Gradients', 'gradients')
             );
             return 0;
         }
@@ -246,13 +296,21 @@
         }
 
         // Remove gradient from favorites
-        var gradRemoveBtn = e.target.closest('.fav-gradient-btn');
-        if (gradRemoveBtn) {
+        var gradRemoveBtn = e.target.closest('.gradient-fav-btn') || e.target.closest('.fav-gradient-btn');
+        if (gradRemoveBtn && favGradientsGrid && favGradientsGrid.contains(gradRemoveBtn)) {
             var gid = gradRemoveBtn.dataset.gradientId;
             window.ColorMagic.GradientFavorites.toggleFavorite(gid);
-            var icon = gradRemoveBtn.querySelector('i');
-            var nowFav = window.ColorMagic.GradientFavorites.isFavorite(gid);
-            if (icon) icon.className = 'bi ' + (nowFav ? 'bi-heart-fill text-red-500' : 'bi-heart') + ' text-base';
+            // Re-render gradients
+            var gPromise = (window.ColorMagic && window.ColorMagic.api)
+                ? window.ColorMagic.api.getGradients({ limit: 1000 })
+                : fetch('/api/gradients.json').then(function(r){ return r.json(); }).then(function(d){ return { data: d }; });
+            gPromise.then(function (res) {
+                var data = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
+                var count = renderGradients(Array.isArray(data) ? data : []);
+                var colorCount   = window.ColorMagic.ColorFavorites.getFavorites().length;
+                var paletteCount = window.ColorMagic.Favorites.getFavorites().length;
+                updateCounts(colorCount, paletteCount, count);
+            });
             return;
         }
 
