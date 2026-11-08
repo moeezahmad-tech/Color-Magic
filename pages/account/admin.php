@@ -5,7 +5,7 @@
  * On production where admin/ is not deployed, gracefully renders 404.
  */
 
-if (!file_exists(__DIR__ . '/../admin/index.php')) {
+if (!file_exists(__DIR__ . '/../../admin/index.php')) {
     http_response_code(404);
     if (file_exists(__DIR__ . '/404.php')) {
         include __DIR__ . '/404.php';
@@ -15,4 +15,4 @@ if (!file_exists(__DIR__ . '/../admin/index.php')) {
     exit;
 }
 
-require __DIR__ . '/../admin/index.php';
+require __DIR__ . '/../../admin/index.php';

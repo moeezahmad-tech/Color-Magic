@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../components/config.php';
-require_once __DIR__ . '/../components/security-gate.php';
+require_once __DIR__ . '/../../components/config.php';
+require_once __DIR__ . '/../../components/security-gate.php';
 
 $redirect = $_GET['redirect'] ?? ($base !== '' ? $base : '/');
 // Sanitize redirect to prevent open redirect vulnerabilities

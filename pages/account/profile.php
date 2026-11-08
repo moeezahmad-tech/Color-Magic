@@ -1,7 +1,7 @@
 <?php 
-require_once __DIR__ . '/../components/config.php'; 
-require_once __DIR__ . '/../auth/AdminAuth.php';
-require_once __DIR__ . '/../auth/UserDb.php';
+require_once __DIR__ . '/../../components/config.php'; 
+require_once __DIR__ . '/../../auth/AdminAuth.php';
+require_once __DIR__ . '/../../auth/UserDb.php';
 /** @var string $base */ 
 
 $profileEmail = $_SESSION['user']['email'] ?? null;
@@ -17,8 +17,14 @@ $userBio = $dbUser['bio'] ?? ($_SESSION['user']['bio'] ?? '');
 $userWebsite = $dbUser['website'] ?? ($_SESSION['user']['website'] ?? '');
 $userCity = $dbUser['city'] ?? ($_SESSION['user']['city'] ?? '');
 $userCountry = $dbUser['country'] ?? ($_SESSION['user']['country'] ?? '');
+$userCreatedAt = $dbUser['created_at'] ?? null;
+$userLastLogin = $dbUser['last_login'] ?? null;
+$userRole = $dbUser['role'] ?? ($_SESSION['user']['role'] ?? ($isAdmin ? 'admin' : 'user'));
+$createdFormatted = $userCreatedAt ? date('F j, Y', strtotime($userCreatedAt)) : null;
+$lastLoginFormatted = $userLastLogin ? date('M j, Y, g:i A', strtotime($userLastLogin)) : null;
+$isLoggedIn = !empty($profileEmail);
 
-$avatarsFile = __DIR__ . '/../data/avatars.json';
+$avatarsFile = __DIR__ . '/../../data/avatars.json';
 $avatarsList = file_exists($avatarsFile) ? json_decode((string)file_get_contents($avatarsFile), true) : [];
 if (!is_array($avatarsList)) $avatarsList = [];
 ?>
@@ -188,7 +194,7 @@ if (!is_array($avatarsList)) $avatarsList = [];
 </head>
 
 <body class="bg-[#fbfbfb] dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
 
     <!-- ══ MAIN CONTENT WRAPPER ═════════════════════════════════════════════════ -->
     <main class="w-full max-w-full px-4 sm:px-8 md:px-12 lg:px-16 pt-6 sm:pt-8 pb-24">
@@ -204,18 +210,13 @@ if (!is_array($avatarsList)) $avatarsList = [];
                     <button type="button" class="profile-sidebar-item" data-target="panelAccount">
                         <span class="tab-title">Account management</span>
                     </button>
-                    <button type="button" class="profile-sidebar-item" data-target="panelColors">
-                        <span class="tab-title">Saved Colors</span>
-                        <span class="tab-badge" id="favColorsCount">0</span>
-                    </button>
-                    <button type="button" class="profile-sidebar-item" data-target="panelPalettes">
-                        <span class="tab-title">Saved Palettes</span>
-                        <span class="tab-badge" id="favPalettesCount">0</span>
-                    </button>
-                    <button type="button" class="profile-sidebar-item" data-target="panelGradients">
-                        <span class="tab-title">Saved Gradients</span>
-                        <span class="tab-badge" id="favGradientsCount">0</span>
-                    </button>
+                    <a href="<?= $base ?>/favorites" class="profile-sidebar-item group">
+                        <span class="tab-title flex items-center gap-1.5">
+                            <i class="bi bi-heart-fill text-rose-500 text-xs"></i>
+                            <span>Saved Favorites</span>
+                        </span>
+                        <i class="bi bi-arrow-up-right text-xs text-slate-400 group-hover:text-primary transition-colors"></i>
+                    </a>
                 </nav>
             </aside>
 
@@ -236,11 +237,12 @@ if (!is_array($avatarsList)) $avatarsList = [];
                         </p>
                     </div>
                     <div class="flex items-center gap-2.5">
-                        <button type="button" onclick="document.getElementById('resetProfileBtn').click()" class="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition active:scale-95">
+                        <button type="button" id="resetProfileBtn" class="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition active:scale-95">
                             Reset
                         </button>
-                        <button type="button" onclick="document.getElementById('saveProfileBtn').click()" class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition flex items-center gap-1.5 active:scale-95">
-                            <span>Save</span>
+                        <button type="submit" form="pinterestProfileForm" id="saveProfileBtn" class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition flex items-center gap-1.5 active:scale-95 disabled:opacity-75">
+                            <i class="bi bi-floppy text-xs"></i>
+                            <span id="saveProfileBtnText">Save</span>
                         </button>
                         <?php if ($isAdmin): ?>
                             <a id="adminHeroBtn" href="<?= $base ?>/admin" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white rounded-full font-bold text-xs shadow-md shadow-purple-500/20 hover:scale-[1.02] transition-all">
@@ -347,73 +349,174 @@ if (!is_array($avatarsList)) $avatarsList = [];
                     </div>
                 </div>
 
-                <!-- Pinterest Bottom Action Buttons (Non-floating, placed at end of form) -->
-                <div class="pt-8 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
-                    <button type="button" id="resetProfileBtn" class="px-6 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm transition active:scale-95">
-                        Reset
-                    </button>
-                    <button type="submit" id="saveProfileBtn" class="px-7 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-sm shadow-md transition flex items-center gap-2 active:scale-95">
-                        <span>Save</span>
-                    </button>
-                </div>
             </form>
         </div>
 
-        <!-- ── 3. SAVED COLORS PANEL ────────────────────────────────────────── -->
-        <div id="panelColors" class="profile-tab-panel hidden">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Saved Colors</h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Your liked hexadecimal swatches and verified color profiles.</p>
-                </div>
-            </div>
-            <div id="favColorsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
-        </div>
-
-        <!-- ── 4. SAVED PALETTES PANEL ──────────────────────────────────────── -->
-        <div id="panelPalettes" class="profile-tab-panel hidden">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Saved Palettes</h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Curated color harmony combinations saved to your profile.</p>
-                </div>
-            </div>
-            <div id="favPalettesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
-        </div>
-
-        <!-- ── 5. SAVED GRADIENTS PANEL ─────────────────────────────────────── -->
-        <div id="panelGradients" class="profile-tab-panel hidden">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Saved Gradients</h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">CSS gradients ready for your user interface projects.</p>
-                </div>
-            </div>
-            <div id="favGradientsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
-        </div>
-
-        <!-- ── 6. ACCOUNT & SECURITY PANEL ─────────────────────────────────── -->
+        <!-- ── 3. ACCOUNT & SECURITY PANEL ─────────────────────────────────── -->
         <div id="panelAccount" class="profile-tab-panel hidden">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Account Management</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Manage your account credentials, sessions, and data privacy.</p>
+            <div class="mb-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    Account management
+                </h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed max-w-xl">
+                    View your verified account credentials, sign-in activity, and manage your data privacy settings.
+                </p>
             </div>
 
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Signed in as</p>
-                    <p class="text-base font-bold text-slate-900 dark:text-white"><?= htmlspecialchars($profileEmail ?? 'Guest User') ?></p>
+            <!-- LOGGED-IN STATE CONTAINER -->
+            <div id="authAccountState" class="<?= $isLoggedIn ? '' : 'hidden' ?> space-y-6 max-w-3xl">
+                
+                <!-- 1. Identity Hero Card -->
+                <div class="bg-white dark:bg-slate-900 p-6 sm:p-7 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                    <div class="flex items-center gap-4">
+                        <div class="relative shrink-0">
+                            <img id="accountAvatarImg" src="<?= htmlspecialchars($avatarUrl) ?>" alt="Avatar" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                            <button type="button" onclick="openAvatarModal()" title="Change avatar" class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md flex items-center justify-center text-xs hover:scale-105 transition">
+                                <i class="bi bi-camera"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h3 id="accountNameHeading" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                                    <?= htmlspecialchars($userName ?: ($profileEmail ? explode('@', $profileEmail)[0] : 'User')) ?>
+                                </h3>
+                                <span id="accountRoleBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide <?= $isAdmin ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' ?>">
+                                    <?= $isAdmin ? 'Admin' : 'Member' ?>
+                                </span>
+                            </div>
+                            <p id="accountEmailSub" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5 font-mono">
+                                <?= htmlspecialchars($profileEmail ?? '') ?>
+                            </p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span>Active Session</span>
+                                </span>
+                                <span id="accountUsernameBadge" class="text-xs font-mono text-slate-400 dark:text-slate-500">
+                                    @<?= htmlspecialchars($userUsername ?: ($profileEmail ? explode('@', $profileEmail)[0] : 'user')) ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="document.querySelector('[data-target=\'panelEditProfile\']').click()" class="px-5 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs transition self-stretch sm:self-auto text-center shrink-0">
+                        Edit Profile
+                    </button>
                 </div>
 
-                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-3">
-                    <a href="<?= $base ?>/auth/logout" class="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2">
-                        <i class="bi bi-box-arrow-right"></i>
-                        <span>Log out</span>
+                <!-- 2. Detailed Metadata Grid -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm divide-y divide-slate-100 dark:divide-slate-800/80 overflow-hidden">
+                    
+                    <!-- Account Name -->
+                    <div class="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Account Name</span>
+                            <span id="accountNameValue" class="text-base font-bold text-slate-900 dark:text-white mt-0.5 block">
+                                <?= htmlspecialchars($userName ?: 'Not configured') ?>
+                            </span>
+                        </div>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">Display name for shared palettes</span>
+                    </div>
+
+                    <!-- Account Email -->
+                    <div class="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Account Email</span>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span id="accountEmailValue" class="text-base font-bold text-slate-900 dark:text-white font-mono">
+                                    <?= htmlspecialchars($profileEmail ?: 'No email linked') ?>
+                                </span>
+                                <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
+                                    <i class="bi bi-patch-check-fill"></i> Verified
+                                </span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">Primary authentication credential</span>
+                    </div>
+
+                    <!-- Sign-in Provider -->
+                    <div class="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Sign-in Provider</span>
+                            <div class="flex items-center gap-2 mt-1">
+                                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                                </svg>
+                                <span class="text-sm font-bold text-slate-800 dark:text-slate-200">Google OAuth 2.0</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">Secured via Google Identity</span>
+                    </div>
+
+                    <!-- Account Created At -->
+                    <div class="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Account Created</span>
+                            <span id="accountCreatedAtValue" class="text-sm font-bold text-slate-900 dark:text-white mt-0.5 block">
+                                <?= htmlspecialchars($createdFormatted ?: 'Active Member') ?>
+                            </span>
+                        </div>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">Initial registration date</span>
+                    </div>
+
+                    <!-- Last Logged In -->
+                    <div class="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Last Logged In</span>
+                            <span id="accountLastLoginValue" class="text-sm font-bold text-slate-900 dark:text-white mt-0.5 block">
+                                <?= htmlspecialchars($lastLoginFormatted ?: 'Active now') ?>
+                            </span>
+                        </div>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">Most recent verified session</span>
+                    </div>
+
+                </div>
+
+                <!-- 3. Security & Actions -->
+                <div class="bg-white dark:bg-slate-900 p-6 sm:p-7 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                    <h4 class="text-base font-bold text-slate-900 dark:text-white mb-1.5">Session &amp; Security</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
+                        Your design data and color harmonies are safely synchronized with our secure database. You can sign out anytime or permanently delete your account.
+                    </p>
+                    
+                    <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <a href="<?= $base ?>/auth/logout" class="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Sign Out</span>
+                        </a>
+                        <button type="button" onclick="if(confirm('Are you sure you want to permanently delete your Color Magic account? This will permanently delete your profile and cloud-saved palettes.')) window.location.href='<?= $base ?>/auth/delete-account'" class="px-5 py-2.5 rounded-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 text-xs font-bold transition flex items-center gap-2">
+                            <i class="bi bi-trash3"></i>
+                            <span>Delete Account</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- GUEST STATE CONTAINER (Shown if no session and no localStorage) -->
+            <div id="guestAccountState" class="<?= $isLoggedIn ? 'hidden' : '' ?> bg-white dark:bg-slate-900 p-8 sm:p-12 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm max-w-2xl text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-pink-500 to-rose-500 text-white flex items-center justify-center mx-auto text-2xl shadow-lg shadow-pink-500/20">
+                    <i class="bi bi-person-fill-lock"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Guest Workspace</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
+                        You are currently browsing Color Magic as a guest. Sign in with Google to synchronize your saved palettes, custom gradients, and personal profile across all your devices.
+                    </p>
+                </div>
+                <div class="pt-3 flex justify-center">
+                    <a href="<?= $base ?>/login" class="px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition inline-flex items-center gap-2.5 active:scale-95">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                        <span>Sign In with Google</span>
                     </a>
-                    <button type="button" onclick="if(confirm('Are you sure you want to delete your account? This will permanently remove your favorites and personal data.')) window.location.href='<?= $base ?>/auth/delete-account'" class="px-5 py-2.5 rounded-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 text-xs font-bold transition flex items-center gap-2">
-                        <i class="bi bi-trash3"></i>
-                        <span>Delete account</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -483,21 +586,14 @@ if (!is_array($avatarsList)) $avatarsList = [];
         </div>
     </div>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 
     <script>
-        window.CM_ACTIVE_PAGE   = "favorites";
-        window.CM_COLOR_BASE    = "color/";
-        window.CM_PALETTE_BASE  = "palette/";
-        window.CM_GRADIENT_BASE = "gradient/";
+        window.CM_ACTIVE_PAGE   = "profile";
         window.CM_CURRENT_AVATAR = "<?= htmlspecialchars($userAvatar) ?>";
         window.CM_BASE = "<?= $base ?>";
     </script>
     <script src="<?= $base ?>/assets/js/utils.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/services/favorites.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/components/palette-card.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/components/gradient-card.js?v=<?= time() ?>" defer></script>
-    <script src="<?= $base ?>/assets/js/favorites-page.js?v=<?= time() ?>" defer></script>
 
     <script>
         var selectedAvatarFile = window.CM_CURRENT_AVATAR || '1.webp';
@@ -659,10 +755,10 @@ if (!is_array($avatarsList)) $avatarsList = [];
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 var saveBtn = document.getElementById('saveProfileBtn');
-                var origText = saveBtn ? saveBtn.innerHTML : '';
                 if (saveBtn) {
                     saveBtn.disabled = true;
-                    saveBtn.innerHTML = '<span>Saving...</span>';
+                    saveBtn.className = "px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-xs shadow-md transition flex items-center gap-2 active:scale-95 disabled:opacity-75";
+                    saveBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-1 h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg><span>Saving...</span>';
                 }
 
                 var payload = {
@@ -687,8 +783,12 @@ if (!is_array($avatarsList)) $avatarsList = [];
 
                     if (saveBtn) {
                         saveBtn.disabled = false;
-                        saveBtn.innerHTML = '<span>Saved!</span>';
-                        setTimeout(function() { saveBtn.innerHTML = origText; }, 2000);
+                        saveBtn.className = "px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition flex items-center gap-1.5 active:scale-95";
+                        saveBtn.innerHTML = '<i class="bi bi-check2 text-sm font-black"></i><span>Saved!</span>';
+                        setTimeout(function() {
+                            saveBtn.className = "px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition flex items-center gap-1.5 active:scale-95 disabled:opacity-75";
+                            saveBtn.innerHTML = '<i class="bi bi-floppy text-xs"></i><span id="saveProfileBtnText">Save</span>';
+                        }, 2500);
                     }
                 }
 
@@ -711,13 +811,79 @@ if (!is_array($avatarsList)) $avatarsList = [];
             });
         }
 
-        // Hydrate from localStorage if present
+        function hydrateAccountManagement(u) {
+            if (!u || !u.email) return;
+
+            var authCard = document.getElementById('authAccountState');
+            var guestCard = document.getElementById('guestAccountState');
+            if (authCard) authCard.classList.remove('hidden');
+            if (guestCard) guestCard.classList.add('hidden');
+
+            var name = u.name || (u.email ? u.email.split('@')[0] : 'User');
+            var email = u.email;
+            var username = u.username || (u.email ? u.email.split('@')[0] : 'user');
+
+            var nameHeading = document.getElementById('accountNameHeading');
+            if (nameHeading) nameHeading.textContent = name;
+
+            var nameVal = document.getElementById('accountNameValue');
+            if (nameVal) nameVal.textContent = name;
+
+            var emailSub = document.getElementById('accountEmailSub');
+            if (emailSub) emailSub.textContent = email;
+
+            var emailVal = document.getElementById('accountEmailValue');
+            if (emailVal) emailVal.textContent = email;
+
+            var userBadge = document.getElementById('accountUsernameBadge');
+            if (userBadge) userBadge.textContent = '@' + username;
+
+            var avImg = document.getElementById('accountAvatarImg');
+            if (avImg && u.avatar) {
+                avImg.src = '<?= $base ?>/assets/avatars/' + u.avatar;
+            }
+
+            if (u.created_at) {
+                var createdVal = document.getElementById('accountCreatedAtValue');
+                if (createdVal) {
+                    try {
+                        var d = new Date(u.created_at);
+                        if (!isNaN(d.getTime())) {
+                            createdVal.textContent = d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+                        }
+                    } catch(e) {}
+                }
+            }
+
+            if (u.last_login) {
+                var lastLoginVal = document.getElementById('accountLastLoginValue');
+                if (lastLoginVal) {
+                    try {
+                        var d = new Date(u.last_login);
+                        if (!isNaN(d.getTime())) {
+                            lastLoginVal.textContent = d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) + ', ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                        }
+                    } catch(e) {}
+                }
+            }
+
+            var roleBadge = document.getElementById('accountRoleBadge');
+            if (roleBadge) {
+                var isAdmin = Boolean(u.role === 'admin' || u.is_admin || localStorage.getItem('cm_admin_token'));
+                roleBadge.textContent = isAdmin ? 'Admin' : 'Member';
+                roleBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide ' +
+                    (isAdmin ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300');
+            }
+        }
+
+        // Hydrate from localStorage immediately, then sync latest from server
         (function() {
             try {
                 var raw = localStorage.getItem('cm_user');
                 if (raw) {
                     var u = JSON.parse(raw);
                     if (u) {
+                        hydrateAccountManagement(u);
                         if (u.name && !document.getElementById('pinterestName').value) {
                             document.getElementById('pinterestName').value = u.name;
                         }
@@ -749,6 +915,22 @@ if (!is_array($avatarsList)) $avatarsList = [];
                     }
                 }
             } catch(e) {}
+
+            // Background fetch to ensure latest DB record (created_at, last_login)
+            fetch('<?= $base ?>/auth/user-profile.php')
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (res && res.success && res.user) {
+                        hydrateAccountManagement(res.user);
+                        try {
+                            var raw = localStorage.getItem('cm_user');
+                            var u = raw ? JSON.parse(raw) : {};
+                            Object.assign(u, res.user);
+                            localStorage.setItem('cm_user', JSON.stringify(u));
+                        } catch(e) {}
+                    }
+                })
+                .catch(function() {});
         })();
     </script>
 </body>

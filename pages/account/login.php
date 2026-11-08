@@ -2,8 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-include '../components/config.php'; 
-require_once __DIR__ . '/../auth/AdminAuth.php';
+include '../../components/config.php'; 
+require_once __DIR__ . '/../../auth/AdminAuth.php';
 /** @var string $base */ 
 if (isset($_GET['return'])) {
     $_SESSION['auth_return'] = $_GET['return'];
