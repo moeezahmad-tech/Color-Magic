@@ -33,8 +33,9 @@ window.ColorMagic.createGradientCard = function (g) {
     copyBtn.className =
         'copy-css-btn border-none absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-900 shadow-sm backdrop-blur-sm';
     copyBtn.dataset.css = g.css;
+    copyBtn.setAttribute('aria-label', 'Copy CSS for ' + (g.name || 'gradient'));
     copyBtn.innerHTML =
-        '<i class="bi bi-clipboard text-sm"></i>'
+        '<i class="bi bi-clipboard text-sm" aria-hidden="true"></i>'
         + '<span>Copy CSS</span>';
     previewLink.appendChild(copyBtn);
 
@@ -91,7 +92,9 @@ window.ColorMagic.createGradientCard = function (g) {
     favBtn.className = 'gradient-fav-btn border-none bg-transparent p-1 rounded-md transition-colors ' + (isFav ? 'text-red-500' : 'text-slate-400 hover:text-red-500');
     favBtn.dataset.gradientId = g.id;
     favBtn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
-    favBtn.innerHTML = '<i class="bi ' + (isFav ? 'bi-heart-fill' : 'bi-heart') + ' text-base"></i>';
+    favBtn.setAttribute('aria-label', (isFav ? 'Remove ' : 'Save ') + (g.name || 'gradient') + (isFav ? ' from favorites' : ' to favorites'));
+    favBtn.setAttribute('aria-pressed', isFav ? 'true' : 'false');
+    favBtn.innerHTML = '<i class="bi ' + (isFav ? 'bi-heart-fill' : 'bi-heart') + ' text-base" aria-hidden="true"></i>';
 
     headerRight.appendChild(typeBadge);
     headerRight.appendChild(viewBtn);
