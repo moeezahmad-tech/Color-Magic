@@ -52,8 +52,9 @@ function normalize_hex_home(string $hex): string {
 
     <link rel="canonical" href="https://colormagic.techkreative.com/" />
     <link rel="manifest" href="<?= $base ?>/manifest.json" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
-    <link rel="preload" as="image" href="<?= $base ?>/assets/images/logo.png" fetchpriority="high" />
+    <link rel="apple-touch-icon" href="<?= $base ?>/assets/images/logo.png" />
 
     <!-- Resource Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -65,8 +66,18 @@ function normalize_hex_home(string $hex): string {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" /></noscript>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" /></noscript>
     <link rel="stylesheet" href="<?= $base ?>/assets/css/main.css" />
+    <script>
+        (function(){
+            var w = console.warn;
+            console.warn = function() {
+                if (arguments[0] && typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                return w.apply(console, arguments);
+            };
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config" src="<?= $base ?>/assets/js/tailwind-config.js"></script>
     <style>

@@ -127,6 +127,7 @@ $challengeToken = $payloadB64 . '.' . hash_hmac('sha256', $payloadB64, cm_get_se
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quick Security Check | Color Magic</title>
@@ -135,8 +136,18 @@ $challengeToken = $payloadB64 . '.' . hash_hmac('sha256', $payloadB64, cm_get_se
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+        (function(){
+            var w = console.warn;
+            console.warn = function() {
+                if (arguments[0] && typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                return w.apply(console, arguments);
+            };
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" /></noscript>
     <style>
         html, body {
             min-height: 100%;
