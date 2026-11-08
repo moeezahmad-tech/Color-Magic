@@ -17,8 +17,12 @@ window.ColorMagic.createPaletteCard = function (palette) {
     const { isFavorite } = window.ColorMagic.Favorites;
 
     // Base paths — overridden per-page when relative URLs would be wrong
-    const colorBase   = (window.CM_COLOR_BASE   || 'color/');
-    const paletteBase = (window.CM_PALETTE_BASE || 'palette/');
+    const cmBase      = (window.CM_BASE || '');
+    let colorBase     = (window.CM_COLOR_BASE   || (cmBase ? cmBase + '/color/' : '/color/'));
+    let paletteBase   = (window.CM_PALETTE_BASE || (cmBase ? cmBase + '/palette/' : '/palette/'));
+
+    if (paletteBase && paletteBase.charAt(paletteBase.length - 1) !== '/') paletteBase += '/';
+    if (colorBase && colorBase.charAt(colorBase.length - 1) !== '/') colorBase += '/';
 
     const card = document.createElement('article');
     card.className = 'group flex flex-col gap-4';
@@ -64,16 +68,17 @@ window.ColorMagic.createPaletteCard = function (palette) {
         + swatchesHTML
         + '</div>'
         + '<div class="flex items-center justify-between px-1">'
-        +   '<div>'
-        +     '<h3 class="font-bold text-lg">' + palette.name + '</h3>'
+        +   '<div class="min-w-0 pr-2">'
+        +     '<h3 class="font-bold text-lg truncate">'
+        +       '<a href="' + paletteBase + slug + '/" class="hover:text-primary transition-colors" title="Open palette: ' + palette.name + '">' + palette.name + '</a>'
+        +     '</h3>'
         +     '<p class="text-xs text-slate-500">By Color Studio &bull; ' + palette.style + '</p>'
         +   '</div>'
-        +   '<div class="flex items-center gap-4">'
+        +   '<div class="flex items-center gap-4 flex-shrink-0">'
         +     '<a class="open-palette-btn p-1.5 text-slate-400 hover:text-secondary transition-colors"'
         +        ' href="' + paletteBase + slug + '/"'
-        +        ' target="_blank" rel="noopener"'
         +        ' title="Open palette: ' + palette.name + '"'
-        +        ' aria-label="Open ' + palette.name + ' palette in new tab">'
+        +        ' aria-label="Open ' + palette.name + ' palette">'
         +       '<i class="bi bi-box-arrow-up-right text-lg" aria-hidden="true"></i>'
         +     '</a>'
         +     '<button class="favorite-btn ' + heartColor + ' hover:text-red-500 transition-colors"'
