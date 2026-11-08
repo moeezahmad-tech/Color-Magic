@@ -26,12 +26,12 @@ RewriteRule ^$ pages/index.php [L]
 
 # Custom routes
 # Hex route — exactly 6 hex chars (must come before slug rule)
-RewriteRule ^color/([A-Fa-f0-9]{6})/?$ pages/color.php?hex=$1 [NC,L,QSA]
+RewriteRule ^color/([A-Fa-f0-9]{6})/?$ pages/colors/color.php?hex=$1 [NC,L,QSA]
 # Slug route — named colors e.g. /color/midnight-blue/ (must start with a letter)
-RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ pages/color.php?slug=$1 [NC,L,QSA]
-RewriteRule ^palette/([a-z0-9-]+)/?$ pages/palette.php?slug=$1 [NC,L,QSA]
-RewriteRule ^gradient/([a-zA-Z0-9_-]+)/?$ pages/gradient.php?id=$1 [NC,L,QSA]
-RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ pages/colorImage.php?hex=$1 [L]
+RewriteRule ^color/([a-zA-Z][a-zA-Z0-9-]*)/?$ pages/colors/color.php?slug=$1 [NC,L,QSA]
+RewriteRule ^palette/([^/]+)/?$ pages/palettes/palette.php?slug=$1 [NC,L,QSA]
+RewriteRule ^gradient/([a-zA-Z0-9_-]+)/?$ pages/gradients/gradient.php?id=$1 [NC,L,QSA]
+RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ pages/colors/colorImage.php?hex=$1 [L]
 
 # Auth routes
 RewriteRule ^auth/google-login/?$ auth/google-login.php [L]
@@ -41,14 +41,30 @@ RewriteRule ^auth/delete-account/?$ auth/delete-account.php [L]
 RewriteRule ^auth/favorites/?$ auth/favorites.php [L]
 RewriteRule ^auth/admin-auth/?$ auth/admin-auth.php [L]
 
-# Legacy API compatibility — map /api/*.json directly to /data/*.json
-RewriteRule ^api/([a-zA-Z0-9_-]+\.json)$ data/$1 [L]
+# ── SECURITY: Block direct HTTP access to internal data and scripts ─────────
+RewriteRule ^data(/.*)?$ - [F,L,NC]
+RewriteRule ^(services|scripts|components)(/.*)?$ - [F,L,NC]
+RewriteRule (^|/)\.(env|git|vscode) - [F,L,NC]
+
+# ── ANTI-BOT PROTECTION: Block abusive scraper bots while allowing Search Engines ──
+RewriteCond %{HTTP_USER_AGENT} (CriteoBot|aiohttp|python-requests|Scrapy|HttpClient|node-fetch|libwww|Wget|PostmanRuntime|Go-http-client) [NC]
+RewriteCond %{HTTP_USER_AGENT} !(Googlebot|bingbot|Baiduspider|DuckDuckBot|YandexBot|Applebot|crawlers) [NC]
+RewriteRule ^ - [F,L]
+
+# Block aggressive scraping subnets identified in analytics
+<RequireAll>
+    Require all granted
+    Require not ip 216.73.216.0/24
+</RequireAll>
+
+# Secure API dataset routing via protected gateway
+RewriteRule ^api/([a-zA-Z0-9_-]+\.json)$ api/data.php?file=$1 [L,QSA]
 
 # Dynamic Sitemap Routing
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
 RewriteRule ^sitemap-images\.xml$ sitemap.php?type=images [L]
 RewriteRule ^sitemaps/([a-zA-Z0-9_-]+)\.xml$ sitemap.php?type=$1 [L]
-RewriteRule ^posters/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)\.jpg$ pages/poster.php?category=$1&id=$2 [L,QSA]
+RewriteRule ^posters/([a-zA-Z0-9_-]+)/(.+)\.jpg$ pages/media/poster.php?category=$1&id=$2 [L,QSA]
 
 # Static pages (explicit routes — no file-existence check needed)
 # Admin routes
@@ -57,26 +73,35 @@ RewriteRule ^admin/colors/?$ admin/colors.php [L]
 RewriteRule ^admin/palettes/?$ admin/palettes.php [L]
 RewriteRule ^admin/gradients/?$ admin/gradients.php [L]
 RewriteRule ^admin/([a-zA-Z0-9_-]+)/?$ admin/$1.php [L]
-RewriteRule ^palettes/?$ pages/palettes.php [L]
-RewriteRule ^gradients/?$ pages/gradients.php [L]
-RewriteRule ^generate-palette/?$ pages/generate-palette.php [L]
-RewriteRule ^palette-from-image/?$ pages/palette-from-image.php [L]
-RewriteRule ^find-color/?$ pages/find-color.php [L]
-RewriteRule ^profile/?$ pages/profile.php [L]
-RewriteRule ^login/?$ pages/login.php [L]
-RewriteRule ^open-source/?$ pages/open-source.php [L]
-RewriteRule ^hex-to-color-name/?$ pages/hex-to-color-name.php [L]
-RewriteRule ^hex-to-rgb/?$ pages/hex-to-rgb.php [L]
-RewriteRule ^what-color-is/?$ pages/what-color-is.php [L]
-RewriteRule ^dark-color-finder/?$ pages/dark-color-finder.php [L]
-RewriteRule ^brand-color-lookup/?$ pages/brand-color-lookup.php [L]
-RewriteRule ^about/?$ pages/about.php [L]
-RewriteRule ^contact/?$ pages/contact.php [L]
-RewriteRule ^privacy-policy/?$ pages/privacy-policy.php [L]
-RewriteRule ^terms-and-conditions/?$ pages/terms-and-conditions.php [L]
-RewriteRule ^terms/?$ pages/terms-and-conditions.php [L]
-RewriteRule ^cookie-policy/?$ pages/cookie-policy.php [L]
-RewriteRule ^verify-human/?$ pages/verify-human.php [L]
+RewriteRule ^palettes/?$ pages/palettes/palettes.php [L]
+RewriteRule ^gradients/?$ pages/gradients/gradients.php [L]
+RewriteRule ^generate-palette/?$ pages/tools/generate-palette.php [L]
+RewriteRule ^palette-from-image/?$ pages/tools/palette-from-image.php [L]
+RewriteRule ^find-color/?$ pages/tools/find-color.php [L]
+RewriteRule ^profile/?$ pages/account/profile.php [L]
+RewriteRule ^favorites/?$ pages/account/favorites.php [L]
+RewriteRule ^saved/?$ pages/account/favorites.php [L]
+RewriteRule ^login/?$ pages/account/login.php [L]
+RewriteRule ^open-source/?$ pages/info/open-source.php [L]
+RewriteRule ^hex-to-color-name/?$ pages/tools/hex-to-color-name.php [L]
+RewriteRule ^hex-to-rgb/?$ pages/tools/hex-to-rgb.php [L]
+RewriteRule ^what-color-is/?$ pages/tools/what-color-is.php [L]
+RewriteRule ^dark-color-finder/?$ pages/tools/dark-color-finder.php [L]
+RewriteRule ^brand-color-lookup/?$ pages/tools/brand-color-lookup.php [L]
+RewriteRule ^about/?$ pages/info/about.php [L]
+RewriteRule ^contact/?$ pages/info/contact.php [L]
+RewriteRule ^privacy-policy/?$ pages/info/privacy-policy.php [L]
+RewriteRule ^terms-and-conditions/?$ pages/info/terms-and-conditions.php [L]
+RewriteRule ^terms/?$ pages/info/terms-and-conditions.php [L]
+RewriteRule ^cookie-policy/?$ pages/info/cookie-policy.php [L]
+RewriteRule ^verify-human/?$ pages/account/verify-human.php [L]
+RewriteRule ^complementary-colors/?$ pages/harmonies/complementary-colors.php [L]
+RewriteRule ^analogous-colors/?$ pages/harmonies/analogous-colors.php [L]
+RewriteRule ^triadic-colors/?$ pages/harmonies/triadic-colors.php [L]
+RewriteRule ^monochromatic-colors/?$ pages/harmonies/monochromatic-colors.php [L]
+RewriteRule ^split-complementary-colors/?$ pages/harmonies/split-complementary-colors.php [L]
+RewriteRule ^tetradic-colors/?$ pages/harmonies/tetradic-colors.php [L]
+RewriteRule ^harmonies/([^/]+)/?$ pages/harmonies/$1.php [L]
 
 # ── PERFORMANCE: Gzip Compression ──────────────────────────────────────────
 <IfModule mod_deflate.c>
@@ -110,6 +135,8 @@ RewriteRule ^verify-human/?$ pages/verify-human.php [L]
 
     <If "%{REQUEST_URI} =~ m#^/(v2|api|data)/# && %{REQUEST_METHOD} == 'GET'">
         Header set Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+        Header set Cloudflare-CDN-Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+        Header set CDN-Cache-Control "public, max-age=86400"
     </If>
 
     # Security Headers for Best Practices
