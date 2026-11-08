@@ -1,4 +1,4 @@
-<?php include '../components/config.php'; /** @var string $base */ ?>
+<?php include '../../components/config.php'; /** @var string $base */ ?>
 <!doctype html>
 <html lang="en">
 
@@ -140,7 +140,7 @@
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
@@ -495,7 +495,7 @@
         </script>
     </main>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 
     <script>
         const colorInput = document.getElementById("colorCodeInput");
