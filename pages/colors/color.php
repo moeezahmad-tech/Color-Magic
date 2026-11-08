@@ -1,5 +1,5 @@
 <?php
-include '../components/config.php';
+include '../../components/config.php';
 /** @var string $base */
 
 function e(string $value): string
@@ -113,7 +113,7 @@ $hexWithHash = '#' . $normalizedHex;
 $colorNames = [];
 $paletteData = [];
 
-$colorNamesPath = __DIR__ . '/../data/color-names.json';
+$colorNamesPath = __DIR__ . '/../../data/color-names.json';
 if (file_exists($colorNamesPath)) {
     $decoded = json_decode((string) file_get_contents($colorNamesPath), true);
     if (is_array($decoded)) {
@@ -144,7 +144,7 @@ $hexName = is_array($hexNameEntry) ? ($hexNameEntry['name'] ?? ('Hex ' . $hexWit
 $colorSlug = is_array($hexNameEntry) ? ($hexNameEntry['slug'] ?? null) : null;
 $hasNamedTitle = $hexName !== '' && !preg_match('/^Hex\s*#[0-9a-f]{6}$/i', $hexName);
 
-$palettePath = __DIR__ . '/../data/palettes.json';
+$palettePath = __DIR__ . '/../../data/palettes.json';
 if (file_exists($palettePath)) {
     $decoded = json_decode((string) file_get_contents($palettePath), true);
     if (is_array($decoded)) {
@@ -742,7 +742,7 @@ $schema = [
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
     <!-- ══ MOBILE OVERLAY ════════════════════════════════════════════════════════ -->
     <div id="mobileMenuOverlay"
         class="fixed inset-0 z-[60] bg-white/98 dark:bg-background-dark/98 backdrop-blur-lg hidden flex-col p-6 animate-fadeIn">
@@ -1407,7 +1407,7 @@ border-[<?php echo e($hexWithHash); ?>]</code></pre>
 
 
     </main>
-    <?php include "../components/footer.php"; ?>
+    <?php include "../../components/footer.php"; ?>
 
     <!-- Shared palette component (same as explore page) -->
     <script>
@@ -1419,7 +1419,7 @@ border-[<?php echo e($hexWithHash); ?>]</code></pre>
     <script src="<?php echo e($assetBase); ?>/assets/js/utils.js?v=3.1"></script>
     <script src="<?php echo e($assetBase); ?>/assets/js/services/favorites.js?v=3.1"></script>
     <script src="<?php echo e($assetBase); ?>/assets/js/image-export.js?v=3.1"></script>
-    <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js?v=3.1"></script>
+    <script src="<?php echo e($assetBase); ?>/assets/js/components/palette-card.js?v=<?= cm_asset_v('assets/js/components/palette-card.js') ?>"></script>
     <script src="<?php echo e($assetBase); ?>/assets/js/components/gradient-card.js?v=3.1"></script>
 
     <script>
