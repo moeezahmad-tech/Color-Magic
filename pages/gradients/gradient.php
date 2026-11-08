@@ -4,7 +4,7 @@ if (!headers_sent()) {
     header('Pragma: no-cache');
     header('Expires: 0');
 }
-include '../components/config.php';
+include '../../components/config.php';
 /** @var string $base */
 
 function e(string $value): string {
@@ -60,7 +60,7 @@ function slugify(string $text): string {
 }
 
 $gradientId = $_GET['id'] ?? '';
-$gradientsFile = __DIR__ . '/../data/gradients.json';
+$gradientsFile = __DIR__ . '/../../data/gradients.json';
 $allGradients = file_exists($gradientsFile) ? json_decode(file_get_contents($gradientsFile), true) : [];
 
 $currentGradient = null;
@@ -219,7 +219,7 @@ $schema = [
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
-    <?php include '../components/navbar.php'; ?>
+    <?php include '../../components/navbar.php'; ?>
 
     <main class="w-full max-w-7xl mx-auto pt-24 p-5 md:p-8 flex flex-col gap-8">
         <!-- Top Navigation: Breadcrumb -->
@@ -561,7 +561,7 @@ $schema = [
         </section>
     </main>
 
-    <?php include '../components/footer.php'; ?>
+    <?php include '../../components/footer.php'; ?>
 
     <script>
         window.CM_COLOR_BASE    = '<?= $base ?>/color/';
