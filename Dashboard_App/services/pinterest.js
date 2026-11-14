@@ -22,8 +22,47 @@ function getHeaders() {
   };
 }
 
-function getAccountId() {
-  return process.env.UNIPOST_PINTEREST_ACCOUNT_ID || 'e8a6759b-e0d3-4118-8c59-e8e5bf990171';
+let cachedAccountId = null;
+
+async function getAccountId() {
+  if (cachedAccountId) return cachedAccountId;
+  const configured = process.env.UNIPOST_PINTEREST_ACCOUNT_ID?.trim();
+
+  // Validate or auto-discover against UniPost /v1/accounts
+  try {
+    const res = await fetch(`${UNIPOST_API_BASE}/accounts`, {
+      headers: getHeaders()
+    });
+    if (res.ok) {
+      const json = await res.json();
+      const accounts = json.data || [];
+      const pinterestAccounts = accounts.filter(a => a.platform === 'pinterest');
+
+      // 1. Direct match with account.id
+      const direct = pinterestAccounts.find(a => a.id === configured);
+      if (direct) {
+        cachedAccountId = direct.id;
+        return cachedAccountId;
+      }
+
+      // 2. Match with profile_id (in case user pasted profile ID)
+      const byProfile = pinterestAccounts.find(a => a.profile_id === configured);
+      if (byProfile) {
+        cachedAccountId = byProfile.id;
+        return cachedAccountId;
+      }
+
+      // 3. Fallback to first active Pinterest account
+      if (pinterestAccounts.length > 0) {
+        cachedAccountId = pinterestAccounts[0].id;
+        return cachedAccountId;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not auto-fetch accounts:', e.message);
+  }
+
+  return configured || 'e8a6759b-e0d3-4118-8c59-e8e5bf990171';
 }
 
 /**
@@ -74,7 +113,7 @@ async function uploadMedia(imageUrl) {
  * Dispatch post to UniPost
  */
 async function postToUniPost({ title, description, link, boardId, imageUrl }) {
-  const accountId = getAccountId();
+  const accountId = await getAccountId();
   const effectiveImageUrl = await uploadMedia(imageUrl);
 
   const payload = {
