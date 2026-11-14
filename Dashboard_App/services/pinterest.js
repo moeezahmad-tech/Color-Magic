@@ -6,7 +6,8 @@ const UNIPOST_API_BASE = 'https://api.unipost.dev/v1';
 const BOARDS = {
   palettes: process.env.PINTEREST_BOARD_PALETTES || '1092193415823453337',
   gradients: process.env.PINTEREST_BOARD_GRADIENTS || '1092193415823453436',
-  colors: process.env.PINTEREST_BOARD_COLORS || '1092193415823453337'
+  colors: process.env.PINTEREST_BOARD_COLORS || '1092193415823453337',
+  main: process.env.PINTEREST_BOARD_MAIN || '1092193415823453337'
 };
 
 function getHeaders() {
@@ -26,14 +27,60 @@ function getAccountId() {
 }
 
 /**
+ * Upload poster bytes directly to UniPost R2 media storage
+ * Bypasses crawler blocks and chunked encoding issues
+ */
+async function uploadMedia(imageUrl) {
+  try {
+    const imgRes = await fetch(imageUrl);
+    if (!imgRes.ok) return imageUrl;
+    const buffer = await imgRes.arrayBuffer();
+
+    const initRes = await fetch(`${UNIPOST_API_BASE}/media`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        filename: 'poster.jpg',
+        content_type: 'image/jpeg'
+      })
+    });
+    if (!initRes.ok) return imageUrl;
+    const initJson = await initRes.json();
+    const { id, upload_url } = initJson.data || {};
+    if (!upload_url) return imageUrl;
+
+    const putRes = await fetch(upload_url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'image/jpeg',
+        'Content-Length': buffer.byteLength.toString()
+      },
+      body: buffer
+    });
+    if (!putRes.ok) return imageUrl;
+
+    const getRes = await fetch(`${UNIPOST_API_BASE}/media/${id}`, {
+      headers: getHeaders()
+    });
+    const getJson = await getRes.json();
+    return getJson.data?.download_url || imageUrl;
+  } catch (err) {
+    console.warn('Direct media upload fallback to URL:', err.message);
+    return imageUrl;
+  }
+}
+
+/**
  * Dispatch post to UniPost
  */
 async function postToUniPost({ title, description, link, boardId, imageUrl }) {
   const accountId = getAccountId();
+  const effectiveImageUrl = await uploadMedia(imageUrl);
+
   const payload = {
     caption: description,
     account_ids: [accountId],
-    media_urls: [imageUrl],
+    media_urls: [effectiveImageUrl],
     platform_options: {
       pinterest: {
         title,

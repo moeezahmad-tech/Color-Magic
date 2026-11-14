@@ -29,6 +29,7 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+            Dashboard_App/**
 
       - name: ⚡ Purge Cloudflare Cache (Smart Affected-Only Invalidation)
         if: success()
