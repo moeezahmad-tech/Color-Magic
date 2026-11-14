@@ -277,7 +277,7 @@ function normalize_hex_home(string $hex): string {
                     <span class="block font-bold">Palette from Image</span><span class="text-xs opacity-60">Extract colors from photo</span>
                 </div>
             </a>
-            <a href="<?= $base ?>/profile" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" rel="nofollow" class="sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div>
                     <span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved collection</span>
@@ -1214,7 +1214,7 @@ function normalize_hex_home(string $hex): string {
                 </a>
 
                 <!-- Card 9: Favorites Collection -->
-                <a href="<?= $base ?>/profile"
+                <a href="<?= $base ?>/profile" rel="nofollow"
                     class="card-hover bg-white dark:bg-slate-900 border border-pink-100 dark:border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
                     <div>

@@ -1,10 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /components/
-Disallow: /auth/
-Disallow: /profile
-Disallow: /data/
-Disallow: /api/
+
+# Private admin backend
+Disallow: /admin/
 
 Sitemap: https://colormagic.techkreative.com/sitemap.xml
 Sitemap: https://colormagic.techkreative.com/sitemap.php

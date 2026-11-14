@@ -1,4 +1,6 @@
 <?php 
+header('X-Robots-Tag: noindex, nofollow', true);
+header('Cache-Control: private, no-cache, no-store, must-revalidate');
 require_once __DIR__ . '/../../components/config.php'; 
 /** @var string $base */ 
 ?>
@@ -13,7 +15,7 @@ require_once __DIR__ . '/../../components/config.php';
         content="Access and manage all your saved color palettes, eye-catching CSS gradients, and favorite hex colors in one unified design workspace." />
     <meta name="keywords" content="saved palettes, favorite colors, saved gradients, color magic collections, css gradient favorites" />
     <meta name="author" content="Color Magic" />
-    <meta name="robots" content="noindex, follow" />
+    <meta name="robots" content="noindex, nofollow" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-537L4MR968"></script>
     <script src="<?= $base ?>/assets/js/app.js" defer></script>
     <meta property="og:type" content="website" />
@@ -21,8 +23,7 @@ require_once __DIR__ . '/../../components/config.php';
     <meta property="og:title" content="Color Magic | Saved Collections" />
     <meta property="og:description" content="All your saved palettes, gradients, and colors in one place." />
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
-    <link rel="canonical" href="https://colormagic.techkreative.com/favorites" />
-    <link rel="manifest" href="<?= $base ?>/manifest.json" />
+        <link rel="manifest" href="<?= $base ?>/manifest.json" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
     <link rel="apple-touch-icon" href="<?= $base ?>/assets/images/logo.png" />

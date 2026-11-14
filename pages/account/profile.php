@@ -1,4 +1,6 @@
 <?php 
+header('X-Robots-Tag: noindex, nofollow', true);
+header('Cache-Control: private, no-cache, no-store, must-revalidate');
 require_once __DIR__ . '/../../components/config.php'; 
 require_once __DIR__ . '/../../auth/AdminAuth.php';
 require_once __DIR__ . '/../../auth/UserDb.php';
@@ -48,8 +50,7 @@ if (!is_array($avatarsList)) $avatarsList = [];
     <meta property="og:title" content="Color Magic | Edit Profile &amp; Settings" />
     <meta property="og:description" content="Personalize your avatar, details, and access your saved collections." />
     <meta property="og:image" content="https://colormagic.techkreative.com/assets/og-preview.png" />
-    <link rel="canonical" href="https://colormagic.techkreative.com/profile" />
-    <link rel="manifest" href="<?= $base ?>/manifest.json" />
+        <link rel="manifest" href="<?= $base ?>/manifest.json" />
     <link rel="icon" type="image/png" href="<?= $base ?>/assets/images/logo.png" />
     <script>
         (function(){
@@ -221,7 +222,7 @@ if (!is_array($avatarsList)) $avatarsList = [];
                     <button type="button" class="profile-sidebar-item" data-target="panelAccount">
                         <span class="tab-title">Account management</span>
                     </button>
-                    <a href="<?= $base ?>/favorites" class="profile-sidebar-item group">
+                    <a href="<?= $base ?>/favorites" rel="nofollow" class="profile-sidebar-item group">
                         <span class="tab-title flex items-center gap-1.5">
                             <i class="bi bi-heart-fill text-rose-500 text-xs"></i>
                             <span>Saved Favorites</span>
@@ -494,7 +495,7 @@ if (!is_array($avatarsList)) $avatarsList = [];
                     </p>
                     
                     <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                        <a href="<?= $base ?>/auth/logout" class="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2">
+                        <a href="<?= $base ?>/auth/logout" rel="nofollow" class="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Sign Out</span>
                         </a>
@@ -519,7 +520,7 @@ if (!is_array($avatarsList)) $avatarsList = [];
                     </p>
                 </div>
                 <div class="pt-3 flex justify-center">
-                    <a href="<?= $base ?>/login" class="px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition inline-flex items-center gap-2.5 active:scale-95">
+                    <a href="<?= $base ?>/login" rel="nofollow" class="px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition inline-flex items-center gap-2.5 active:scale-95">
                         <svg class="w-4 h-4" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>

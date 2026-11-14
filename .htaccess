@@ -140,6 +140,13 @@ RewriteRule ^harmonies/([^/]+)/?$ pages/harmonies/$1.php [L]
         Header set CDN-Cache-Control "public, max-age=86400"
     </If>
 
+    # Private pages & Auth: prevent Google indexing and CDN caching
+    <If "%{REQUEST_URI} =~ m#^/(auth|admin|profile|favorites|saved|login)#">
+        Header always set X-Robots-Tag "noindex, nofollow"
+        Header set Cache-Control "private, no-cache, no-store, must-revalidate"
+        Header set Cloudflare-CDN-Cache-Control "private, no-cache, no-store, must-revalidate"
+    </If>
+
     # Security Headers for Best Practices
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"

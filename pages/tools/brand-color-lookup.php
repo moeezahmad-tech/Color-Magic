@@ -169,7 +169,7 @@
                 <div><span class="block font-bold">Generate Palette</span><span class="text-xs opacity-60">Create color
                         schemes</span></div>
             </a>
-            <a href="<?= $base ?>/profile" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
+            <a href="<?= $base ?>/profile" rel="nofollow" class=" sb-btn sb-inactive w-full"><span class="sb-icon"><i
                         class="bi bi-heart-fill"></i></span>
                 <div><span class="block font-bold">Favorites</span><span class="text-xs opacity-60">Your saved colors,
                         palettes &amp; gradients</span></div>

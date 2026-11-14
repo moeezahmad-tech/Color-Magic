@@ -1,4 +1,6 @@
 <?php 
+header('X-Robots-Tag: noindex, nofollow', true);
+header('Cache-Control: private, no-cache, no-store, must-revalidate');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,6 +19,7 @@ $isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="robots" content="noindex, nofollow" />
     <title>Login / Sign Up — Color Magic</title>
     
     <script>
@@ -74,10 +77,10 @@ $isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_
                                 <i class="bi bi-shield-lock-fill mr-2"></i> Go to Admin Dashboard
                             </a>
                         <?php endif; ?>
-                        <a href="<?= $base ?>/profile" class="inline-flex justify-center items-center w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+                        <a href="<?= $base ?>/profile" rel="nofollow" class="inline-flex justify-center items-center w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                             <i class="bi bi-person mr-2"></i> View Profile
                         </a>
-                        <a href="<?= $base ?>/auth/logout" class="inline-flex justify-center items-center w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors">
+                        <a href="<?= $base ?>/auth/logout" rel="nofollow" class="inline-flex justify-center items-center w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors">
                             <i class="bi bi-box-arrow-right mr-2"></i> Sign Out
                         </a>
                     </div>

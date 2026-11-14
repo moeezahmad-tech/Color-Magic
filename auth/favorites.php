@@ -1,4 +1,6 @@
 <?php
+header('X-Robots-Tag: noindex, nofollow', true);
+header('Cache-Control: private, no-cache, no-store, must-revalidate');
 /**
  * /auth/favorites.php
  * Handles CRUD and syncing of favorites between browser and MySQL database.

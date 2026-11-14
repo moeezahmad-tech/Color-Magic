@@ -74,7 +74,7 @@
                 <ul class="space-y-2.5">
                     <li><a href="<?= $base ?>/open-source"
                             class="text-sm text-slate-500 hover:text-primary transition-colors">Open Source</a></li>
-                    <li><a href="<?= $base ?>/profile"
+                    <li><a href="<?= $base ?>/profile" rel="nofollow"
                             class="text-sm text-slate-500 hover:text-primary transition-colors">Favorites &amp; Profile</a></li>
                     <li><a href="https://github.com/moeezahmad-tech/Color-Magic" target="_blank"
                             rel="noopener noreferrer"

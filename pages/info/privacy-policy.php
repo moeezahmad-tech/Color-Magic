@@ -195,7 +195,7 @@
                 <ul class="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-400">
                     <li><strong>Right to Access:</strong> You can view all information associated with your profile anytime.</li>
                     <li><strong>Right to Rectification:</strong> You can request corrections to any inaccurate data.</li>
-                    <li><strong>Right to Erasure (Delete Account):</strong> You can delete your account and all associated saved palettes at any time directly through your <a href="<?= $base ?>/profile" class="text-primary hover:underline">Profile settings</a> or by contacting us.</li>
+                    <li><strong>Right to Erasure (Delete Account):</strong> You can delete your account and all associated saved palettes at any time directly through your <a href="<?= $base ?>/profile" rel="nofollow" class="text-primary hover:underline">Profile settings</a> or by contacting us.</li>
                     <li><strong>Right to Opt-Out:</strong> You can block cookies via your browser settings or use privacy-focused ad/tracker blockers.</li>
                 </ul>
             </section>
