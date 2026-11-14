@@ -26,22 +26,31 @@ class PinterestService {
             $token = getenv('PINTEREST_SANDBOX_TOKEN') ?: ($_ENV['PINTEREST_SANDBOX_TOKEN'] ?? '');
         }
 
-        // Fallback to reading .env.colormagic if not in environment
+        // Fallback to reading env files if not in environment
         if (empty($token)) {
-            $envPath = __DIR__ . '/../.env.colormagic';
-            if (file_exists($envPath)) {
-                $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                foreach ($lines as $line) {
-                    $line = trim($line);
-                    if (str_starts_with($line, '#')) continue;
-                    if (str_starts_with($line, 'PINTEREST_SANDBOX_TOKEN=')) {
-                        $token = trim(substr($line, strlen('PINTEREST_SANDBOX_TOKEN=')));
+            $candidateFiles = [
+                __DIR__ . '/../.env.colormagic.admin',
+                __DIR__ . '/../../.env.colormagic.admin',
+                __DIR__ . '/../.env.colormagic',
+                __DIR__ . '/../../.env.colormagic'
+            ];
+            foreach ($candidateFiles as $envPath) {
+                if (file_exists($envPath)) {
+                    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    foreach ($lines as $line) {
+                        $line = trim($line);
+                        if (str_starts_with($line, '#')) continue;
+                        if (str_starts_with($line, 'PINTEREST_ACCESS_TOKEN=')) {
+                            $token = trim(substr($line, strlen('PINTEREST_ACCESS_TOKEN=')));
+                        } elseif (str_starts_with($line, 'PINTEREST_SANDBOX_TOKEN=') && empty($token)) {
+                            $token = trim(substr($line, strlen('PINTEREST_SANDBOX_TOKEN=')));
+                        }
+                        if (str_starts_with($line, 'PINTEREST_APP_ID=')) {
+                            self::$appId = trim(substr($line, strlen('PINTEREST_APP_ID=')));
+                        }
                     }
-                    if (str_starts_with($line, 'PINTEREST_ACCESS_TOKEN=')) {
-                        $token = trim(substr($line, strlen('PINTEREST_ACCESS_TOKEN=')));
-                    }
-                    if (str_starts_with($line, 'PINTEREST_APP_ID=')) {
-                        self::$appId = trim(substr($line, strlen('PINTEREST_APP_ID=')));
+                    if (!empty($token)) {
+                        break;
                     }
                 }
             }
@@ -53,8 +62,9 @@ class PinterestService {
 
         self::$token = $token;
 
-        // Determine if sandbox or production endpoint
-        if (str_starts_with($token, 'pina_')) {
+        // Determine if sandbox or production endpoint (default to live production v5 API)
+        $useSandbox = (getenv('PINTEREST_ENV') === 'sandbox' || getenv('PINTEREST_USE_SANDBOX') === 'true');
+        if ($useSandbox) {
             self::$apiBase = 'https://api-sandbox.pinterest.com/v5';
         } else {
             self::$apiBase = 'https://api.pinterest.com/v5';
