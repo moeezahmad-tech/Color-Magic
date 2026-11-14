@@ -36,6 +36,8 @@ RewriteRule ^colors/([A-Fa-f0-9]{6})\.webp$ pages/colors/colorImage.php?hex=$1 [
 # Auth routes
 RewriteRule ^auth/google-login/?$ auth/google-login.php [L]
 RewriteRule ^auth/google-callback/?$ auth/google-callback.php [L]
+RewriteRule ^auth/pinterest-login/?$ auth/pinterest-login.php [L]
+RewriteRule ^auth/pinterest-callback/?$ auth/pinterest-callback.php [L]
 RewriteRule ^auth/logout/?$ auth/logout.php [L]
 RewriteRule ^auth/delete-account/?$ auth/delete-account.php [L]
 RewriteRule ^auth/favorites/?$ auth/favorites.php [L]

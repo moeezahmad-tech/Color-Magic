@@ -446,21 +446,28 @@ if (!is_array($avatarsList)) $avatarsList = [];
                         <span class="text-xs text-slate-400 dark:text-slate-500">Primary authentication credential</span>
                     </div>
 
-                    <!-- Sign-in Provider -->
+                                        <!-- Sign-in Provider -->
                     <div class="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
                             <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Sign-in Provider</span>
                             <div class="flex items-center gap-2 mt-1">
-                                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                                </svg>
-                                <span class="text-sm font-bold text-slate-800 dark:text-slate-200">Google OAuth 2.0</span>
+                                <?php if (($dbUser['provider'] ?? ($_SESSION['user']['provider'] ?? '')) === 'pinterest'): ?>
+                                    <div class="w-4 h-4 rounded-full bg-[#E60023] flex items-center justify-center text-white shrink-0">
+                                        <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M12 0a12 12 0 0 0-4.37 23.18c-.07-.63-.13-1.6.03-2.29.14-.62.94-3.99.94-3.99s-.24-.48-.24-1.19c0-1.11.64-1.94 1.44-1.94.68 0 1 .51 1 1.12 0 .68-.43 1.7-.66 2.64-.19.79.4 1.44 1.18 1.44 1.42 0 2.51-1.5 2.51-3.66 0-1.91-1.37-3.25-3.34-3.25-2.45 0-3.88 1.84-3.88 3.73 0 .74.28 1.53.64 1.96.07.09.08.16.06.25-.07.28-.22.89-.25 1.01-.04.17-.14.21-.32.13-1.19-.55-1.93-2.29-1.93-3.68 0-2.99 2.18-5.74 6.3-5.74 3.31 0 5.88 2.36 5.88 5.51 0 3.29-2.07 5.94-4.95 5.94-.97 0-1.88-.5-2.19-1.1l-.6 2.27c-.22.83-.8 1.87-1.2 2.5A12 12 0 1 0 12 0z"/></svg>
+                                    </div>
+                                    <span class="text-sm font-bold text-slate-800 dark:text-slate-200">Pinterest OAuth 2.0</span>
+                                <?php else: ?>
+                                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                                    </svg>
+                                    <span class="text-sm font-bold text-slate-800 dark:text-slate-200">Google OAuth 2.0</span>
+                                <?php endif; ?>
                             </div>
                         </div>
-                        <span class="text-xs text-slate-400 dark:text-slate-500">Secured via Google Identity</span>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">Secured Single Sign-On</span>
                     </div>
 
                     <!-- Account Created At -->
@@ -513,21 +520,28 @@ if (!is_array($avatarsList)) $avatarsList = [];
                 <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-pink-500 to-rose-500 text-white flex items-center justify-center mx-auto text-2xl shadow-lg shadow-pink-500/20">
                     <i class="bi bi-person-fill-lock"></i>
                 </div>
-                <div>
+                                <div>
                     <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Guest Workspace</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
-                        You are currently browsing Color Magic as a guest. Sign in with Google to synchronize your saved palettes, custom gradients, and personal profile across all your devices.
+                        You are currently browsing Color Magic as a guest. Sign in with Google or Pinterest to synchronize your saved palettes, custom gradients, and personal profile across all your devices.
                     </p>
                 </div>
-                <div class="pt-3 flex justify-center">
-                    <a href="<?= $base ?>/login" rel="nofollow" class="px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition inline-flex items-center gap-2.5 active:scale-95">
+                <div class="pt-3 flex flex-wrap items-center justify-center gap-3">
+                    <a href="<?= $base ?>/auth/google-login" rel="nofollow" class="px-6 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-xs shadow-md transition inline-flex items-center gap-2.5 active:scale-95">
                         <svg class="w-4 h-4" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                         </svg>
-                        <span>Sign In with Google</span>
+                        <span>Continue with Google</span>
+                    </a>
+                    <!-- Official Continue with Pinterest Button -->
+                    <a href="<?= $base ?>/auth/pinterest-login" rel="nofollow" class="px-6 py-3.5 rounded-full bg-[#E60023] hover:bg-[#c9001f] text-white font-bold text-xs shadow-md transition inline-flex items-center gap-2.5 active:scale-95">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                            <path d="M12 0a12 12 0 0 0-4.37 23.18c-.07-.63-.13-1.6.03-2.29.14-.62.94-3.99.94-3.99s-.24-.48-.24-1.19c0-1.11.64-1.94 1.44-1.94.68 0 1 .51 1 1.12 0 .68-.43 1.7-.66 2.64-.19.79.4 1.44 1.18 1.44 1.42 0 2.51-1.5 2.51-3.66 0-1.91-1.37-3.25-3.34-3.25-2.45 0-3.88 1.84-3.88 3.73 0 .74.28 1.53.64 1.96.07.09.08.16.06.25-.07.28-.22.89-.25 1.01-.04.17-.14.21-.32.13-1.19-.55-1.93-2.29-1.93-3.68 0-2.99 2.18-5.74 6.3-5.74 3.31 0 5.88 2.36 5.88 5.51 0 3.29-2.07 5.94-4.95 5.94-.97 0-1.88-.5-2.19-1.1l-.6 2.27c-.22.83-.8 1.87-1.2 2.5A12 12 0 1 0 12 0z"/>
+                        </svg>
+                        <span>Continue with Pinterest</span>
                     </a>
                 </div>
             </div>
