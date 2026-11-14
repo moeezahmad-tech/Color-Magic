@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Fetch previous commit to compute file diffs for cache purge
 
       - name: 📂 Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -27,3 +29,122 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+
+      - name: ⚡ Purge Cloudflare Cache (Smart Affected-Only Invalidation)
+        if: success()
+        env:
+          CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          DOMAIN: "https://colormagic.techkreative.com"
+        run: |
+          if [ -z "$CF_ZONE_ID" ] || [ -z "$CF_API_TOKEN" ]; then
+            echo "⚠️ CLOUDFLARE_ZONE_ID or CLOUDFLARE_API_TOKEN secrets are missing in repository settings. Skipping cache purge."
+            exit 0
+          fi
+
+          echo "🔍 Analyzing modified files from latest commit..."
+          
+          # Detect if full site purge is warranted
+          FULL_PURGE=false
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "👉 Manual workflow trigger detected -> full purge."
+            FULL_PURGE=true
+          fi
+
+          CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null || echo "")
+
+          # Check for global files that affect all pages
+          if echo "$CHANGED" | grep -E -q '^(components/|services/|auth/|\.htaccess|assets/css/main\.css|assets/js/app\.js|robots\.txt)'; then
+            echo "🌐 Core layout, styling, or system components modified -> triggering full cache purge."
+            FULL_PURGE=true
+          fi
+
+          if [ "$FULL_PURGE" = "true" ]; then
+            echo "🚀 Purging entire Cloudflare Edge Cache for $DOMAIN..."
+            RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data '{"purge_everything":true}')
+
+            SUCCESS=$(echo "$RESPONSE" | grep -o '"success":true' || true)
+            if [ -n "$SUCCESS" ]; then
+              echo "✅ Cloudflare cache purged successfully (all pages)!"
+            else
+              echo "❌ Cloudflare purge failed: $RESPONSE"
+              exit 1
+            fi
+          else
+            # Collect affected public URLs
+            URLS=()
+
+            while IFS= read -r file; do
+              [ -z "$file" ] && continue
+
+              case "$file" in
+                pages/index.php)
+                  URLS+=("${DOMAIN}/")
+                  ;;
+                pages/palettes/palettes.php)
+                  URLS+=("${DOMAIN}/palettes")
+                  ;;
+                pages/gradients/gradients.php)
+                  URLS+=("${DOMAIN}/gradients")
+                  ;;
+                pages/tools/*.php)
+                  slug=$(basename "$file" .php)
+                  URLS+=("${DOMAIN}/${slug}")
+                  ;;
+                pages/harmonies/*.php)
+                  slug=$(basename "$file" .php)
+                  URLS+=("${DOMAIN}/${slug}")
+                  ;;
+                pages/info/*.php)
+                  slug=$(basename "$file" .php)
+                  URLS+=("${DOMAIN}/${slug}")
+                  ;;
+                pages/account/*.php)
+                  slug=$(basename "$file" .php)
+                  URLS+=("${DOMAIN}/${slug}")
+                  ;;
+                assets/*)
+                  URLS+=("${DOMAIN}/${file}")
+                  ;;
+                api/*)
+                  URLS+=("${DOMAIN}/${file}")
+                  ;;
+                data/*.json)
+                  basefile=$(basename "$file")
+                  URLS+=("${DOMAIN}/api/${basefile}")
+                  ;;
+                robots.txt)
+                  URLS+=("${DOMAIN}/robots.txt")
+                  ;;
+                sitemap*.xml|sitemap.php)
+                  URLS+=("${DOMAIN}/sitemap.xml")
+                  ;;
+              esac
+            done <<< "$CHANGED"
+
+            if [ ${#URLS[@]} -eq 0 ]; then
+              echo "ℹ️ No public-facing cacheable pages modified. Skipping purge."
+              exit 0
+            fi
+
+            # Format URLs into JSON array
+            PAYLOAD_FILES=$(printf '%s\n' "${URLS[@]}" | sort -u | jq -R . | jq -s .)
+            echo "🎯 Purging only affected URLs from Cloudflare cache:"
+            echo "$PAYLOAD_FILES"
+
+            RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data "{\"files\": $PAYLOAD_FILES}")
+
+            SUCCESS=$(echo "$RESPONSE" | grep -o '"success":true' || true)
+            if [ -n "$SUCCESS" ]; then
+              echo "✅ Affected URLs successfully purged from Cloudflare Edge Cache!"
+            else
+              echo "❌ Cloudflare URL purge failed: $RESPONSE"
+              exit 1
+            fi
+          fi
