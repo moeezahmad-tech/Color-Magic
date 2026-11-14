@@ -22,6 +22,12 @@ data/instagram_account.json
 data/pinterest_boards.json
 assets/generated/
 
+# Dashboard App
+Dashboard_App/node_modules/
+Dashboard_App/.env
+Dashboard_App/.env.*
+Dashboard_App/npm-debug.log*
+
 # Cloudflare CLI & Wrangler
 .cloudflare/
 .wrangler/

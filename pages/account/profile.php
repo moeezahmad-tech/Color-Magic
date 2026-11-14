@@ -256,12 +256,6 @@ if (!is_array($avatarsList)) $avatarsList = [];
                             <i class="bi bi-floppy text-xs"></i>
                             <span id="saveProfileBtnText">Save</span>
                         </button>
-                        <?php if ($isAdmin): ?>
-                            <a id="adminHeroBtn" href="<?= $base ?>/admin" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white rounded-full font-bold text-xs shadow-md shadow-purple-500/20 hover:scale-[1.02] transition-all">
-                                <i class="bi bi-shield-check"></i>
-                                <span>Admin Dashboard</span>
-                            </a>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -535,13 +529,6 @@ if (!is_array($avatarsList)) $avatarsList = [];
                             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                         </svg>
                         <span>Continue with Google</span>
-                    </a>
-                    <!-- Official Continue with Pinterest Button -->
-                    <a href="<?= $base ?>/auth/pinterest-login" rel="nofollow" class="px-6 py-3.5 rounded-full bg-[#E60023] hover:bg-[#c9001f] text-white font-bold text-xs shadow-md transition inline-flex items-center gap-2.5 active:scale-95">
-                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                            <path d="M12 0a12 12 0 0 0-4.37 23.18c-.07-.63-.13-1.6.03-2.29.14-.62.94-3.99.94-3.99s-.24-.48-.24-1.19c0-1.11.64-1.94 1.44-1.94.68 0 1 .51 1 1.12 0 .68-.43 1.7-.66 2.64-.19.79.4 1.44 1.18 1.44 1.42 0 2.51-1.5 2.51-3.66 0-1.91-1.37-3.25-3.34-3.25-2.45 0-3.88 1.84-3.88 3.73 0 .74.28 1.53.64 1.96.07.09.08.16.06.25-.07.28-.22.89-.25 1.01-.04.17-.14.21-.32.13-1.19-.55-1.93-2.29-1.93-3.68 0-2.99 2.18-5.74 6.3-5.74 3.31 0 5.88 2.36 5.88 5.51 0 3.29-2.07 5.94-4.95 5.94-.97 0-1.88-.5-2.19-1.1l-.6 2.27c-.22.83-.8 1.87-1.2 2.5A12 12 0 1 0 12 0z"/>
-                        </svg>
-                        <span>Continue with Pinterest</span>
                     </a>
                 </div>
             </div>

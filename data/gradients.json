@@ -1366,7 +1366,10 @@
         ],
         "css": "linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)",
         "angle": 45,
-        "uploaded": false
+        "uploaded": true,
+        "pinterest_pin_id": "5e008cb1-17f5-49c4-a293-c80615c106b8",
+        "pinterest_posted_at": "2026-11-14T15:30:34+00:00",
+        "pinterest_board_id": "1092193415823453337"
     },
     {
         "id": "wg_5",

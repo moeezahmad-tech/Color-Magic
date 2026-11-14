@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSS Gradients — Social Media Publisher</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#ec4899',
+            secondary: '#8b5cf6',
+            darkBg: '#0f172a',
+            cardDark: '#1e293b'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body class="min-h-screen bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 antialiased transition-colors duration-200">
+
+  <div class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- ══ SIDEBAR ════════════════════════════════════════════════════════════ -->
+    <aside class="w-full md:w-64 bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col justify-between shrink-0">
+      <div class="space-y-6">
+        <!-- Brand -->
+        <div class="flex items-center gap-3 px-2">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 p-0.5 shadow-md shadow-pink-500/20">
+            <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[14px] flex items-center justify-center">
+              <i class="bi bi-palette2 text-pink-600 dark:text-pink-400 text-lg"></i>
+            </div>
+          </div>
+          <div>
+            <div class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+              Color Magic
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-pink-100 dark:bg-pink-950/70 text-pink-600 dark:text-pink-400 uppercase tracking-wider">App</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-medium">Social Publisher</div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="space-y-1">
+          <a href="/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+            <i class="bi bi-speedometer2 text-sm"></i>
+            <span>Overview</span>
+          </a>
+          <a href="/palettes" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+            <i class="bi bi-palette text-sm"></i>
+            <span>Color Palettes</span>
+          </a>
+          <a href="/gradients" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/50">
+            <i class="bi bi-rainbow text-sm"></i>
+            <span>CSS Gradients</span>
+          </a>
+          <a href="/colors" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+            <i class="bi bi-eyedropper text-sm"></i>
+            <span>Named Colors</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Quick Platform Status -->
+      <div class="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2">Connected Channels</div>
+        <div id="pinterestStatusBadge" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/60">
+          <span class="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
+          <span class="text-xs text-slate-500">Checking Pinterest...</span>
+        </div>
+        <div id="instagramStatusBadge" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/60">
+          <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+          <span class="text-xs text-slate-500">Checking Instagram...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ══ MAIN CONTENT WRAPPER ═════════════════════════════════════════════ -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Header -->
+      <header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-cardDark/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20">
+        <div class="flex items-center gap-3">
+          <h1 class="font-bold text-sm text-slate-800 dark:text-slate-200">CSS Gradients Management</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <i class="bi bi-moon-stars dark:hidden"></i>
+            <i class="bi bi-sun hidden dark:block text-amber-400"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Body -->
+      <main class="flex-1 p-6 sm:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- Top Actions Banner -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-xs font-bold mb-2">
+              <i class="bi bi-rainbow"></i> Gradients Publisher
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              CSS Gradients Database (<span id="totalCountHeader">329</span>)
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">
+              Linear, radial, and mesh blends ready for 1-click Pinterest & Instagram deployment.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button id="batchPinterestBtn" onclick="runBatchPinterest('gradient')" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-2">
+              <i class="bi bi-pinterest"></i>
+              <span>Auto-Post Next Unposted</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="glass-card rounded-2xl p-4 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div class="flex-1 w-full sm:max-w-md relative">
+            <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="searchInput" placeholder="Search gradients by name, css, colors..." class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <select id="typeSelect" class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:outline-none">
+              <option value="">All Types</option>
+              <option value="linear">Linear</option>
+              <option value="radial">Radial</option>
+              <option value="mesh">Mesh</option>
+            </select>
+            <select id="filterSelect" class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:outline-none">
+              <option value="all">All Gradients</option>
+              <option value="unposted">Unposted to Pinterest</option>
+              <option value="posted">Posted to Pinterest</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Gradients Grid -->
+        <div id="gradientsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <!-- Rendered dynamically -->
+          <div class="col-span-full py-16 text-center text-slate-400 text-sm">
+            <i class="bi bi-arrow-repeat animate-spin text-2xl block mb-2"></i>
+            Loading gradients...
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800" id="paginationRow">
+          <div class="text-xs text-slate-500" id="paginationInfo">Showing 0-0 of 0</div>
+          <div class="flex items-center gap-2">
+            <button id="prevBtn" onclick="changePage(-1)" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40">
+              Previous
+            </button>
+            <span id="pageIndicator" class="text-xs font-bold px-2">Page 1</span>
+            <button id="nextBtn" onclick="changePage(1)" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40">
+              Next
+            </button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let currentPage = 1;
+    const limit = 24;
+    let currentSearch = '';
+    let currentType = '';
+    let currentFilter = 'all';
+
+    async function loadGradients() {
+      const grid = document.getElementById('gradientsGrid');
+      grid.innerHTML = `
+        <div class="col-span-full py-16 text-center text-slate-400 text-sm">
+          <i class="bi bi-arrow-repeat animate-spin text-2xl block mb-2"></i>
+          Loading gradients...
+        </div>
+      `;
+
+      try {
+        const query = new URLSearchParams({
+          page: currentPage,
+          limit,
+          search: currentSearch,
+          type: currentType,
+          filter: currentFilter
+        });
+        const res = await api(`/gradients?${query.toString()}`);
+        renderGradients(res.data);
+        renderPagination(res.pagination);
+      } catch (err) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-500 font-semibold text-sm">Error: ${err.message}</div>`;
+      }
+    }
+
+    function renderGradients(items) {
+      const grid = document.getElementById('gradientsGrid');
+      if (!items || items.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400 text-sm font-medium">No gradients match your criteria.</div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map(g => {
+        const isUploaded = !!(g.uploaded || g.pinterest_pin_id);
+        const isIgUploaded = !!(g.instagram_posted || g.instagram_post_id);
+        const css = g.css || 'linear-gradient(45deg, #000, #fff)';
+
+        return `
+          <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col justify-between group hover:shadow-lg transition-all">
+            <!-- Visual Gradient Preview -->
+            <div class="h-36 w-full relative flex items-end justify-between p-3" style="background: ${css}">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-black/50 text-white font-bold backdrop-blur-sm">
+                #${g.id}
+              </span>
+              <button onclick="copyText('${css.replace(/'/g, "\\'")}', 'CSS')" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/90 text-slate-900 hover:bg-white shadow-sm flex items-center gap-1 transition">
+                <i class="bi bi-clipboard"></i> Copy
+              </button>
+            </div>
+
+            <!-- Details -->
+            <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2">
+                  <h3 class="font-extrabold text-sm text-slate-900 dark:text-white truncate" title="${g.name}">
+                    ${g.name || 'CSS Gradient'}
+                  </h3>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase">
+                    ${g.type || 'Linear'}
+                  </span>
+                </div>
+                <div class="text-[11px] font-mono text-slate-400 mt-1 truncate" title="${css}">
+                  ${css}
+                </div>
+              </div>
+
+              <!-- Posting Buttons -->
+              <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+                <!-- Pinterest Button -->
+                <button 
+                  onclick="postItem('gradient', '${g.id}', 'pinterest', this)" 
+                  class="flex-1 py-1.5 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    isUploaded 
+                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50' 
+                      : 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400 border border-red-200 dark:border-red-800/50 hover:bg-red-100'
+                  }">
+                  <i class="bi ${isUploaded ? 'bi-check-circle-fill' : 'bi-pinterest'}"></i>
+                  <span>${isUploaded ? 'Pinned' : 'Pinterest'}</span>
+                </button>
+
+                <!-- Instagram Button -->
+                <button 
+                  onclick="postItem('gradient', '${g.id}', 'instagram', this)" 
+                  class="flex-1 py-1.5 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    isIgUploaded 
+                      ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50' 
+                      : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200'
+                  }">
+                  <i class="bi ${isIgUploaded ? 'bi-check-circle-fill' : 'bi-instagram'}"></i>
+                  <span>${isIgUploaded ? 'Posted' : 'Instagram'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPagination(pg) {
+      document.getElementById('totalCountHeader').textContent = pg.total.toLocaleString();
+      document.getElementById('paginationInfo').textContent = `Showing ${((pg.page - 1) * pg.limit) + 1} - ${Math.min(pg.page * pg.limit, pg.total)} of ${pg.total.toLocaleString()}`;
+      document.getElementById('pageIndicator').textContent = `Page ${pg.page} of ${pg.totalPages}`;
+      document.getElementById('prevBtn').disabled = (pg.page <= 1);
+      document.getElementById('nextBtn').disabled = (pg.page >= pg.totalPages);
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      loadGradients();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function postItem(type, id, platform, btn) {
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i> <span>Posting...</span>`;
+
+      try {
+        const res = await api(`/post/${platform}`, {
+          method: 'POST',
+          body: JSON.stringify({ type, id })
+        });
+        showToast(`Successfully published gradient to ${platform}!`, 'success');
+        btn.innerHTML = `<i class="bi bi-check-circle-fill"></i> <span>Published</span>`;
+        btn.classList.remove('bg-red-50', 'text-red-700', 'bg-slate-100');
+        btn.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+      } catch (err) {
+        showToast(`Failed to publish: ${err.message}`, 'error');
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    async function runBatchPinterest(type) {
+      const btn = document.getElementById('batchPinterestBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i> <span>Auto-Posting...</span>`;
+
+      try {
+        const res = await api('/batch/pinterest', {
+          method: 'POST',
+          body: JSON.stringify({ type })
+        });
+        if (res.finished) {
+          showToast(res.message, 'info');
+        } else {
+          showToast(`Published '${res.item.name}' to Pinterest!`, 'success');
+          loadGradients();
+        }
+      } catch (err) {
+        showToast(`Batch failed: ${err.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-pinterest"></i> <span>Auto-Post Next Unposted</span>`;
+      }
+    }
+
+    let debounceTimer;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        currentSearch = e.target.value;
+        currentPage = 1;
+        loadGradients();
+      }, 350);
+    });
+
+    document.getElementById('typeSelect').addEventListener('change', (e) => {
+      currentType = e.target.value;
+      currentPage = 1;
+      loadGradients();
+    });
+
+    document.getElementById('filterSelect').addEventListener('change', (e) => {
+      currentFilter = e.target.value;
+      currentPage = 1;
+      loadGradients();
+    });
+
+    document.addEventListener('DOMContentLoaded', loadGradients);
+  </script>
+</body>
+</html>

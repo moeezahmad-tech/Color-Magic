@@ -144,12 +144,6 @@ $navName = $navUser['name'] ?? 'User';
                                     <i class="bi bi-heart text-sm text-rose-500"></i>
                                     <span>Saved Favorites</span>
                                 </a>
-                                <?php if ($navIsAdmin): ?>
-                                    <a href="<?= $base ?>/admin" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-colors">
-                                        <i class="bi bi-shield-check text-sm"></i>
-                                        <span>Admin Dashboard</span>
-                                    </a>
-                                <?php endif; ?>
                             </div>
                             <div class="border-t border-slate-100 dark:border-slate-800 pt-1">
                                 <a href="<?= $base ?>/auth/logout" rel="nofollow" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
@@ -276,14 +270,8 @@ $navName = $navUser['name'] ?? 'User';
                         var name = user.name || user.email.split('@')[0];
                         var av = user.avatar || '1.webp';
                         var picUrl = '<?= $base ?>/assets/avatars/' + av;
-                        var isAdmin = Boolean(user.is_admin || user.role === 'admin' || localStorage.getItem('cm_admin_token'));
 
-                        var adminLinkHtml = isAdmin ? `
-                            <a href="<?= $base ?>/admin" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-colors">
-                                <i class="bi bi-shield-check text-sm"></i>
-                                <span>Admin Dashboard</span>
-                            </a>
-                        ` : '';
+                        var adminLinkHtml = '';
 
                         slot.innerHTML = `
                             <div class="relative flex items-center" id="userMenuContainer">

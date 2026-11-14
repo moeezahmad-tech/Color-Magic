@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Named Colors — Social Media Publisher</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#ec4899',
+            secondary: '#8b5cf6',
+            darkBg: '#0f172a',
+            cardDark: '#1e293b'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body class="min-h-screen bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 antialiased transition-colors duration-200">
+
+  <div class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- ══ SIDEBAR ════════════════════════════════════════════════════════════ -->
+    <aside class="w-full md:w-64 bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col justify-between shrink-0">
+      <div class="space-y-6">
+        <!-- Brand -->
+        <div class="flex items-center gap-3 px-2">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 p-0.5 shadow-md shadow-pink-500/20">
+            <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[14px] flex items-center justify-center">
+              <i class="bi bi-palette2 text-pink-600 dark:text-pink-400 text-lg"></i>
+            </div>
+          </div>
+          <div>
+            <div class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+              Color Magic
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-pink-100 dark:bg-pink-950/70 text-pink-600 dark:text-pink-400 uppercase tracking-wider">App</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-medium">Social Publisher</div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="space-y-1">
+          <a href="/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+            <i class="bi bi-speedometer2 text-sm"></i>
+            <span>Overview</span>
+          </a>
+          <a href="/palettes" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+            <i class="bi bi-palette text-sm"></i>
+            <span>Color Palettes</span>
+          </a>
+          <a href="/gradients" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+            <i class="bi bi-rainbow text-sm"></i>
+            <span>CSS Gradients</span>
+          </a>
+          <a href="/colors" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
+            <i class="bi bi-eyedropper text-sm"></i>
+            <span>Named Colors</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Quick Platform Status -->
+      <div class="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2">Connected Channels</div>
+        <div id="pinterestStatusBadge" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/60">
+          <span class="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
+          <span class="text-xs text-slate-500">Checking Pinterest...</span>
+        </div>
+        <div id="instagramStatusBadge" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/60">
+          <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+          <span class="text-xs text-slate-500">Checking Instagram...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ══ MAIN CONTENT WRAPPER ═════════════════════════════════════════════ -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Header -->
+      <header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-cardDark/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20">
+        <div class="flex items-center gap-3">
+          <h1 class="font-bold text-sm text-slate-800 dark:text-slate-200">Named Colors Management</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <i class="bi bi-moon-stars dark:hidden"></i>
+            <i class="bi bi-sun hidden dark:block text-amber-400"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Body -->
+      <main class="flex-1 p-6 sm:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- Top Actions Banner -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold mb-2">
+              <i class="bi bi-eyedropper"></i> Colors Publisher
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              Named Colors Database (<span id="totalCountHeader">1,027</span>)
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">
+              Curated color names, swatches, and values ready for individual deployment.
+            </p>
+          </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="glass-card rounded-2xl p-4 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div class="flex-1 w-full sm:max-w-md relative">
+            <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="searchInput" placeholder="Search by color name or hex (e.g. Cobalt, #0047AB)..." class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <select id="filterSelect" class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:outline-none">
+              <option value="all">All Colors</option>
+              <option value="unposted">Unposted to Pinterest</option>
+              <option value="posted">Posted to Pinterest</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Colors Grid -->
+        <div id="colorsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <!-- Rendered dynamically -->
+          <div class="col-span-full py-16 text-center text-slate-400 text-sm">
+            <i class="bi bi-arrow-repeat animate-spin text-2xl block mb-2"></i>
+            Loading colors...
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800" id="paginationRow">
+          <div class="text-xs text-slate-500" id="paginationInfo">Showing 0-0 of 0</div>
+          <div class="flex items-center gap-2">
+            <button id="prevBtn" onclick="changePage(-1)" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40">
+              Previous
+            </button>
+            <span id="pageIndicator" class="text-xs font-bold px-2">Page 1</span>
+            <button id="nextBtn" onclick="changePage(1)" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40">
+              Next
+            </button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let currentPage = 1;
+    const limit = 24;
+    let currentSearch = '';
+    let currentFilter = 'all';
+
+    function getLuminance(hex) {
+      const h = hex.replace('#', '');
+      const r = parseInt(h.substr(0, 2), 16);
+      const g = parseInt(h.substr(2, 2), 16);
+      const b = parseInt(h.substr(4, 2), 16);
+      return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    }
+
+    async function loadColors() {
+      const grid = document.getElementById('colorsGrid');
+      grid.innerHTML = `
+        <div class="col-span-full py-16 text-center text-slate-400 text-sm">
+          <i class="bi bi-arrow-repeat animate-spin text-2xl block mb-2"></i>
+          Loading colors...
+        </div>
+      `;
+
+      try {
+        const query = new URLSearchParams({
+          page: currentPage,
+          limit,
+          search: currentSearch,
+          filter: currentFilter
+        });
+        const res = await api(`/colors?${query.toString()}`);
+        renderColors(res.data);
+        renderPagination(res.pagination);
+      } catch (err) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-500 font-semibold text-sm">Error: ${err.message}</div>`;
+      }
+    }
+
+    function renderColors(items) {
+      const grid = document.getElementById('colorsGrid');
+      if (!items || items.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400 text-sm font-medium">No colors match your criteria.</div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map(c => {
+        const hex = '#' + c.hex.toUpperCase().replace(/^#/, '');
+        const isUploaded = !!c.uploaded;
+        const isIgUploaded = !!c.instagram_posted;
+        const lum = getLuminance(hex);
+        const textColor = lum > 0.65 ? 'text-slate-900' : 'text-white';
+
+        return `
+          <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col justify-between group hover:shadow-lg transition-all">
+            <!-- Swatch -->
+            <div class="h-28 w-full p-2.5 flex items-end justify-between cursor-pointer group/sw" style="background-color: ${hex}" onclick="copyText('${hex}', 'HEX')" title="Click to copy ${hex}">
+              <span class="text-xs font-mono font-extrabold ${textColor} px-1.5 py-0.5 rounded backdrop-blur-sm bg-black/10">
+                ${hex}
+              </span>
+              <i class="bi bi-clipboard ${textColor} opacity-0 group-hover/sw:opacity-100 transition text-xs"></i>
+            </div>
+
+            <!-- Details -->
+            <div class="p-3 space-y-2 flex-1 flex flex-col justify-between">
+              <div>
+                <h4 class="font-extrabold text-xs text-slate-900 dark:text-white truncate" title="${c.name}">
+                  ${c.name}
+                </h4>
+              </div>
+
+              <!-- Buttons -->
+              <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5">
+                <button 
+                  onclick="postItem('color', '${c.hex}', 'pinterest', this)" 
+                  class="flex-1 py-1 px-1.5 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 ${
+                    isUploaded 
+                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50' 
+                      : 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400 border border-red-200 dark:border-red-800/50 hover:bg-red-100'
+                  }" title="Post to Pinterest">
+                  <i class="bi ${isUploaded ? 'bi-check-circle-fill' : 'bi-pinterest'}"></i>
+                  <span>${isUploaded ? 'Pinned' : 'Pin'}</span>
+                </button>
+
+                <button 
+                  onclick="postItem('color', '${c.hex}', 'instagram', this)" 
+                  class="flex-1 py-1 px-1.5 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 ${
+                    isIgUploaded 
+                      ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50' 
+                      : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200'
+                  }" title="Post to Instagram">
+                  <i class="bi ${isIgUploaded ? 'bi-check-circle-fill' : 'bi-instagram'}"></i>
+                  <span>${isIgUploaded ? 'Posted' : 'IG'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPagination(pg) {
+      document.getElementById('totalCountHeader').textContent = pg.total.toLocaleString();
+      document.getElementById('paginationInfo').textContent = `Showing ${((pg.page - 1) * pg.limit) + 1} - ${Math.min(pg.page * pg.limit, pg.total)} of ${pg.total.toLocaleString()}`;
+      document.getElementById('pageIndicator').textContent = `Page ${pg.page} of ${pg.totalPages}`;
+      document.getElementById('prevBtn').disabled = (pg.page <= 1);
+      document.getElementById('nextBtn').disabled = (pg.page >= pg.totalPages);
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      loadColors();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function postItem(type, id, platform, btn) {
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i>`;
+
+      try {
+        const res = await api(`/post/${platform}`, {
+          method: 'POST',
+          body: JSON.stringify({ type, id })
+        });
+        showToast(`Successfully published color to ${platform}!`, 'success');
+        btn.innerHTML = `<i class="bi bi-check-circle-fill"></i>`;
+        btn.classList.remove('bg-red-50', 'text-red-700', 'bg-slate-100');
+        btn.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+      } catch (err) {
+        showToast(`Failed: ${err.message}`, 'error');
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    let debounceTimer;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        currentSearch = e.target.value;
+        currentPage = 1;
+        loadColors();
+      }, 350);
+    });
+
+    document.getElementById('filterSelect').addEventListener('change', (e) => {
+      currentFilter = e.target.value;
+      currentPage = 1;
+      loadColors();
+    });
+
+    document.addEventListener('DOMContentLoaded', loadColors);
+  </script>
+</body>
+</html>

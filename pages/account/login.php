@@ -5,12 +5,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 include '../../components/config.php'; 
-require_once __DIR__ . '/../../auth/AdminAuth.php';
 /** @var string $base */ 
 if (isset($_GET['return'])) {
     $_SESSION['auth_return'] = $_GET['return'];
 }
-$isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_SESSION['user']['email']);
 ?>
 <!doctype html>
 <html lang="en">
@@ -46,7 +44,7 @@ $isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_
             <div class="text-center mb-8">
                 <img src="<?= $base ?>/assets/images/logo.png" alt="Color Magic Logo" class="w-16 h-16 mx-auto mb-4 rounded-xl shadow-sm">
                 <h2 class="text-2xl font-bold text-gray-900">Welcome to Color Magic</h2>
-                <p class="text-gray-500 mt-2 text-sm">Sign in with Google or Pinterest to access your account and favorites.</p>
+                <p class="text-gray-500 mt-2 text-sm">Sign in with Google to access your account and favorites.</p>
             </div>
 
             <?php if (isset($_GET['error']) && $_GET['error'] === 'auth_failed'): ?>
@@ -72,11 +70,6 @@ $isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_
                     <h3 class="text-lg font-semibold text-gray-900 mb-1">Signed in as</h3>
                     <p class="text-gray-600 mb-6 font-medium"><?= htmlspecialchars($_SESSION['user']['email']) ?></p>
                     <div class="space-y-2 mb-4">
-                        <?php if ($isLoginAdmin): ?>
-                            <a href="<?= $base ?>/admin" class="inline-flex justify-center items-center w-full px-4 py-3 rounded-xl shadow-sm text-sm font-bold text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 hover:scale-[1.01] transition-all">
-                                <i class="bi bi-shield-lock-fill mr-2"></i> Go to Admin Dashboard
-                            </a>
-                        <?php endif; ?>
                         <a href="<?= $base ?>/profile" rel="nofollow" class="inline-flex justify-center items-center w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                             <i class="bi bi-person mr-2"></i> View Profile
                         </a>
@@ -87,7 +80,7 @@ $isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_
                     <a href="<?= $base ?>/" class="block text-sm text-slate-500 hover:text-slate-800 font-medium">Return to Home</a>
                 </div>
             <?php else: ?>
-                                <div class="space-y-3">
+                <div class="space-y-3">
                     <a href="<?= $base ?>/auth/google-login" rel="nofollow" class="relative flex items-center justify-center w-full px-4 py-3.5 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 group">
                         <div class="absolute left-4">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -98,16 +91,6 @@ $isLoginAdmin = !empty($_SESSION['user']['email']) && AdminAuth::isAdminEmail($_
                             </svg>
                         </div>
                         <span class="ml-6">Continue with Google</span>
-                    </a>
-
-                    <!-- Continue with Pinterest Button (Official Pinterest Brand Guidelines) -->
-                    <a href="<?= $base ?>/auth/pinterest-login" rel="nofollow" class="relative flex items-center justify-center w-full px-4 py-3.5 rounded-xl shadow-sm bg-[#E60023] hover:bg-[#c9001f] text-white text-sm font-semibold transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 group">
-                        <div class="absolute left-4">
-                            <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 0a12 12 0 0 0-4.37 23.18c-.07-.63-.13-1.6.03-2.29.14-.62.94-3.99.94-3.99s-.24-.48-.24-1.19c0-1.11.64-1.94 1.44-1.94.68 0 1 .51 1 1.12 0 .68-.43 1.7-.66 2.64-.19.79.4 1.44 1.18 1.44 1.42 0 2.51-1.5 2.51-3.66 0-1.91-1.37-3.25-3.34-3.25-2.45 0-3.88 1.84-3.88 3.73 0 .74.28 1.53.64 1.96.07.09.08.16.06.25-.07.28-.22.89-.25 1.01-.04.17-.14.21-.32.13-1.19-.55-1.93-2.29-1.93-3.68 0-2.99 2.18-5.74 6.3-5.74 3.31 0 5.88 2.36 5.88 5.51 0 3.29-2.07 5.94-4.95 5.94-.97 0-1.88-.5-2.19-1.1l-.6 2.27c-.22.83-.8 1.87-1.2 2.5A12 12 0 1 0 12 0z"/>
-                            </svg>
-                        </div>
-                        <span class="ml-6">Continue with Pinterest</span>
                     </a>
                 </div>
                 
