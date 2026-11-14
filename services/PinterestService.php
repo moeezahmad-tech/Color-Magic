@@ -103,6 +103,8 @@ class PinterestService {
         ]);
         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        curl_setopt($ch, CURLOPT_RESOLVE, ['api.unipost.dev:443:104.21.28.183', 'api.unipost.dev:443:172.67.147.21']);
         $res = curl_exec($ch);
         curl_close($ch);
 
@@ -153,6 +155,8 @@ class PinterestService {
         ]);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        curl_setopt($ch, CURLOPT_RESOLVE, ['api.unipost.dev:443:104.21.28.183', 'api.unipost.dev:443:172.67.147.21']);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
