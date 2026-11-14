@@ -57,18 +57,61 @@ async function postToUniPost({ title, description, link, boardId, imageUrl }) {
   }
 
   const postData = data.data || data;
-  const firstResult = postData.results?.[0];
+  const postId = postData.id;
 
-  // If UniPost preflight rejected the post immediately
-  if (firstResult && firstResult.status === 'failed') {
-    throw new Error(firstResult.error_message || 'UniPost failed to publish to Pinterest');
+  // Poll UniPost to wait for Pinterest worker completion (up to ~10s)
+  let attempts = 0;
+  const maxAttempts = 7;
+  let finalStatus = postData.status || 'queued';
+  let firstResult = postData.results?.[0];
+
+  while (attempts < maxAttempts) {
+    if (finalStatus === 'failed') {
+      const err = firstResult?.error_message || 'Pinterest rejected the media or request';
+      const reason = firstResult?.platform_error_code || firstResult?.provider_error?.reason || '';
+      throw new Error(`${err}${reason ? ` [${reason}]` : ''}`);
+    }
+
+    if (finalStatus === 'published' || finalStatus === 'completed') {
+      const pinId = firstResult?.external_id || postId;
+      return {
+        success: true,
+        pin_id: pinId,
+        post_id: postId,
+        data: postData
+      };
+    }
+
+    // Wait 1.5 seconds between status checks
+    await new Promise(r => setTimeout(r, 1500));
+    attempts++;
+
+    try {
+      const pollRes = await fetch(`${UNIPOST_API_BASE}/posts/${postId}`, {
+        headers: getHeaders()
+      });
+      const pollJson = await pollRes.json();
+      const pollData = pollJson.data || pollJson;
+      finalStatus = pollData.status;
+      firstResult = pollData.results?.[0];
+    } catch (e) {
+      console.warn(`Polling error on attempt ${attempts}:`, e.message);
+    }
   }
 
-  const pinId = firstResult?.external_id || postData.id || `unipost_${Date.now()}`;
+  // If still failed or ended with failure
+  if (finalStatus === 'failed') {
+    const err = firstResult?.error_message || 'Pinterest rejected the request';
+    const reason = firstResult?.platform_error_code || firstResult?.provider_error?.reason || '';
+    throw new Error(`${err}${reason ? ` [${reason}]` : ''}`);
+  }
+
+  // If status is published
+  const pinId = firstResult?.external_id || postId;
   return {
     success: true,
     pin_id: pinId,
-    post_id: postData.id,
+    post_id: postId,
     data: postData
   };
 }
@@ -273,3 +316,4 @@ module.exports = {
   getStatus,
   BOARDS
 };
+
