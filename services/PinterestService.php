@@ -133,7 +133,7 @@ class PinterestService {
             'caption'     => $description,
             'account_ids' => [$accountId],
             'media_urls'  => [$imageUrl],
-            'platform_overrides' => [
+            'platform_options' => [
                 'pinterest' => [
                     'title'    => $title,
                     'board_id' => $boardId,
@@ -178,7 +178,9 @@ class PinterestService {
             ];
         }
 
-        $errMsg = $data['message'] ?? ($data['error'] ?? "UniPost returned HTTP $httpCode");
+        $errMsg = is_array($data['error'] ?? null)
+            ? ($data['error']['message'] ?? json_encode($data['error']))
+            : ($data['message'] ?? ($data['error'] ?? "UniPost returned HTTP $httpCode"));
         return [
             'success' => false,
             'status'  => $httpCode,
@@ -329,6 +331,7 @@ class PinterestService {
      * @return array Result
      */
     public static function postPalette(string $paletteId): array {
+        self::init();
         $palettesFile = __DIR__ . '/../data/palettes.json';
         if (!file_exists($palettesFile)) {
             return ['success' => false, 'error' => 'palettes.json not found'];
@@ -369,14 +372,12 @@ class PinterestService {
         $sectionId = $target['board_section_id'];
 
         $res = null;
-        // 1. Try publishing via UniPost API (Bypasses Pinterest direct app permission hurdles)
+        // 1. Publish via UniPost API (Bypasses Pinterest app write permission hurdles)
         if (!empty(self::$unipostKey)) {
             $posterUrl = "https://colormagic.techkreative.com/posters/palettes/{$slug}.jpg";
             $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
-        }
-
-        // 2. Fallback to direct Pinterest API v5 if UniPost is not configured or failed
-        if (!$res || !$res['success']) {
+        } else {
+            // 2. Direct Pinterest API v5
             require_once __DIR__ . '/PinterestImageGenerator.php';
             $base64Image = PinterestImageGenerator::generatePaletteImage($palette);
 
@@ -400,7 +401,7 @@ class PinterestService {
         }
 
         if ($res['success']) {
-            $pinId = $res['data']['id'] ?? '';
+            $pinId = $res['pin_id'] ?? ($res['data']['id'] ?? ('pin_' . time()));
             // Update local JSON with uploaded = true
             $palettes[$targetIndex]['uploaded'] = true;
             $palettes[$targetIndex]['pinterest_pin_id'] = $pinId;
@@ -433,6 +434,7 @@ class PinterestService {
      * @return array Result
      */
     public static function postGradient(string $gradientId): array {
+        self::init();
         $gradientsFile = __DIR__ . '/../data/gradients.json';
         if (!file_exists($gradientsFile)) {
             return ['success' => false, 'error' => 'gradients.json not found'];
@@ -474,15 +476,13 @@ class PinterestService {
         $sectionId = $target['board_section_id'];
 
         $res = null;
-        // 1. Try publishing via UniPost API
+        // 1. Publish via UniPost API
         if (!empty(self::$unipostKey)) {
             $gradientKey = $gradient['id'] ?? $gradientId;
             $posterUrl = "https://colormagic.techkreative.com/posters/gradients/{$gradientKey}.jpg";
             $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
-        }
-
-        // 2. Fallback to direct Pinterest API v5
-        if (!$res || !$res['success']) {
+        } else {
+            // 2. Direct Pinterest API v5
             require_once __DIR__ . '/PinterestImageGenerator.php';
             $base64Image = PinterestImageGenerator::generateGradientImage($gradient);
 
@@ -506,7 +506,7 @@ class PinterestService {
         }
 
         if ($res['success']) {
-            $pinId = $res['data']['id'] ?? '';
+            $pinId = $res['pin_id'] ?? ($res['data']['id'] ?? ('pin_' . time()));
             // Update local JSON with uploaded = true
             $gradients[$targetIndex]['uploaded'] = true;
             $gradients[$targetIndex]['pinterest_pin_id'] = $pinId;
@@ -539,6 +539,7 @@ class PinterestService {
      * @return array Result
      */
     public static function postColor(string $hexOrSlug): array {
+        self::init();
         $colorsFile = __DIR__ . '/../data/color-names.json';
         if (!file_exists($colorsFile)) {
             return ['success' => false, 'error' => 'color-names.json not found'];
@@ -576,15 +577,13 @@ class PinterestService {
         $sectionId = $target['board_section_id'];
 
         $res = null;
-        // 1. Try publishing via UniPost API
+        // 1. Publish via UniPost API
         if (!empty(self::$unipostKey)) {
             $cleanHex = strtolower(ltrim($hex, '#'));
             $posterUrl = "https://colormagic.techkreative.com/posters/colors/{$cleanHex}.jpg";
             $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
-        }
-
-        // 2. Fallback to direct Pinterest API v5
-        if (!$res || !$res['success']) {
+        } else {
+            // 2. Direct Pinterest API v5
             require_once __DIR__ . '/PinterestImageGenerator.php';
             $base64Image = PinterestImageGenerator::generateColorImage($colorData);
 
@@ -608,7 +607,7 @@ class PinterestService {
         }
 
         if ($res['success']) {
-            $pinId = $res['data']['id'] ?? '';
+            $pinId = $res['pin_id'] ?? ($res['data']['id'] ?? ('pin_' . time()));
             // Update local JSON with uploaded = true
             $colorsRaw[$targetKey]['uploaded'] = true;
             $colorsRaw[$targetKey]['pinterest_pin_id'] = $pinId;

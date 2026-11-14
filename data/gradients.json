@@ -40,7 +40,10 @@
         ],
         "css": "linear-gradient(45deg, #FF6B6B, #FFA07A, #FFD93D)",
         "angle": 45,
-        "uploaded": false
+        "uploaded": true,
+        "pinterest_pin_id": "3303ce32-65f0-4cae-967c-4268bbdce5b5",
+        "pinterest_posted_at": "2026-11-14T15:10:01+00:00",
+        "pinterest_board_id": "1092193415823453337"
     },
     {
         "id": "gradient_4",
