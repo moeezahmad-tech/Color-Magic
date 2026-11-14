@@ -37,3 +37,4 @@ $authUrl = "https://www.pinterest.com/oauth/?client_id=" . urlencode($appId) .
 
 header('Location: ' . $authUrl);
 exit();
+

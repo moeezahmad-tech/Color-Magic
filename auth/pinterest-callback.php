@@ -113,3 +113,4 @@ if (!empty($_GET['code'])) {
 
 header('Location: ' . ($base ?: '') . '/login?error=auth_failed&provider=pinterest');
 exit();
+
