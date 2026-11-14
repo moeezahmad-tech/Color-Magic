@@ -49,3 +49,4 @@ Then visit:
   - `POST /api/post/instagram`: 1-click posting to Instagram via Graph API
   - `POST /api/batch/pinterest`: Auto-post runner for unposted items
 - **Sleek UI**: Tailwind CSS, Bootstrap Icons, dark/light mode toggle, instant toast notifications.
+

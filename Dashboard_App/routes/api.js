@@ -288,3 +288,4 @@ router.post('/batch/pinterest', async (req, res) => {
 });
 
 module.exports = router;
+
