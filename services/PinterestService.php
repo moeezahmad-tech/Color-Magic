@@ -9,6 +9,8 @@ class PinterestService {
     private static ?string $token = null;
     private static ?string $appId = null;
     private static ?string $apiBase = null;
+    private static ?string $unipostKey = null;
+    private static ?string $unipostAccountId = null;
 
     /**
      * Initialize credentials from environment
@@ -20,6 +22,8 @@ class PinterestService {
 
         // 1. Try env variables
         self::$appId = getenv('PINTEREST_APP_ID') ?: ($_ENV['PINTEREST_APP_ID'] ?? '1622531');
+        self::$unipostKey = getenv('UNIPOST_KEY') ?: ($_ENV['UNIPOST_KEY'] ?? null);
+        self::$unipostAccountId = getenv('UNIPOST_PINTEREST_ACCOUNT_ID') ?: ($_ENV['UNIPOST_PINTEREST_ACCOUNT_ID'] ?? 'e8a6759b-e0d3-4118-8c59-e8e5bf990171');
         
         $token = getenv('PINTEREST_ACCESS_TOKEN') ?: ($_ENV['PINTEREST_ACCESS_TOKEN'] ?? '');
         if (empty($token)) {
@@ -48,12 +52,22 @@ class PinterestService {
                         if (str_starts_with($line, 'PINTEREST_APP_ID=')) {
                             self::$appId = trim(substr($line, strlen('PINTEREST_APP_ID=')));
                         }
+                        if (str_starts_with($line, 'UNIPOST_KEY=') && empty(self::$unipostKey)) {
+                            self::$unipostKey = trim(substr($line, strlen('UNIPOST_KEY=')));
+                        }
+                        if (str_starts_with($line, 'UNIPOST_PINTEREST_ACCOUNT_ID=') && empty(self::$unipostAccountId)) {
+                            self::$unipostAccountId = trim(substr($line, strlen('UNIPOST_PINTEREST_ACCOUNT_ID=')));
+                        }
                     }
-                    if (!empty($token)) {
+                    if (!empty($token) && !empty(self::$unipostKey)) {
                         break;
                     }
                 }
             }
+
+        if (!empty(self::$unipostKey) && empty(self::$unipostAccountId)) {
+            self::$unipostAccountId = self::discoverUniPostAccountId();
+        }
         }
 
         if (empty($token)) {
@@ -74,6 +88,105 @@ class PinterestService {
     /**
      * Perform HTTP request to Pinterest API v5
      */
+
+    /**
+     * Auto-discover Pinterest account ID from UniPost if not already cached
+     */
+    private static function discoverUniPostAccountId(): ?string {
+        if (empty(self::$unipostKey)) return null;
+
+        $ch = curl_init('https://api.unipost.dev/v1/accounts');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . self::$unipostKey,
+            'Content-Type: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $res = curl_exec($ch);
+        curl_close($ch);
+
+        $json = json_decode((string)$res, true);
+        if (!empty($json['data']) && is_array($json['data'])) {
+            foreach ($json['data'] as $acc) {
+                if (($acc['platform'] ?? '') === 'pinterest' && ($acc['status'] ?? '') === 'active') {
+                    return $acc['id'];
+                }
+            }
+        }
+        return 'e8a6759b-e0d3-4118-8c59-e8e5bf990171';
+    }
+
+    /**
+     * Publish a pin via UniPost Unified API
+     */
+    public static function postViaUniPost(string $title, string $description, string $link, string $boardId, string $imageUrl): array {
+        self::init();
+
+        if (empty(self::$unipostKey)) {
+            return ['success' => false, 'error' => 'UNIPOST_KEY is not configured'];
+        }
+
+        $accountId = self::$unipostAccountId ?: 'e8a6759b-e0d3-4118-8c59-e8e5bf990171';
+
+        $payload = [
+            'caption'     => $description,
+            'account_ids' => [$accountId],
+            'media_urls'  => [$imageUrl],
+            'platform_overrides' => [
+                'pinterest' => [
+                    'title'    => $title,
+                    'board_id' => $boardId,
+                    'link'     => $link
+                ]
+            ]
+        ];
+
+        $ch = curl_init('https://api.unipost.dev/v1/posts');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . self::$unipostKey,
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            return [
+                'success' => false,
+                'status'  => $httpCode,
+                'error'   => 'UniPost cURL Error: ' . $curlError
+            ];
+        }
+
+        $data = json_decode($response, true) ?: [];
+
+        if ($httpCode >= 200 && $httpCode < 300) {
+            $pinId = $data['data']['results'][0]['external_id'] ?? ($data['data']['id'] ?? ('unipost_' . time()));
+            return [
+                'success' => true,
+                'pin_id'  => $pinId,
+                'data'    => $data['data'] ?? $data
+            ];
+        }
+
+        $errMsg = $data['message'] ?? ($data['error'] ?? "UniPost returned HTTP $httpCode");
+        return [
+            'success' => false,
+            'status'  => $httpCode,
+            'error'   => $errMsg,
+            'raw'     => $data
+        ];
+    }
+
     public static function request(string $endpoint, string $method = 'GET', ?array $payload = null): array {
         self::init();
 
@@ -251,30 +364,40 @@ class PinterestService {
         $description = "$name: A curated $style color palette with hex codes $colorList. Generate palettes, check contrast, and explore hex conversions at Color Magic.";
         $link = "https://colormagic.techkreative.com/palette/$slug";
 
-        require_once __DIR__ . '/PinterestImageGenerator.php';
-        $base64Image = PinterestImageGenerator::generatePaletteImage($palette);
-
         $target = self::resolveTarget('Color Palettes');
         $boardId = $target['board_id'];
         $sectionId = $target['board_section_id'];
 
-        $pinPayload = [
-            'title'        => $title,
-            'description'  => $description,
-            'link'         => $link,
-            'board_id'     => $boardId,
-            'media_source' => [
-                'source_type'  => 'image_base64',
-                'content_type' => 'image/jpeg',
-                'data'         => $base64Image
-            ]
-        ];
-
-        if (!empty($sectionId)) {
-            $pinPayload['board_section_id'] = $sectionId;
+        $res = null;
+        // 1. Try publishing via UniPost API (Bypasses Pinterest direct app permission hurdles)
+        if (!empty(self::$unipostKey)) {
+            $posterUrl = "https://colormagic.techkreative.com/posters/palettes/{$slug}.jpg";
+            $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
         }
 
-        $res = self::request('pins', 'POST', $pinPayload);
+        // 2. Fallback to direct Pinterest API v5 if UniPost is not configured or failed
+        if (!$res || !$res['success']) {
+            require_once __DIR__ . '/PinterestImageGenerator.php';
+            $base64Image = PinterestImageGenerator::generatePaletteImage($palette);
+
+            $pinPayload = [
+                'title'        => $title,
+                'description'  => $description,
+                'link'         => $link,
+                'board_id'     => $boardId,
+                'media_source' => [
+                    'source_type'  => 'image_base64',
+                    'content_type' => 'image/jpeg',
+                    'data'         => $base64Image
+                ]
+            ];
+
+            if (!empty($sectionId)) {
+                $pinPayload['board_section_id'] = $sectionId;
+            }
+
+            $res = self::request('pins', 'POST', $pinPayload);
+        }
 
         if ($res['success']) {
             $pinId = $res['data']['id'] ?? '';
@@ -346,30 +469,41 @@ class PinterestService {
         $description = "CSS code: $css. Colors: $colorList. Curated $style gradient for modern web & UI design from Color Magic.";
         $link = "https://colormagic.techkreative.com/gradient/" . ($gradient['id'] ?? 'gradient_1');
 
-        require_once __DIR__ . '/PinterestImageGenerator.php';
-        $base64Image = PinterestImageGenerator::generateGradientImage($gradient);
-
         $target = self::resolveTarget('Color Gradients');
         $boardId = $target['board_id'];
         $sectionId = $target['board_section_id'];
 
-        $pinPayload = [
-            'title'        => $title,
-            'description'  => $description,
-            'link'         => $link,
-            'board_id'     => $boardId,
-            'media_source' => [
-                'source_type'  => 'image_base64',
-                'content_type' => 'image/jpeg',
-                'data'         => $base64Image
-            ]
-        ];
-
-        if (!empty($sectionId)) {
-            $pinPayload['board_section_id'] = $sectionId;
+        $res = null;
+        // 1. Try publishing via UniPost API
+        if (!empty(self::$unipostKey)) {
+            $gradientKey = $gradient['id'] ?? $gradientId;
+            $posterUrl = "https://colormagic.techkreative.com/posters/gradients/{$gradientKey}.jpg";
+            $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
         }
 
-        $res = self::request('pins', 'POST', $pinPayload);
+        // 2. Fallback to direct Pinterest API v5
+        if (!$res || !$res['success']) {
+            require_once __DIR__ . '/PinterestImageGenerator.php';
+            $base64Image = PinterestImageGenerator::generateGradientImage($gradient);
+
+            $pinPayload = [
+                'title'        => $title,
+                'description'  => $description,
+                'link'         => $link,
+                'board_id'     => $boardId,
+                'media_source' => [
+                    'source_type'  => 'image_base64',
+                    'content_type' => 'image/jpeg',
+                    'data'         => $base64Image
+                ]
+            ];
+
+            if (!empty($sectionId)) {
+                $pinPayload['board_section_id'] = $sectionId;
+            }
+
+            $res = self::request('pins', 'POST', $pinPayload);
+        }
 
         if ($res['success']) {
             $pinId = $res['data']['id'] ?? '';
@@ -437,30 +571,41 @@ class PinterestService {
         $description = "$name ($hex): Explore hex, RGB, CMYK and HSL color values, visual harmonies, and contrast ratios at Color Magic.";
         $link = "https://colormagic.techkreative.com/color/$slug";
 
-        require_once __DIR__ . '/PinterestImageGenerator.php';
-        $base64Image = PinterestImageGenerator::generateColorImage($colorData);
-
         $target = self::resolveTarget('Colors');
         $boardId = $target['board_id'];
         $sectionId = $target['board_section_id'];
 
-        $pinPayload = [
-            'title'        => $title,
-            'description'  => $description,
-            'link'         => $link,
-            'board_id'     => $boardId,
-            'media_source' => [
-                'source_type'  => 'image_base64',
-                'content_type' => 'image/jpeg',
-                'data'         => $base64Image
-            ]
-        ];
-
-        if (!empty($sectionId)) {
-            $pinPayload['board_section_id'] = $sectionId;
+        $res = null;
+        // 1. Try publishing via UniPost API
+        if (!empty(self::$unipostKey)) {
+            $cleanHex = strtolower(ltrim($hex, '#'));
+            $posterUrl = "https://colormagic.techkreative.com/posters/colors/{$cleanHex}.jpg";
+            $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
         }
 
-        $res = self::request('pins', 'POST', $pinPayload);
+        // 2. Fallback to direct Pinterest API v5
+        if (!$res || !$res['success']) {
+            require_once __DIR__ . '/PinterestImageGenerator.php';
+            $base64Image = PinterestImageGenerator::generateColorImage($colorData);
+
+            $pinPayload = [
+                'title'        => $title,
+                'description'  => $description,
+                'link'         => $link,
+                'board_id'     => $boardId,
+                'media_source' => [
+                    'source_type'  => 'image_base64',
+                    'content_type' => 'image/jpeg',
+                    'data'         => $base64Image
+                ]
+            ];
+
+            if (!empty($sectionId)) {
+                $pinPayload['board_section_id'] = $sectionId;
+            }
+
+            $res = self::request('pins', 'POST', $pinPayload);
+        }
 
         if ($res['success']) {
             $pinId = $res['data']['id'] ?? '';
