@@ -144,12 +144,19 @@ if (!$targetFile || !file_exists($targetFile)) {
     exit;
 }
 
+// Clear all output buffers so Apache/Nginx doesn't switch to chunked transfer encoding
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
 // Stream the JPEG with strong browser and CDN caching
 $mtime = filemtime($targetFile);
+$size = (int)filesize($targetFile);
 $etag = '"' . md5($targetFile . $mtime) . '"';
 
 header('Content-Type: image/jpeg');
-header('Content-Length: ' . filesize($targetFile));
+header('Content-Length: ' . (string)$size);
+header('Accept-Ranges: bytes');
 header('Cache-Control: public, max-age=31536000, immutable');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $mtime) . ' GMT');
 header('ETag: ' . $etag);

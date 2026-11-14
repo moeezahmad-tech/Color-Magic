@@ -48,9 +48,13 @@ RewriteRule ^data(/.*)?$ - [F,L,NC]
 RewriteRule ^(services|scripts|components)(/.*)?$ - [F,L,NC]
 RewriteRule (^|/)\.(env|git|vscode) - [F,L,NC]
 
-# ── ANTI-BOT PROTECTION: Block abusive scraper bots while allowing Search Engines ──
+# ── ANTI-BOT PROTECTION: Block abusive scraper bots while allowing Search Engines & Social Media ──
+# Whitelist search engines, Pinterest, social media crawlers, and allow all media in /posters/ & /assets/
+RewriteCond %{REQUEST_URI} ^/(posters|assets)/ [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} (Googlebot|bingbot|Baiduspider|DuckDuckBot|YandexBot|Applebot|Pinterest|facebookexternalhit|Twitterbot|LinkedInBot|UniPost|crawlers) [NC]
+RewriteRule ^ - [S=1]
+
 RewriteCond %{HTTP_USER_AGENT} (CriteoBot|aiohttp|python-requests|Scrapy|HttpClient|node-fetch|libwww|Wget|PostmanRuntime|Go-http-client) [NC]
-RewriteCond %{HTTP_USER_AGENT} !(Googlebot|bingbot|Baiduspider|DuckDuckBot|YandexBot|Applebot|crawlers) [NC]
 RewriteRule ^ - [F,L]
 
 # Block aggressive scraping subnets identified in analytics

@@ -174,11 +174,25 @@ class PinterestService {
         $data = json_decode($response, true) ?: [];
 
         if ($httpCode >= 200 && $httpCode < 300) {
-            $pinId = $data['data']['results'][0]['external_id'] ?? ($data['data']['id'] ?? ('unipost_' . time()));
+            $postData = $data['data'] ?? $data;
+            $firstResult = $postData['results'][0] ?? null;
+
+            // If UniPost already determined the post failed (e.g. media preflight or permissions error)
+            if ($firstResult && ($firstResult['status'] ?? '') === 'failed') {
+                $err = $firstResult['error_message'] ?? 'UniPost failed to publish to Pinterest';
+                return [
+                    'success' => false,
+                    'status'  => 422,
+                    'error'   => $err,
+                    'raw'     => $postData
+                ];
+            }
+
+            $pinId = $firstResult['external_id'] ?? ($postData['id'] ?? ('unipost_' . time()));
             return [
                 'success' => true,
                 'pin_id'  => $pinId,
-                'data'    => $data['data'] ?? $data
+                'data'    => $postData
             ];
         }
 
@@ -378,6 +392,8 @@ class PinterestService {
         $res = null;
         // 1. Publish via UniPost API (Bypasses Pinterest app write permission hurdles)
         if (!empty(self::$unipostKey)) {
+            require_once __DIR__ . '/PosterCacheService.php';
+            PosterCacheService::getPalettePoster($palette);
             $posterUrl = "https://colormagic.techkreative.com/posters/palettes/{$slug}.jpg";
             $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
         } else {
@@ -482,6 +498,8 @@ class PinterestService {
         $res = null;
         // 1. Publish via UniPost API
         if (!empty(self::$unipostKey)) {
+            require_once __DIR__ . '/PosterCacheService.php';
+            PosterCacheService::getGradientPoster($gradient);
             $gradientKey = $gradient['id'] ?? $gradientId;
             $posterUrl = "https://colormagic.techkreative.com/posters/gradients/{$gradientKey}.jpg";
             $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
@@ -583,6 +601,8 @@ class PinterestService {
         $res = null;
         // 1. Publish via UniPost API
         if (!empty(self::$unipostKey)) {
+            require_once __DIR__ . '/PosterCacheService.php';
+            PosterCacheService::getColorPoster($colorData);
             $cleanHex = strtolower(ltrim($hex, '#'));
             $posterUrl = "https://colormagic.techkreative.com/posters/colors/{$cleanHex}.jpg";
             $res = self::postViaUniPost($title, $description, $link, $boardId, $posterUrl);
